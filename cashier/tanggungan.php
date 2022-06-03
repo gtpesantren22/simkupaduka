@@ -70,7 +70,7 @@ include 'atas.php';
                                 <tfoot>
                                     <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                         <th colspan="4">Total Pemasukan dari Syahrian Santri</th>
-                                        <th colspan="2"><?= rupiah(count($jml)) ?></th>
+                                        <th colspan="2"></th>
                                     </tr>
                                 </tfoot>
                             </table>

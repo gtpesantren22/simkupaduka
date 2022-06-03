@@ -186,6 +186,7 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                         <ul class="treeview-menu">
                             <li><a href="tanggungan.php"><i class="fa fa-circle-o"></i> Data Tanggungan</a></li>
                             <li><a href="pembayaran.php"><i class="fa fa-circle-o"></i> Pembayaran</a></li>
+                            <li><a href="rekap_tg.php"><i class="fa fa-circle-o"></i> Rekap Tanggungan</a></li>
                         </ul>
                     </li>
                     <li class="treeview">
