@@ -51,7 +51,7 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.stts != 2");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama, b.hp FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.stts != 2");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             $kd_pj = $a['kode_pengajuan'];
                                             $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
@@ -74,7 +74,12 @@ include 'head.php';
                                                 </td>
                                                 <td><?= rupiah($pjan) ?></td>
                                                 <td><a href="<?= '../institution/spj_file/' . $a['file_spj'] ?>"><i class="fa fa-download"></i> Unduh Berkas</a></td>
-                                                <td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah_bos<?= $a['id_spj'] ?>"><i class="fa fa-check"></i> Setuji</button></td>
+                                                <td>
+                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah_bos<?= $a['id_spj'] ?>"><i class="fa fa-check"></i> Setujui</button>
+                                                    <?php if ($a['stts'] == 1) { ?>
+                                                        <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#tolak_bos<?= $a['id_spj'] ?>"><i class="fa fa-times"></i> Tolak</button>
+                                                    <?php } ?>
+                                                </td>
                                             </tr>
                                             <!-- Modal Tambah Data BOS-->
                                             <div class="modal fade" id="tambah_bos<?= $a['id_spj'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
@@ -90,11 +95,12 @@ include 'head.php';
                                                             <div class="modal-body">
                                                                 <input type="hidden" name="id" value="<?= $a['id_spj']; ?>">
                                                                 <input type="hidden" name="kode" value="<?= $a['kode_pengajuan']; ?>">
+                                                                <input type="hidden" name="hp" value="<?= $a['hp']; ?>">
                                                                 <div class="item form-group">
                                                                     <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Lembaga <span class="required">*</span>
                                                                     </label>
                                                                     <div class="col-md-6 col-sm-6 ">
-                                                                        <input type="text" id="first-name" required="required" disabled value="<?= $a['nama'] ?>" class="form-control ">
+                                                                        <input type="text" id="first-name" name="nm_lm" required="required" readonly value="<?= $a['nama'] ?>" class="form-control ">
                                                                     </div>
                                                                 </div>
                                                                 <div class="item form-group">
@@ -130,6 +136,75 @@ include 'head.php';
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                                                 <button type="submit" name="save" class="btn btn-success"><i class="fa fa-check"></i> Setujui</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Modal Tolak BOS-->
+                                            <div class="modal fade" id="tolak_bos<?= $a['id_spj'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="myModalLabel">Form Penolakan SPJ</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="id" value="<?= $a['id_spj']; ?>">
+                                                                <input type="hidden" name="kode" value="<?= $a['kode_pengajuan']; ?>">
+                                                                <input type="hidden" name="hp" value="<?= $a['hp']; ?>">
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Lembaga <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" name="nm_lm" id="first-name" readonly value="<?= $a['nama'] ?>" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Periode <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" id="first-name" required="required" disabled value="<?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?>" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nominal <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" id="first-name" required="required" disabled value="<?= rupiah($pjan) ?>" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tanggal penolakan <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="date" id="" required="required" name="tgl" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Catatan Penolakan <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <textarea id="" required="required" name="isi" class="form-control "></textarea>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Menolaks <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" required="required" name="user" value="<?= $nama_user ?>" class="form-control" readonly>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" name="nono" class="btn btn-danger"><i class="fa fa-check"></i> Tolak Now</button>
                                                             </div>
                                                         </form>
 
@@ -190,6 +265,22 @@ if (isset($_POST['save'])) {
 
     $id = $_POST['id'];
     $kode = $_POST['kode'];
+    $nm_lm = $_POST['nm_lm'];
+    $hp = $_POST['hp'];
+    $at = date('d-m-Y H:i');
+
+    $psn = '
+*INFORMASI VARIFIKASI SPJ*
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : ' . $nm_lm . '
+Kode Pengjuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_SPJ telah disetujui oleh TIM ACCOUNTING. Selesai_*
+Bisa dilanjutkan untuk pengajuan berikutnya.
+Terimakasih';
 
     $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' ");
     $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' ");
@@ -210,7 +301,124 @@ if (isset($_POST['save'])) {
             });
         </script>
 
-<?php    }
+    <?php
+        $curl2 = curl_init();
+        curl_setopt_array(
+            $curl2,
+            array(
+                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
+            )
+        );
+        $response = curl_exec($curl2);
+        curl_close($curl2);
+
+        // Japri 1
+        $curl = curl_init();
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $hp . '&message=' . $psn,
+            )
+        );
+        $response = curl_exec($curl);
+        curl_close($curl);
+    }
 }
 
+if (isset($_POST['nono'])) {
+
+    $id = $_POST['id'];
+    $kode = $_POST['kode'];
+    $nm_lm = $_POST['nm_lm'];
+    $hp = $_POST['hp'];
+    $isi = addslashes(mysqli_real_escape_string($conn, $_POST['isi']));
+    $at = date('d-m-Y H:i');
+
+    $psn = '
+*INFORMASI VARIFIKASI SPJ*
+
+Ada Penolakan SPJ dari :
+    
+Lembaga : ' . $nm_lm . '
+Kode Pengjuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_SPJ DITOLAK oleh TIM ACCOUNTING. dengan catatan ' . $isi . '_*
+Mohon kepada lembaga terkait untuk segera memperbaikinya dan mengupload ulang SPJ yang sudah diperbaiki.
+Terimakasih';
+
+    $sql = mysqli_query($conn, "UPDATE spj SET stts = 0 WHERE id_spj = '$id' ");
+    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 0 WHERE kode_pengajuan = '$kode' ");
+    if ($sql) { ?>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'SPJ di tolak',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = "spj.php"
+                }, millisecondsToWait);
+
+            });
+        </script>
+
+<?php
+        $curl2 = curl_init();
+        curl_setopt_array(
+            $curl2,
+            array(
+                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
+            )
+        );
+        $response = curl_exec($curl2);
+        curl_close($curl2);
+
+        // Japri 1
+        $curl = curl_init();
+        curl_setopt_array(
+            $curl,
+            array(
+                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $hp . '&message=' . $psn,
+            )
+        );
+        $response = curl_exec($curl);
+        curl_close($curl);
+    }
+}
 ?>
