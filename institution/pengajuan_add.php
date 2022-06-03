@@ -287,11 +287,11 @@ if (isset($_POST['save'])) {
     $nm_rab = mysqli_real_escape_string($conn, $l['nama']);
     $ket = $nm_rab . ' - @ ' . $qty . ' x ' . number_format($l['harga_satuan'], 0, ',', '.');
     $kd_pjn = $kode_pengajuan;
-    
-    if($jenis === 'A'){
-         $stas = 'barang';
-    }else{
-         $stas = 'tunai';
+
+    if ($jenis === 'A') {
+        $stas = 'barang';
+    } else {
+        $stas = 'tunai';
     }
 
     $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn', '$nominal', '$stas')");

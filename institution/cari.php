@@ -19,7 +19,7 @@ else {
   <tr>
 		<th>Volume</th>
 		<th style='color: red;'>Sisa Volume : " . $sisa_jml . ' ' . $rows['satuan'] . "</th>
-		<td><input style='text-align: center;' type='number' class='form-control' id='qty' name='qty' onkeyup='sum();' required autofucus='on'></td>
+		<td><input style='text-align: center;' type='text' class='form-control' id='qty' name='qty' onkeyup='sum();' required autofucus='on'></td>
     </tr>
     <tr>
 		<th>Harga Satuan</th>
