@@ -153,12 +153,25 @@ if (isset($_POST['upload'])) {
     $bulan  = $_POST['bulan'];
     $tahun  = $_POST['tahun'];
     $date = date('Y-m-d');
+    $at = date('Y-m-d H:i:s');
 
     $ekstensi =  array('doc', 'docx', 'xls', 'xlsx', 'pdf');
     $filename = $_FILES['file']['name'];
     $ukuran = $_FILES['file']['size'];
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
     $extensi = explode('.', $filename);
+
+    $psn = '
+*INFORMASI VARIFIKASI SPJ*
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : ' . $kol_nama . '
+Kode Pengjuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya_*
+Terimakasih';
 
     if (!in_array($ext, $ekstensi)) { ?>
         <script>
@@ -195,7 +208,25 @@ if (isset($_POST['upload'])) {
                 }, millisecondsToWait);
             </script>
 
-<?php    }
+<?php
+            $curl2 = curl_init();
+            curl_setopt_array(
+                $curl2,
+                array(
+                    CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
+                    CURLOPT_RETURNTRANSFER => true,
+                    CURLOPT_ENCODING => '',
+                    CURLOPT_MAXREDIRS => 10,
+                    CURLOPT_TIMEOUT => 0,
+                    CURLOPT_FOLLOWLOCATION => true,
+                    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                    CURLOPT_CUSTOMREQUEST => 'POST',
+                    CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
+                )
+            );
+            $response = curl_exec($curl2);
+            curl_close($curl2);
+        }
         move_uploaded_file($_FILES['file']['tmp_name'], 'spj_file/' . $xx);
     }
 }

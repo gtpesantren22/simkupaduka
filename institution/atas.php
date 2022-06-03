@@ -24,6 +24,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
 $no = 1;
 $id_user = $user['id_user'];
 $kol = $lm['kode'];
+$kol_nama = $lm['nama'];
 $nama_user = $user['nama'];
 $level = $user['level'];
 
