@@ -57,11 +57,21 @@ include 'atas.php';
                                 </div>
                             </div>
                         </form>
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div>
+            <?php
+            if (isset($_POST['lait'])) {
+                $lembaga = $_POST['lembaga'];
+                $jkl = $_POST['jkl'];
+            ?>
+                <div class="col-md-12">
+                    <div class="box">
+                        <div class="box-header">
+                            <h3 class="box-title">Tanggungan Pertahun</h3>
+                        </div><!-- /.box-header -->
+                        <div class="box-body">
 
-                        <?php if (isset($_POST['lait'])) {
-                            $lembaga = $_POST['lembaga'];
-                            $jkl = $_POST['jkl'];
-                        ?>
                             <div class="table-responsive">
                                 <table id="example1_bst" class="table table-bordered table-striped">
                                     <thead>
@@ -73,6 +83,7 @@ include 'atas.php';
                                             <th>Tanggungan</th>
                                             <th>Bayar</th>
                                             <th>Sisa</th>
+                                            <th>Ket</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -84,31 +95,42 @@ include 'atas.php';
                                                 $tgn = $ls_jns[$tgr['kode']];
                                             }
                                             $jml = $ls_jns['syahriah'] + $tgn;
+                                            $nis = $ls_jns['nis'];
+                                            $bayar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM pembayaran WHERE nis = $nis AND tahun = '2021/2022' "));
+                                            if ($jml < $bayar['jml']) {
+                                                $kt = "<span class='label bg-purple'><i class='fa fa-warning'></i> Lebih</span>";
+                                            } elseif ($jml == $bayar['jml']) {
+                                                $kt = "<span class='label label-success'><i class='fa fa-check'></i> Lunas</span>";
+                                            } else {
+                                                $kt = "<span class='label label-danger'><i class='fa fa-times'></i> Kurang</span>";
+                                            }
                                         ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
                                                 <td><?= $ls_jns['nama']; ?></td>
+                                                <td><?= $ls_jns['desa'] . ' - ' . $ls_jns['kec']; ?></td>
                                                 <td><?= $ls_jns['k_formal'] . ' ' . $ls_jns['t_formal']; ?></td>
-                                                <td><?= $ls_jns['k_madin'] . ' ' . $ls_jns['r_madin']; ?></td>
                                                 <td><?= rupiah($jml); ?></td>
-                                                <td></td>
-                                                <td></td>
+                                                <td><?= rupiah($bayar['jml']); ?></td>
+                                                <td><?= rupiah($jml - $bayar['jml']); ?></td>
+                                                <td><?= $kt; ?></td>
                                             </tr>
                                             <!-- Modal -->
                                         <?php } ?>
                                     </tbody>
-                                    <tfoot>
+                                    <!-- <tfoot>
                                         <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                             <th colspan="4">Total Pemasukan dari Syahrian Santri</th>
                                             <th colspan="2"></th>
                                         </tr>
-                                    </tfoot>
+                                    </tfoot> -->
                                 </table>
                             </div>
-                        <?php } ?>
-                    </div><!-- /.box-body -->
-                </div><!-- /.box -->
-            </div>
+
+                        </div><!-- /.box-body -->
+                    </div><!-- /.box -->
+                </div>
+            <?php } ?>
         </div>
     </section><!-- /.content -->
 </div>
