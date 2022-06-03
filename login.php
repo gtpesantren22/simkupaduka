@@ -1,7 +1,6 @@
 <?php
 session_start();
-$conn = mysqli_connect("localhost", "root", "", "db_sentral");
-// $conn = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_sentral");
+include 'koneksi.php';
 
 ?>
 
