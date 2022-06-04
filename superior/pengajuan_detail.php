@@ -242,14 +242,14 @@ if (isset($_POST['veris'])) {
     $user = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['user']));
     $stts = 1;
     $ket = '-';
-    
+
     $psn = '
 *INFORMASI PERMOHONAN PENCAIRAN*
 
 pengajuan dari :
 
 Lembaga : ' . $l['nama'] . '
-Kode Pengjuan : ' . $kd_pj . '
+Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 telah SETUJUI oleh *' . $user . '* pada *' . $tgl . '*
 
@@ -262,7 +262,7 @@ Terimakasih';
 pengajuan dari :
 
 Lembaga : ' . $l['nama'] . '
-Kode Pengjuan : ' . $kd_pj . '
+Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 telah SETUJUI oleh *' . $user . '* pada *' . $tgl . '*
 
@@ -289,7 +289,7 @@ Terimakasih';
             });
         </script>
 
-<?php    
+<?php
         $curl2 = curl_init();
         curl_setopt_array(
             $curl2,
@@ -307,7 +307,7 @@ Terimakasih';
         );
         $response = curl_exec($curl2);
         curl_close($curl2);
-        
+
         // Japri 1
         $curl = curl_init();
         curl_setopt_array(
@@ -321,7 +321,7 @@ Terimakasih';
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone='.$l['hp'].'&message=' . $psn2,
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $l['hp'] . '&message=' . $psn2,
             )
         );
         $response = curl_exec($curl);

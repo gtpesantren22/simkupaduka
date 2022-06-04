@@ -5,6 +5,7 @@ $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajua
 $crr = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal_cair) as jml FROM pencairan WHERE kode_pengajuan = '$kode' "));
 $dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) as jml FROM real_sm WHERE kode_pengajuan = '$kode' "));
 $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM real_sm WHERE kode_pengajuan = '$kode' "));
+$plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kode' ");
 ?>
 
 <div class="content-wrapper">
@@ -117,6 +118,7 @@ $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM r
                                     <div class="form-group">
                                         <div class="col-sm-offset-2 col-sm-10">
                                             <button type="submit" name="cairkan" class="btn btn-success pull-right"><i class="fa fa-save"></i> Simpan pencairan</button>
+                                            <button type="button" name="all" data-toggle="modal" data-target="#staticBackdrop" class="btn btn-warning pull-right"><i class="fa fa-bookmark"></i> Cairkan semuanya langsung</button>
                                         </div>
                                     </div>
                                 </div><!-- /.box-body -->
@@ -160,6 +162,43 @@ $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM r
     </section><!-- /.content -->
 </div>
 
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class=" modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Cairkan semuanya</h4>
+            </div>
+            <form action="" method="post" class="form-horizontal">
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-3 control-label">Nominal pencairan</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="periode" disabled value="<?= rupiah($dt['jml']); ?>">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Tanggal Pencairan</label>
+                        <div class="col-sm-9">
+                            <input type="date" class="form-control" id="" name="tgl_cair" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Cirator</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="kasir" class="form-control" value="<?= $nama_user ?>" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">لا تفعل</button>
+                    <button type="submit" name="all" class="btn btn-success">نعم. الآن</button>
+                </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 <?php
 require 'bawah.php'
 ?>
@@ -228,14 +267,60 @@ if (isset($_POST['cairkan'])) {
         $add = mysqli_query($conn, "INSERT INTO realis SELECT * FROM real_sm WHERE id_realis = '$id_pnj[$x]' ");
         $del = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id_pnj[$x]' ");
     }
-    
-    if($nominal_cair < $nominal){
+
+    if ($nominal_cair < $nominal) {
         $sisa = $nominal - $nominal_cair;
         $tgl_setor = date('Y-m-d');
-        
+
         mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor' ) ");
     }
-    
+
+    if ($sql && $pnj && $add && $del) { ?>
+        <script>
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Dana Berhasil dicairkan',
+                showConfirmButton: false
+            });
+            var millisecondsToWait = 1000;
+            setTimeout(function() {
+                document.location.href = "<?= 'cair.php' ?>"
+            }, millisecondsToWait);
+        </script>
+
+    <?php    }
+}
+
+if (isset($_POST['all'])) {
+
+    $id = $uuid;
+
+    $kd_pnj = $kode;
+    $lembaga =  $data['lembaga'];
+    $nominal = $dt2['jml'];
+    $nominal_cair = $dt['jml'];
+    $tgl_cair = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_cair']));
+    $kasir = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kasir']));
+
+    $jumlah_dipilih = $plih;
+
+    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir')");
+    $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' ");
+
+    while ($x = mysqli_fetch_assoc($plih)) {
+        $id_pnj = $x['id_realis'];
+        $add = mysqli_query($conn, "INSERT INTO realis SELECT * FROM real_sm WHERE id_realis = '$id_pnj' ");
+        $del = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id_pnj' ");
+    }
+
+    if ($nominal_cair < $nominal) {
+        $sisa = $nominal - $nominal_cair;
+        $tgl_setor = date('Y-m-d');
+
+        mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor' ) ");
+    }
+
     if ($sql && $pnj && $add && $del) { ?>
         <script>
             Swal.fire({

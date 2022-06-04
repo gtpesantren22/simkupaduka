@@ -468,11 +468,11 @@ if (isset($_POST['veris'])) {
 pengajuan dari :
 
 Lembaga : ' . $l['nama'] . '
-Kode Pengjuan : ' . $kd_pj . '
+Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
-telah diverifikasi oleh *' . $user . '* pada *' . $tgl . '*
+telah diverifikasi oleh *' . $user . ' pada ' . $tgl . '*
 
-*_dimohon kepada KEPALA PESANTREN untuk segera mengecek & menyetujui nya_*
+*_dimohon kepada KEPALA PESANTREN untuk segera mengecek dan menyetujui nya_*
 Terimakasih';
 
         $curl2 = curl_init();
@@ -552,7 +552,7 @@ Terimakasih';
 pengajuan dari :
 
 Lembaga : ' . $l['nama'] . '
-Kode Pengjuan : ' . $kd_pj . '
+Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 ditolak oleh *' . $user . '* pada *' . $tgl . '*
 dengan catatan : *_' . $pesan . '_*

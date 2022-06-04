@@ -59,7 +59,7 @@ if ($sql) { ?>
     );
     $response = curl_exec($curl2);
     curl_close($curl2);
-    
+
     // Japri 1
     $curl = curl_init();
     curl_setopt_array(
@@ -78,6 +78,4 @@ if ($sql) { ?>
     );
     $response = curl_exec($curl);
     curl_close($curl);
-    
-    
 }
