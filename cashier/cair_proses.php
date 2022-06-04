@@ -303,7 +303,6 @@ if (isset($_POST['all'])) {
     $tgl_cair = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_cair']));
     $kasir = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kasir']));
 
-    $jumlah_dipilih = $plih;
 
     $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir')");
     $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' ");
