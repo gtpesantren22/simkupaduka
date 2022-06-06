@@ -4,7 +4,7 @@ if (!isset($_SESSION['lvl_lmbg_qwertyuiop'])) {
 
     echo "
     <script>
-    window.location = 'login.php';
+    window.location = '../login.php';
     </script>
     ";
 }
