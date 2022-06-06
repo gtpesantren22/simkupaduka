@@ -12,8 +12,9 @@ else {
       extract($rows);
       $kd = $rows['kode'];
       $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom, SUM(vol) as vol FROM realis WHERE kode = '$kd' "));
-      $sisa_jml = $rows['qty'] - $pakai['vol'];
-      $sisa = $rows['total'] - $pakai['nom'];
+      $pakai2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom, SUM(vol) as vol FROM real_sm WHERE kode = '$kd' "));
+      $sisa_jml = $rows['qty'] - $pakai['vol'] - $pakai2['vol'];
+      $sisa = $rows['total'] - $pakai['nom'] - $pakai2['nom'];
       echo "
   <table class='table table-striped'>    
   <tr>
