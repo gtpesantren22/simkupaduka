@@ -304,7 +304,7 @@ if (isset($_POST['save'])) {
                 title: 'Maaf. Jumlah pengajuan anda melebihi dari yang tersisa',
                 showConfirmButton: false
             });
-            var millisecondsToWait = 1000;
+            var millisecondsToWait = 1500;
             setTimeout(function() {
                 document.location.href = "<?= 'pengajuan_add.php?kode=' . $kode_pengajuan ?>"
             }, millisecondsToWait);
