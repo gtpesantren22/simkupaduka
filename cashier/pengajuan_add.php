@@ -273,12 +273,6 @@ if (isset($_POST['save'])) {
             }, millisecondsToWait);
         </script>
 <?php
-    } else {
-        echo "
-                <script>
-                alert('Gagal  simpan');
-                </script>
-            ";
     }
 }
 

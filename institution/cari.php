@@ -26,6 +26,7 @@ else {
 		<th style='color: red;'>" . rupiah($rows['harga_satuan']) . ' x ' . $rows['qty'] . "</th>
 		<td><input style='text-align: right;' type='text' class='form-control' value='" . rupiah($sisa) . "' readonly></td>
     <input type='hidden' name='harga_satuan' id='harga_satuan' value='" . $rows['harga_satuan'] . "' onkeyup='sum();'>
+    <input type='hidden' name='sisa_jml' value='" . $sisa_jml . "' >
 	</tr>
 	<tr>
 		<th>Jumlah Belanja </th>

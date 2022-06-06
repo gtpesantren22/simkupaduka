@@ -287,6 +287,7 @@ if (isset($_POST['save'])) {
     $nm_rab = mysqli_real_escape_string($conn, $l['nama']);
     $ket = $nm_rab . ' - @ ' . $qty . ' x ' . number_format($l['harga_satuan'], 0, ',', '.');
     $kd_pjn = $kode_pengajuan;
+    $sisa_jml = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['sisa_jml']));
 
     if ($jenis === 'A') {
         $stas = 'barang';
@@ -294,16 +295,13 @@ if (isset($_POST['save'])) {
         $stas = 'tunai';
     }
 
-    $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn', '$nominal', '$stas')");
-    if ($sql) {
-
-?>
+    if ($qty > $sisa_jml) { ?>
 
         <script>
             Swal.fire({
                 position: 'top-end',
-                icon: 'success',
-                title: 'Pengajuan berhasil tersimpan',
+                icon: 'error',
+                title: 'Maaf. Jumlah pengajuan anda melebihi dari yang tersisa',
                 showConfirmButton: false
             });
             var millisecondsToWait = 1000;
@@ -311,13 +309,31 @@ if (isset($_POST['save'])) {
                 document.location.href = "<?= 'pengajuan_add.php?kode=' . $kode_pengajuan ?>"
             }, millisecondsToWait);
         </script>
-<?php
+        <?php
     } else {
-        echo "
+        $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn', '$nominal', '$stas')");
+        if ($sql) { ?>
+
+            <script>
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Pengajuan berhasil tersimpan',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = "<?= 'pengajuan_add.php?kode=' . $kode_pengajuan ?>"
+                }, millisecondsToWait);
+            </script>
+<?php
+        } else {
+            echo "
                 <script>
                 alert('Gagal  simpan');
                 </script>
             ";
+        }
     }
 }
 
