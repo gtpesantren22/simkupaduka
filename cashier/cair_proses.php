@@ -3,7 +3,7 @@ require 'atas.php';
 $kode = $_GET['kode'];
 $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kode' "));
 $crr = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal_cair) as jml FROM pencairan WHERE kode_pengajuan = '$kode' "));
-$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) as jml FROM real_sm WHERE kode_pengajuan = '$kode' "));
+$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom_cair, 0)) AS tunai, SUM(IF( stas = 'barang', nom_cair, 0)) AS brg FROM real_sm WHERE kode_pengajuan = '$kode' "));
 $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM real_sm WHERE kode_pengajuan = '$kode' "));
 $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kode' ");
 ?>
@@ -58,6 +58,7 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                 <p style="color: red; font-weight: bold; font-size: 25px;"><?= rupiah($dt['jml']) ?></p>
                             </div>
                         </div>
+                        <br>
                         <div class="table-responsive">
                             <form class="form-horizontal" action="" method="post">
                                 <input type="hidden" name="lembaga" value="<?= $data['lembaga'] ?>">
@@ -72,11 +73,12 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                             <th>Keterangan</th>
                                             <th>Nominal</th>
                                             <th>Disetujui</th>
+                                            <th>Ket</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ");
+                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' AND stas = 'tunai' ORDER BY stas ASC ");
                                         while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                             //$kode = $ls_jns['kode'];
                                         ?>
@@ -91,9 +93,56 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                                 <td><?= $ls_jns['ket']; ?></td>
                                                 <td><?= rupiah($ls_jns['nominal']); ?></td>
                                                 <td><?= rupiah($ls_jns['nom_cair']); ?></td>
+                                                <td><?= $ls_jns['stas']; ?></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr style="color: white; background-color: green; font-weight: bold;">
+                                            <th colspan="4">Total</th>
+                                            <th colspan="3"><?= rupiah($dt['tunai']) ?></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                                <table id="example1_bst" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
+                                            <th>#</th>
+                                            <th>Kode RAB</th>
+                                            <th>PJ</th>
+                                            <th>Keterangan</th>
+                                            <th>Nominal</th>
+                                            <th>Disetujui</th>
+                                            <th>Ket</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' AND stas = 'barang' ORDER BY stas ASC ");
+                                        while ($ls_jns = mysqli_fetch_assoc($rls)) {
+                                            //$kode = $ls_jns['kode'];
+                                        ?>
+                                            <tr>
+                                                <td>
+                                                    <input type="checkbox" name="" value="<?= $ls_jns['nom_cair'] ?>" onClick="this.form.total.value=checkChoice(this);">
+                                                    <input type="checkbox" name="id_pnj[]" value="<?= $ls_jns['id_realis'] ?>">
+
+                                                </td>
+                                                <td><?= $ls_jns['kode']; ?></td>
+                                                <td><?= $ls_jns['pj']; ?></td>
+                                                <td><?= $ls_jns['ket']; ?></td>
+                                                <td><?= rupiah($ls_jns['nominal']); ?></td>
+                                                <td><?= rupiah($ls_jns['nom_cair']); ?></td>
+                                                <td><?= $ls_jns['stas']; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="color: white; background-color: green; font-weight: bold;">
+                                            <th colspan="4">Total</th>
+                                            <th colspan="3"><?= rupiah($dt['brg']) ?></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                                 <div class="box-body">
                                     <div class="form-group">
