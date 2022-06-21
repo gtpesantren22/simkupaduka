@@ -196,10 +196,16 @@ $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM re
                                             <?= $a['ket'] ?>
                                             <?php
                                             if (preg_match("/honor/i", $a['ket'])) {
-                                                $fl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kode_p' "));
+                                                $ssq = mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kode_p' ");
+                                                $fl = mysqli_fetch_assoc($ssq);
+                                                $htgd = mysqli_num_rows($ssq);
                                             ?>
-                                                <a href="../institution/honor_file/<?= $fl['files']; ?>"> (Download)</a>
-                                            <?php } ?>
+                                                <?php if ($htgd > 0) { ?>
+                                                    <b><i><a href="../institution/honor_file/<?= $fl['files']; ?>"> (<i class="fa fa-download"></i> Download)</a></i></b>
+                                                <?php } else { ?>
+                                                    <b><i><a href="#"> (Belum ada)</a></i></b>
+                                            <?php }
+                                            } ?>
                                         </td>
                                         <td><?= rupiah($a['nominal']) ?></td>
                                         <td><?= rupiah($a['nom_cair']) ?></td>
