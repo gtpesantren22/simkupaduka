@@ -148,6 +148,8 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                     $nm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE lembaga = '$kol' "));
 
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
+                                        $kd_rab = $ls_jns['kode'];
+                                        $kd_ppnj = $ls_jns['kode_pengajuan'];
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
@@ -156,7 +158,31 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                             <td><?= $ls_jns['pj']; ?></td>
                                             <td><?= rupiah($ls_jns['nominal']); ?></td>
                                             <!-- <td><?= date('H:i', strtotime($ls_jns['tgl'])); ?></td> -->
-                                            <td><?= $ls_jns['ket']; ?></td>
+                                            <td>
+                                                <?= $ls_jns['ket']; ?>
+                                                <?php
+                                                if (preg_match("/honor/i", $ls_jns['ket'])) {
+                                                    $jm_upd = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kd_ppnj' AND kode_rab = '$kd_rab' "));
+                                                    if ($jm_upd > 0) {
+                                                        $ktb = 'update';
+                                                        $lbl = "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>";
+                                                    } else {
+                                                        $ktb = 'baru';
+                                                        $lbl = "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>";
+                                                    }
+                                                ?>
+                                                    <hr>
+                                                    <i>Jika pengajuan honor. Maka diwajibkan untuk upload rincian honor. (xls/xlsx)</i>
+                                                    <form action="" method="post" enctype="multipart/form-data">
+                                                        <input type="hidden" name="kd_rab" value="<?= $kd_rab; ?>">
+                                                        <input type="hidden" name="kd_ppnj" value="<?= $kd_ppnj; ?>">
+                                                        <input type="hidden" name="ktb" value="<?= $ktb; ?>">
+                                                        <input type="file" name="f_rin" class="form-control" required>
+                                                        <button class="btn btn-success btn-sm" type="submit" name="save_baru"><i class="fa fa-save"></i></button>
+                                                        | <b class="">Status Upload : <?= $lbl; ?></b>
+                                                    </form>
+                                                <?php } ?>
+                                            </td>
                                             <td>
                                                 <?php if ($ck['verval'] == 0 && $ck['stts'] == 'no') { ?>
                                                     <a href="<?= 'hapus.php?kd=del_real_sm&id=' . $ls_jns['id_realis'] ?>" onclick="return confirm('Yakin akan dihapus ?')"><button class="btn btn-danger btn-xs">Hapus</button></a>
@@ -275,6 +301,7 @@ if (isset($_POST['save'])) {
     $kode = $_POST['id_rab'];
     $bulan = $ck['bulan'];
     $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' "));
+    $kd_rab = $l['kode'];
     $lembaga = $l['lembaga'];
     $bidang = $l['bidang'];
     $jenis = $l['jenis'];
@@ -311,27 +338,74 @@ if (isset($_POST['save'])) {
         </script>
         <?php
     } else {
-        $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn', '$nominal', '$stas')");
-        if ($sql) { ?>
-
+        $cck = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM real_sm WHERE kode = '$kd_rab' "));
+        if ($cck > 0) { ?>
             <script>
                 Swal.fire({
                     position: 'top-end',
-                    icon: 'success',
-                    title: 'Pengajuan berhasil tersimpan',
+                    icon: 'error',
+                    title: 'Maaf. Item RAB ini sudah dimasukan',
                     showConfirmButton: false
                 });
-                var millisecondsToWait = 1000;
+                var millisecondsToWait = 2000;
                 setTimeout(function() {
                     document.location.href = "<?= 'pengajuan_add.php?kode=' . $kode_pengajuan ?>"
                 }, millisecondsToWait);
             </script>
-<?php
+            <?php
         } else {
-            echo "
+            $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn', '$nominal', '$stas')");
+            if ($sql) { ?>
+
                 <script>
-                alert('Gagal  simpan');
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'Pengajuan berhasil tersimpan',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1000;
+                    setTimeout(function() {
+                        document.location.href = "<?= 'pengajuan_add.php?kode=' . $kode_pengajuan ?>"
+                    }, millisecondsToWait);
                 </script>
+<?php
+            }
+        }
+    }
+}
+
+if (isset($_POST['save_baru'])) {
+    $kd_rab = $_POST['kd_rab'];
+    $kd_ppnj = $_POST['kd_ppnj'];
+    $ktb = $_POST['ktb'];
+
+    $filename = $_FILES['f_rin']['name'];
+    $dir = $_FILES['f_rin']['tmp_name'];
+    $ekstensi =  array('xls', 'xlsx');
+    $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+
+    if (!in_array($ext, $ekstensi)) {
+        echo "
+            <script>
+                alert('Yang anda upload bukan file excel');
+                window.location = 'pengajuan_add.php?kode=" . $kd_ppnj . "';
+                </script>
+                ";
+    } else {
+        $nm_file = uniqid() . '.' . $ext;
+
+        if ($ktb === 'baru') {
+            $sql = mysqli_query($conn, "INSERT INTO honor_file VALUES ('', '$kd_ppnj', '$kd_rab', NOW(),'$nm_file') ");
+        } elseif ($ktb === 'update') {
+            $sql = mysqli_query($conn, "UPDATE honor_file SET files = '$nm_file' WHERE kode_rab = '$kd_rab' AND kode_pengajuan = '$kd_ppnj' ");
+        }
+        move_uploaded_file($dir, 'honor_file/' . $nm_file);
+        if ($sql) {
+            echo "
+                    <script>
+                    window.location = 'pengajuan_add.php?kode=" . $kd_ppnj . "';
+            </script>
             ";
         }
     }
