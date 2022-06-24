@@ -144,7 +144,11 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE lembaga = '$kol' ");
+                                    if ($ck['cair'] ==  1) {
+                                        $rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_pengajuan' ");
+                                    } else {
+                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_pengajuan' ");
+                                    }
                                     $nm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE lembaga = '$kol' "));
 
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
