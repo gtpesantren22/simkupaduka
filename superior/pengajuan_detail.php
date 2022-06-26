@@ -8,6 +8,11 @@ $vr = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM verifikasi WHERE kod
 $kode = $kl['lembaga'];
 $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
 
+if (preg_match("/DISP./i", $kode_p)) {
+    $rt = '*(DISPOSISI)*';
+} else {
+    $rt = '';
+}
 ?>
 
 <div class="pcoded-content">
@@ -140,7 +145,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                         <?php
                                         $no = 1;
                                         $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' ");
-                                        $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
+                                        $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
                                         while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
@@ -244,7 +249,7 @@ if (isset($_POST['veris'])) {
     $ket = '-';
 
     $psn = '
-*INFORMASI PERMOHONAN PENCAIRAN*
+*INFORMASI PERMOHONAN PENCAIRAN* ' . $rt . '
 
 pengajuan dari :
 
@@ -257,7 +262,7 @@ telah SETUJUI oleh *' . $user . '* pada *' . $tgl . '*
 Terimakasih';
 
     $psn2 = '
-*INFORMASI PERSETUJAN*
+*INFORMASI PERSETUJAN* ' . $rt . '
 
 pengajuan dari :
 

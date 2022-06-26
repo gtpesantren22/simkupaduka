@@ -192,6 +192,7 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                         </ul>
                     </li>
                     <li><a href="spj.php"><i class="fa fa-list"></i> <span>SPJ</span></a></li>
+                    <li><a href="pengajuan_disp.php"><i class="fa fa-money"></i> <span>Disposisi</span></a></li>
                     <li class="header">ADDON</li>
                     <li><a href="info.php"><i class="fa fa-info-circle text-yellow"></i> <span>Informasi</span></a></li>
                     <li><a href="setting.php"><i class="fa fa-cog text-red"></i> <span>Pengaturan</span></a></li>

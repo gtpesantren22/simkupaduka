@@ -107,5 +107,25 @@ if ($kd == 'del_real_sm') {
                 document.location.href = "<?= 'pengajuan_add.php?kode=' . $kode ?>"
             }, millisecondsToWait);
         </script>
+    <?php }
+}
+
+if ($kd == 'del_real_sm_disp') {
+    $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM real_sm WHERE id_realis = '$id' "));
+    $kode = $data['kode_pengajuan'];
+    $sql = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id' ");
+    if ($sql) { ?>
+        <script>
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Data Belanja telah dihapus',
+                showConfirmButton: false
+            });
+            var millisecondsToWait = 1000;
+            setTimeout(function() {
+                document.location.href = "<?= 'pengajuan_add_disp.php?kode=' . $kode ?>"
+            }, millisecondsToWait);
+        </script>
 <?php }
 }

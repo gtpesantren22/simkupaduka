@@ -74,10 +74,16 @@ include 'atas.php';
                                             } else {
                                                 $jj = $jml['jml'];
                                             }
+
+                                            if (preg_match("/DISP./i", $kd_pj)) {
+                                                $rt = "<span class='badge badge-danger'>DISPOSISI</span>";
+                                            } else {
+                                                $rt = '';
+                                            }
                                         ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
-                                                <td><?= $a['nama'] ?></td>
+                                                <td><?= $a['nama'] . ' ' . $rt ?></td>
                                                 <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
                                                 <td>
                                                     <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>

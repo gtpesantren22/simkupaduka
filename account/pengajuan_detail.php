@@ -6,8 +6,13 @@ $kode_p = $_GET['kode'];
 $kl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kode_p' "));
 $kode = $kl['lembaga'];
 $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
-$tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
+$tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
 
+if (preg_match("/DISP./i", $kode_p)) {
+    $rt = '*(DISPOSISI)*';
+} else {
+    $rt = '';
+}
 ?>
 <!-- Datatables -->
 <link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -181,10 +186,10 @@ $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM re
                                 $no = 1;
                                 if ($kl['cair'] == 1) {
                                     $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' ");
-                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot, SUM(nom_cair) AS tot2 FROM realis WHERE kode_pengajuan = '$kode_p' "));
+                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot, SUM(nom_cair) AS tot2 FROM realis WHERE kode_pengajuan = '$kode_p' "));
                                 } else {
                                     $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' ");
-                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot, SUM(nom_cair) AS tot2 FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
+                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot, SUM(nom_cair) AS tot2 FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
                                 }
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
@@ -229,9 +234,16 @@ $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM re
                                                                 <input type="hidden" name="id_rsm" value="<?= $a['id_realis'] ?>">
                                                                 <div class="modal-body">
                                                                     <div class="form-group">
+                                                                        <label for="">Keterangan</label>
+                                                                        <textarea name="ket" class="form-control" required>
+                                                                            <?= $a['ket']; ?>
+                                                                        </textarea>
+                                                                    </div>
+                                                                    <div class="form-group">
                                                                         <label for="">Edit Nominal</label>
                                                                         <input type="text" name="nom_cair" id="uang<?= $no++ ?>" value="<?= rupiah($a['nom_cair']); ?>" class="form-control" required>
                                                                     </div>
+
                                                                     <div class="form-group">
                                                                         <label for="">Ket. Pencairan</label><br>
                                                                         <input type="radio" name="stas" value="tunai" <?= $a['stas'] === 'tunai' ? 'checked' : ''; ?> required> Cair Tunai
@@ -477,7 +489,7 @@ if (isset($_POST['veris'])) {
         </script>
 
     <?php $psn = '
-*INFORMASI PERMOHONAN PERSETUJUAN*
+*INFORMASI PERMOHONAN PERSETUJUAN* ' . $rt . '
 
 pengajuan dari :
 
@@ -520,7 +532,7 @@ Terimakasih';
                 CURLOPT_FOLLOWLOCATION => true,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=082264061060&message=' . $pesan,
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=082264061060&message=' . $psn,
             )
         );
         $response = curl_exec($curl);
@@ -561,7 +573,7 @@ Terimakasih';
         </script>
 
 <?php $psn = '
-*INFORMASI PENOLAKAN PENGAJUAN*
+*INFORMASI PENOLAKAN PENGAJUAN* ' . $rt . '
 
 pengajuan dari :
 
@@ -569,7 +581,7 @@ Lembaga : ' . $l['nama'] . '
 Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 ditolak oleh *' . $user . '* pada *' . $tgl . '*
-dengan catatan : *_' . $pesan . '_*
+dengan catatan : _*' . $pesan . '*_
 
 *_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada_*
 
@@ -615,11 +627,12 @@ Terimakasih';
         echo "DATA TAK MAU MASUK";
     }
 } else if (isset($_POST['ed_nom'])) {
+    $ket = $_POST['ket'];
     $id_rsm = $_POST['id_rsm'];
     $nom_cair = preg_replace("/[^0-9]/", "", $_POST['nom_cair']);
     $stas = $_POST['stas'];
 
-    $sql = mysqli_query($conn, "UPDATE real_sm SET nom_cair = '$nom_cair', stas = '$stas' WHERE id_realis = '$id_rsm' ");
+    $sql = mysqli_query($conn, "UPDATE real_sm SET nom_cair = '$nom_cair', stas = '$stas', ket = '$ket' WHERE id_realis = '$id_rsm' ");
 
     if ($sql) {
         echo "

@@ -116,6 +116,7 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                     <ul class="nav child_menu">
                                         <li><a href="real.php">Data</a></li>
                                         <li><a href="pengajuan.php">Pengajuan</a></li>
+                                        <li><a href="pengajuan_disp.php">Pengajuan Disposisi</a></li>
                                         <li><a href="spj.php">SPJ</a></li>
                                     </ul>
                                 </li>

@@ -176,7 +176,18 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                             <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
-                    <li><a href="cair.php"><i class="fa fa-hourglass-half"></i> <span>Pencairan</span></a></li>
+                    <!-- <li><a href="cair.php"><i class="fa fa-hourglass-half"></i> <span>Pencairan</span></a></li> -->
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-hourglass-half"></i>
+                            <span>Pencairan</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="cair.php"><i class="fa fa-circle-o"></i> Pengajuan</a></li>
+                            <li><a href="cair_disp.php"><i class="fa fa-circle-o"></i> Pengajuan Disposisi</a></li>
+                        </ul>
+                    </li>
                     <li class="treeview">
                         <a href="#">
                             <i class="fa fa-money"></i>

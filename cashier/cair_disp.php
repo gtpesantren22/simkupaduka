@@ -6,8 +6,8 @@ include 'atas.php';
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Pencairan pengajuan
-            <small>Realiasasi Belanja</small>
+            Pencairan pengajuan Disposisi
+            <small>Realiasasi Belanja </small>
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -22,7 +22,7 @@ include 'atas.php';
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Pengajuan Realiasasi RAB</h3>
+                        <h3 class="box-title">Pengajuan Realiasasi Disposisi</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <div class="table-responsive">
@@ -41,7 +41,7 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.verval = 1 AND a.apr = 1 AND a.kode_pengajuan NOT LIKE '%DISP.%' GROUP BY a.kode_pengajuan ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.verval = 1 AND a.apr = 1 AND a.kode_pengajuan LIKE '%DISP.%' GROUP BY a.kode_pengajuan ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                         $kode = $ls_jns['kode_pengajuan'];
                                     ?>

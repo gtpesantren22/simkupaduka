@@ -45,10 +45,16 @@ include 'atas.php';
                                         $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
                                         $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
                                         $pjan = $jml['jml'] + $jml2['jml'];
+
+                                        if (preg_match("/DISP./i", $kd_pj)) {
+                                            $rt = "<span class='label label-danger'>DISPOSISI</span>";
+                                        } else {
+                                            $rt = '';
+                                        }
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
-                                            <td><?= $ls_jns['kode_pengajuan']; ?></td>
+                                            <td><?= $ls_jns['kode_pengajuan'] . ' ' . $rt; ?></td>
                                             <td><?= $bulan[$ls_jns['bulan']] . ' ' . $ls_jns['tahun']; ?></td>
                                             <td><?= rupiah($pjan); ?></td>
                                             <td>
@@ -161,8 +167,14 @@ if (isset($_POST['upload'])) {
     $ext = pathinfo($filename, PATHINFO_EXTENSION);
     $extensi = explode('.', $filename);
 
+    if (preg_match("/DISP./i", $kode)) {
+        $rt = "*(DISPOSISI)*";
+    } else {
+        $rt = '';
+    }
+
     $psn = '
-*INFORMASI VARIFIKASI SPJ*
+*INFORMASI VARIFIKASI SPJ* ' . $rt . '
 
 Ada pelaporan SPJ dari :
     

@@ -1,7 +1,7 @@
 <?php
 include 'atas.php';
 
-$ss = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND kode_pengajuan NOT LIKE '%DISP.%' ORDER BY no_urut DESC LIMIT 1");
+$ss = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND kode_pengajuan LIKE '%DISP.%' ORDER BY no_urut DESC LIMIT 1");
 $ck = mysqli_fetch_assoc($ss);
 $ck2 = mysqli_num_rows($ss);
 $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' "));
@@ -11,7 +11,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Pengajuan Realiasasi
+            Pengajuan Menggunakakn Disposisi
             <small>Realiasasi Belanja</small>
         </h1>
         <ol class="breadcrumb">
@@ -27,7 +27,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Pengajuan Realiasasi RAB</h3>
+                        <h3 class="box-title">Pengajuan Menggunakan Disposisi</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <?php if ($ck2 < 1) { ?>
@@ -37,7 +37,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                             <button class="btn btn-success" disabled><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
                             <br><br>
                         <?php } elseif ($ck['verval'] == 1 && $ck['spj'] == 2 || $ck['verval'] == NULL) { ?>
-                            <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
+                            <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-plus-square"></i> Tambah Disposisi Baru</button>
                             <br><br>
                         <?php }  ?>
                         <div class="table-responsive">
@@ -57,7 +57,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND kode_pengajuan NOT LIKE '%DISP.%' GROUP BY kode_pengajuan ");
+                                    $rls = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND kode_pengajuan LIKE '%DISP.%' GROUP BY kode_pengajuan ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
                                         <tr>
@@ -84,7 +84,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                                     <span class="label label-success"><i class="fa fa-check"></i> sudah selesai</span>
                                                 <?php } ?>
                                             </td>
-                                            <td><a href="<?= 'pengajuan_add.php?kode=' . $ls_jns['kode_pengajuan'] ?>"><button class="btn btn-info btn-xs"><i class="fa fa-search"></i> cek</button></a></td>
+                                            <td><a href="<?= 'pengajuan_add_disp.php?kode=' . $ls_jns['kode_pengajuan'] ?>"><button class="btn btn-info btn-xs"><i class="fa fa-search"></i> cek</button></a></td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -102,7 +102,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Tambah Pemasukan BOS</h4>
+                <h4 class="modal-title">Tambah Disposisi Baru</h4>
             </div>
             <form action="" method="post" class="form-horizontal">
                 <div class="modal-body">
@@ -175,7 +175,7 @@ if (isset($_POST['save'])) {
     $lembaga = $kol;
     $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
     $bln = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bulan']));
-    $kd_pjn = $lembaga . '.' . date('dd') . '.' . $bln . '.' . $tahun;
+    $kd_pjn = 'DISP.' . $lembaga . '.' . date('dd') . '.' . $bln . '.' . $tahun;
 
 
     $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' "));
@@ -194,7 +194,7 @@ if (isset($_POST['save'])) {
                 });
                 var millisecondsToWait = 1000;
                 setTimeout(function() {
-                    document.location.href = "<?= 'pengajuan.php' ?>"
+                    document.location.href = "<?= 'pengajuan_disp.php' ?>"
                 }, millisecondsToWait);
             </script>
 <?php

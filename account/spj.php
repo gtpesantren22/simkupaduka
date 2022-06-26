@@ -57,10 +57,16 @@ include 'head.php';
                                             $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
                                             $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
                                             $pjan = $jml['jml'] + $jml2['jml'];
+
+                                            if (preg_match("/DISP./i", $kd_pj)) {
+                                                $rt = "<span class='badge badge-danger'>DISPOSISI</span>";
+                                            } else {
+                                                $rt = '';
+                                            }
                                         ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
-                                                <td><?= $a['nama'] ?></td>
+                                                <td><?= $a['nama'] . ' ' . $rt; ?></td>
                                                 <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
                                                 <td>
                                                     <?php if ($a['stts'] == 0) { ?>
@@ -269,8 +275,14 @@ if (isset($_POST['save'])) {
     $hp = $_POST['hp'];
     $at = date('d-m-Y H:i');
 
+    if (preg_match("/DISP./i", $kode)) {
+        $rt = "*(DISPOSISI)*";
+    } else {
+        $rt = '';
+    }
+
     $psn = '
-*INFORMASI VARIFIKASI SPJ*
+*INFORMASI VARIFIKASI SPJ* ' . $rt . '
 
 Ada pelaporan SPJ dari :
     
@@ -350,8 +362,14 @@ if (isset($_POST['nono'])) {
     $isi = addslashes(mysqli_real_escape_string($conn, $_POST['isi']));
     $at = date('d-m-Y H:i');
 
+    if (preg_match("/DISP./i", $kode)) {
+        $rt = "*(DISPOSISI)*";
+    } else {
+        $rt = '';
+    }
+
     $psn = '
-*INFORMASI VARIFIKASI SPJ*
+*INFORMASI VARIFIKASI SPJ* ' . $rt . '
 
 Ada Penolakan SPJ dari :
     

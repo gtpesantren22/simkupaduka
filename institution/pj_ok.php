@@ -13,8 +13,14 @@ $jml =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM r
 $perod = $bulan[$dt['bulan']] . ' ' . $dt['tahun'];
 // $ww = date('d-M-Y H:i:s');
 
+if (preg_match("/DISP./i", $kd)) {
+    $rt = '*(DISPOSISI)*';
+} else {
+    $rt = '';
+}
+
 $psn = '
-*INFORMASI PERMOHONAN VARIFIKASI*
+*INFORMASI PERMOHONAN VARIFIKASI* ' . $rt . '
 
 Ada pengajuan baru dari :
     
@@ -73,7 +79,7 @@ if ($sql) { ?>
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=082302301003&message=' . $pesan,
+            CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=082302301003&message=' . $psn,
         )
     );
     $response = curl_exec($curl);
