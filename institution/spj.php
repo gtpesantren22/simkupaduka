@@ -174,7 +174,7 @@ if (isset($_POST['upload'])) {
     }
 
     $psn = '
-*INFORMASI VARIFIKASI SPJ* ' . $rt . '
+*INFORMASI VERIFIKASI SPJ* ' . $rt . '
 
 Ada pelaporan SPJ dari :
     

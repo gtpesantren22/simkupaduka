@@ -20,7 +20,7 @@ if (preg_match("/DISP./i", $kd)) {
 }
 
 $psn = '
-*INFORMASI PERMOHONAN VARIFIKASI* ' . $rt . '
+*INFORMASI PERMOHONAN VERIFIKASI* ' . $rt . '
 
 Ada pengajuan baru dari :
     

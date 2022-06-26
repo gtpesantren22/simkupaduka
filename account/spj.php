@@ -282,7 +282,7 @@ if (isset($_POST['save'])) {
     }
 
     $psn = '
-*INFORMASI VARIFIKASI SPJ* ' . $rt . '
+*INFORMASI VERIFIKASI SPJ* ' . $rt . '
 
 Ada pelaporan SPJ dari :
     
@@ -369,7 +369,7 @@ if (isset($_POST['nono'])) {
     }
 
     $psn = '
-*INFORMASI VARIFIKASI SPJ* ' . $rt . '
+*INFORMASI VERIFIKASI SPJ* ' . $rt . '
 
 Ada Penolakan SPJ dari :
     
