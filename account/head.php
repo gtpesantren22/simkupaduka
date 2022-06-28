@@ -121,6 +121,7 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                     </ul>
                                 </li>
                                 <li><a href="history_pengajuan.php"><i class="fa fa-bookmark"></i> History Pengajuan </span></a></li>
+                                <li><a href="info.php"><i class="fa fa-clipboard"></i> Informasi </span></a></li>
                             </ul>
                         </div>
 

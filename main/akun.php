@@ -156,7 +156,7 @@ include 'head.php';
                                                                     <div class="item form-group">
                                                                         <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">No. HP Kepala <span class="required">*</span></label>
                                                                         <div class="col-md-6 col-sm-6 ">
-                                                                            <input type="text" name="hp_kep" class="form-control" id="" value="<?= $lm['hp_kep']; ?>" required>
+                                                                            <input type="text" name="hp_kep" class="form-control" id="" value="<?= $lm['hp_kep']; ?>">
                                                                         </div>
                                                                     </div>
                                                                 </div>
