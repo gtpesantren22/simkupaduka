@@ -181,7 +181,7 @@ include 'head.php';
         <div class="modal-content">
 
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Tambah Data Belanja</h4>
+                <h4 class="modal-title" id="myModalLabel">Tambah Lembaga</h4>
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                 </button>
             </div>
@@ -208,9 +208,15 @@ include 'head.php';
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">No. HP <span class="required">*</span></label>
+                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">No. HP KPA<span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 ">
                             <input id="middle-name" class="form-control" type="text" name="hp" required>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">No. HP Kepala<span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <input id="middle-name" class="form-control" type="text" name="hp_kep" required>
                         </div>
                     </div>
                     <div class="item form-group">
@@ -330,10 +336,11 @@ if (isset($_POST['save'])) {
     $pelaksana = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
     $pj = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['pj']));
     $hp = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['hp']));
+    $hp_kep = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['hp_kep']));
     $waktu = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['waktu']));
     $lv = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lv']));
 
-    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$waktu','$lv')");
+    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$hp_kep','$waktu','$lv')");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

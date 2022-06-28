@@ -80,6 +80,7 @@ include 'head.php';
                                                             </div>
                                                             <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
                                                                 <input type="hidden" name="id_user" value="<?= $a['id_user'] ?>">
+                                                                <input type="hidden" name="kd_lem" value="<?= $kd ?>">
                                                                 <div class="modal-body">
                                                                     <div class="item form-group">
                                                                         <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Pilih Lembaga <span class="required">*</span></label>
@@ -144,6 +145,18 @@ include 'head.php';
                                                                                     <input type="radio" class="flat" <?= $a['level'] == 'bunda' ? 'checked' : '' ?> value="bunda" name="level"> Bendahara Utama
                                                                                 </label>
                                                                             </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="item form-group">
+                                                                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">No. HP KPA <span class="required">*</span></label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <input type="text" name="hp" class="form-control" id="" value="<?= $lm['hp']; ?>" required>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="item form-group">
+                                                                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">No. HP Kepala <span class="required">*</span></label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <input type="text" name="hp_kep" class="form-control" id="" value="<?= $lm['hp_kep']; ?>" required>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -233,10 +246,14 @@ if (isset($_POST['save'])) {
     $lembaga =  $_POST['lembaga'];
     $aktif =  $_POST['aktif'];
     $level =  $_POST['level'];
+    $hp =  $_POST['hp'];
+    $hp_kep =  $_POST['hp_kep'];
+    $kd_lem =  $_POST['kd_lem'];
 
 
     $sql = mysqli_query($conn, "UPDATE user SET level = '$level', aktif = '$aktif', lembaga = '$lembaga' WHERE id_user = '$id_user' ");
-    if ($sql) { ?>
+    $sql2 = mysqli_query($conn, "UPDATE lembaga SET hp = '$hp', hp_kep = '$hp_kep' WHERE kode = '$kd_lem' ");
+    if ($sql && $sql2) { ?>
         <script>
             Swal.fire({
                 position: 'top-end',
