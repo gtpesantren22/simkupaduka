@@ -498,7 +498,7 @@ Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 telah diverifikasi oleh *' . $user . ' pada ' . $tgl . '*
 
-*_dimohon kepada KEPALA PESANTREN untuk segera mengecek dan menyetujui nya_*
+*_dimohon kepada KEPALA PESANTREN untuk segera mengecek dan menyetujui nya di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
         $curl2 = curl_init();
@@ -601,7 +601,7 @@ Nominal : ' . rupiah($tt['tot']) . '
 ditolak oleh *' . $user . '* pada *' . $tgl . '*
 dengan catatan : _*' . $pesan . '*_
 
-*_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada_*
+*_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada di https://simkupaduka.ppdwk.com/_*
 
 Terimakasih';
 

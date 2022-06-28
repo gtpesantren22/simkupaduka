@@ -182,7 +182,7 @@ Lembaga : ' . $kol_nama . '
 Kode Pengjuan : ' . $kode . '
 Pada : ' . $at . '
 
-*_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya_*
+*_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
     if (!in_array($ext, $ekstensi)) { ?>

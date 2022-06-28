@@ -396,7 +396,7 @@ Kode Pengjuan : ' . $kode . '
 Pada : ' . $at . '
 
 *_SPJ DITOLAK oleh TIM ACCOUNTING. dengan catatan ' . $isi . '_*
-Mohon kepada lembaga terkait untuk segera memperbaikinya dan mengupload ulang SPJ yang sudah diperbaiki.
+Mohon kepada lembaga terkait untuk segera memperbaikinya dan mengupload ulang SPJ yang sudah diperbaiki di https://simkupaduka.ppdwk.com/.
 Terimakasih';
 
     $sql = mysqli_query($conn, "UPDATE spj SET stts = 0 WHERE id_spj = '$id' ");

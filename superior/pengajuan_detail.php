@@ -258,7 +258,7 @@ Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 telah SETUJUI oleh *' . $user . '* pada *' . $tgl . '*
 
-*_dimohon kepada KASiR untuk segera melakukan pencairan_*
+*_dimohon kepada KASiR untuk segera melakukan pencairan di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
     $psn2 = '
@@ -271,7 +271,7 @@ Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 telah SETUJUI oleh *' . $user . '* pada *' . $tgl . '*
 
-*_dimohon kepada KPA dari Lembaga terkait untuk melakukan pencairan kepada pelaksana bendahara_*
+*_dimohon kepada KPA dari Lembaga terkait untuk melakukan pencairan kepada pelaksana bendahara di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
 

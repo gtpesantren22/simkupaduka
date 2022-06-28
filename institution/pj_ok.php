@@ -30,7 +30,7 @@ Periode : ' . $perod . '
 Pada : ' . $dt['at'] . '
 Nomnal : ' . rupiah($jml['jm']) . '
 
-*_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya_*
+*_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
 if ($sql) { ?>
