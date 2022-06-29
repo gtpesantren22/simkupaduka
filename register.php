@@ -161,7 +161,37 @@ if (isset($_POST['daftar'])) {
 
         $sql = mysqli_query($conn, "INSERT INTO user(id_user, nama, username, password, aktif, surat) VALUES ('$id', '$nama','$username','$ps', 'T', '$xx') ");
 
+        $psn = '
+*INFORMASI PEMBUATAN AKUN BARU*
+
+Ada permintaan baru dari :
+    
+Nama : ' . $nama . '
+
+*_dimohon kepada ADMIN SIMKUPADUKA untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+Terimakasih';
+
         if ($sql) {
+
+          $curl3 = curl_init();
+          curl_setopt_array(
+            $curl3,
+            array(
+              CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => '',
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 0,
+              CURLOPT_FOLLOWLOCATION => true,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => 'POST',
+              CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=FbXW8kqR5ik6w6iCB49GZK&message=' . $psn,
+            )
+          );
+          $response = curl_exec($curl3);
+          curl_close($curl3);
+
+
           echo "
         <script>
         Swal.fire({
