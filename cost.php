@@ -9,6 +9,10 @@
 </head>
 
 <body>
+    <form action="upload_ex2.php" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <button type="submit" name="upp">Upload</button>
+    </form>
     <table border="1">
         <thead>
             <th>NO</th>
