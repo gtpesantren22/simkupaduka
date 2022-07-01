@@ -94,9 +94,17 @@ $nis = $_GET['nis'];
 
                                                 <?php
                                                 $tgn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tangg WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
-                                                for ($i = 1; $i <= 12; $i++) {
+                                                for ($i = 7; $i <= 12; $i++) {
                                                     $tnn = ($tgn['total'] - 3000000) / 12;
-                                                    if ($i <= 10) {
+                                                ?>
+                                                    <tr>
+                                                        <th><?= $bulan[$i]; ?></th>
+                                                        <th><?= rupiah($tnn); ?></th>
+                                                    </tr>
+                                                <?php }
+                                                for ($i = 1; $i <= 6; $i++) {
+                                                    $tnn = ($tgn['total'] - 3000000) / 12;
+                                                    if ($i <= 4) {
                                                         $tnnOk = $tnn + 300000;
                                                     } else {
                                                         $tnnOk = $tnn;
