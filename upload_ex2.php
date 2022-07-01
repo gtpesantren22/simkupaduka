@@ -1,6 +1,6 @@
 <?php
 include 'koneksi.php';
-// include 'main/foot.php';
+include 'main/foot.php';
 // require 'main/vendors/PHPExcel/Classes/PHPExcel.php';
 require 'main/libs/vendor/autoload.php';
 require_once 'main/excel_reader2.php';
