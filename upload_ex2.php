@@ -1,7 +1,7 @@
 <?php
 include 'koneksi.php';
 include 'main/foot.php';
-require 'main/vendors/PHPExcel/Classes/PHPExcel.php';
+// require 'main/vendors/PHPExcel/Classes/PHPExcel.php';
 require 'main/libs/vendor/autoload.php';
 require_once 'main/excel_reader2.php';
 
@@ -9,7 +9,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
 $target = basename($_FILES['file']['name']);
-// move_uploaded_file($_FILES['file']['tmp_name'], $target);
+move_uploaded_file($_FILES['file']['tmp_name'], $target);
 
 chmod($_FILES['file']['name'], 07777);
 
@@ -37,7 +37,7 @@ for ($i = 2; $i <= $jumbar; $i++) {
     $success++;
 }
 
-// unlink($_FILES['file']['name']);
+unlink($_FILES['file']['name']);
 
 if ($success > 0) {
 ?>
