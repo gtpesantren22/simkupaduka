@@ -179,5 +179,27 @@ if ($kd == 'dspsp') {
 
             });
         </script>
+    <?php }
+}
+
+if ($kd == 'kbj') {
+    $sql = mysqli_query($conn, "DELETE FROM kebijakan WHERE id_kebijakan = '$id' ");
+
+    if ($sql) { ?>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Disposisi sudah dihapus',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = "<?= 'rab_kbj.php' ?>"
+                }, millisecondsToWait);
+
+            });
+        </script>
 <?php }
 }

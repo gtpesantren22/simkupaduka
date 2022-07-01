@@ -62,7 +62,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                                         <td><?= rupiah($a['nominal']) ?></td>
                                         <td><?= $a['ket'] ?></td>
                                         <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
                                         </td>
                                     </tr>
                                 <?php } ?>
