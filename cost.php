@@ -52,7 +52,7 @@
                         <td><?= $r['group_name']; ?></td>
                         <td><?= $r['bill_id']++; ?></td>
                         <td><?= $r['bill_name']; ?> [<?= date('M', strtotime($tgl)); ?>]</td>
-                        <td><?= rupiah($tnnOk); ?></td>
+                        <td><?= $tnnOk; ?></td>
                         <td>0</td>
                         <td><?= $tagih; ?></td>
                         <td>0</td>
@@ -77,7 +77,7 @@
                         <td><?= $r['group_name']; ?></td>
                         <td><?= $r['bill_id']++; ?></td>
                         <td><?= $r['bill_name']; ?> [<?= date('M', strtotime($tgl)); ?>]</td>
-                        <td><?= rupiah($tnnOk); ?></td>
+                        <td><?= $tnnOk; ?></td>
                         <td>0</td>
                         <td><?= $tagih; ?></td>
                         <td>0</td>
