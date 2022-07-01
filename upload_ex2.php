@@ -25,9 +25,9 @@ for ($i = 2; $i <= $jumbar; $i++) {
 
     // $id = Uuid::uuid4()->toString();
     $cost_id = $data->val($i, 1);
-    $cost_name = $data->val($i, 2);
+    $cost_name = mysqli_real_escape_string($conn, $data->val($i, 2));
     $group_id = $data->val($i, 3);
-    $group_name = $data->val($i, 4);
+    $group_name = mysqli_real_escape_string($conn, $data->val($i, 4));
     $bill_id = $data->val($i, 5);
     $bill_name = $data->val($i, 6);
     $nominal = $data->val($i, 7);
