@@ -1,6 +1,6 @@
 <?php
 include 'koneksi.php';
-include 'main/foot.php';
+// include 'main/foot.php';
 // require 'main/vendors/PHPExcel/Classes/PHPExcel.php';
 require 'main/libs/vendor/autoload.php';
 require_once 'main/excel_reader2.php';
@@ -58,3 +58,21 @@ if ($success > 0) {
     </script>
 <?php
 }
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <a href="cost.php">
+        <<- kembali</a>
+</body>
+
+</html>
