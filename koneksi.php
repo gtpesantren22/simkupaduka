@@ -14,3 +14,4 @@ function rupiah2($angka)
 }
 
 $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");
+$tahun_ajaran = '2022/2023';
