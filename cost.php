@@ -34,45 +34,44 @@
             $no = 1;
             $dt = mysqli_query($conn, "SELECT * FROM cost");
             while ($r = mysqli_fetch_assoc($dt)) {
-                $nom_kur = $r['nominal'] < 3000000 ? 0 : 3000000;
-                $nom_add = $r['nominal'] < 3000000 ? 0 : 300000;
 
-                for ($i = 1; $i <= 6; $i++) {
-                    $tnn = ($r['nominal'] - $nom_kur) / 12;
+                $stas = $r['stas'];
+                if ($stas === 'yatim') {
+                    $pot = 40;
+                } elseif ($stas === 'yatim-piatu') {
+                    $pot = 100;
+                } elseif ($stas === 'fakir') {
+                    $pot = 30;
+                } elseif ($stas === 'pegawai') {
+                    $pot = 40;
+                } elseif ($stas === 'pengasuh') {
+                    $pot = 100;
+                } elseif ($stas === 'saudara') {
+                    $pot = 15;
+                } elseif ($stas === 'normal') {
+                    $pot = 0;
+                }
+
+                $nom_awal = $r['tgn'] * ($pot / 100);
+
+                if ($r['dekos'] == 0) {
+                    $tnn = $nom_awal / 12;
+                    $nom_kos = 0;
+                } elseif ($r['dekos'] > 0) {
+                    $tnn = ($nom_awal + $r['dekos']) / 12;
+                    $nom_kos = 300000;
+                }
+
+                for ($i = 1; $i <= 12; $i++) {
                     $bbl = strlen($i) < 2 ? '0' . $i : $i;
                     $tgl = '2022-' . $i . '-12';
                     $tagih = '2022' . $bbl . '15';
-                    if ($i <= 4) {
-                        $tnnOk = $tnn + $nom_add;
+                    if ($i == 4 || $i == 5) {
+                        $tnnOk = $tnn - $nom_kos;
                     } else {
                         $tnnOk = $tnn;
                     }
             ?>
-                    <tr>
-                        <td><?= $no++; ?></td>
-                        <td><?= $r['cost_id']; ?></td>
-                        <td><?= $r['cost_name']; ?></td>
-                        <td><?= $r['group_id']; ?></td>
-                        <td><?= $r['group_name']; ?></td>
-                        <td><?= $r['bill_id']++; ?></td>
-                        <td><?= $r['bill_name']; ?> [<?= date('M', strtotime($tgl)); ?>]</td>
-                        <td><?= floor($tnnOk); ?></td>
-                        <td>0</td>
-                        <td><?= $tagih; ?></td>
-                        <td>0</td>
-                    </tr>
-                <?php
-                }
-
-                for ($i = 7; $i <= 12; $i++) {
-                    $tnn = ($r['nominal'] - $nom_kur) / 12;
-                    $tnnOk = $tnn + $nom_add;
-                    $bbl = strlen($i) < 2 ? '0' . $i : $i;
-
-                    $tgl = '2022-' . $i . '-12';
-                    $tagih = '2022' . $bbl . '15';
-
-                ?>
                     <tr>
                         <td><?= $no++; ?></td>
                         <td><?= $r['cost_id']; ?></td>

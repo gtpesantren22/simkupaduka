@@ -25,14 +25,18 @@ for ($i = 2; $i <= $jumbar; $i++) {
 
     // $id = Uuid::uuid4()->toString();
     $cost_id = $data->val($i, 1);
-    $cost_name = mysqli_real_escape_string($conn, $data->val($i, 2));
-    $group_id = $data->val($i, 3);
-    $group_name = mysqli_real_escape_string($conn, $data->val($i, 4));
-    $bill_id = $data->val($i, 5);
-    $bill_name = $data->val($i, 6);
-    $nominal = $data->val($i, 7);
+    $nis = $data->val($i, 2);
+    $stas = mysqli_real_escape_string($conn, $data->val($i, 3));
+    $cost_name = mysqli_real_escape_string($conn, $data->val($i, 4));
+    $group_id = $data->val($i, 5);
+    $group_name = mysqli_real_escape_string($conn, $data->val($i, 6));
+    $bill_id = $data->val($i, 7);
+    $bill_name = $data->val($i, 8);
+    $dekos = $data->val($i, 9);
+    $tgn = $data->val($i, 10);
+    $nominal = $dekos + $tgn;
 
-    mysqli_query($conn, "INSERT INTO cost VALUES ('', '$cost_id', '$cost_name', '$group_id','$group_name','$bill_id','$bill_name','$nominal')");
+    mysqli_query($conn, "INSERT INTO cost VALUES ('', '$nis', '$stas', '$cost_id', '$cost_name', '$group_id','$group_name','$bill_id','$bill_name', '$dekos', '$tgn', '$nominal')");
 
     $success++;
 }
