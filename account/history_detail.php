@@ -14,6 +14,7 @@ $kfe = $jml['jml'] + $jml2['jml'];
 $veral = mysqli_query($conn, "SELECT * FROM verifikasi WHERE kode_pengajuan = '$kd_pj' ");
 $apr = mysqli_query($conn, "SELECT * FROM approv WHERE kode_pengajuan = '$kd_pj' ");
 $cair = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kd_pj' ");
+$spj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE kode_pengajuan = '$kd_pj' "));
 
 $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj'"));
 ?>
@@ -98,7 +99,7 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                         <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
                                             proses verifikasi</span>
                                     <?php } else { ?>
-                                        <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
+                                        <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span><a href="../institution/spj_file/<?= $spj['file_spj']; ?>"> <span class="badge badge-warning"><i class="fa fa-download"> Unduh SPJ</i></span></a>
                                     <?php } ?>
                                 </center>
                             </div>
