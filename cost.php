@@ -26,6 +26,8 @@
             <th>DISCOUNT</th>
             <th>DATE</th>
             <th>REMARKS</th>
+            <!-- <th>BBers</th> -->
+            <!-- <th>Psn</th> -->
         </thead>
         <tbody>
             <?php
@@ -53,12 +55,14 @@
                 }
 
                 $nom_awal = $r['tgn'] * ($pot / 100);
+                $bersih = $r['tgn'] + $r['dekos'];
+                // $psn = $pot;
 
                 if ($r['dekos'] == 0) {
                     $tnn = $nom_awal / 12;
                     $nom_kos = 0;
                 } elseif ($r['dekos'] > 0) {
-                    $tnn = ($nom_awal + $r['dekos']) / 12;
+                    $tnn = ($r['tgn'] + $r['dekos']) / 12;
                     $nom_kos = 300000;
                 }
 
@@ -84,6 +88,8 @@
                         <td>0</td>
                         <td><?= $tagih; ?></td>
                         <td>0</td>
+                        <!-- <td><?= $bersih; ?></td> -->
+                        <!-- <td><?= $pot; ?></td> -->
                     </tr>
             <?php
                 }
