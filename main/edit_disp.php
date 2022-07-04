@@ -2,7 +2,7 @@
 include 'head.php';
 
 $id = $_GET['id'];
-$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM disposisi WHERE id_disp = $id "));
+$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM disposisi WHERE id_disp = $id AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -55,7 +55,7 @@ $dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM disposisi WHERE id_d
                                     <select name="kode" id="" class="form-control" required>
                                         <option value=""> -pilih lembaga- </option>
                                         <?php
-                                        $dw = mysqli_query($conn, "SELECT * FROM lembaga");
+                                        $dw = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                         while ($k = mysqli_fetch_assoc($dw)) { ?>
                                             <option value="<?= $k['kode'] ?>" <?= $dt['lembaga'] == $k['kode'] ? 'selected' : ''; ?>><?= $k['kode'] . '. ' . $k['nama'] ?></option>
                                         <?php } ?>
@@ -178,7 +178,7 @@ if (isset($_POST['save'])) {
     $catatan = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['catatan']));
     $nom = preg_replace("/[^0-9]/", "", $nominal);
 
-    $sql = mysqli_query($conn, "UPDATE disposisi SET lembaga = '$kode', tanggal = '$tgl_bayar', nominal = '$nom', uraian = '$uraian', catatan =  '$catatan' WHERE id_disp = $id ");
+    $sql = mysqli_query($conn, "UPDATE disposisi SET lembaga = '$kode', tanggal = '$tgl_bayar', nominal = '$nom', uraian = '$uraian', catatan =  '$catatan' WHERE id_disp = $id AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

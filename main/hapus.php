@@ -6,7 +6,7 @@ $kd = $_GET['kd'];
 $id = $_GET['id'];
 
 if ($kd == 'bos') {
-    $sql = mysqli_query($conn, "DELETE FROM bos WHERE id_bos = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM bos WHERE id_bos = '$id' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -27,7 +27,7 @@ if ($kd == 'bos') {
 }
 
 if ($kd == 'pes') {
-    $sql = mysqli_query($conn, "DELETE FROM pesantren WHERE id_pes = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM pesantren WHERE id_pes = '$id' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -48,11 +48,11 @@ if ($kd == 'pes') {
 }
 
 if ($kd == 'rab') {
-    $kode = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE id_rab = '$id' "));
+    $kode = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE id_rab = '$id' AND tahun = '$tahun_ajaran' "));
     $kd = $kode['kode'];
     $lm = $kode['lembaga'];
-    $sql = mysqli_query($conn, "DELETE FROM rab WHERE id_rab = '$id' ");
-    $sql2 = mysqli_query($conn, "DELETE FROM realis WHERE kode = '$kd' ");
+    $sql = mysqli_query($conn, "DELETE FROM rab WHERE id_rab = '$id' AND tahun = '$tahun_ajaran' ");
+    $sql2 = mysqli_query($conn, "DELETE FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' ");
     if ($sql && $sql2) { ?>
         <script>
             $(document).ready(function() {
@@ -73,8 +73,8 @@ if ($kd == 'rab') {
 }
 
 if ($kd == 'del_real') {
-    $kode = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM realis WHERE id_realis = '$id' "));
-    $sql = mysqli_query($conn, "DELETE FROM realis WHERE id_realis = '$id' ");
+    $kode = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM realis WHERE id_realis = '$id' AND tahun = '$tahun_ajaran' "));
+    $sql = mysqli_query($conn, "DELETE FROM realis WHERE id_realis = '$id' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -95,7 +95,7 @@ if ($kd == 'del_real') {
 }
 
 if ($kd == 'sisa') {
-    $sql = mysqli_query($conn, "DELETE FROM real_sisa WHERE id_sisa = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM real_sisa WHERE id_sisa = '$id' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -116,8 +116,8 @@ if ($kd == 'sisa') {
 }
 
 if ($kd == 'aju') {
-    $sql = mysqli_query($conn, "DELETE FROM pengajuan WHERE kode_pengajuan = '$id' ");
-    $sql2 = mysqli_query($conn, "DELETE FROM real_sm WHERE kode_pengajuan = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM pengajuan WHERE kode_pengajuan = '$id' AND tahun = '$tahun_ajaran' ");
+    $sql2 = mysqli_query($conn, "DELETE FROM real_sm WHERE kode_pengajuan = '$id' AND tahun = '$tahun_ajaran' ");
 
     if ($sql && $sql2) { ?>
         <script>
@@ -139,7 +139,7 @@ if ($kd == 'aju') {
 }
 
 if ($kd == 'dsp') {
-    $sql = mysqli_query($conn, "DELETE FROM disposisi WHERE id_disp = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM disposisi WHERE id_disp = '$id' AND tahun = '$tahun_ajaran' ");
 
     if ($sql) { ?>
         <script>
@@ -161,7 +161,7 @@ if ($kd == 'dsp') {
 }
 
 if ($kd == 'dspsp') {
-    $sql = mysqli_query($conn, "DELETE FROM disposisi_sisa WHERE id_disp_sisa = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM disposisi_sisa WHERE id_disp_sisa = '$id' AND tahun = '$tahun_ajaran' ");
 
     if ($sql) { ?>
         <script>

@@ -1,6 +1,6 @@
 <?php
 include 'fungsi.php';
-$query = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kol' GROUP BY jenis");
+$query = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' GROUP BY jenis");
 $output = '<option value="">--pilih jenis belanja--</option>';
 while ($row = mysqli_fetch_array($query)) {
     if ($row['jenis'] == 'A') {

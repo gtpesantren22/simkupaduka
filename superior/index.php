@@ -1,12 +1,12 @@
 <?php
 include 'atas.php';
 
-$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM bos "));
-$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pesantren "));
-$tot3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(sisa) AS jm FROM real_sisa "));
-$tot4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pembayaran "));
+$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM bos WHERE tahun = '$tahun_ajaran' "));
+$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pesantren WHERE tahun = '$tahun_ajaran' "));
+$tot3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(sisa) AS jm FROM real_sisa WHERE tahun = '$tahun_ajaran' "));
+$tot4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pembayaran WHERE tahun = '$tahun_ajaran' "));
 
-$kas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(IF( ket = 'masuk', nominal, 0)) AS masuk, SUM(IF( ket = 'keluar', nominal, 0)) AS keluar FROM kas "));
+$kas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(IF( ket = 'masuk', nominal, 0)) AS masuk, SUM(IF( ket = 'keluar', nominal, 0)) AS keluar FROM kas WHERE tahun = '$tahun_ajaran' "));
 
 $msk = $tot['jm'] + $tot2['jm'] + $tot3['jm'] + $tot4['jm'];
 $sld = $kas['masuk'] - $kas['keluar'];
@@ -137,10 +137,10 @@ $sld = $kas['masuk'] - $kas['keluar'];
                                 </div>
                                 <div class="card-block">
                                     <?php
-                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.verval = 1 AND a.apr = 0");
+                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.verval = 1 AND a.apr = 0 AND a.tahun = '$tahun_ajaran'");
                                     while ($ar = mysqli_fetch_assoc($dt_bos)) {
                                         $kpp = $ar['kode_pengajuan'];
-                                        $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS nm, tgl FROM real_sm WHERE kode_pengajuan = '$kpp' "));
+                                        $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS nm, tgl FROM real_sm WHERE kode_pengajuan = '$kpp' AND tahun = '$tahun_ajaran' "));
                                     ?>
                                         <div class="row m-b-30">
                                             <div class="col-auto p-r-0">

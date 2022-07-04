@@ -42,9 +42,9 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.* FROM tanggungan a JOIN tb_santri b ON a.nis=b.nis  ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.* FROM tanggungan a JOIN tb_santri b ON a.nis=b.nis AND a.tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
-                                        $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga");
+                                        $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
                                         while ($tgr = mysqli_fetch_assoc($tg)) {
                                             $tgn = $ls_jns[$tgr['kode']];
                                         }

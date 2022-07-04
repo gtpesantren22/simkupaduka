@@ -78,7 +78,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                                         SUM(IF( jenis = 'C', total, 0)) AS C, 
                                         SUM(IF( jenis = 'D', total, 0)) AS D, 
                                         SUM(total) AS T 
-                                        FROM rab WHERE lembaga = '21' AND tahun = '2022' "));
+                                        FROM rab WHERE lembaga = '21' AND tahun = '$tahun_ajaran' "));
                                         ?>
                                         <tr>
                                             <th>Belanja Barang</th>
@@ -125,8 +125,8 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'A' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'A' "));
+                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'A' AND tahun = '$tahun_ajaran' ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'A' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -169,8 +169,8 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'B' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'B' "));
+                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'B' AND tahun = '$tahun_ajaran' ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'B' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -213,8 +213,8 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'C' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'C' "));
+                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'C' AND tahun = '$tahun_ajaran' ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'C' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -257,8 +257,8 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'D' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'D' "));
+                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'D' AND tahun = '$tahun_ajaran' ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'D' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -311,7 +311,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <select name="lembaga" class="form-control" id="" required>
                                 <!-- <option value=""> -pilih lembaga- </option> -->
                                 <?php
-                                $qr2 = mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 21");
+                                $qr2 = mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 21 AND tahun = '$tahun_ajaran'");
                                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
                                     <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                                 <?php } ?>
@@ -325,7 +325,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <select name="bidang" class="form-control" id="" required>
                                 <option value=""> -pilih bidang- </option>
                                 <?php
-                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang");
+                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
                                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
                                     <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                                 <?php } ?>
@@ -523,7 +523,7 @@ if (isset($_POST['save'])) {
     $total = $qty * preg_replace("/[^0-9]/", "", $harga_satuan);
     $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
 
-    $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '21','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun', NOW())");
+    $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '21','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', NOW())");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

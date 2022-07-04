@@ -1,8 +1,8 @@
 <?php
 include 'atas.php';
 $pes_data = mysqli_query($conn, "SELECT * FROM pesantren");
-$pes_jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM pesantren "));
-$pes_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM pesantren GROUP BY lembaga "));
+$pes_jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM pesantren WHERE tahun = '$tahun_ajaran' "));
+$pes_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM pesantren WHERE tahun = '$tahun_ajaran' GROUP BY lembaga "));
 ?>
 
 <div class="content-wrapper">
@@ -63,7 +63,7 @@ $pes_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM pe
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM pesantren a JOIN bidang b ON a.bidang=b.kode  ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM pesantren a JOIN bidang b ON a.bidang=b.kode WHERE a.tahun = '$tahun_ajaran'  ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
 
                                     ?>
@@ -106,7 +106,7 @@ $pes_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM pe
                             <select name="lembaga" class="form-control" required>
                                 <option value=""> -- pilih lembaga -- </option>
                                 <?php
-                                $lm = mysqli_query($conn, "SELECT * FROM lembaga");
+                                $lm = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                 while ($row = mysqli_fetch_assoc($lm)) { ?>
                                     <option value="<?= $row['kode'] ?>"><?= $row['nama'] ?></option>
                                 <?php } ?>
@@ -119,7 +119,7 @@ $pes_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM pe
                             <select name="bidang" class="form-control" required>
                                 <option value=""> -- pilih bidang -- </option>
                                 <?php
-                                $lm = mysqli_query($conn, "SELECT * FROM bidang");
+                                $lm = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
                                 while ($row = mysqli_fetch_assoc($lm)) { ?>
                                     <option value="<?= $row['kode'] ?>"><?= $row['nama'] ?></option>
                                 <?php } ?>
@@ -204,7 +204,7 @@ if (isset($_POST['save'])) {
     $tahun = $_POST['tahun'];
     $kasir = $nama_user;
 
-    $sql = mysqli_query($conn, "INSERT INTO pesantren VALUES ('$id', '$lembaga', '$bidang', '$kode', '$uraian', '$periode', '$nominal', '$tahun', '$tgl_setor', NOW() ");
+    $sql = mysqli_query($conn, "INSERT INTO pesantren VALUES ('$id', '$lembaga', '$bidang', '$kode', '$uraian', '$periode', '$nominal', '$tahun_ajaran', '$tgl_setor', NOW() ");
 
     if ($sql) { ?>
         <script>

@@ -43,7 +43,7 @@ include 'head.php';
                                                 <select name="lembaga" id="" class="form-control">
                                                     <option value=""> -- pilih lembaga -- </option>
                                                     <?php
-                                                    $sql = mysqli_query($conn, "SELECT * FROM lembaga");
+                                                    $sql = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                                     while ($rw = mysqli_fetch_assoc($sql)) { ?>
                                                         <option value="<?= $rw['kode']; ?>"><?= $rw['kode'] . '. ' . $rw['nama']; ?></option>
                                                     <?php } ?>
@@ -61,7 +61,7 @@ include 'head.php';
                                 if (isset($_POST['views'])) {
                                     $lmb = $_POST['lembaga'];
                                     $no = 1;
-                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama AS nbd, c.nama AS nlmb, d.nama AS nrab, d.harga_satuan FROM realis a JOIN bidang b ON a.bidang=b.kode JOIN lembaga c ON a.lembaga=c.kode JOIN rab d ON a.kode=d.kode WHERE a.lembaga = '$lmb' ORDER BY jenis ASC");
+                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama AS nbd, c.nama AS nlmb, d.nama AS nrab, d.harga_satuan FROM realis a JOIN bidang b ON a.bidang=b.kode JOIN lembaga c ON a.lembaga=c.kode JOIN rab d ON a.kode=d.kode WHERE a.lembaga = '$lmb' AND a.tahun = '$tahun_ajaran' ORDER BY jenis ASC");
                                 ?>
                                     <div class="table-responsive">
                                         <table id="datatable-buttons" class="table table-striped table-bordered table-sm">

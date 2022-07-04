@@ -1,6 +1,6 @@
 <?php
 include '../koneksi.php';
-$kl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE kode_pengajuan = '01.0505.1.2022' "));
+$kl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE kode_pengajuan = '01.0505.1.2022'  "));
 
 //memanggil file example.pdf yang berada di folder bernama file
 $filePath = '../institution/spj_file/' . $kl['file_spj'];

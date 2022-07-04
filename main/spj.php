@@ -51,11 +51,11 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.stts != 2");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.stts != 2 AND a.tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             $kd_pj = $a['kode_pengajuan'];
-                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
-                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
+                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
                                             $pjan = $jml['jml'] + $jml2['jml'];
                                         ?>
                                             <tr>
@@ -191,8 +191,8 @@ if (isset($_POST['save'])) {
     $id = $_POST['id'];
     $kode = $_POST['kode'];
 
-    $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' ");
-    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' ");
+    $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
+    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

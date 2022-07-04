@@ -1,7 +1,7 @@
 <?php
 include 'atas.php';
 $id = $_GET['id'];
-$bos = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bos WHERE id_bos = '$id' "));
+$bos = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bos WHERE id_bos = '$id' AND tahun = '$tahun_ajaran' "));
 ?>
 
 <div class="content-wrapper">
@@ -37,7 +37,7 @@ $bos = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bos WHERE id_bos = 
                                                 <select name="lembaga" class="form-control" required>
                                                     <option value=""> -- pilih lembaga -- </option>
                                                     <?php
-                                                    $lm = mysqli_query($conn, "SELECT * FROM lembaga");
+                                                    $lm = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                                     while ($row = mysqli_fetch_assoc($lm)) { ?>
                                                         <option <?= $row['kode'] == $bos['lembaga'] ? 'selected' : '' ?> value="<?= $row['kode'] ?>"><?= $row['nama'] ?></option>
                                                     <?php } ?>
@@ -105,7 +105,7 @@ $bos = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bos WHERE id_bos = 
                             <select name="lembaga" class="form-control" required>
                                 <option value=""> -- pilih lembaga -- </option>
                                 <?php
-                                $lm = mysqli_query($conn, "SELECT * FROM lembaga");
+                                $lm = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                 while ($row = mysqli_fetch_assoc($lm)) { ?>
                                     <option value="<?= $row['kode'] ?>"><?= $row['nama'] ?></option>
                                 <?php } ?>
@@ -189,7 +189,7 @@ if (isset($_POST['save'])) {
     $tahun = $_POST['tahun'];
     $kasir = $nama_user;
 
-    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$lembaga', '$uraian', '$periode', '$nominal', '$tahun', '$tgl_setor', '$kasir') ");
+    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$lembaga', '$uraian', '$periode', '$nominal', '$tahun_ajaran', '$tgl_setor', '$kasir') ");
 
     if ($sql) { ?>
         <script>

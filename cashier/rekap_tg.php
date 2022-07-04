@@ -88,15 +88,15 @@ include 'atas.php';
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $rls = mysqli_query($conn, "SELECT a.*, b.* FROM tanggungan a JOIN tb_santri b ON a.nis=b.nis WHERE b.t_formal = '$lembaga' AND b.jkl = '$jkl' ");
+                                        $rls = mysqli_query($conn, "SELECT a.*, b.* FROM tanggungan a JOIN tb_santri b ON a.nis=b.nis WHERE b.t_formal = '$lembaga' AND b.jkl = '$jkl' AND tahun = '$tahun_ajaran' ");
                                         while ($ls_jns = mysqli_fetch_assoc($rls)) {
-                                            $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga");
+                                            $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
                                             while ($tgr = mysqli_fetch_assoc($tg)) {
                                                 $tgn = $ls_jns[$tgr['kode']];
                                             }
                                             $jml = $ls_jns['syahriah'] + $tgn;
                                             $nis = $ls_jns['nis'];
-                                            $bayar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM pembayaran WHERE nis = $nis AND tahun = '2021/2022' "));
+                                            $bayar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM pembayaran WHERE nis = $nis AND tahun = '$tahun_ajaran' "));
                                             if ($jml < $bayar['jml']) {
                                                 $kt = "<span class='label bg-purple'><i class='fa fa-warning'></i> Lebih</span>";
                                             } elseif ($jml == $bayar['jml']) {

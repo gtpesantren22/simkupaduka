@@ -61,7 +61,7 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM tahapan ORDER BY lembaga DESC");
+                                        $dt_bos = mysqli_query($conn, "SELECT * FROM tahapan WHERE tahun = '$tahun_ajaran' ORDER BY lembaga DESC");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
@@ -291,7 +291,7 @@ include 'head.php';
                     <div class="x_content">
                         <div class="">
                             <?php
-                            $kd = mysqli_query($conn, "SELECT * FROM tahapan GROUP BY lembaga ORDER BY lembaga DESC");
+                            $kd = mysqli_query($conn, "SELECT * FROM tahapan WHERE tahun = '$tahun_ajaran' GROUP BY lembaga ORDER BY lembaga DESC");
                             while ($d = mysqli_fetch_assoc($kd)) {
                                 $wr = ['green', 'dimgray', 'lightskyblue', 'orange']
                             ?>
@@ -300,7 +300,7 @@ include 'head.php';
                                     <div class="row">
                                         <?php
                                         $lm = $d['lembaga'];
-                                        $kd2 = mysqli_query($conn, "SELECT * FROM tahapan WHERE lembaga = '$lm' ");
+                                        $kd2 = mysqli_query($conn, "SELECT * FROM tahapan WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
                                         while ($d2 = mysqli_fetch_assoc($kd2)) {
                                         ?>
                                             <div class="col-md-4">
@@ -424,7 +424,7 @@ if (isset($_POST['save'])) {
     $nom = preg_replace("/[^0-9]/", "", $nominal);
     $tahun = $_POST['tahun'];
 
-    $sql = mysqli_query($conn, "INSERT INTO tahapan VALUES ('', '$kode', '$lembaga', '$kelas', '$jurusan', '$nom', '$tahun' ) ");
+    $sql = mysqli_query($conn, "INSERT INTO tahapan VALUES ('', '$kode', '$lembaga', '$kelas', '$jurusan', '$nom', '$tahun_ajaran' ) ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -456,7 +456,7 @@ if (isset($_POST['edit'])) {
     $nom = preg_replace("/[^0-9]/", "", $nominal);
     $tahun = $_POST['tahun'];
 
-    $sql = mysqli_query($conn, "UPDATE tahapan SET kode = '$kode', lembaga = '$lembaga', kelas = '$kelas', jurusan = '$jurusan', nominal = '$nom', tahun = '$tahun' WHERE id_th = $id_th ");
+    $sql = mysqli_query($conn, "UPDATE tahapan SET kode = '$kode', lembaga = '$lembaga', kelas = '$kelas', jurusan = '$jurusan', nominal = '$nom', tahun = '$tahun_ajaran' WHERE id_th = $id_th ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -481,7 +481,7 @@ if (isset($_POST['delete'])) {
 
     $id_th = $_POST['id_th'];
 
-    $sql = mysqli_query($conn, "DELETE FROM tahapan WHERE id_th = $id_th ");
+    $sql = mysqli_query($conn, "DELETE FROM tahapan WHERE id_th = $id_th AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

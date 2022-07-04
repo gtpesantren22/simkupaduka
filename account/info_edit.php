@@ -2,7 +2,7 @@
 include 'head.php';
 
 $id = $_GET['id'];
-$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM info WHERE id_info = '$id' "));
+$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM info WHERE id_info = '$id' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="../main/../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -143,7 +143,7 @@ if (isset($_POST['save'])) {
     $tujuan =  $_POST['tujuan'];
 
 
-    $sql = mysqli_query($conn, "UPDATE info SET judul = '$judul', tgl = '$tgl', uploader = '$uploader', isi = '$isi', tujuan = '$tujuan' WHERE id_info = '$id' ");
+    $sql = mysqli_query($conn, "UPDATE info SET judul = '$judul', tgl = '$tgl', uploader = '$uploader', isi = '$isi', tujuan = '$tujuan' WHERE id_info = '$id' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             Swal.fire({

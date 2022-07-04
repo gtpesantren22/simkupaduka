@@ -41,7 +41,7 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.verval = 1 AND a.apr = 1 AND a.kode_pengajuan LIKE '%DISP.%' GROUP BY a.kode_pengajuan ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.verval = 1 AND a.apr = 1 AND a.kode_pengajuan LIKE '%DISP.%' AND a.tahun = '$tahun_ajaran' GROUP BY a.kode_pengajuan ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                         $kode = $ls_jns['kode_pengajuan'];
                                     ?>

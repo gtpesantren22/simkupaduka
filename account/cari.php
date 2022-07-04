@@ -2,19 +2,21 @@
 include '../koneksi.php';
 $bb = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");
 
+$tahun_ajaran = $_SESSION['tahun'];
+
 $judul = strip_tags($_GET['judul']);
 if ($judul == "")
   echo "Masukkan judul arikel";
 else {
-  $query = "SELECT * FROM realis where kode_pengajuan = '$judul' GROUP BY kode_pengajuan";
+  $query = "SELECT * FROM realis where kode_pengajuan = '$judul' AND tahun = '$tahun_ajaran' GROUP BY kode_pengajuan";
   $result = $conn->query($query) or die($conn->error . __LINE__);
   if ($result->num_rows > 0) {
     while ($rows = $result->fetch_assoc()) {
       extract($rows);
       $kd = $rows['kode_pengajuan'];
       $kdl = $rows['lembaga'];
-      $cair = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE kode_pengajuan = '$kd' "));
-      $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kdl' "));
+      $cair = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE kode_pengajuan = '$kd' AND tahun = '$tahun_ajaran' "));
+      $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kdl' AND tahun = '$tahun_ajaran' "));
       //$sisa = $rows['total'] - $pakai['nom'];
       echo "
       <input type='hidden' name='cair' value='" . $cair['nom'] . "'>

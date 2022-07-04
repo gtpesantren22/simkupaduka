@@ -11,7 +11,7 @@ else {
     while ($rows = $result->fetch_assoc()) {
       extract($rows);
       $kd = $rows['kode'];
-      $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM real_sm WHERE kode = '$kd' "));
+      $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM real_sm WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
       $sisa = $rows['total'] - $pakai['nom'];
       echo "
   <table class='table table-striped'>    

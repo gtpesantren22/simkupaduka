@@ -3,12 +3,12 @@ include 'atas.php';
 
 $no = 1;
 $kode = $_GET['kode'];
-$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' "));
+$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
 $kalem = $l['lembaga'];
-$lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kalem' "));
-$rel = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nn FROM realis WHERE kode = '$kode' "));
+$lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kalem' AND tahun = '$tahun_ajaran' "));
+$rel = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nn FROM realis WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
 
-$jns = mysqli_fetch_assoc(mysqli_query($conn, "SELECT jenis, nama, kode, total, rencana, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE kode = '$kode' "));
+$jns = mysqli_fetch_assoc(mysqli_query($conn, "SELECT jenis, nama, kode, total, rencana, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
 
 $sisa = $jns['total'] - $rel['nn'];
 $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
@@ -123,7 +123,7 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode = '$kode' ");
+                                    $rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode = '$kode' AND tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
                                         <tr>

@@ -60,7 +60,7 @@ include 'head.php';
                                 if (isset($_POST['views'])) {
                                     $lmb = $_POST['lembaga'];
                                     $no = 1;
-                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama AS nbd, c.nama AS nlmb FROM rab a JOIN bidang b ON a.bidang=b.kode JOIN lembaga c ON a.lembaga=c.kode WHERE a.jenis = '$lmb' ORDER BY lembaga ASC");
+                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama AS nbd, c.nama AS nlmb FROM rab a JOIN bidang b ON a.bidang=b.kode JOIN lembaga c ON a.lembaga=c.kode WHERE a.jenis = '$lmb' AND a.tahun = '$tahun_ajaran' ORDER BY lembaga ASC");
                                 ?>
                                     <div class="table-responsive">
                                         <table id="datatable-buttons" class="table table-striped table-bordered table-sm">

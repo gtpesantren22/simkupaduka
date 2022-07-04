@@ -49,7 +49,7 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM info");
+                                        $dt_bos = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
                                             <tr>
@@ -162,7 +162,7 @@ include 'head.php';
 if (isset($_POST['del'])) {
     $id_info =  $_POST['id_info'];
 
-    $sql = mysqli_query($conn, "DELETE FROM info WHERE id_info = '$id_info' ");
+    $sql = mysqli_query($conn, "DELETE FROM info WHERE id_info = '$id_info' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             Swal.fire({

@@ -1,7 +1,7 @@
 <?php
 include 'atas.php';
 
-$ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan ORDER BY no_urut DESC LIMIT 1"));
+$ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1"));
 ?>
 
 <div class="content-wrapper">
@@ -48,7 +48,7 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan ORDER BY n
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' GROUP BY kode_pengajuan ");
+                                    $rls = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' GROUP BY kode_pengajuan ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
                                         <tr>
@@ -117,7 +117,7 @@ include 'bawah.php';
 <?php
 if (isset($_POST['save'])) {
 
-    $pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT MAX(no_urut) as nu FROM pengajuan"));
+    $pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun_ajaran'"));
     $urut = $pj['nu'] + 1;
     $id = $uuid;
     $lembaga = $kol;
@@ -126,10 +126,10 @@ if (isset($_POST['save'])) {
     $kd_pjn = $lembaga . '.' . date('dd') . '.' . $bln . '.' . $tahun;
 
 
-    $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' "));
+    $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' AND tahun = '$tahun_ajaran' "));
     if ($cek == 0) {
-        $sql = mysqli_query($conn, "INSERT INTO pengajuan(id_pn, kode_pengajuan, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bln','$tahun', '$urut') ");
-        $sql1 = mysqli_query($conn, "INSERT INTO spj(id_spj, kode_pengajuan, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bln','$tahun','$urut') ");
+        $sql = mysqli_query($conn, "INSERT INTO pengajuan(id_pn, kode_pengajuan, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bln','$tahun_ajaran', '$urut') ");
+        $sql1 = mysqli_query($conn, "INSERT INTO spj(id_spj, kode_pengajuan, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bln','$tahun_ajaran','$urut') ");
 
         if ($sql && $sql1) {
 ?>

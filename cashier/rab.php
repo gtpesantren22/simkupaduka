@@ -2,13 +2,13 @@
 require 'atas.php';
 
 
-$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' "));
+$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' AND tahun = '$tahun_ajaran' "));
 
-$data = mysqli_query($conn, "SELECT jenis, nama, kode, total, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kol' 
+$data = mysqli_query($conn, "SELECT jenis, nama, kode, total, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran'
 GROUP BY jenis");
 
-$rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as jml FROM rab WHERE lembaga = '$kol' "));
-$real = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE lembaga = '$kol' "));
+$rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as jml FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
+$real = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
 $sisa = $rab['jml'] - $real['nom'];
 $pesern = round(($real['nom'] / $rab['jml']) * 100, 0);
 if ($pesern >= 0 && $pesern <= 25) {
@@ -21,7 +21,7 @@ if ($pesern >= 0 && $pesern <= 25) {
   $bg = 'progress-bar-danger';
 }
 
-$jns = mysqli_query($conn, "SELECT kode, jenis, bidang, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kol' GROUP BY jenis ");
+$jns = mysqli_query($conn, "SELECT kode, jenis, bidang, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' GROUP BY jenis ");
 
 $no = 1;
 ?>
@@ -124,13 +124,13 @@ $no = 1;
                   </thead>
                   <tbody>
                     <?php
-                    $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kol' AND tahun = '2021/2022' ");
-                    $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kol' AND tahun = '2021/2022' "));
+                    $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kol' AND tahun = '$tahun_ajaran' ");
+                    $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
 
                     while ($r1 = mysqli_fetch_assoc($dt1)) {
                       $kd = $r1['kode'];
                       $kdb = $r1['bidang'];
-                      $nmb = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bidang WHERE kode = '$kdb' "));
+                      $nmb = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bidang WHERE kode = '$kdb' AND tahun = '$tahun_ajaran' "));
                     ?>
                       <tr>
                         <td><?= $no++; ?></td>
@@ -183,7 +183,7 @@ $no = 1;
               <select name="bidang" class="form-control" id="" required>
                 <option value=""> -pilih bidang- </option>
                 <?php
-                $qr2 = mysqli_query($conn, "SELECT * FROM bidang");
+                $qr2 = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
                   <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                 <?php } ?>
@@ -299,7 +299,7 @@ if (isset($_POST['save'])) {
   $total = $qty * preg_replace("/[^0-9]/", "", $harga_satuan);
   $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
 
-  $ss = mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun')");
+  $ss = mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran')");
   if ($ss) { ?>
     <script>
       Swal.fire({

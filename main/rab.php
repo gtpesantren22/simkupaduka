@@ -35,7 +35,7 @@ include 'head.php';
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <?php
-                                $df = mysqli_query($conn, "SELECT * FROM lembaga");
+                                $df = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                 while ($r = mysqli_fetch_assoc($df)) { ?>
                                     <a href="<?= 'rab_detail.php?kode=' . $r['kode'] ?>"><button class="btn btn-primary"><?= $r['kode'] . '. ' . $r['nama'] ?></button></a>
                                 <?php } ?>
@@ -174,7 +174,7 @@ if (isset($_POST['save'])) {
     $waktu = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['waktu']));
     $link = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['link']));
 
-    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$waktu','$link')");
+    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$waktu','$link', '$tahun_ajaran')");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -200,7 +200,7 @@ if (isset($_POST['delete'])) {
 
     $id_kode = $_POST['id_kode'];
 
-    $sql = mysqli_query($conn, "DELETE FROM df_kode WHERE id_kode = $id_kode ");
+    $sql = mysqli_query($conn, "DELETE FROM df_kode WHERE id_kode = $id_kode AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

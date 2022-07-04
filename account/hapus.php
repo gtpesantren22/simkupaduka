@@ -6,7 +6,7 @@ $kd = $_GET['kd'];
 $id = $_GET['id'];
 
 if ($kd == 'bos') {
-    $sql = mysqli_query($conn, "DELETE FROM bos WHERE id_bos = '$id' ");
+    $sql = mysqli_query($conn, "DELETE FROM bos WHERE id_bos = '$id' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

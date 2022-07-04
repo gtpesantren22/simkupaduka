@@ -2,7 +2,7 @@
 include 'atas.php';
 
 $akun = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id_user' "));
-$lembaga = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' "));
+$lembaga = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' AND tahun = '$tahun_ajaran' "));
 ?>
 
 <div class="content-wrapper">
@@ -190,7 +190,7 @@ if (isset($_POST['save_lm'])) {
     $waktu = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['waktu']));
 
 
-    $sql = mysqli_query($conn, "UPDATE lembaga SET pj = '$pj', hp = '$hp', waktu = '$waktu' WHERE kode = '$id_lm' ");
+    $sql = mysqli_query($conn, "UPDATE lembaga SET pj = '$pj', hp = '$hp', waktu = '$waktu' WHERE kode = '$id_lm' AND tahun = '$tahun_ajaran' ");
     if ($sql) {
         echo "
         <script>

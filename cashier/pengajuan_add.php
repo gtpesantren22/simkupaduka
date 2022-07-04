@@ -2,7 +2,7 @@
 include 'atas.php';
 
 $lembaga = $kol;
-$lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lembaga' "));
+$lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lembaga' AND tahun = '$tahun_ajaran' "));
 
 ?>
 
@@ -49,7 +49,7 @@ $lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode 
                                                                 <select class="form-control select2" name="id_rab" id="search_query" required>
                                                                     <option value="">-pilih RAB-</option>
                                                                     <?php
-                                                                    $rb = mysqli_query($conn, "SELECT a.kode, a.nama, b.nama as nmb FROM rab a JOIN bidang b ON a.bidang=b.kode WHERE a.lembaga = '$lembaga' ");
+                                                                    $rb = mysqli_query($conn, "SELECT a.kode, a.nama, b.nama as nmb FROM rab a JOIN bidang b ON a.bidang=b.kode WHERE a.lembaga = '$lembaga' AND tahun = '$tahun_ajaran' ");
                                                                     while ($lm = mysqli_fetch_assoc($rb)) { ?>
                                                                         <option value="<?= $lm['kode'] ?>"><?= $lm['nama'] ?> - (<?= $lm['nmb'] ?>)</option>
                                                                     <?php } ?>
@@ -148,7 +148,7 @@ $lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode 
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE lembaga = '$kol' ");
+                                    $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
                                         <tr>
@@ -234,12 +234,12 @@ include 'bawah.php';
 <?php
 if (isset($_POST['save'])) {
 
-    $pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT MAX(no_urut) as nu FROM pengajuan"));
+    $pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun_ajaran'"));
     $urut = $pj['nu'] + 1;
     $id = $uuid;
     $kode = $_POST['id_rab'];
     $bulan = $_POST['bulan'];
-    $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' "));
+    $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
     $lembaga = $l['lembaga'];
     $bidang = $l['bidang'];
     $jenis = $l['jenis'];
@@ -251,12 +251,12 @@ if (isset($_POST['save'])) {
     $kd_pjn = $lembaga . '.' . $bulan . '.' . $tahun;
 
 
-    $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn')");
+    $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn')");
     if ($sql) {
-        $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode = '$kd_pjn' "));
+        $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode = '$kd_pjn' AND tahun = '$tahun_ajaran' "));
         if ($cek == 0) {
-            mysqli_query($conn, "INSERT INTO pengajuan(id_pn, kode, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bulan','$tahun', '$urut') ");
-            mysqli_query($conn, "INSERT INTO spj(id_spj, kode, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bulan','$tahun','$urut') ");
+            mysqli_query($conn, "INSERT INTO pengajuan(id_pn, kode, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bulan','$tahun_ajaran', '$urut') ");
+            mysqli_query($conn, "INSERT INTO spj(id_spj, kode, lembaga, bulan, tahun, no_urut) VALUES ('$id', '$kd_pjn','$lembaga','$bulan','$tahun_ajaran','$urut') ");
         }
 ?>
 

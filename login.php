@@ -48,6 +48,17 @@ include 'koneksi.php';
           <input type="password" class="form-control" placeholder="Password" name="fiil" required>
           <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
+        <div class="form-group has-feedback">
+          <select name="tahun" id="" class="form-control" required>
+            <!-- <option value=""> -pilih tahun ajaran- </option> -->
+            <?php
+            $sq = mysqli_query($conn, "SELECT * FROM tahun");
+            while ($r = mysqli_fetch_assoc($sq)) { ?>
+              <option value="<?= $r['nama_tahun']; ?>">Tahun Pelajaran - <?= $r['nama_tahun']; ?></option>
+            <?php } ?>
+          </select>
+          <!-- <span class="glyphicon glyphicon-lock form-control-feedback"></span> -->
+        </div>
         <div class="row">
           <div class="col-xs-8">
             <div class="checkbox icheck">
@@ -97,6 +108,7 @@ if (isset($_POST['masuk'])) {
 
   $isim = htmlspecialchars(addslashes(mysqli_real_escape_string($conn, $_POST['namamu'])));
   $fiil = htmlspecialchars(addslashes(mysqli_real_escape_string($conn, $_POST['fiil'])));
+  $tahun = htmlspecialchars(addslashes(mysqli_real_escape_string($conn, $_POST['tahun'])));
 
   $sql = mysqli_query($conn, "SELECT * FROM user WHERE username = '$isim' ");
   $cek = mysqli_num_rows($sql);
@@ -132,6 +144,7 @@ if (isset($_POST['masuk'])) {
 
         $_SESSION['id'] = $dt['id_user'];
         $_SESSION['lmb'] = $dt['lembaga'];
+        $_SESSION['tahun'] = $tahun;
 
         if ($lvl == 'admin') {
           $_SESSION['lvl_adm_qwertyuiop'] = true;

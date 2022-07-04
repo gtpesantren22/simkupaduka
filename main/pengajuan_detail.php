@@ -3,9 +3,9 @@ include 'head.php';
 require 'vendors/PHPExcel/Classes/PHPExcel.php';
 
 $kode_p = $_GET['kode'];
-$kl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kode_p' "));
+$kl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
 $kode = $kl['lembaga'];
-$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
+$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -52,7 +52,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                         SUM(IF( jenis = 'C', total, 0)) AS C, 
                                         SUM(IF( jenis = 'D', total, 0)) AS D, 
                                         SUM(total) AS T 
-                                        FROM rab WHERE lembaga = '$kode' AND tahun = '2022' "));
+                                        FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
 
                                         $trb_pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
                                         SUM(IF( jenis = 'A', nominal, 0)) AS A, 
@@ -60,7 +60,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                         SUM(IF( jenis = 'C', nominal, 0)) AS C, 
                                         SUM(IF( jenis = 'D', nominal, 0)) AS D, 
                                         SUM(nominal) AS T 
-                                        FROM realis WHERE lembaga = '$kode' AND tahun = '2022' "));
+                                        FROM realis WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
 
                                         $pengajuan = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
                                         SUM(IF( jenis = 'A', nominal, 0)) AS A, 
@@ -68,7 +68,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                         SUM(IF( jenis = 'C', nominal, 0)) AS C, 
                                         SUM(IF( jenis = 'D', nominal, 0)) AS D, 
                                         SUM(nominal) AS T 
-                                        FROM real_sm WHERE lembaga = '$kode' AND tahun = '2022' "));
+                                        FROM real_sm WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
 
                                         ?>
                                         <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
@@ -168,11 +168,11 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 <?php
                                 $no = 1;
                                 if ($kl['cair'] == 1) {
-                                    $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' ");
-                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM realis WHERE kode_pengajuan = '$kode_p' "));
+                                    $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
                                 } else {
-                                    $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' ");
-                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' "));
+                                    $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
                                 }
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
@@ -302,8 +302,8 @@ if (isset($_POST['veris'])) {
     $stts = 1;
     $ket = '-';
 
-    $sql = mysqli_query($conn, "INSERT INTO verifikasi VALUES ('$id', '$kd_pj', '$lembaga','$tgl','$user', '$stts','$ket')");
-    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET verval = $stts WHERE id_pn = '$id_pn' ");
+    $sql = mysqli_query($conn, "INSERT INTO verifikasi VALUES ('$id', '$kd_pj', '$lembaga','$tgl','$user', '$stts','$ket', '$tahun_ajaran')");
+    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET verval = $stts WHERE id_pn = '$id_pn' AND tahun = '$tahun_ajaran' ");
     if ($sql  && $sql2) { ?>
         <script>
             $(document).ready(function() {

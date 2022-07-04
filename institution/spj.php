@@ -39,11 +39,11 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.cair as b_cair, b.kode_pengajuan as b_kode FROM spj a JOIN pengajuan b ON a.kode_pengajuan=b.kode_pengajuan WHERE a.lembaga = '$kol' ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.cair as b_cair, b.kode_pengajuan as b_kode FROM spj a JOIN pengajuan b ON a.kode_pengajuan=b.kode_pengajuan WHERE a.lembaga = '$kol' AND a.tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                         $kd_pj = $ls_jns['kode_pengajuan'];
-                                        $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
-                                        $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
+                                        $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                        $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
                                         $pjan = $jml['jml'] + $jml2['jml'];
 
                                         if (preg_match("/DISP./i", $kd_pj)) {
@@ -204,8 +204,8 @@ Terimakasih';
         if (file_exists($file_lama)) {
             unlink($file_lama);
         }
-        $sql1 = mysqli_query($conn, "UPDATE spj SET stts = 1, file_spj = '$xx', tgl_upload = '$date' WHERE kode_pengajuan = '$kode' ");
-        $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 1 WHERE kode_pengajuan = '$kode' ");
+        $sql1 = mysqli_query($conn, "UPDATE spj SET stts = 1, file_spj = '$xx', tgl_upload = '$date' WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
+        $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 1 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
         if ($sql1 && $sql2) { ?>
             <script>
                 Swal.fire({

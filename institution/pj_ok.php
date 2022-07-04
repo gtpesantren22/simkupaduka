@@ -3,13 +3,13 @@ include 'fungsi.php';
 include 'bawah.php';
 
 $kd = $_GET['kd'];
-$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd'"));
+$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd' AND tahun = '$tahun_ajaran'"));
 $l = $dt['lembaga'];
-$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$l' "));
+$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$l' AND tahun = '$tahun_ajaran' "));
 
-$sql = mysqli_query($conn, "UPDATE pengajuan SET stts = 'yes' WHERE kode_pengajuan = '$kd' ");
+$sql = mysqli_query($conn, "UPDATE pengajuan SET stts = 'yes' WHERE kode_pengajuan = '$kd' AND tahun = '$tahun_ajaran' ");
 
-$jml =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM real_sm WHERE kode_pengajuan = '$kd' GROUP BY kode_pengajuan "));
+$jml =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM real_sm WHERE kode_pengajuan = '$kd' GROUP BY kode_pengajuan AND tahun = '$tahun_ajaran' "));
 $perod = $bulan[$dt['bulan']] . ' ' . $dt['tahun'];
 // $ww = date('d-M-Y H:i:s');
 

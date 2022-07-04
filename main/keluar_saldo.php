@@ -1,6 +1,6 @@
 <?php
 include 'head.php';
-$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(IF( ket = 'masuk', nominal, 0)) AS masuk, SUM(IF( ket = 'keluar', nominal, 0)) AS keluar FROM kas "));
+$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(IF( ket = 'masuk', nominal, 0)) AS masuk, SUM(IF( ket = 'keluar', nominal, 0)) AS keluar FROM kas WHERE tahun = '$tahun_ajaran' "));
 
 ?>
 <!-- Datatables -->
@@ -67,7 +67,7 @@ $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(IF( ket = 'masuk', nom
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM kas WHERE ket = 'keluar' ");
+                                        $dt_bos = mysqli_query($conn, "SELECT * FROM kas WHERE ket = 'keluar' AND tahun = '$tahun_ajaran' ");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
                                             <tr>

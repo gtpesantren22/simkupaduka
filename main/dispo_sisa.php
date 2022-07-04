@@ -52,7 +52,7 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi_sisa a JOIN lembaga b ON a.lembaga=b.kode ORDER BY id_disp_sisa DESC");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi_sisa a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ORDER BY id_disp_sisa DESC");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             // $kd_pj = $a['kode_pengajuan'];
                                             // $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
@@ -104,7 +104,9 @@ include 'head.php';
                             <select name="kode" id="search_query" class="form-control" required>
                                 <option value=""> -pilih kode disposisi- </option>
                                 <?php
-                                $dw = mysqli_query($conn, "SELECT * FROM disposisi WHERE NOT EXISTS (SELECT * FROM disposisi_sisa WHERE disposisi.kode=disposisi_sisa.kode) ");
+                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi_sisa a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ORDER BY id_disp_sisa DESC");
+                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi_sisa a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ORDER BY id_disp_sisa DESC");
+                                $dw = mysqli_query($conn, "SELECT * FROM disposisi WHERE NOT EXISTS (SELECT * FROM disposisi_sisa WHERE disposisi.kode=disposisi_sisa.kode) AND tahun = '$tahun_ajaran' ");
                                 while ($k = mysqli_fetch_assoc($dw)) { ?>
                                     <option value="<?= $k['kode'] ?>"><?= $k['kode'] ?></option>
                                 <?php } ?>
@@ -220,7 +222,7 @@ if (isset($_POST['save_bos'])) {
     $catatan = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['catatan']));
 
 
-    $sql = mysqli_query($conn, "INSERT INTO disposisi_sisa VALUES ('', '$kode', '$lembaga', '$tgl', '$nominal', '$serap', '$catatan', '$sisa', NOW() ) ");
+    $sql = mysqli_query($conn, "INSERT INTO disposisi_sisa VALUES ('', '$kode', '$lembaga', '$tgl', '$nominal', '$serap', '$catatan', '$sisa', NOW(), '$tahun_ajaran' ) ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

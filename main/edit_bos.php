@@ -1,7 +1,7 @@
 <?php
 include 'head.php';
 $id_bos = $_GET['id'];
-$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bos WHERE id_bos = '$id_bos' "));
+$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bos WHERE id_bos = '$id_bos' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -166,7 +166,7 @@ if (isset($_POST['edit_bos'])) {
     $tgl_bayar = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_bayar']));
     $nom = preg_replace("/[^0-9]/", "", $nominal);
 
-    $sql = mysqli_query($conn, "UPDATE bos SET kode = '$kode', uraian = '$uraian', periode = '$periode', nominal = '$nom', tahun = '$tahun', tgl_bayar = '$tgl_bayar' WHERE id_bos = $id_bos ");
+    $sql = mysqli_query($conn, "UPDATE bos SET kode = '$kode', uraian = '$uraian', periode = '$periode', nominal = '$nom', tahun = '$tahun', tgl_bayar = '$tgl_bayar' WHERE id_bos = $id_bos AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <!-- echo "
         <script>

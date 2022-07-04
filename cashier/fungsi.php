@@ -18,8 +18,10 @@ $uuid = Uuid::uuid4()->toString();
 
 $id = $_SESSION['id'];
 $lmb = $_SESSION['lmb'];
+$tahun_ajaran = $_SESSION['tahun'];
+
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id' "));
-$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' "));
+$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' AND tahun = '$tahun_ajaran' "));
 
 $no = 1;
 $id_user = $user['id_user'];

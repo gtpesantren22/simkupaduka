@@ -1,6 +1,6 @@
 <?php
 include 'atas.php';
-$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as tt, COUNT(jenis) AS jm FROM rab  "));
+$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as tt, COUNT(jenis) AS jm FROM rab WHERE tahun = '$tahun_ajaran'  "));
 ?>
 
 <div class="pcoded-content">
@@ -48,7 +48,7 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as tt, COUNT(je
                     </div>
                     <div class="row">
                         <?php
-                        $df = mysqli_query($conn, "SELECT b.nama, a.lembaga FROM rab a JOIN lembaga b ON a.lembaga=b.kode GROUP BY a.lembaga ORDER BY a.lembaga");
+                        $df = mysqli_query($conn, "SELECT b.nama, a.lembaga FROM rab a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' GROUP BY a.lembaga ORDER BY a.lembaga");
                         while ($r = mysqli_fetch_assoc($df)) {
                             $lembaga = $r['lembaga']
                         ?>
@@ -63,8 +63,8 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as tt, COUNT(je
                                             <table class="table table-sm table-striped">
                                                 <tbody>
                                                     <?php
-                                                    $df2 = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'Belanja Barang', IF(jenis = 'B', 'Langganan Daya dan Jasa', IF(jenis = 'C', 'Belanja Kegiatan','Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$lembaga' GROUP BY jenis ORDER BY jenis ASC");
-                                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as tt, COUNT(jenis) AS jm FROM rab WHERE lembaga = '$lembaga' "));
+                                                    $df2 = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'Belanja Barang', IF(jenis = 'B', 'Langganan Daya dan Jasa', IF(jenis = 'C', 'Belanja Kegiatan','Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' GROUP BY jenis ORDER BY jenis ASC");
+                                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as tt, COUNT(jenis) AS jm FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' "));
                                                     while ($r2 = mysqli_fetch_assoc($df2)) {
                                                         $lembaga = $r['lembaga']
                                                     ?>

@@ -294,8 +294,8 @@ Pada : ' . $at . '
 Bisa dilanjutkan untuk pengajuan berikutnya.
 Terimakasih';
 
-    $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' ");
-    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' ");
+    $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
+    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -399,8 +399,8 @@ Pada : ' . $at . '
 Mohon kepada lembaga terkait untuk segera memperbaikinya dan mengupload ulang SPJ yang sudah diperbaiki di https://simkupaduka.ppdwk.com/.
 Terimakasih';
 
-    $sql = mysqli_query($conn, "UPDATE spj SET stts = 0 WHERE id_spj = '$id' ");
-    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 0 WHERE kode_pengajuan = '$kode' ");
+    $sql = mysqli_query($conn, "UPDATE spj SET stts = 0 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
+    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 0 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

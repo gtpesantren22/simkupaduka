@@ -1,9 +1,9 @@
 <?php
 include 'head.php';
-$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM bos "));
-$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pesantren "));
-$tot3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(sisa) AS jm FROM real_sisa "));
-$tot4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pembayaran "));
+$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM bos WHERE tahun = '$tahun_ajaran' "));
+$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pesantren WHERE tahun = '$tahun_ajaran' "));
+$tot3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(sisa) AS jm FROM real_sisa WHERE tahun = '$tahun_ajaran' "));
+$tot4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jm FROM pembayaran WHERE tahun = '$tahun_ajaran' "));
 
 $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");
 
@@ -103,7 +103,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM bos");
+                                        $dt_bos = mysqli_query($conn, "SELECT * FROM bos WHERE tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
@@ -141,7 +141,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                             <select name="kode" class="form-control" id="" required>
                                                                 <option value=""> -pilih lembaga- </option>
                                                                 <?php
-                                                                $qr = mysqli_query($conn, "SELECT * FROM lembaga WHERE lv = 'lf' ");
+                                                                $qr = mysqli_query($conn, "SELECT * FROM lembaga WHERE lv = 'lf' AND tahun = '$tahun_ajaran' ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
                                                                     <option value="<?= $a['kode'] ?>"><?= $a['kode'] ?>. <?= $a['nama'] ?></option>
                                                                 <?php } ?>
@@ -245,7 +245,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM pesantren");
+                                        $dt = mysqli_query($conn, "SELECT * FROM pesantren WHERE tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt)) { ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
@@ -283,7 +283,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                             <select name="lembaga" class="form-control" id="" required>
                                                                 <option value=""> -pilih lembaga- </option>
                                                                 <?php
-                                                                $qr = mysqli_query($conn, "SELECT * FROM lembaga WHERE lv = 'ps' ");
+                                                                $qr = mysqli_query($conn, "SELECT * FROM lembaga WHERE lv = 'ps' AND tahun = '$tahun_ajaran' ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
                                                                     <option value="<?= $a['kode'] ?>"><?= $a['kode'] ?>. <?= $a['nama'] ?></option>
                                                                 <?php } ?>
@@ -297,7 +297,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                             <select name="bidang" class="form-control" id="" required>
                                                                 <option value=""> -pilih bidang- </option>
                                                                 <?php
-                                                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang");
+                                                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
                                                                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
                                                                     <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                                                                 <?php } ?>
@@ -394,13 +394,13 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa");
+                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt)) {
                                             $kd = explode('.', $a['kode_pengajuan']);
                                             $lm = $kd[0];
                                             $bl = $kd[2];
                                             $th = $kd[3];
-                                            $nm =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' "));
+                                            $nm =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' AND tahun = '$tahun_ajaran' "));
                                         ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
@@ -437,7 +437,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                             <select name="kode_pengajuan" class="form-control" id="search_query" required>
                                                                 <option value=""> -pilih kode realis- </option>
                                                                 <?php
-                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode GROUP BY kode_pengajuan ");
+                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode WHERE a.tahun = '$tahun_ajaran' GROUP BY kode_pengajuan ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
                                                                     <option value="<?= $a['kode_pengajuan'] ?>"><?= $a['kode_pengajuan'] ?> (<?= $a['nama'] . ', ' . $bulan[$a['bulan']] . ' ' . $a['tahun'] ?>)</option>
                                                                 <?php } ?>
@@ -593,7 +593,7 @@ if (isset($_POST['save_bos'])) {
     $nom = preg_replace("/[^0-9]/", "", $nominal);
     // $kasir = htmlspecialchars(mysqli_real_escape_string($conn, $kasir));
 
-    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$kode', '$uraian', '$periode', '$nom', '$tahun', '$tgl_bayar', '$nama_user', NOW() ) ");
+    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$kode', '$uraian', '$periode', '$nom', '$tahun_ajaran', '$tgl_bayar', '$nama_user', NOW() ) ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -626,7 +626,7 @@ if (isset($_POST['save_pes'])) {
     $tgl_bayar = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_bayar']));
     $nom = preg_replace("/[^0-9]/", "", $nominal);
 
-    $sql = mysqli_query($conn, "INSERT INTO pesantren VALUES ('$uuid', '$lembaga', '$bidang', '$kode', '$uraian', '$periode', '$nom', '$tahun', '$tgl_bayar', NOW() ) ");
+    $sql = mysqli_query($conn, "INSERT INTO pesantren VALUES ('$uuid', '$lembaga', '$bidang', '$kode', '$uraian', '$periode', '$nom', '$tahun_ajaran', '$tgl_bayar', NOW() ) ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -656,7 +656,7 @@ if (isset($_POST['save_aki'])) {
     $tgl_setor = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_setor']));
     $sisa = $cair - $nominal;
 
-    $sql = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode_pengajuan', '$cair', '$nominal', '$sisa', '$tgl_setor' ) ");
+    $sql = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode_pengajuan', '$cair', '$nominal', '$sisa', '$tgl_setor', '$tahun_ajaran' ) ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

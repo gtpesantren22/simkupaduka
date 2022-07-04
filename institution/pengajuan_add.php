@@ -3,8 +3,8 @@ include 'atas.php';
 
 $lembaga = $kol;
 $kode_pengajuan = $_GET['kode'];
-$lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lembaga' "));
-$ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kode_pengajuan' "));
+$lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lembaga' AND tahun = '$tahun_ajaran' "));
+$ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kode_pengajuan' AND tahun = '$tahun_ajaran' "));
 
 ?>
 
@@ -145,11 +145,11 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                 <tbody>
                                     <?php
                                     if ($ck['cair'] ==  1) {
-                                        $rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_pengajuan' ");
+                                        $rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_pengajuan' AND tahun = '$tahun_ajaran' ");
                                     } else {
-                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_pengajuan' ");
+                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_pengajuan' AND tahun = '$tahun_ajaran' ");
                                     }
-                                    $nm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE lembaga = '$kol' "));
+                                    $nm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
 
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                         $kd_rab = $ls_jns['kode'];
@@ -166,7 +166,7 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                                 <?= $ls_jns['ket']; ?>
                                                 <?php
                                                 if (preg_match("/honor/i", $ls_jns['ket'])) {
-                                                    $jm_upd = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kd_ppnj' AND kode_rab = '$kd_rab' "));
+                                                    $jm_upd = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kd_ppnj' AND kode_rab = '$kd_rab' AND tahun = '$tahun_ajaran' "));
                                                     if ($jm_upd > 0) {
                                                         $ktb = 'update';
                                                         $lbl = "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>";
@@ -304,7 +304,7 @@ if (isset($_POST['save'])) {
     $id = $uuid;
     $kode = $_POST['id_rab'];
     $bulan = $ck['bulan'];
-    $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' "));
+    $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM rab WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
     $kd_rab = $l['kode'];
     $lembaga = $l['lembaga'];
     $bidang = $l['bidang'];
@@ -342,7 +342,7 @@ if (isset($_POST['save'])) {
         </script>
         <?php
     } else {
-        $cck = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM real_sm WHERE kode = '$kd_rab' "));
+        $cck = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM real_sm WHERE kode = '$kd_rab' AND tahun = '$tahun_ajaran' "));
         if ($cck > 0) { ?>
             <script>
                 Swal.fire({
@@ -358,7 +358,7 @@ if (isset($_POST['save'])) {
             </script>
             <?php
         } else {
-            $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun','$ket', '$kd_pjn', '$nominal', '$stas')");
+            $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$stas')");
             if ($sql) { ?>
 
                 <script>
@@ -400,9 +400,9 @@ if (isset($_POST['save_baru'])) {
         $nm_file = uniqid() . '.' . $ext;
 
         if ($ktb === 'baru') {
-            $sql = mysqli_query($conn, "INSERT INTO honor_file VALUES ('', '$kd_ppnj', '$kd_rab', NOW(),'$nm_file') ");
+            $sql = mysqli_query($conn, "INSERT INTO honor_file VALUES ('', '$kd_ppnj', '$kd_rab', NOW(),'$nm_file', '$tahun_ajaran') ");
         } elseif ($ktb === 'update') {
-            $sql = mysqli_query($conn, "UPDATE honor_file SET files = '$nm_file' WHERE kode_rab = '$kd_rab' AND kode_pengajuan = '$kd_ppnj' ");
+            $sql = mysqli_query($conn, "UPDATE honor_file SET files = '$nm_file' WHERE kode_rab = '$kd_rab' AND kode_pengajuan = '$kd_ppnj' AND tahun = '$tahun_ajaran' ");
         }
         move_uploaded_file($dir, 'honor_file/' . $nm_file);
         if ($sql) {

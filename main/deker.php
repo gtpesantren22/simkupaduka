@@ -23,11 +23,11 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
 // ");
 
 
-$keluar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis "));
-$tot4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pembayaran "));
-$tot3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(sisa) AS jml FROM real_sisa "));
-$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pesantren "));
-$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM bos "));
+$keluar = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE tahun = '$tahun_ajaran' "));
+$tot4 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pembayaran WHERE tahun = '$tahun_ajaran' "));
+$tot3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(sisa) AS jml FROM real_sisa WHERE tahun = '$tahun_ajaran' "));
+$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pesantren WHERE tahun = '$tahun_ajaran' "));
+$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM bos WHERE tahun = '$tahun_ajaran' "));
 
 ?>
 <!-- Datatables -->
@@ -138,7 +138,7 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM b
                                     </thead>
                                     <?php
                                     $no = 1;
-                                    $dt_bos = mysqli_query($conn, "SELECT * FROM bos");
+                                    $dt_bos = mysqli_query($conn, "SELECT * FROM bos WHERE tahun = '$tahun_ajaran'");
                                     while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
@@ -177,7 +177,7 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM b
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM pesantren");
+                                        $dt = mysqli_query($conn, "SELECT * FROM pesantren WHERE tahun = '$tahun_ajaran' ");
 
                                         while ($a = mysqli_fetch_assoc($dt)) { ?>
                                             <tr>
@@ -218,7 +218,7 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM b
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa");
+                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran'");
 
                                         while ($a = mysqli_fetch_assoc($dt)) {
                                             $kd = explode('.', $a['kode_pengajuan']);
@@ -232,7 +232,7 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM b
                                                 $th = $kd[3];
                                             }
 
-                                            $nm =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' "));
+                                            $nm =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' AND tahun = '$tahun_ajaran' "));
                                         ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
@@ -269,7 +269,7 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM b
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $rls = mysqli_query($conn, "SELECT * FROM pembayaran ORDER BY tgl DESC");
+                                        $rls = mysqli_query($conn, "SELECT * FROM pembayaran WHERE tahun = '$tahun_ajaran' ORDER BY tgl DESC");
                                         while ($ls_jns = mysqli_fetch_assoc($rls)) { ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
@@ -308,11 +308,12 @@ $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM b
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.spj != 2");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.spj != 2 AND a.tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             $kd_pj = $a['kode_pengajuan'];
-                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
-                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
+                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran'"));
+                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran'"));
+
                                             $kfe = $jml['jml'] + $jml2['jml'];
                                             // $st = count($kfe);
                                         ?>
