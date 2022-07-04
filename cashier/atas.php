@@ -201,6 +201,7 @@ $info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="tanggungan.php"><i class="fa fa-circle-o"></i> Data Tanggungan</a></li>
+                            <li><a href="tanggungan23.php"><i class="fa fa-circle-o"></i> Data Tanggungan 23</a></li>
                             <li><a href="pembayaran.php"><i class="fa fa-circle-o"></i> Pembayaran</a></li>
                             <li><a href="rekap_tg.php"><i class="fa fa-circle-o"></i> Rekap Tanggungan</a></li>
                         </ul>
