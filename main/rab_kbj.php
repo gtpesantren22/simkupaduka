@@ -27,260 +27,54 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
             <div class="col-md-12 col-sm-12  ">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2><i class="fa fa-bars"></i> Daftar Rencana Belanja <small>lembaga</small></h2>
+
+                        <h2><i class="fa fa-bars"></i> Belanja Kebijakan Kepala Pesantren <small>lembaga</small></h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#tambah"><i class="fa fa-plus-square"></i> Tambah Data</button></li>
+                        </ul>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <center>
-                            <h3>
-                                <small class=""><u>RENCANA ANGGARAN BELANJA KEBIJAKAN</u></small>
-                            </h3>
-                        </center>
-                        <br>
-                        <!-- info row -->
-                        <div class="row invoice-info">
-                            <div class="col-sm-2 invoice-col">
-                                <address>
-                                    <strong>Nama Lembaga</strong><br>
-                                    <strong>Pelkasana</strong><br>
-                                    <strong>PJ/HP</strong><br>
-                                    <strong>Waktu</strong>
-                                </address>
-                                <hr>
-                                <address>
-                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#tambah_bos"><i class="fa fa-plus-square"> </i> Tambah Data</button><br>
-                                    <a href="rab.php"><button class="btn btn-warning btn-sm"><i class="fa fa-chevron-circle-left"></i> Kembali</button></a>
-                                </address>
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-3 invoice-col">
-                                <address>
-                                    <strong>: PP DWK</strong><br>
-                                    <strong>: Kondisional</strong><br>
-                                    <strong>: Accounting</strong><br>
-                                    <strong>: -</strong>
-                                </address>
-                                <hr>
-                                <address>
-                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#ex_upload" disabled><i class="fa fa-upload"></i> Upload Excel</button><br>
-                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download Excel</button><br>
-                                </address>
-
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-sm-7 invoice-col">
-                                <address>
-                                    <table class="table">
-                                        <?php
-                                        $trb = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
-                                        SUM(IF( jenis = 'A', total, 0)) AS A, 
-                                        SUM(IF( jenis = 'B', total, 0)) AS B, 
-                                        SUM(IF( jenis = 'C', total, 0)) AS C, 
-                                        SUM(IF( jenis = 'D', total, 0)) AS D, 
-                                        SUM(total) AS T 
-                                        FROM rab WHERE lembaga = '21' AND tahun = '$tahun_ajaran' "));
-                                        ?>
-                                        <tr>
-                                            <th>Belanja Barang</th>
-                                            <th>: <?= rupiah($trb['A']) ?></th>
-                                        </tr>
-                                        <tr>
-                                            <th>Tagihan & Jasa</th>
-                                            <th>: <?= rupiah($trb['B']) ?></th>
-                                        </tr>
-                                        <tr>
-                                            <th>Belanja Kegiatan</th>
-                                            <th>: <?= rupiah($trb['C']) ?></th>
-                                        </tr>
-                                        <tr>
-                                            <th>Umum</th>
-                                            <th>: <?= rupiah($trb['D']) ?></th>
-                                        </tr>
-                                        <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                            <th>Total RAB</th>
-                                            <th>: <?= rupiah($trb['T']) ?></th>
-                                        </tr>
-                                    </table>
-                                </address>
-                            </div>
-                        </div>
-                        <!-- /.row -->
-                        <hr>
-
                         <!-- A -->
-                        <h4>A. BELANJA BARANG</h4>
-                        <table id="" class="table table-striped table-bordered" style="width:100%">
+                        <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Kode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Rencana Waktu</th>
-                                    <th>QTY</th>
-                                    <th>Harga Satuan</th>
+                                    <th>Nama Lembaga</th>
+                                    <th>Tanggal</th>
                                     <th>Jumlah</th>
+                                    <th>Keterangan</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'A' AND tahun = '$tahun_ajaran' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'A' AND tahun = '$tahun_ajaran' "));
+                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
+                                        <td><?= $a['kode_kbj'] ?></td>
                                         <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
+                                        <td><?= $a['tgl'] ?></td>
+                                        <td><?= rupiah($a['nominal']) ?></td>
+                                        <td><?= $a['ket'] ?></td>
                                         <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
                                         </td>
                                     </tr>
                                 <?php } ?>
                             </tbody>
                             <tfoot>
                                 <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                    <th colspan="6">SUB JUMLAH</th>
-                                    <th colspan="2"><?= rupiah($tt['tot']) ?></th>
+                                    <th colspan="4">SUB JUMLAH</th>
+                                    <th colspan="3"><?= rupiah($tt['tot']) ?></th>
                                 </tr>
                             </tfoot>
                         </table>
 
-                        <!-- B -->
-                        <hr>
-                        <h4>B. LANGGANAN DAYA & JASA</h4>
-                        <table id="" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Rencana Waktu</th>
-                                    <th>QTY</th>
-                                    <th>Harga Satuan</th>
-                                    <th>Jumlah</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'B' AND tahun = '$tahun_ajaran' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'B' AND tahun = '$tahun_ajaran' "));
-                                while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                    <th colspan="6">SUB JUMLAH</th>
-                                    <th colspan="2"><?= rupiah($tt['tot']) ?></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                        <!-- C -->
-                        <hr>
-                        <h4>C. BELANJA KEGIATAN</h4>
-                        <table id="" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Rencana Waktu</th>
-                                    <th>QTY</th>
-                                    <th>Harga Satuan</th>
-                                    <th>Jumlah</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'C' AND tahun = '$tahun_ajaran' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'C' AND tahun = '$tahun_ajaran' "));
-                                while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                    <th colspan="6">SUB JUMLAH</th>
-                                    <th colspan="2"><?= rupiah($tt['tot']) ?></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                        <!-- B -->
-                        <hr>
-                        <h4>D. UMUM</h4>
-                        <table id="" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Rencana Waktu</th>
-                                    <th>QTY</th>
-                                    <th>Harga Satuan</th>
-                                    <th>Jumlah</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '21' AND jenis = 'D' AND tahun = '$tahun_ajaran' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '21' AND jenis = 'D' AND tahun = '$tahun_ajaran' "));
-                                while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                    <th colspan="6">SUB JUMLAH</th>
-                                    <th colspan="2"><?= rupiah($tt['tot']) ?></th>
-                                </tr>
-                            </tfoot>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -294,7 +88,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
 <!-- /page content -->
 
 <!-- Modal Tambah Data -->
-<div class="modal fade" id="tambah_bos" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="tambah" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
@@ -309,9 +103,9 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                         <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Pilih Lembaga <span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 ">
                             <select name="lembaga" class="form-control" id="" required>
-                                <!-- <option value=""> -pilih lembaga- </option> -->
+                                <option value=""> -pilih lembaga- </option>
                                 <?php
-                                $qr2 = mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 21 AND tahun = '$tahun_ajaran'");
+                                $qr2 = mysqli_query($conn, "SELECT * FROM lembaga");
                                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
                                     <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                                 <?php } ?>
@@ -325,7 +119,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <select name="bidang" class="form-control" id="" required>
                                 <option value=""> -pilih bidang- </option>
                                 <?php
-                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
+                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang");
                                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
                                     <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                                 <?php } ?>
@@ -345,48 +139,49 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama Barang/Kegiatan <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <input type="text" id="first-name" name="nama" required="required" class="form-control ">
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Rencana Waktu <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <select name="rencana" id="" required class="form-control">
-                                <option value=""> -- pilih waktu -- </option>
-                                <option value="Semester 1"> Semester 1 </option>
-                                <option value="Semester 2"> Semester 2 </option>
-                                <option value="Semester 1&2"> Semester 1&2 </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">QTY/Satuan <span class="required">*</span></label>
-                        <div class="col-md-3 col-sm-6 ">
-                            <input id="middle-name" class="form-control" type="number" name="qty" required>
-                        </div>
-                        <div class="col-md-3 col-sm-6 ">
-                            <input id="middle-name" class="form-control" type="text" name="satuan" required placeholder="ex : rim,pack,pcs,dll">
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Harga Satuan <span class="required">*</span>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Jumlah Nominal <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6  form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left " id="uang" name="harga_satuan" required>
+                            <input type="text" class="form-control has-feedback-left " id="uang" name="nominal" required>
                             <span class="form-control-feedback left" aria-hidden="true">Rp.</span>
                         </div>
-
                     </div>
                     <div class="item form-group">
-                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Tahun Ajaran<span class="required">*</span></label>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align">Tanggal Bayar <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 xdisplay_inputx form-group row has-feedback">
+
+                            <input type="text" name="tgl" class="form-control has-feedback-left" id="datePick" placeholder="" aria-describedby="inputSuccess2Status4">
+                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
+                            <span id="inputSuccess2Status4" class="sr-only">(success)</span>
+
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Penanggungjawab <span class="required">*</span>
+                        </label>
                         <div class="col-md-6 col-sm-6 ">
-                            <select name="tahun" id="" required class="form-control">
-                                <option value=""> -- pilih tahun -- </option>
-                                <option value="2022">2022</option>
+                            <input type="text" id="first-name" name="pj" required="required" class="form-control ">
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Keterangan <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <textarea name="ket" required="required" class="form-control "></textarea>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tahun Ajaran <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <select name="tahun" class="form-control" id="" required>
+                                <option value=""> -pilih tahun- </option>
+                                <?php
+                                $qr2 = mysqli_query($conn, "SELECT * FROM tahun");
+                                while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
+                                    <option value="<?= $a2['nama_tahun'] ?>"><?= $a2['nama_tahun'] ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -400,51 +195,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
     </div>
 </div>
 
-<!-- Modal Upload-->
-<div class="modal fade" id="ex_upload" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Upload File RAB (.xls)</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="item form-group">
-                    <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Download Template <span class="required">*</span></label>
-                    <div class="col-md-6 col-sm-6 ">
-                        <a href="file_rab/File example/Templetes RAB.xlsx">
-                            <button class="btn btn-sm btn-success"><i class="fa fa-file-excel"></i> Download Template RAB (.xls)</button>
-                        </a>
-                    </div>
-                </div>
-                <hr>
-                <form id="" data-parsley-validate class="form-horizontal form-label-left input_mask" action="upload_ex.php" method="post" enctype="multipart/form-data">
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama Barang/Kegiatan <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <input type="file" id="" name="file" required="required" class="form-control ">
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name"><span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <button type="submit" name="upload" class="btn btn-success">Upload File</button>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-
-        </div>
-    </div>
-</div>
 
 <?php include 'foot.php'; ?>
 <!-- Datatables -->
@@ -514,16 +265,14 @@ if (isset($_POST['save'])) {
     $lembaga = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lembaga']));
     $jenis = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['jenis']));
     $bidang = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bidang']));
-    $kode = $lembaga . '.' . $bidang .  '.' . $jenis .  '.' . rand();
-    $nama = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
-    $rencana = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['rencana']));
-    $qty = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['qty']));
-    $satuan = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['satuan']));
-    $harga_satuan = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['harga_satuan'])));
-    $total = $qty * preg_replace("/[^0-9]/", "", $harga_satuan);
+    $kode = 'KBJ.' . $lembaga . '.' . rand(0, 99999);
+    $nominal = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal'])));
+    $pj = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['pj']));
+    $ket = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['ket']));
+    $tgl = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl']));
     $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
 
-    $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '21','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', NOW())");
+    $sql = mysqli_query($conn, "INSERT INTO kebijakan VALUES ('$id', '$kode', '$lembaga','$bidang','$jenis','$nominal','$tgl','$pj','$ket','$tahun', NOW())");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
