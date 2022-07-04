@@ -1,21 +1,21 @@
 <?php
 include 'head.php';
-require 'vendors/PHPExcel/Classes/PHPExcel.php';
+require '../main/vendors/PHPExcel/Classes/PHPExcel.php';
 
 //$kode = $_GET['kode'];
 //$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
 ?>
 <!-- Datatables -->
-<link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-<link href="vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-<link href="vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-<link href="vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-<link href="vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+<link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="../main/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="../main/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="../main/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="../main/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
 <!-- bootstrap-daterangepicker -->
-<link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="../main/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 <!-- bootstrap-datetimepicker -->
-<link href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<link href="../main/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 <!-- page content -->
 <div class="right_col" role="main">
@@ -36,7 +36,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                     </div>
                     <div class="x_content">
                         <!-- A -->
-                        <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+                        <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -51,8 +51,8 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan "));
+                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan WHERE tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -62,7 +62,7 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                                         <td><?= rupiah($a['nominal']) ?></td>
                                         <td><?= $a['ket'] ?></td>
                                         <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="../main/<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -199,23 +199,23 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
 
 <?php include 'foot.php'; ?>
 <!-- Datatables -->
-<script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-<script src="vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-<script src="vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-<script src="vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-<script src="vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<script src="../main/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="../main/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="../main/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../main/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="../main/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="../main/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="../main/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="../main/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="../main/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="../main/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../main/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="../main/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 <!-- bootstrap-daterangepicker -->
-<script src="vendors/moment/min/moment.min.js"></script>
-<script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="../main/vendors/moment/min/moment.min.js"></script>
+<script src="../main/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- bootstrap-datetimepicker -->
-<script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable2').DataTable();

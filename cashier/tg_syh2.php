@@ -311,7 +311,7 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 <?php
         exit;
     } else {
-        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun', '$kasir') ");
+        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun_ajaran', '$kasir') ");
         if ($qr) {
             echo "
                     <script>
