@@ -107,14 +107,15 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                 <li><a><i class="fa fa-folder-open"></i> Master Data <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="santri.php">Data santri</a></li>
-                                        <li><a>Daftar Biaya Pendidikan<span class="fa fa-chevron-down"></span></a>
+                                        <!-- <li><a>Daftar Biaya Pendidikan<span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 <li><a href="bppes.php">BP Pesantren</a>
                                                 </li>
                                                 <li><a href="bpfor.php">BP Formal</a>
                                                 </li>
                                             </ul>
-                                        </li>
+                                        </li> -->
+                                        <li><a href="bpOk.php"> Biaya Pendidikan </span></a></li>
                                         <li><a href="kode.php"> Daftar Kode </span></a></li>
                                     </ul>
                                 </li>
