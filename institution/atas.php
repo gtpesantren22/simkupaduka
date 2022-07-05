@@ -22,6 +22,7 @@ $tahun_ajaran = $_SESSION['tahun'];
 
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id' "));
 $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' "));
+$hak_aks = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM akses WHERE lembaga = '$lmb' AND tahun = '$tahun_ajaran' "));
 
 $no = 1;
 $id_user = $user['id_user'];

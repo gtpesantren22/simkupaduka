@@ -139,47 +139,64 @@ if (isset($_POST['masuk'])) {
       $dt = mysqli_fetch_assoc($sql);
       $pass = $dt['password'];
       $lvl = $dt['level'];
+      $llmb = $dt['lembaga'];
 
       if (password_verify($fiil, $pass)) {
+
+        $sssq = mysqli_query($conn, "SELECT * FROM akses WHERE lembaga = '$llmb' AND tahun = '$tahun' ");
+        $cck = mysqli_fetch_assoc($sssq);
+        $jmcck = mysqli_num_rows($sssq);
 
         $_SESSION['id'] = $dt['id_user'];
         $_SESSION['lmb'] = $dt['lembaga'];
         $_SESSION['tahun'] = $tahun;
 
-        if ($lvl == 'admin') {
-          $_SESSION['lvl_adm_qwertyuiop'] = true;
-          $link = 'main/index.php';
-        } elseif ($lvl == 'lembaga') {
-          $_SESSION['lvl_lmbg_qwertyuiop'] = true;
-          $link = 'institution/index.php';
-        } elseif ($lvl == 'kasir') {
-          $_SESSION['lvl_kasir_qwertyuiop'] = true;
-          $link = 'cashier/index.php';
-        } elseif ($lvl == 'kepala') {
-          $_SESSION['lvl_super_qwertyuiop'] = true;
-          $link = 'superior/index.php';
-        } elseif ($lvl == 'account') {
-          $_SESSION['lvl_account_qwertyuiop'] = true;
-          $link = 'account/index.php';
-        } elseif ($lvl == 'bunda') {
-          $_SESSION['lvl_bundut_qwertyuiop'] = true;
-          $link = 'bunda/index.php';
-        }
+        if ($cck['login'] === 'T' || $jmcck < 1) {
+          echo "
+          <script>
+              Swal.fire({
+                icon: 'error',
+                title: 'Maaf',
+                text: 'Anda tidak dapat mengakses Tahun Pelajaran ini. Silahkan hubungi admin'
+              });
+          </script>
+          ";
+        } else {
+          if ($lvl == 'admin') {
+            $_SESSION['lvl_adm_qwertyuiop'] = true;
+            $link = 'main/index.php';
+          } elseif ($lvl == 'lembaga') {
+            $_SESSION['lvl_lmbg_qwertyuiop'] = true;
+            $link = 'institution/index.php';
+          } elseif ($lvl == 'kasir') {
+            $_SESSION['lvl_kasir_qwertyuiop'] = true;
+            $link = 'cashier/index.php';
+          } elseif ($lvl == 'kepala') {
+            $_SESSION['lvl_super_qwertyuiop'] = true;
+            $link = 'superior/index.php';
+          } elseif ($lvl == 'account') {
+            $_SESSION['lvl_account_qwertyuiop'] = true;
+            $link = 'account/index.php';
+          } elseif ($lvl == 'bunda') {
+            $_SESSION['lvl_bundut_qwertyuiop'] = true;
+            $link = 'bunda/index.php';
+          }
 
-        echo "
-      <script>
-            Swal.fire({
-                title: 'Berhasil',
-                text: 'Login berhasil. Anda akan dialihkan',
-                icon: 'success',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 2000;
-            setTimeout(function() {
-                document.location.href = '" . $link . "'
-            }, millisecondsToWait);
-        </script>
-      ";
+          echo "
+          <script>
+              Swal.fire({
+                  title: 'Berhasil',
+                  text: 'Login berhasil. Anda akan dialihkan',
+                  icon: 'success',
+                  showConfirmButton: false
+              });
+              var millisecondsToWait = 2000;
+              setTimeout(function() {
+                  document.location.href = '" . $link . "'
+              }, millisecondsToWait);
+          </script>
+        ";
+        }
       } else {
         echo "
         <script>
