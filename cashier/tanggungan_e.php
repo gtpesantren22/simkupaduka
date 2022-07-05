@@ -2,7 +2,7 @@
 include 'atas.php';
 $nis = $_GET['nis'];
 $sn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' "));
-$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tanggungan WHERE nis = '$nis' "));
+$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tanggungan WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
 ?>
 
 <div class="content-wrapper">
@@ -70,7 +70,7 @@ $dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tanggungan WHERE nis
                                             </div>
                                         </div>
                                         <?php
-                                        $sql = mysqli_query($conn, "SELECT * FROM tg_lembaga");
+                                        $sql = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
                                         while ($r = mysqli_fetch_assoc($sql)) { ?>
                                             <div class="col-md-6">
                                                 <div class="form-group">
@@ -138,7 +138,7 @@ if (isset($_POST['save'])) {
     $syahriah = $_POST['syahriah'];
 
     $sql = "UPDATE tanggungan SET syahriah = '$syahriah' ";
-    $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga ");
+    $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran' ");
     while ($ak = mysqli_fetch_assoc($tg)) {
         $vl = $ak['kode'];
         $nm = $_POST[$ak['kode']];

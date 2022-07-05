@@ -1,7 +1,9 @@
 <?php
 include '../koneksi.php';
+$tahun_ajaran = $_SESSION['tahun'];
+
 $lembaga = $_GET['kode'];
-$sql = mysqli_query($conn, "DELETE * FROM rab WHERE lembaga = '$lembaga' AND tahun = '2022' ");
+$sql = mysqli_query($conn, "DELETE * FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' ");
 if ($sql) { ?>
     <script>
         Swal.fire({

@@ -35,26 +35,30 @@ include 'atas.php';
                                         <th>No</th>
                                         <th>Nama</th>
                                         <th>Briva</th>
-                                        <th>Kelas</th>
-                                        <th>Tanggungan</th>
-                                        <th>#</th>
+
+                                        <th>Nominal</th>
+                                        <th>Tahun</th>
+                                        <th>Act</th>
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.* FROM tangg a JOIN tb_santri b ON a.nis=b.nis  ");
-                                    while ($ls_jns = mysqli_fetch_assoc($rls)) {
-                                    ?>
+
+                                    $no = 1;
+                                    $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM tangg a JOIN tb_santri b ON a.nis=b.nis WHERE a.tahun = '$tahun_ajaran' ");
+                                    while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                         <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $ls_jns['nama']; ?></td>
-                                            <td><?= $ls_jns['briva']; ?></td>
-                                            <td><?= $ls_jns['k_formal'] . ' ' . $ls_jns['t_formal']; ?></td>
-                                            <td><?= rupiah($ls_jns['total']); ?></td>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a['nama'] ?></td>
+                                            <td><?= $a['briva'] ?></td>
+                                            <td>Rp. <?= number_format($a['total'], 0, '.', '.') ?></td>
+                                            <td><?= $a['tahun'] ?></td>
                                             <td>
                                                 <!--<button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#exampleModal<?= $ls_jns['nis']; ?>">Detail</button>-->
-                                                <a href="tg_syh2.php?nis=<?= $ls_jns['nis']; ?>"><button class="btn btn-info btn-xs">Discrb</button></a>
-                                                <a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=del_tg&id=' . $ls_jns['id_tanggungan'] ?>">
+                                                <a href="tg_syh2.php?nis=<?= $a['nis']; ?>"><button class="btn btn-info btn-xs">Discrb</button></a>
+                                                <a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=del_tg&id=' . $a['id_tangg'] ?>">
+
                                                     <button class="btn btn-danger btn-xs">Hapus</button>
                                                 </a>
                                             </td>

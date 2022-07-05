@@ -1,6 +1,7 @@
 <?php
 include 'head.php';
-// require 'vendors/PHPExcel/Classes/PHPExcel.php';
+
+require '../main/vendors/PHPExcel/Classes/PHPExcel.php';
 
 //$kode = $_GET['kode'];
 //$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
@@ -36,7 +37,9 @@ include 'head.php';
                     </div>
                     <div class="x_content">
                         <!-- A -->
-                        <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+
+                        <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+
                             <thead>
                                 <tr>
                                     <th>No</th>
@@ -51,8 +54,9 @@ include 'head.php';
                             <tbody>
                                 <?php
                                 $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan "));
+
+                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ");
+                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan WHERE tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -62,7 +66,10 @@ include 'head.php';
                                         <td><?= rupiah($a['nominal']) ?></td>
                                         <td><?= $a['ket'] ?></td>
                                         <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                            <<<<<<< HEAD <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                                =======
+                                                <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="../main/<?= 'hapus.php?kd=kbj&id=' . $a['id_kebijakan']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                                >>>>>>> v23
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -216,83 +223,83 @@ include 'head.php';
 <script src="../main/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- bootstrap-datetimepicker -->
 <script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<<<<<<< HEAD=======>>>>>>> v23
+    <script>
+        $(document).ready(function() {
+            $('#datatable2').DataTable();
+            $('#datatable3').DataTable();
 
-<script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
-
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-    });
-</script>
-<script type="text/javascript">
-    var rupiah = document.getElementById('uang');
-    var rupiah2 = document.getElementById('uang_2');
-
-    rupiah.addEventListener('keyup', function(e) {
-        rupiah.value = formatRupiah(this.value);
-    });
-    rupiah2.addEventListener('keyup', function(e) {
-        rupiah2.value = formatRupiah(this.value);
-    });
-
-    /* Fungsi formatRupiah */
-    function formatRupiah(angka, prefix) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
-    }
-</script>
-<?php
-if (isset($_POST['save'])) {
-
-    $id = $uuid;
-    $lembaga = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lembaga']));
-    $jenis = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['jenis']));
-    $bidang = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bidang']));
-    $kode = 'KBJ.' . $lembaga . '.' . rand(0, 99999);
-    $nominal = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal'])));
-    $pj = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['pj']));
-    $ket = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['ket']));
-    $tgl = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl']));
-    $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
-
-    $sql = mysqli_query($conn, "INSERT INTO kebijakan VALUES ('$id', '$kode', '$lembaga','$bidang','$jenis','$nominal','$tgl','$pj','$ket','$tahun', NOW())");
-    if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'RAB berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'rab_kbj.php' ?>"
-                }, millisecondsToWait);
-
+            $('#datePick').datetimepicker({
+                format: 'YYYY-MM-DD'
             });
-        </script>
+            $('#datePick2').datetimepicker({
+                format: 'YYYY-MM-DD'
+            });
+        });
+    </script>
+    <script type="text/javascript">
+        var rupiah = document.getElementById('uang');
+        var rupiah2 = document.getElementById('uang_2');
 
-<?php    } else {
-        echo "DATA TAK MAU MASUK";
+        rupiah.addEventListener('keyup', function(e) {
+            rupiah.value = formatRupiah(this.value);
+        });
+        rupiah2.addEventListener('keyup', function(e) {
+            rupiah2.value = formatRupiah(this.value);
+        });
+
+        /* Fungsi formatRupiah */
+        function formatRupiah(angka, prefix) {
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+                split = number_string.split(','),
+                sisa = split[0].length % 3,
+                rupiah = split[0].substr(0, sisa),
+                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            // tambahkan titik jika yang di input sudah menjadi angka ribuan
+            if (ribuan) {
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+        }
+    </script>
+    <?php
+    if (isset($_POST['save'])) {
+
+        $id = $uuid;
+        $lembaga = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lembaga']));
+        $jenis = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['jenis']));
+        $bidang = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bidang']));
+        $kode = 'KBJ.' . $lembaga . '.' . rand(0, 99999);
+        $nominal = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal'])));
+        $pj = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['pj']));
+        $ket = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['ket']));
+        $tgl = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl']));
+        $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
+
+        $sql = mysqli_query($conn, "INSERT INTO kebijakan VALUES ('$id', '$kode', '$lembaga','$bidang','$jenis','$nominal','$tgl','$pj','$ket','$tahun', NOW())");
+        if ($sql) { ?>
+            <script>
+                $(document).ready(function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'RAB berhasil tersimpan',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1000;
+                    setTimeout(function() {
+                        document.location.href = "<?= 'rab_kbj.php' ?>"
+                    }, millisecondsToWait);
+
+                });
+            </script>
+
+    <?php    } else {
+            echo "DATA TAK MAU MASUK";
+        }
     }
-}
-?>
+    ?>

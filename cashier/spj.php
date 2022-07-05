@@ -39,7 +39,7 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.cair as b_cair FROM spj a JOIN pengajuan b ON a.kode=b.kode WHERE a.lembaga = '$kol' ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.cair as b_cair FROM spj a JOIN pengajuan b ON a.kode=b.kode WHERE a.lembaga = '$kol' AND a.tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
                                         <tr>
@@ -175,8 +175,8 @@ if (isset($_POST['upload'])) {
         if (file_exists($file_lama)) {
             unlink($file_lama);
         }
-        $sql1 = mysqli_query($conn, "UPDATE spj SET stts = 1, file_spj = '$xx', tgl_upload = '$date' WHERE kode = '$kode' ");
-        $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 1 WHERE kode = '$kode' ");
+        $sql1 = mysqli_query($conn, "UPDATE spj SET stts = 1, file_spj = '$xx', tgl_upload = '$date' WHERE kode = '$kode' AND tahun = '$tahun_ajaran' ");
+        $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 1 WHERE kode = '$kode' AND tahun = '$tahun_ajaran' ");
         if ($sql1 && $sql2) { ?>
             <script>
                 Swal.fire({

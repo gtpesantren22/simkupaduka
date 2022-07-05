@@ -2,20 +2,20 @@
 include 'fungsi.php';
 include 'head.php';
 $kode = $_GET['kode'];
-$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE id_pn = '$kode' "));
+$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE id_pn = '$kode' AND tahun = '$tahun_ajaran' "));
 
 $kd_l = $data['lembaga'];
-$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd_l' "));
+$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd_l' AND tahun = '$tahun_ajaran' "));
 $kd_pj = $data['kode_pengajuan'];
-$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
-$jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
+$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+$jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
 $kfe = $jml['jml'] + $jml2['jml'];
 
-$veral = mysqli_query($conn, "SELECT * FROM verifikasi WHERE kode_pengajuan = '$kd_pj' ");
-$apr = mysqli_query($conn, "SELECT * FROM approv WHERE kode_pengajuan = '$kd_pj' ");
-$cair = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kd_pj' ");
+$veral = mysqli_query($conn, "SELECT * FROM verifikasi WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
+$apr = mysqli_query($conn, "SELECT * FROM approv WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
+$cair = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
 
-$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj'"));
+$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">

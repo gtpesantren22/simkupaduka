@@ -49,7 +49,7 @@ include 'head.php';
                                         <tbody>
                                             <?php
                                             $no = 1;
-                                            $dt_bos = mysqli_query($conn, "SELECT * FROM lembaga ");
+                                            $dt_bos = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran' ");
                                             while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                                 <tr>
                                                     <td><?= $no++ ?></td>
@@ -121,7 +121,7 @@ include 'head.php';
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    $dt_bos = mysqli_query($conn, "SELECT * FROM bidang ");
+                                    $dt_bos = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
                                     while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
@@ -258,7 +258,7 @@ include 'head.php';
             <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
                 <div class="modal-body">
                     <?php
-                    $mx = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bidang ORDER BY kode DESC LIMIT 1"));
+                    $mx = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran' ORDER BY kode DESC LIMIT 1"));
                     $km = $mx['kode'] + 1;
                     ?>
                     <div class="item form-group">
@@ -340,7 +340,7 @@ if (isset($_POST['save'])) {
     $waktu = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['waktu']));
     $lv = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lv']));
 
-    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$hp_kep','$waktu','$lv')");
+    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$hp_kep','$waktu','$lv', '$tahun_ajaran')");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -367,7 +367,7 @@ if (isset($_POST['save2'])) {
     $nama = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
     $lv = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lv']));
 
-    $sql = mysqli_query($conn, "INSERT INTO bidang VALUES ('', '$kode', '$nama','$lv')");
+    $sql = mysqli_query($conn, "INSERT INTO bidang VALUES ('', '$kode', '$nama','$lv', '$tahun_ajaran')");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -392,7 +392,7 @@ if (isset($_POST['delete'])) {
 
     $id_lembaga = $_POST['id_lembaga'];
 
-    $sql = mysqli_query($conn, "DELETE FROM lembaga WHERE id_lembaga = $id_lembaga ");
+    $sql = mysqli_query($conn, "DELETE FROM lembaga WHERE id_lembaga = $id_lembaga AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {
@@ -417,7 +417,7 @@ if (isset($_POST['delete2'])) {
 
     $id_bidang = $_POST['id_bidang'];
 
-    $sql = mysqli_query($conn, "DELETE FROM bidang WHERE id_bidang = $id_bidang ");
+    $sql = mysqli_query($conn, "DELETE FROM bidang WHERE id_bidang = $id_bidang AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

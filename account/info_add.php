@@ -140,7 +140,7 @@ if (isset($_POST['save'])) {
     $tujuan =  $_POST['tujuan'];
 
 
-    $sql = mysqli_query($conn, "INSERT INTO info VALUES('$id', '$judul', '$tgl', '$uploader','$isi','$tujuan') ");
+    $sql = mysqli_query($conn, "INSERT INTO info VALUES('$id', '$judul', '$tgl', '$uploader','$isi','$tujuan', '$tahun_ajaran') ");
     if ($sql) { ?>
         <script>
             Swal.fire({

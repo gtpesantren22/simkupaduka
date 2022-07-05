@@ -1,8 +1,8 @@
 <?php
 include 'atas.php';
-$bos_data = mysqli_query($conn, "SELECT * FROM bos");
-$bos_jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM bos "));
-$bos_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM bos GROUP BY lembaga "));
+$bos_data = mysqli_query($conn, "SELECT * FROM bos WHERE tahun = '$tahun_ajaran'");
+$bos_jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM bos WHERE tahun = '$tahun_ajaran' "));
+$bos_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM bos WHERE tahun = '$tahun_ajaran' GROUP BY lembaga "));
 ?>
 
 <div class="content-wrapper">
@@ -64,7 +64,7 @@ $bos_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM bo
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM bos a JOIN lembaga b ON a.lembaga=b.kode  ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.nama FROM bos a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
 
                                     ?>
@@ -108,7 +108,7 @@ $bos_lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM bo
                             <select name="lembaga" class="form-control" required>
                                 <option value=""> -- pilih lembaga -- </option>
                                 <?php
-                                $lm = mysqli_query($conn, "SELECT * FROM lembaga");
+                                $lm = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                 while ($row = mysqli_fetch_assoc($lm)) { ?>
                                     <option value="<?= $row['kode'] ?>"><?= $row['nama'] ?></option>
                                 <?php } ?>
@@ -192,7 +192,7 @@ if (isset($_POST['save'])) {
     $tahun = $_POST['tahun'];
     $kasir = $nama_user;
 
-    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$lembaga', '$uraian', '$periode', '$nominal', '$tahun', '$tgl_setor', '$kasir') ");
+    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$lembaga', '$uraian', '$periode', '$nominal', '$tahun_ajaran', '$tgl_setor', '$kasir') ");
 
     if ($sql) { ?>
         <script>

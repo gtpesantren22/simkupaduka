@@ -41,7 +41,7 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT *, SUM(nominal) AS jml FROM pembayaran GROUP BY tgl ");
+                                    $rls = mysqli_query($conn, "SELECT *, SUM(nominal) AS jml FROM pembayaran WHERE tahun = '$tahun_ajaran' GROUP BY tgl ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) { ?>
                                         <tr>
                                             <td><?= $no++; ?></td>

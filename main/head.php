@@ -19,8 +19,11 @@ $uuid = Uuid::uuid4()->toString();
 
 $id = $_SESSION['id'];
 $lmb = $_SESSION['lmb'];
+$tahun_ajaran = $_SESSION['tahun'];
+
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id' "));
 $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' "));
+
 
 $no = 1;
 $id_user = $user['id_user'];
@@ -96,20 +99,23 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                     <!-- sidebar menu -->
                     <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                         <div class="menu_section">
+                            <h3>Tahun Pelajaran - <?= $tahun_ajaran; ?></h3>
+                            <hr>
                             <h3>General</h3>
                             <ul class="nav side-menu">
                                 <li><a href="index.php"><i class="fa fa-dashboard"></i> Dahsboard </span></a></li>
                                 <li><a><i class="fa fa-folder-open"></i> Master Data <span class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="santri.php">Data santri</a></li>
-                                        <li><a>Daftar Biaya Pendidikan<span class="fa fa-chevron-down"></span></a>
+                                        <!-- <li><a>Daftar Biaya Pendidikan<span class="fa fa-chevron-down"></span></a>
                                             <ul class="nav child_menu">
                                                 <li><a href="bppes.php">BP Pesantren</a>
                                                 </li>
                                                 <li><a href="bpfor.php">BP Formal</a>
                                                 </li>
                                             </ul>
-                                        </li>
+                                        </li> -->
+                                        <li><a href="bpOk.php"> Biaya Pendidikan </span></a></li>
                                         <li><a href="kode.php"> Daftar Kode </span></a></li>
                                     </ul>
                                 </li>
@@ -201,7 +207,7 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                         <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                     </div>
                     <nav class="nav navbar-nav">
-                        <ul class=" navbar-right">
+                        <ul class="navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
                                 <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
                                     <img src="production/images/D (1).png" alt=""><?= $nama_user ?>
@@ -211,7 +217,6 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                     <a class="dropdown-item" href="logout.php" onclick="return confirm('Yakin akan logout ?')"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                                 </div>
                             </li>
-
                         </ul>
                     </nav>
                 </div>

@@ -32,7 +32,7 @@ $no = 1;
                     <!-- /.timeline-label -->
                     <!-- timeline item -->
                     <?php
-                    $dt = mysqli_query($conn, "SELECT * FROM info");
+                    $dt = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                     while ($row = mysqli_fetch_assoc($dt)) {
                         $tg = $row['tgl']; ?>
                         <li>

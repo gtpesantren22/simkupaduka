@@ -4,7 +4,7 @@ $id_rab = $_POST['id_rab'];
 
 echo "<option value=''>Pilih Kelas</option>";
 
-$query = "SELECT total FROM rab WHERE kode=? ";
+$query = "SELECT total FROM rab WHERE kode=? AND tahun = '$tahun_ajaran' ";
 $dewan1 = $conn->prepare($query);
 $dewan1->bind_param("s", $id_rab);
 $dewan1->execute();

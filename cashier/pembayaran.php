@@ -43,7 +43,7 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM pembayaran ORDER BY tgl DESC ");
+                                    $rls = mysqli_query($conn, "SELECT * FROM pembayaran WHERE tahun = '$tahun_ajaran' ORDER BY tgl DESC ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) { ?>
                                         <tr>
                                             <td><?= $no++; ?></td>

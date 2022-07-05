@@ -1,14 +1,14 @@
 <?php
 require 'atas.php';
-$rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as jml FROM rab WHERE lembaga = '$kol' "));
-$real = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' "));
-$pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' ORDER BY no_urut DESC LIMIT 1 "));
-$spj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE lembaga = '$kol' ORDER BY no_urut DESC LIMIT 1 "));
+$rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) as jml FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran'"));
+$real = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran'"));
+$pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1 "));
+$spj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1 "));
 
-$A = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'A' "));
-$B = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'B' "));
-$C = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'C' "));
-$D = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'D' "));
+$A = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'A' AND tahun = '$tahun_ajaran' "));
+$B = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'B' AND tahun = '$tahun_ajaran' "));
+$C = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'C' AND tahun = '$tahun_ajaran' "));
+$D = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM realis WHERE lembaga = '$kol' AND jenis = 'D' AND tahun = '$tahun_ajaran' "));
 
 $hasilA = $A['jml'] == null ? '0' : $A['jml'];
 $hasilB = $B['jml'] == null ? '0' : $B['jml'];
@@ -108,7 +108,7 @@ $hasilD = $D['jml'] == null ? '0' : $D['jml'];
       <div class="col-md-12">
         <ul class="timeline">
           <?php
-          $dt = mysqli_query($conn, "SELECT * FROM info ORDER BY tgl DESC LIMIT 1");
+          $dt = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran' ORDER BY tgl DESC LIMIT 1");
           while ($row = mysqli_fetch_assoc($dt)) {
             $tg = $row['tgl']; ?>
             <li>

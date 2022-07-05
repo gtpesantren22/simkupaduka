@@ -52,12 +52,12 @@ include 'atas.php';
                             $nis = $_POST['nis'];
                             $no = 1;
 
-                            $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga");
-                            $sy = mysqli_fetch_assoc(mysqli_query($conn, "SELECT syahriah AS jml FROM tanggungan WHERE nis = '$nis' "));
-                            $sn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' "));
-                            $ttl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT (syahriah+lpba+lpbi+ltq+wisuda_pa+wisuda_pi+anniv+ujian+bb+6md+wtq+lpbi_pi) AS jml FROM tanggungan WHERE nis = '$nis' "));
-                            $masuk = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' GROUP BY nis "));
-                            $bayar = mysqli_query($conn, "SELECT * FROM pembayaran WHERE nis = '$nis' ");
+                            $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
+                            $sy = mysqli_fetch_assoc(mysqli_query($conn, "SELECT syahriah AS jml FROM tanggungan WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
+                            $sn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
+                            $ttl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT (syahriah+lpba+lpbi+ltq+wisuda_pa+wisuda_pi+anniv+ujian+bb+6md+wtq+lpbi_pi) AS jml FROM tanggungan WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
+                            $masuk = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$tahun_ajaran' GROUP BY nis "));
+                            $bayar = mysqli_query($conn, "SELECT * FROM pembayaran WHERE nis = '$nis' AND tahun = '$tahun_ajaran' ");
 
                         ?>
                             <hr>
@@ -123,7 +123,7 @@ include 'atas.php';
                                                     </tr>
                                                     <?php while ($t = mysqli_fetch_assoc($tg)) {
                                                         $nm = $t['kode'];
-                                                        $tgn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT $nm AS jml FROM tanggungan WHERE nis = '$nis' "));
+                                                        $tgn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT $nm AS jml FROM tanggungan WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
                                                         // var_dump($tgn);
                                                     ?>
                                                         <tr>
@@ -296,28 +296,28 @@ if (isset($_POST['add'])) {
     $nama = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
     $nis = $_POST['nis'];
     $tahun = '2021/2022';
-    
+
     $dp = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' "));
 
     $by = $nominal + $_POST['masuk'];
     $ttl = $_POST['ttl'];
-    $alm = $dp['desa'].'-'.$dp['kec'].'-'.$dp['kab'];
-    
+    $alm = $dp['desa'] . '-' . $dp['kec'] . '-' . $dp['kab'];
+
     $pesan = '_(Ini adalah pesan otomatis dari sistem)_
 *Assalamualaikum Wr. Wb*
 Kami dari *Pengurus Syahriyah* Pesantren Darul Lughah Wal Karomah
 menginfokan bahwa data dibawah ini
     
-Nama : *'. $nama .'*
-Alamat : *'. $alm .'* 
-Nominal Pembayaran: *'. rupiah($nominal) .'*
-Tanggal Bayar : *'. $tgl .'*
-Pembayaran Untuk: *Syahriyah tahun '. $tahun .'*
-Penerima: *'. $kasir .'*
+Nama : *' . $nama . '*
+Alamat : *' . $alm . '* 
+Nominal Pembayaran: *' . rupiah($nominal) . '*
+Tanggal Bayar : *' . $tgl . '*
+Pembayaran Untuk: *Syahriyah tahun ' . $tahun . '*
+Penerima: *' . $kasir . '*
 
 _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 *Terimakasih*';
-    
+
     if ($by > $ttl) { ?>
         <script>
             Swal.fire({
@@ -331,12 +331,12 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
                 document.location.href = "<?= 'tg_syh.php' ?>"
             }, millisecondsToWait);
         </script>
-        <?php
+<?php
         exit;
     } else {
-        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun', '$kasir') ");
-        if ($qr) { 
-                echo "
+        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun_ajaran', '$kasir') ");
+        if ($qr) {
+            echo "
                     <script>
                             Swal.fire({
                                 title: 'Berhasil',
@@ -349,8 +349,8 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
                                 document.location.href = 'pembayaran.php'
                             }, millisecondsToWait);
                         </script>
-                    "; 
-                    
+                    ";
+
             $url = 'https://app.whacenter.com/api/send';
             $ch = curl_init($url);
             // $pesan = $pesan;
@@ -359,13 +359,13 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
                 'number' => $dp['hp'],
                 // 'number' => '085236924510',
                 'message' => $pesan,
-        
+
             );
             $payload = $data;
             curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $result = curl_exec($ch);
-            curl_close($ch);   
+            curl_close($ch);
         }
     }
 }

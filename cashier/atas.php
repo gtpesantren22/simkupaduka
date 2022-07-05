@@ -18,8 +18,10 @@ $uuid = Uuid::uuid4()->toString();
 
 $id = $_SESSION['id'];
 $lmb = $_SESSION['lmb'];
+$tahun_ajaran = $_SESSION['tahun'];
+
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id' "));
-$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' "));
+$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' AND tahun = '$tahun_ajaran' "));
 
 $no = 1;
 $id_user = $user['id_user'];
@@ -27,7 +29,7 @@ $kol = $lm['kode'];
 $nama_user = $user['nama'];
 $level = $user['level'];
 
-$info = mysqli_query($conn, "SELECT * FROM info");
+$info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
 ?>
 <!DOCTYPE html>
 <html>
@@ -92,6 +94,9 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
+                <div class="navbar-left">
+                    <a href="index.php" class="logo" style="width: 100%;">TAHUN PELAJARAN - <?= $tahun_ajaran; ?></a>
+                </div>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
 
@@ -196,7 +201,9 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                         </a>
                         <ul class="treeview-menu">
                             <li><a href="tanggungan.php"><i class="fa fa-circle-o"></i> Data Tanggungan</a></li>
-                            <li><a href="tanggungan23.php"><i class="fa fa-circle-o"></i> Data Tanggungan 22/23</a></li>
+
+                            <li><a href="tanggungan23.php"><i class="fa fa-circle-o"></i> Data Tanggungan 23</a></li>
+
                             <li><a href="pembayaran.php"><i class="fa fa-circle-o"></i> Pembayaran</a></li>
                             <li><a href="rekap_tg.php"><i class="fa fa-circle-o"></i> Rekap Tanggungan</a></li>
                         </ul>

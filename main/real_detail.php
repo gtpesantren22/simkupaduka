@@ -2,9 +2,10 @@
 include 'head.php';
 
 $kode = $_GET['lm'];
-$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
+$rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode = '$kode' AND tahun = '$tahun_ajaran' ");
+$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' AND tahun = '$tahun_ajaran' "));
 $no = 1;
-$jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kode' GROUP BY jenis ");
+$jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY jenis ");
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -74,7 +75,7 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                         SUM(IF( jenis = 'C', total, '0')) AS C, 
                                         SUM(IF( jenis = 'D', total, '0')) AS D, 
                                         SUM(total) AS T 
-                                        FROM rab WHERE lembaga = '$kode' AND tahun = '2022' "));
+                                        FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
 
                                             $rl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT 
                                         SUM(IF( jenis = 'A', nominal, '0')) AS A, 
@@ -82,7 +83,7 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                         SUM(IF( jenis = 'C', nominal, '0')) AS C, 
                                         SUM(IF( jenis = 'D', nominal, '0')) AS D, 
                                         SUM(nominal) AS T 
-                                        FROM realis WHERE lembaga = '$kode' AND tahun = '2022' "));
+                                        FROM realis WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
                                             ?>
                                             <tr style="color: white; background-color: purple; font-weight: bold;">
                                                 <th>Jenis Belanja</th>
@@ -154,13 +155,13 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '2022' ");
-                                        $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '2022' "));
-                                        $dt3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tt FROM realis WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '2022' GROUP BY kode "));
+                                        $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
+                                        $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
+                                        $dt3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tt FROM realis WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY kode "));
 
                                         while ($r1 = mysqli_fetch_assoc($dt1)) {
                                             $kd = $r1['kode'];
-                                            $rs = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE kode = '$kd' GROUP BY kode "));
+                                            $rs = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' GROUP BY kode "));
                                             $sisa = $r1['total'] - $rs['nom'];
                                             $prc = round(($rs['nom'] / $r1['total']) * 100, 0);
                                             if ($prc >= 0 && $prc <= 25) {
@@ -286,7 +287,7 @@ if (isset($_POST['save'])) {
     $total = $qty * preg_replace("/[^0-9]/", "", $harga_satuan);
     $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
 
-    $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('', '$lembaga','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun')");
+    $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('', '$lembaga','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran')");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

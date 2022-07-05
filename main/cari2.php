@@ -1,11 +1,12 @@
 <?php
 include '../koneksi.php';
+$tahun_ajaran = $_SESSION['tahun'];
 
 $judul = strip_tags($_GET['judul']);
 if ($judul == "")
   echo "Masukkan judul arikel";
 else {
-  $query = "SELECT a.*, b.nama FROM disposisi a JOIN lembaga b ON a.lembaga=b.kode where a.kode = '$judul'";
+  $query = "SELECT a.*, b.nama FROM disposisi a JOIN lembaga b ON a.lembaga=b.kode where a.kode = '$judul' AND tahun = '$tahun_ajaran' ";
   $result = $conn->query($query) or die($conn->error . __LINE__);
   if ($result->num_rows > 0) {
     while ($rows = $result->fetch_assoc()) {

@@ -11,6 +11,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 //uuid1
 //$uuid = Uuid::uuid4()->toString();
+$tahun_ajaran = $_SESSION['tahun'];
 
 if (isset($_POST['upload'])) {
     $file = $_FILES['file']['name'];
@@ -41,7 +42,7 @@ if (isset($_POST['upload'])) {
         $total = $qty * $harga_satuan;
         $tahun = $all_data[$i]['J'];
         $upload = date('d-m-Y H:i:s');
-        $sql .= "('$id', '$lembaga', '$bidang', '$jenis','$kode','$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun', '$upload'),";
+        $sql .= "('$id', '$lembaga', '$bidang', '$jenis','$kode','$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', '$upload'),";
     }
     $sql = substr($sql, 0, -1);
     // echo $sql;

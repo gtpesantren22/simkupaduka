@@ -1,11 +1,11 @@
 <?php
 require 'atas.php';
 $kode = $_GET['kode'];
-$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kode' "));
-$crr = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal_cair) as jml FROM pencairan WHERE kode_pengajuan = '$kode' "));
-$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom_cair, 0)) AS tunai, SUM(IF( stas = 'barang', nom_cair, 0)) AS brg FROM real_sm WHERE kode_pengajuan = '$kode' "));
-$dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM real_sm WHERE kode_pengajuan = '$kode' "));
-$plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kode' ");
+$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
+$crr = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal_cair) as jml FROM pencairan WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
+$dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom_cair, 0)) AS tunai, SUM(IF( stas = 'barang', nom_cair, 0)) AS brg FROM real_sm WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
+$dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM real_sm WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
+$plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
 ?>
 
 <div class="content-wrapper">
@@ -78,7 +78,7 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' AND stas = 'tunai' ORDER BY stas ASC ");
+                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' AND stas = 'tunai' AND tahun = '$tahun_ajaran' ORDER BY stas ASC ");
                                         while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                             //$kode = $ls_jns['kode'];
                                         ?>
@@ -118,7 +118,7 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' AND stas = 'barang' ORDER BY stas ASC ");
+                                        $rls = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' AND stas = 'barang' AND tahun = '$tahun_ajaran' ORDER BY stas ASC ");
                                         while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                             //$kode = $ls_jns['kode'];
                                         ?>
@@ -193,7 +193,7 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kode' ");
+                                    $rls = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) { ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
@@ -309,19 +309,19 @@ if (isset($_POST['cairkan'])) {
 
     $jumlah_dipilih = count($id_pnj);
 
-    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir')");
-    $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' ");
+    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir', '$tahun_ajaran')");
+    $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' AND tahun = '$tahun_ajaran' ");
 
     for ($x = 0; $x < $jumlah_dipilih; $x++) {
-        $add = mysqli_query($conn, "INSERT INTO realis SELECT * FROM real_sm WHERE id_realis = '$id_pnj[$x]' ");
-        $del = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id_pnj[$x]' ");
+        $add = mysqli_query($conn, "INSERT INTO realis SELECT * FROM real_sm WHERE id_realis = '$id_pnj[$x]' AND tahun = '$tahun_ajaran' ");
+        $del = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id_pnj[$x]' AND tahun = '$tahun_ajaran' ");
     }
 
     if ($nominal_cair < $nominal) {
         $sisa = $nominal - $nominal_cair;
         $tgl_setor = date('Y-m-d');
 
-        mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor' ) ");
+        mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
     }
 
     if ($sql && $pnj && $add && $del) { ?>
@@ -353,20 +353,20 @@ if (isset($_POST['all'])) {
     $kasir = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kasir']));
 
 
-    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir')");
-    $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' ");
+    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir', '$tahun_ajaran')");
+    $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' AND tahun = '$tahun_ajaran' ");
 
     while ($x = mysqli_fetch_assoc($plih)) {
         $id_pnj = $x['id_realis'];
-        $add = mysqli_query($conn, "INSERT INTO realis SELECT * FROM real_sm WHERE id_realis = '$id_pnj' ");
-        $del = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id_pnj' ");
+        $add = mysqli_query($conn, "INSERT INTO realis SELECT * FROM real_sm WHERE id_realis = '$id_pnj' AND tahun = '$tahun_ajaran' ");
+        $del = mysqli_query($conn, "DELETE FROM real_sm WHERE id_realis = '$id_pnj' AND tahun = '$tahun_ajaran' ");
     }
 
     if ($nominal_cair < $nominal) {
         $sisa = $nominal - $nominal_cair;
         $tgl_setor = date('Y-m-d');
 
-        mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor' ) ");
+        mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor', '$tahun_ajaran' ) ");
     }
 
     if ($sql && $pnj && $add && $del) { ?>

@@ -11,8 +11,8 @@ else {
     while ($rows = $result->fetch_assoc()) {
       extract($rows);
       $kd = $rows['kode'];
-      $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom, SUM(vol) as vol FROM realis WHERE kode = '$kd' "));
-      $pakai2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom, SUM(vol) as vol FROM real_sm WHERE kode = '$kd' "));
+      $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom, SUM(vol) as vol FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
+      $pakai2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom, SUM(vol) as vol FROM real_sm WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
       $sisa_jml = $rows['qty'] - $pakai['vol'] - $pakai2['vol'];
       $sisa = $rows['total'] - $pakai['nom'] - $pakai2['nom'];
       echo "

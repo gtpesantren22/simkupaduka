@@ -34,7 +34,7 @@ include 'atas.php';
                                         <select name="nis" id="" class="form-control cari1">
                                             <option value=""> -cari santri- </option>
                                             <?php
-                                            $santri = mysqli_query($conn, "SELECT * FROM tb_santri WHERE aktif = 'Y' AND NOT EXISTS (SELECT * FROM tanggungan WHERE tb_santri.nis=tanggungan.nis)");
+                                            $santri = mysqli_query($conn, "SELECT * FROM tb_santri WHERE aktif = 'Y' AND NOT EXISTS (SELECT * FROM tanggungan WHERE tb_santri.nis=tanggungan.nis AND tanggungan.tahun = '$tahun_ajaran')");
                                             while ($r = mysqli_fetch_assoc($santri)) { ?>
                                                 <option value="<?= $r['nis']; ?>"><?= $r['k_formal'] . ' ' . $r['t_formal'] . ' - ' . $r['nama']; ?></option>
                                             <?php } ?>
@@ -50,7 +50,7 @@ include 'atas.php';
                                     <div class="col-md-5">
                                         <table class="table table-striped table-bordered table-hover">
                                             <?php
-                                            $sca = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE jkl = 'all' ");
+                                            $sca = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE jkl = 'all' tahun = '$tahun_ajaran' ");
                                             while ($da = mysqli_fetch_assoc($sca)) { ?>
                                                 <tr>
                                                     <td>

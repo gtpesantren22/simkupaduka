@@ -29,7 +29,9 @@ $nis = $_GET['nis'];
                         <?php
                         $no = 1;
 
-                        $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga ");
+
+                        $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
+
                         $sn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' "));
                         $masuk = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$tahun_ajaran' GROUP BY nis "));
                         $bayar = mysqli_query($conn, "SELECT * FROM pembayaran WHERE nis = '$nis' AND tahun = '$tahun_ajaran' ");
@@ -94,18 +96,12 @@ $nis = $_GET['nis'];
 
                                                 <?php
                                                 $tgn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tangg WHERE nis = '$nis' AND tahun = '$tahun_ajaran' "));
-                                                for ($i = 7; $i <= 12; $i++) {
-                                                    $tnn = ($tgn['total'] - 3000000) / 12;
-                                                ?>
-                                                    <tr>
-                                                        <th><?= $bulan[$i]; ?></th>
-                                                        <th><?= rupiah($tnn); ?></th>
-                                                    </tr>
-                                                <?php }
-                                                for ($i = 1; $i <= 6; $i++) {
-                                                    $tnn = ($tgn['total'] - 3000000) / 12;
-                                                    if ($i <= 4) {
-                                                        $tnnOk = $tnn + 300000;
+
+
+                                                for ($i = 1; $i <= 12; $i++) {
+                                                    $tnn = $tgn['ju_ap'];
+                                                    if ($i == 5 || $i == 6) {
+                                                        $tnnOk = $tgn['me_ju'];
                                                     } else {
                                                         $tnnOk = $tnn;
                                                     }
@@ -318,7 +314,9 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 <?php
         exit;
     } else {
-        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun', '$kasir') ");
+
+        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun_ajaran', '$kasir') ");
+
         if ($qr) {
             echo "
                     <script>

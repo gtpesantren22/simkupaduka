@@ -3,10 +3,10 @@ include  'konversi.php';
 include 'fungsi.php';
 $bln = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");
 $id = $_GET['id'];
-$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pencairan WHERE id_cair =  '$id' "));
+$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pencairan WHERE id_cair =  '$id' AND tahun = '$tahun_ajaran' "));
 
 $kd_lm = $data['lembaga'];
-$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd_lm' "));
+$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd_lm' AND tahun = '$tahun_ajaran' "));
 ?>
 <!DOCTYPE html>
 <html lang="en">

@@ -52,7 +52,7 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi a JOIN lembaga b ON a.lembaga=b.kode ORDER BY id_disp DESC");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ORDER BY id_disp DESC");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             // $kd_pj = $a['kode_pengajuan'];
                                             // $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
@@ -105,7 +105,7 @@ include 'head.php';
                             <select name="kode" id="" class="form-control" required>
                                 <option value=""> -pilih lembaga- </option>
                                 <?php
-                                $dw = mysqli_query($conn, "SELECT * FROM lembaga");
+                                $dw = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                 while ($k = mysqli_fetch_assoc($dw)) { ?>
                                     <option value="<?= $k['kode'] ?>"><?= $k['kode'] . '. ' . $k['nama'] ?></option>
                                 <?php } ?>
@@ -225,14 +225,14 @@ if (isset($_POST['save_bos'])) {
     $catatan = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['catatan']));
     $nom = preg_replace("/[^0-9]/", "", $nominal);
 
-    $data = mysqli_fetch_array(mysqli_query($conn, "SELECT max(kode) as kodeTerbesar FROM disposisi"));
+    $data = mysqli_fetch_array(mysqli_query($conn, "SELECT max(kode) as kodeTerbesar FROM disposisi WHERE tahun = '$tahun_ajaran'"));
     $kodeB = $data['kodeTerbesar'];
     $urutan = (int) substr($kodeB, 4, 4);
     $urutan++;
     $huruf =   $kode . "_";
     $kodeBarang = $huruf . sprintf("%04s", $urutan);
 
-    $sql = mysqli_query($conn, "INSERT INTO disposisi VALUES ('', '$kodeBarang', '$kode', '$tgl_bayar', '$nom', '$uraian', '$catatana', NOW() ) ");
+    $sql = mysqli_query($conn, "INSERT INTO disposisi VALUES ('', '$kodeBarang', '$kode', '$tgl_bayar', '$nom', '$uraian', '$catatana', NOW(), '$tahun_ajaran' ) ");
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

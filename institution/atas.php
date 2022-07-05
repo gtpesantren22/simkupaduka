@@ -18,6 +18,8 @@ $uuid = Uuid::uuid4()->toString();
 
 $id = $_SESSION['id'];
 $lmb = $_SESSION['lmb'];
+$tahun_ajaran = $_SESSION['tahun'];
+
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id' "));
 $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmb' "));
 
@@ -95,9 +97,11 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                 <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
+                <div class="navbar-left">
+                    <a href="index.php" class="logo" style="width: 100%;">TAHUN PELAJARAN - <?= $tahun_ajaran; ?></a>
+                </div>
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-
                         <!-- Notifications: style can be found in dropdown.less -->
                         <li class="dropdown notifications-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">

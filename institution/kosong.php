@@ -6,8 +6,8 @@ include 'bawah.php';
 if (isset($_POST['delkos'])) {
 
     $kode = $_POST['lm'];
-    $sql = mysqli_query($conn, "DELETE FROM rab WHERE lembaga = '$kode' ");
-    $sql2 = mysqli_query($conn, "DELETE FROM realis WHERE lembaga = '$kode' ");
+    $sql = mysqli_query($conn, "DELETE FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
+    $sql2 = mysqli_query($conn, "DELETE FROM realis WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
 
     if ($sql && $sql2) { ?>
         <script>

@@ -35,7 +35,7 @@ include 'head.php';
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <?php
-                                $df = mysqli_query($conn, "SELECT * FROM lembaga");
+                                $df = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                 while ($r = mysqli_fetch_assoc($df)) { ?>
                                     <a href="<?= 'rab_detail.php?kode=' . $r['kode'] ?>"><button class="btn btn-primary"><?= $r['kode'] . '. ' . $r['nama'] ?></button></a>
                                 <?php } ?>
@@ -114,62 +114,3 @@ include 'head.php';
         });
     });
 </script>
-
-<?php
-if (isset($_POST['save'])) {
-
-    $kode = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kode']));
-    $nama = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
-    $pelaksana = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
-    $pj = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['pj']));
-    $hp = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['hp']));
-    $waktu = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['waktu']));
-    $link = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['link']));
-
-    $sql = mysqli_query($conn, "INSERT INTO lembaga VALUES ('', '$kode', '$nama','$pelaksana','$pj','$hp','$waktu','$link')");
-    if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Lembaga berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "rab.php"
-                }, millisecondsToWait);
-
-            });
-        </script>
-
-    <?php    }
-}
-
-
-if (isset($_POST['delete'])) {
-
-    $id_kode = $_POST['id_kode'];
-
-    $sql = mysqli_query($conn, "DELETE FROM df_kode WHERE id_kode = $id_kode ");
-    if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Tahapan berhasil dihapus',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "kdpes.php"
-                }, millisecondsToWait);
-
-            });
-        </script>
-
-<?php    }
-}
-?>

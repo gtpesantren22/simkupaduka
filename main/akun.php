@@ -51,7 +51,7 @@ include 'head.php';
                                             $dt_bos = mysqli_query($conn, "SELECT * FROM user");
                                             while ($a = mysqli_fetch_assoc($dt_bos)) {
                                                 $kd = $a['lembaga'];
-                                                $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd' "));
+                                                $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
                                             ?>
                                                 <tr>
                                                     <td><?= $no++ ?></td>
@@ -88,7 +88,7 @@ include 'head.php';
                                                                             <select name="lembaga" class="form-control" id="" required>
                                                                                 <option value=""> -pilih lembaga- </option>
                                                                                 <?php
-                                                                                $qr2 = mysqli_query($conn, "SELECT * FROM lembaga");
+                                                                                $qr2 = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
                                                                                 while ($a2 = mysqli_fetch_assoc($qr2)) {
                                                                                     $sc = $a2['kode'] == $a['lembaga'] ? 'selected' : '';
                                                                                 ?>
@@ -252,7 +252,7 @@ if (isset($_POST['save'])) {
 
 
     $sql = mysqli_query($conn, "UPDATE user SET level = '$level', aktif = '$aktif', lembaga = '$lembaga' WHERE id_user = '$id_user' ");
-    $sql2 = mysqli_query($conn, "UPDATE lembaga SET hp = '$hp', hp_kep = '$hp_kep' WHERE kode = '$kd_lem' ");
+    $sql2 = mysqli_query($conn, "UPDATE lembaga SET hp = '$hp', hp_kep = '$hp_kep' WHERE kode = '$kd_lem' AND tahun = '$tahun_ajaran' ");
     if ($sql && $sql2) { ?>
         <script>
             Swal.fire({
