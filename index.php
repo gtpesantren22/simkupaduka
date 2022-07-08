@@ -8,10 +8,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIMKU-PADUKA App</title>
+
+    <link rel="stylesheet" href="clock.css">
 </head>
 
 <body>
+
     <center>
+        <div class="clock"></div>
         <h2>Coming Soon at <b id="demo"></b></h2>
         <img src="SIMKU1.jpg" alt="">
     </center>

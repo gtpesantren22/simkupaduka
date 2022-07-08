@@ -1,0 +1,26 @@
+.clock{
+    width: 50px;
+    height: 50px;
+    border: 8px solid #000;
+    border-radius: 50%;
+    position: relative;
+}
+
+.clock::before{
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 45%;
+    background-color: #000;
+    border-radius: 100px;
+    top: 50%; left: 50%;
+    transform: translateX(-50%);
+    transform-origin: top;
+    animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+    to{
+        transform: translateX(-50%) rotate(360deg);
+    }
+}
