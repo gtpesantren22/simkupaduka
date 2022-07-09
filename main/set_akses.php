@@ -50,7 +50,7 @@ include 'head.php';
                                         <tbody>
                                             <?php
                                             $no = 1;
-                                            $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM akses a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ");
+                                            $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM akses a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
                                             while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                                 <tr>
                                                     <td><?= $no++ ?></td>
