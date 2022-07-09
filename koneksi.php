@@ -1,6 +1,9 @@
 <?php
 $conn = mysqli_connect("localhost", "root", "", "db_sentral");
+$conn_dekos = mysqli_connect("localhost", "root", "", "db_dekos");
+
 // $conn = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_sentral");
+// $conn_dekos = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_dekos");
 
 function rupiah($angka)
 {
@@ -14,4 +17,5 @@ function rupiah2($angka)
 }
 
 $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");
+
 $tahun_ajaran = '2022/2023';

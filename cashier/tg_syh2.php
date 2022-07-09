@@ -209,6 +209,21 @@ $nis = $_GET['nis'];
                                                     <input type="date" name="tgl" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label for="exampleInputPassword1">Dekosan</label><br>
+                                                    <input type="radio" name="dekos" value="Y" required> Ya
+                                                    <input type="radio" name="dekos" value="T" required> Tidak
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="exampleInputPassword1">Bulan Dekosan</label>
+                                                    <select name="bulan" class="form-control">
+                                                        <option value=""> -pilih bulan- </option>
+                                                        <?php
+                                                        for ($i = 1; $i <= 12; $i++) { ?>
+                                                            <option value="<?= $i; ?>"><?= $bulan[$i]; ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
                                                     <button type="submit" name="add" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button>
                                                 </div>
                                             </div><!-- /.box-body -->
@@ -276,6 +291,8 @@ if (isset($_POST['add'])) {
     $nama = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nama']));
     $nis = $_POST['nis'];
     $tahun = $tahun_ajaran;
+    $dekos = $_POST['dekos'];
+    $bulan_bayar = $_POST['bulan'];
 
     $dp = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' "));
 
@@ -298,8 +315,9 @@ Penerima: *' . $kasir . '*
 _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 *Terimakasih*';
 
-    if ($by > $ttl) { ?>
-        <script>
+    if ($by > $ttl) {
+        echo "
+            <script>
             Swal.fire({
                 position: 'top-end',
                 icon: 'error',
@@ -308,16 +326,20 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
             });
             var millisecondsToWait = 2500;
             setTimeout(function() {
-                document.location.href = "<?= 'tg_syh.php' ?>"
+                document.location.href = 'tg_syh2.php?nis='" . $nis . "
             }, millisecondsToWait);
         </script>
-<?php
+        ";
         exit;
     } else {
 
         $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun_ajaran', '$kasir') ");
 
-        if ($qr) {
+        if ($dekos == 'Y') {
+            $qr2 = mysqli_query($conn_dekos, "INSERT INTO kos VALUES ('', '$nis', '300000', '$bulan_bayar', '$tahun_ajaran', '$tgl', '$kasir', '1', NOW() ) ");
+        }
+
+        if ($qr && $qr2) {
             echo "
                     <script>
                             Swal.fire({
@@ -332,22 +354,6 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
                             }, millisecondsToWait);
                         </script>
                     ";
-
-            $url = 'https://app.whacenter.com/api/send';
-            $ch = curl_init($url);
-            // $pesan = $pesan;
-            $data = array(
-                'device_id' => 'ba05119ba4157d8214272d38ceeef5a0',
-                'number' => $dp['hp'],
-                // 'number' => '085236924510',
-                'message' => $pesan,
-
-            );
-            $payload = $data;
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $result = curl_exec($ch);
-            curl_close($ch);
         }
     }
 }

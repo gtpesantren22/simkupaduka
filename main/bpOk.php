@@ -47,7 +47,7 @@ include 'head.php';
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <div class="table-responsive">
-                                    <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                                    <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
