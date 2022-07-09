@@ -170,7 +170,7 @@ include 'head.php';
                                         <select name="lembaga" id="" class="form-control" required>
                                             <option value=""> -pilih lembaga- </option>
                                             <?php
-                                            $sal = mysqli_query($conn, "SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga) AND tahun = '$tahun_ajaran' ");
+                                            $sal = mysqli_query($conn, "SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun_ajaran') ");
                                             while ($r = mysqli_fetch_assoc($sal)) {
                                             ?>
                                                 <option value="<?= $r['kode']; ?>"><?= $r['nama']; ?></option>
