@@ -306,6 +306,30 @@ if (isset($_POST['edit'])) {
             });
         </script>
 
+    <?php    }
+}
+
+if (isset($_POST['delete'])) {
+
+    $id_akses = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['id_akses']));
+
+    $sql = mysqli_query($conn, "DELETE FROM akses WHERE id_akses = $id_akses ");
+    if ($sql) { ?>
+        <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Hak akses sudah berhasil diperbarui',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = "set_akses.php"
+                }, millisecondsToWait);
+            });
+        </script>
+
 <?php    }
 }
 
