@@ -30,7 +30,7 @@ $nis = $_GET['nis'];
                         $no = 1;
 
 
-                        $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
+                        // $tg = mysqli_query($conn, "SELECT * FROM tg_lembaga WHERE tahun = '$tahun_ajaran'");
 
                         $sn = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM tb_santri WHERE nis = '$nis' "));
                         $masuk = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$tahun_ajaran' GROUP BY nis "));
@@ -167,6 +167,7 @@ $nis = $_GET['nis'];
                                                         <th>Nominal</th>
                                                         <th>Untuk tahun</th>
                                                         <th>Penerima</th>
+                                                        <th>#</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -177,6 +178,9 @@ $nis = $_GET['nis'];
                                                             <td><?= rupiah($r['nominal']); ?></td>
                                                             <td><?= $r['tahun']; ?></td>
                                                             <td><span class="label label-success"><?= $r['kasir']; ?></span></td>
+                                                            <td>
+                                                                <a href="hapus.php?kd=del_by&id=<?= $r['id']; ?>" onclick="return confirm('Yakin akan dihapus?. Ini akan menghapus data di dekosan juga')"><span class="label label-danger">Del</span></a>
+                                                            </td>
                                                         </tr>
                                                     <?php } ?>
                                                 </tbody>
@@ -256,6 +260,8 @@ $nis = $_GET['nis'];
 <!-- DataTables -->
 <script src="../institution/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="../institution/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="../institution/dist/sw/sweetalert2.all.min.js"></script>
+
 <script>
     function masuk(txt, data) {
         document.getElementById('nis').value = data; // ini berfungsi mengisi value yang ber id textbox
@@ -315,45 +321,59 @@ Penerima: *' . $kasir . '*
 _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 *Terimakasih*';
 
-    if ($by > $ttl) {
-        echo "
-            <script>
+    if ($by > $ttl) { ?>
+        <script>
             Swal.fire({
                 position: 'top-end',
                 icon: 'error',
-                title: 'Maaf Pembayaran anda melebihi',
-                showConfirmBuutton: false
+                title: 'Maaf. Pembayaran Melebihi',
+                showConfirmButton: false
             });
-            var millisecondsToWait = 2500;
+            var millisecondsToWait = 1000;
             setTimeout(function() {
-                document.location.href = 'tg_syh2.php?nis='" . $nis . "
+                document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
             }, millisecondsToWait);
         </script>
-        ";
+        <?php
         exit;
     } else {
 
-        $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$tahun_ajaran', '$kasir') ");
-
         if ($dekos == 'Y') {
-            $qr2 = mysqli_query($conn_dekos, "INSERT INTO kos VALUES ('', '$nis', '300000', '$bulan_bayar', '$tahun_ajaran', '$tgl', '$kasir', '1', NOW() ) ");
-        }
+            $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
+            $qr2 = mysqli_query($conn_dekos, "INSERT INTO kos VALUES ('', '$nis', 300000, '$bulan_bayar', '$tahun_ajaran', '$tgl', '$kasir', 1, NOW() ) ");
 
-        if ($qr && $qr2) {
-            echo "
-                    <script>
-                            Swal.fire({
-                                title: 'Berhasil',
-                                text: 'Pembayaran Berhasil',
-                                icon: 'success',
-                                showConfirmButton: false
-                            });
-                            var millisecondsToWait = 1000;
-                            setTimeout(function() {
-                                document.location.href = 'tg_syh2.php?nis='" . $nis . "
-                            }, millisecondsToWait);
-                        </script>
-                    ";
+            if ($qr && $qr2) { ?>
+                <script>
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data Pembayaran telah ditambahkan',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1000;
+                    setTimeout(function() {
+                        document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+                    }, millisecondsToWait);
+                </script>
+            <?php }
+        } else {
+            $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
+
+            if ($qr) { ?>
+                <script>
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Data Pembayaran telah ditambahkan',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1000;
+                    setTimeout(function() {
+                        document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+                    }, millisecondsToWait);
+                </script>
+                ";
+<?php }
         }
     }
 }

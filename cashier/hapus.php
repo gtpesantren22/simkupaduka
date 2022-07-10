@@ -118,8 +118,14 @@ if ($kd == 'del_tg') {
 }
 
 if ($kd == 'del_by') {
+    $dtby = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pembayaran WHERE id = '$id' "));
+    $nis = $dtby['nis'];
+    $buln = $dtby['bulan'];
+    $tahun = $dtby['tahun'];
+
     $sql = mysqli_query($conn, "DELETE FROM pembayaran WHERE id = '$id' AND tahun = '$tahun_ajaran' ");
-    if ($sql) { ?>
+    $sql2 = mysqli_query($conn_dekos, "DELETE FROM kos WHERE nis = '$nis' AND bulan = '$buln' AND tahun = '$tahun' ");
+    if ($sql && $sql2) { ?>
         <script>
             Swal.fire({
                 position: 'top-end',
@@ -129,7 +135,7 @@ if ($kd == 'del_by') {
             });
             var millisecondsToWait = 1000;
             setTimeout(function() {
-                document.location.href = "<?= 'pembayaran.php' ?>"
+                document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
             }, millisecondsToWait);
         </script>
 <?php }

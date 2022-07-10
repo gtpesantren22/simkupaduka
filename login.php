@@ -163,22 +163,22 @@ if (isset($_POST['masuk'])) {
           ";
         } else {
           if ($lvl == 'admin') {
-            $_SESSION['lvl_adm_qwertyuiop-kkah'] = true;
+            $_SESSION['lvl_adm_qwertyuiop'] = true;
             $link = 'main/index.php';
           } elseif ($lvl == 'lembaga') {
-            $_SESSION['lvl_lmbg_qwertyuiop-kasd'] = true;
+            $_SESSION['lvl_lmbg_qwertyuiop'] = true;
             $link = 'institution/index.php';
           } elseif ($lvl == 'kasir') {
-            $_SESSION['lvl_kasir_qwertyuiop-kadud'] = true;
+            $_SESSION['lvl_kasir_qwertyuiop'] = true;
             $link = 'cashier/index.php';
           } elseif ($lvl == 'kepala') {
-            $_SESSION['lvl_super_qwertyuiop-kahha'] = true;
+            $_SESSION['lvl_super_qwertyuiop'] = true;
             $link = 'superior/index.php';
           } elseif ($lvl == 'account') {
-            $_SESSION['lvl_account_qwertyuiop-ddow'] = true;
+            $_SESSION['lvl_account_qwertyuiop'] = true;
             $link = 'account/index.php';
           } elseif ($lvl == 'bunda') {
-            $_SESSION['lvl_bundut_qwertyuiop-aooadd'] = true;
+            $_SESSION['lvl_bundut_qwertyuiop'] = true;
             $link = 'bunda/index.php';
           }
 
