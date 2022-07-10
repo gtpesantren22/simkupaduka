@@ -167,7 +167,7 @@ if (preg_match("/DISP./i", $kode_p)) {
                         <!-- /.row -->
                         <hr>
 
-                        <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+                        <table id="datatable-buttons" class="table table-striped table-bordered table-sm" style="width:100%">
                             <thead>
                                 <tr>
                                     <th>No</th>
