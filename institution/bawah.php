@@ -80,7 +80,7 @@
             //search_ajax_way();
             ajax_search();
         });
-        
+
     });
 
     function ajax_search() {
