@@ -8,7 +8,7 @@ require_once 'excel_reader2.php';
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
-$tahun_ajaran = $_SESSION['tahun'];
+// $tahun_ajaran = $_SESSION['tahun'];
 
 $target = basename($_FILES['file']['name']);
 move_uploaded_file($_FILES['file']['tmp_name'], $target);
@@ -37,7 +37,7 @@ for ($i = 5; $i <= $jumbar; $i++) {
     $tahun = $data->val($i, 10);
     $upload = date('d-m-Y H:i:s');
 
-    mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '$lembaga', '$bidang', '$jenis','$kode','$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', '$upload')");
+    mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '$lembaga', '$bidang', '$jenis','$kode','$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun', '$upload')");
 
     $success++;
 }
