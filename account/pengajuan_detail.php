@@ -496,7 +496,7 @@ pengajuan dari :
 Lembaga : ' . $l['nama'] . '
 Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
-telah diverifikasi oleh *' . $user . ' pada ' . $tgl . '*
+*Telah di Verifikasi dan Validasi Oleh Sub Bagian Accounting pada ' . $tgl . '*
 
 *_dimohon kepada KEPALA PESANTREN untuk segera mengecek dan menyetujui nya di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
@@ -598,7 +598,7 @@ pengajuan dari :
 Lembaga : ' . $l['nama'] . '
 Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
-ditolak oleh *' . $user . '* pada *' . $tgl . '*
+*DITOLAK Oleh Sub Bagian Accounting pada ' . $tgl . '*
 dengan catatan : _*' . $pesan . '*_
 
 *_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada di https://simkupaduka.ppdwk.com/_*
