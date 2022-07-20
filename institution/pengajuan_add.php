@@ -57,7 +57,7 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                                             <div class="row">
 
                                                                 <div class="col-md-9">
-                                                                    <select class="form-control" name="id_rab" id="search_query" required>
+                                                                    <select class="form-control select2" name="id_rab" id="search_query" required>
                                                                         <option value="">-pilih RAB-</option>
                                                                     </select>
                                                                 </div>
