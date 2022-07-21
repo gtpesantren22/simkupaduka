@@ -256,7 +256,7 @@ pengajuan dari :
 Lembaga : ' . $l['nama'] . '
 Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
-telah SETUJUI oleh *' . $user . '* pada *' . $tgl . '*
+*telah DISETUJUI oleh KEPALA PESANTREN pada ' . $tgl . '*
 
 *_dimohon kepada KASiR untuk segera melakukan pencairan di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
@@ -269,7 +269,7 @@ pengajuan dari :
 Lembaga : ' . $l['nama'] . '
 Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
-*telah SETUJUI oleh KEPALA PESANTREN pada ' . $tgl . '*
+*telah DISETUJUI oleh KEPALA PESANTREN pada ' . $tgl . '*
 
 *_dimohon kepada KPA dari Lembaga terkait untuk melakukan pencairan kepada pelaksana bendahara di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
