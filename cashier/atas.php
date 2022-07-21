@@ -220,6 +220,7 @@ $info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                             <li><a href="pes.php"><i class="fa fa-circle-o"></i> Pesantren</a></li>
                         </ul>
                     </li>
+                    <li><a href="mutasi.php"><i class="fa fa-external-link-square"></i> <span>Mutasi Santri</span></a></li>
                     <li class="header">ADDON</li>
                     <li><a href="info.php"><i class="fa fa-info-circle text-yellow"></i> <span>Informasi</span></a></li>
                     <li><a href="setting.php"><i class="fa fa-cog text-red"></i> <span>Pengaturan</span></a></li>
