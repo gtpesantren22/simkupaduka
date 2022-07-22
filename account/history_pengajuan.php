@@ -77,7 +77,7 @@ include 'head.php';
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= rupiah($kfe) ?></td>
-                                                <td><a href="../main/<?= 'history_detail.php?kode=' . $a['id_pn'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Lihat history</button></a></td>
+                                                <td><a href="<?= 'history_detail.php?kode=' . $a['id_pn'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Lihat history</button></a></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
