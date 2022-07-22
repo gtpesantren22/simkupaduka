@@ -291,7 +291,8 @@ Kode Pengjuan : ' . $kode . '
 Pada : ' . $at . '
 
 *_SPJ telah disetujui oleh TIM ACCOUNTING. Selesai_*
-Bisa dilanjutkan untuk pengajuan berikutnya.
+
+*NB : Dimohon untuk lakukan pengembalian sisa dana kepada Accounting. Agar pengajuan berikutnya bisa diproses*
 Terimakasih';
 
     $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
