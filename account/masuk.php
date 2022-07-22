@@ -230,7 +230,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                             <select name="kode_pengajuan" class="form-control" id="search_query" required>
                                                                 <option value=""> -pilih kode realis- </option>
                                                                 <?php
-                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode GROUP BY kode_pengajuan AND a.tahun = '$tahun_ajaran' ");
+                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode GROUP BY kode_pengajuan AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
                                                                     <option value="<?= $a['kode_pengajuan'] ?>"><?= $a['kode_pengajuan'] ?> (<?= $a['nama'] . ', ' . $bulan[$a['bulan']] . ' ' . $a['tahun'] ?>)</option>
                                                                 <?php } ?>

@@ -55,7 +55,7 @@ require '../main/vendors/PHPExcel/Classes/PHPExcel.php';
                                 <?php
                                 $no = 1;
 
-                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ");
+                                $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
                                 $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan WHERE tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>

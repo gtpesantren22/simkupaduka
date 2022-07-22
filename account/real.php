@@ -35,7 +35,7 @@ include 'head.php';
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <div class="row">
                                     <?php
-                                    $df = mysqli_query($conn, "SELECT b.nama, a.lembaga FROM rab a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' GROUP BY a.lembaga ORDER BY a.lembaga");
+                                    $df = mysqli_query($conn, "SELECT b.nama, a.lembaga FROM rab a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' b.tahun = '$tahun_ajaran' GROUP BY a.lembaga ORDER BY a.lembaga");
                                     while ($r = mysqli_fetch_assoc($df)) {
                                         $lembaga = $r['lembaga']
                                     ?>

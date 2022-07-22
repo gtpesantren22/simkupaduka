@@ -18,7 +18,7 @@ $cair = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kd
 
 $spj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE kode_pengajuan = '$kd_pj' "));
 
-$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj' AND a.tahun = '$tahun_ajaran'"));
+$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
