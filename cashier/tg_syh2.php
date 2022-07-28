@@ -165,7 +165,8 @@ $nis = $_GET['nis'];
                                                         <th>No</th>
                                                         <th>Tgl Bayar</th>
                                                         <th>Nominal</th>
-                                                        <th>Untuk tahun</th>
+                                                        <th>Bulan</th>
+                                                        <th>Tahun</th>
                                                         <th>Penerima</th>
                                                         <th>#</th>
                                                     </tr>
@@ -176,6 +177,7 @@ $nis = $_GET['nis'];
                                                             <td><?= $no++; ?></td>
                                                             <td><?= $r['tgl']; ?></td>
                                                             <td><?= rupiah($r['nominal']); ?></td>
+                                                            <td><?= $bulan[$r['bulan']]; ?></td>
                                                             <td><?= $r['tahun']; ?></td>
                                                             <td><span class="label label-success"><?= $r['kasir']; ?></span></td>
                                                             <td>
@@ -338,42 +340,60 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
         exit;
     } else {
 
-        if ($dekos == 'Y') {
-            $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
-            $qr2 = mysqli_query($conn_dekos, "INSERT INTO kos VALUES ('', '$nis', 300000, '$bulan_bayar', '$tahun_ajaran', '$tgl', '$kasir', 1, NOW() ) ");
+        $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pembayaran WHERE nis = '$nis' AND bulan = '$bulan_bayar' AND tahun = '$tahun' "));
+        if ($cek < 1) {
+            if ($dekos == 'Y') {
+                $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
+                $qr2 = mysqli_query($conn_dekos, "INSERT INTO kos VALUES ('', '$nis', 300000, '$bulan_bayar', '$tahun_ajaran', '$tgl', '$kasir', 1, NOW() ) ");
 
-            if ($qr && $qr2) { ?>
-                <script>
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Data Pembayaran telah ditambahkan',
-                        showConfirmButton: false
-                    });
-                    var millisecondsToWait = 1000;
-                    setTimeout(function() {
-                        document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
-                    }, millisecondsToWait);
-                </script>
+                if ($qr && $qr2) { ?>
+                    <script>
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Data Pembayaran telah ditambahkan',
+                            showConfirmButton: false
+                        });
+                        var millisecondsToWait = 1000;
+                        setTimeout(function() {
+                            document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+                        }, millisecondsToWait);
+                    </script>
+                <?php }
+            } else {
+                $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
+
+                if ($qr) { ?>
+                    <script>
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Data Pembayaran telah ditambahkan',
+                            showConfirmButton: false
+                        });
+                        var millisecondsToWait = 1000;
+                        setTimeout(function() {
+                            document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+                        }, millisecondsToWait);
+                    </script>
+                    ";
             <?php }
+            }
         } else {
-            $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
-
-            if ($qr) { ?>
-                <script>
-                    Swal.fire({
-                        position: 'top-end',
-                        icon: 'success',
-                        title: 'Data Pembayaran telah ditambahkan',
-                        showConfirmButton: false
-                    });
-                    var millisecondsToWait = 1000;
-                    setTimeout(function() {
-                        document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
-                    }, millisecondsToWait);
-                </script>
-                ";
-<?php }
+            ?>
+            <script>
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Maaf Pembayaran sudah ada',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+                }, millisecondsToWait);
+            </script>
+<?php
         }
     }
 }
