@@ -40,7 +40,6 @@ include 'head.php';
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Kode</th>
                                                 <th>Lembaga</th>
                                                 <th>Periode</th>
                                                 <th>Verval / Approv / Cair / SPJ</th>
@@ -51,17 +50,22 @@ include 'head.php';
                                         <tbody>
                                             <?php
                                             $no = 1;
-                                            $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ORDER BY no_urut DESC");
+                                            $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.spj != 2 AND kode_pengajuan LIKE '%DISP.%' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran'");
                                             while ($a = mysqli_fetch_assoc($dt_bos)) {
                                                 $kd_pj = $a['kode_pengajuan'];
-                                                $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-                                                $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                                $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                                $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
                                                 $kfe = $jml['jml'] + $jml2['jml'];
+
+                                                if (preg_match("/DISP./i", $kd_pj)) {
+                                                    $rt = "<span class='badge badge-danger'>DISPOSISI</span>";
+                                                } else {
+                                                    $rt = '';
+                                                }
                                             ?>
                                                 <tr>
                                                     <td><?= $no++ ?></td>
-                                                    <td><?= $a['kode_pengajuan'] ?></td>
-                                                    <td><?= $a['nama'] ?></td>
+                                                    <td><?= $a['nama'] . ' ' . $rt ?></td>
                                                     <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
                                                     <td>
                                                         <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
@@ -77,13 +81,14 @@ include 'head.php';
                                                         <?php } ?>
                                                     </td>
                                                     <td><?= rupiah($kfe) ?></td>
-                                                    <td><a href="<?= 'history_detail.php?kode=' . $a['id_pn'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Lihat history</button></a></td>
+                                                    <td><a href="<?= 'pengajuan_detail.php?kode=' . $a['kode_pengajuan'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Cek & Verifikasi</button></a></td>
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

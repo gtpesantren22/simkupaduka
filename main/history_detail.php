@@ -11,11 +11,14 @@ $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM r
 $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
 $kfe = $jml['jml'] + $jml2['jml'];
 
+
 $veral = mysqli_query($conn, "SELECT * FROM verifikasi WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
 $apr = mysqli_query($conn, "SELECT * FROM approv WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
 $cair = mysqli_query($conn, "SELECT * FROM pencairan WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
 
-$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj' AND a.tahun = '$tahun_ajaran' "));
+$spj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM spj WHERE kode_pengajuan = '$kd_pj' "));
+
+$a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kd_pj' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -98,7 +101,10 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                         <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
                                             proses verifikasi</span>
                                     <?php } else { ?>
+
                                         <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
+                                        <a href="../institution/spj_file/<?= $spj['file_spj']; ?>"> <span class="badge badge-warning"><i class="fa fa-download"> Unduh SPJ</i></span></a>
+
                                     <?php } ?>
                                 </center>
                             </div>
@@ -192,48 +198,50 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                         </div>
                                     </li>
                                 </ul>
-                                <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Kode RAB</th>
-                                            <th>Periode</th>
-                                            <th>PJ</th>
-                                            <th>Nominal</th>
-                                            <th>Keterangan</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $no = 1;
-                                        if ($data['cair'] == 1) {
-                                            $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                            $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
-                                        } else {
-                                            $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                            $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
-                                        }
-                                        while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
+                                <div class="table-responsive">
+                                    <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+                                        <thead>
                                             <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= $a['kode'] ?></td>
-                                                <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
-                                                <td><?= $a['pj'] ?></td>
-                                                <td><?= rupiah($a['nominal']) ?></td>
-                                                <td><?= $a['ket'] ?></td>
-                                                <!-- <td>
+                                                <th>No</th>
+                                                <th>Kode RAB</th>
+                                                <th>Periode</th>
+                                                <th>PJ</th>
+                                                <th>Nominal</th>
+                                                <th>Keterangan</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $no = 1;
+                                            if ($data['cair'] == 1) {
+                                                $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
+                                            } else {
+                                                $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
+                                            }
+                                            while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $a['kode'] ?></td>
+                                                    <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
+                                                    <td><?= $a['pj'] ?></td>
+                                                    <td><?= rupiah($a['nominal']) ?></td>
+                                                    <td><?= $a['ket'] ?></td>
+                                                    <!-- <td>
                                             <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_realis']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
                                         </td> -->
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                        <tfoot>
+                                            <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
+                                                <th colspan="4">SUB JUMLAH</th>
+                                                <th colspan="2"><?= rupiah($tt['tot']) ?></th>
                                             </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                            <th colspan="4">SUB JUMLAH</th>
-                                            <th colspan="2"><?= rupiah($tt['tot']) ?></th>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                        </tfoot>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
