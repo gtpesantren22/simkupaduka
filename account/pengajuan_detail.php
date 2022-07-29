@@ -166,111 +166,112 @@ if (preg_match("/DISP./i", $kode_p)) {
                         </div>
                         <!-- /.row -->
                         <hr>
-
-                        <table id="datatable-buttons" class="table table-striped table-bordered table-sm" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kode RAB</th>
-                                    <th>Periode</th>
-                                    <th>PJ</th>
-                                    <th>Keterangan</th>
-                                    <th>Nominal</th>
-                                    <th>Cair</th>
-                                    <th>Ket</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                if ($kl['cair'] == 1) {
-                                    $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot, SUM(nom_cair) AS tot2 FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
-                                } else {
-                                    $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot, SUM(nom_cair) AS tot2 FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
-                                }
-                                while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
+                        <div class="table-responsive">
+                            <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+                                <thead>
                                     <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
-                                        <td><?= $a['pj'] ?></td>
-                                        <td>
-                                            <?= $a['ket'] ?>
-                                            <?php
-                                            if (preg_match("/honor/i", $a['ket'])) {
-                                                $ssq = mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                                $fl = mysqli_fetch_assoc($ssq);
-                                                $htgd = mysqli_num_rows($ssq);
-                                            ?>
-                                                <?php if ($htgd > 0) { ?>
-                                                    <b><i><a href="../institution/honor_file/<?= $fl['files']; ?>"> (<i class="fa fa-download"></i> Download)</a></i></b>
-                                                <?php } else { ?>
-                                                    <b><i><a href="#"> (Belum ada)</a></i></b>
-                                            <?php }
-                                            } ?>
-                                        </td>
-                                        <td><?= rupiah($a['nominal']) ?></td>
-                                        <td><?= rupiah($a['nom_cair']) ?></td>
-                                        <td><?= $a['stas'] ?></td>
-                                        <td>
-                                            <?php if ($kl['cair'] == 0) { ?>
-                                                <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=real&id=' . $a['id_realis']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                                |
-                                                <a type="button" data-toggle="modal" data-target=".bs-example<?= $a['id_realis'] ?>"><span class="fa fa-pencil text-success"> Edit</span></a>
+                                        <th>No</th>
+                                        <th>Kode RAB</th>
+                                        <th>Periode</th>
+                                        <th>PJ</th>
+                                        <th>Keterangan</th>
+                                        <th>Nominal</th>
+                                        <th>Cair</th>
+                                        <th>Ket</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $no = 1;
+                                    if ($kl['cair'] == 1) {
+                                        $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                        $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot, SUM(nom_cair) AS tot2 FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
+                                    } else {
+                                        $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                        $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS tot, SUM(nom_cair) AS tot2 FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
+                                    }
+                                    while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a['kode'] ?></td>
+                                            <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
+                                            <td><?= $a['pj'] ?></td>
+                                            <td>
+                                                <?= $a['ket'] ?>
+                                                <?php
+                                                if (preg_match("/honor/i", $a['ket'])) {
+                                                    $ssq = mysqli_query($conn, "SELECT * FROM honor_file WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
+                                                    $fl = mysqli_fetch_assoc($ssq);
+                                                    $htgd = mysqli_num_rows($ssq);
+                                                ?>
+                                                    <?php if ($htgd > 0) { ?>
+                                                        <b><i><a href="../institution/honor_file/<?= $fl['files']; ?>"> (<i class="fa fa-download"></i> Download)</a></i></b>
+                                                    <?php } else { ?>
+                                                        <b><i><a href="#"> (Belum ada)</a></i></b>
+                                                <?php }
+                                                } ?>
+                                            </td>
+                                            <td><?= rupiah($a['nominal']) ?></td>
+                                            <td><?= rupiah($a['nom_cair']) ?></td>
+                                            <td><?= $a['stas'] ?></td>
+                                            <td>
+                                                <?php if ($kl['cair'] == 0) { ?>
+                                                    <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=real&id=' . $a['id_realis']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                                    |
+                                                    <a type="button" data-toggle="modal" data-target=".bs-example<?= $a['id_realis'] ?>"><span class="fa fa-pencil text-success"> Edit</span></a>
 
-                                                <div class="modal fade bs-example<?= $a['id_realis'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
-                                                        <div class="modal-content">
+                                                    <div class="modal fade bs-example<?= $a['id_realis'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
 
-                                                            <div class="modal-header">
-                                                                <h4 class="modal-title" id="myModalLabel2">Edit Nominal Pengajuan</h4>
-                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-                                                                </button>
-                                                            </div>
-                                                            <form action="" method="post">
-                                                                <input type="hidden" name="id_rsm" value="<?= $a['id_realis'] ?>">
-                                                                <div class="modal-body">
-                                                                    <div class="form-group">
-                                                                        <label for="">Keterangan</label>
-                                                                        <textarea name="ket" class="form-control" required>
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="myModalLabel2">Edit Nominal Pengajuan</h4>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                                                                    </button>
+                                                                </div>
+                                                                <form action="" method="post">
+                                                                    <input type="hidden" name="id_rsm" value="<?= $a['id_realis'] ?>">
+                                                                    <div class="modal-body">
+                                                                        <div class="form-group">
+                                                                            <label for="">Keterangan</label>
+                                                                            <textarea name="ket" class="form-control" required>
                                                                             <?= $a['ket']; ?>
                                                                         </textarea>
-                                                                    </div>
-                                                                    <div class="form-group">
-                                                                        <label for="">Edit Nominal</label>
-                                                                        <input type="text" name="nom_cair" id="uang<?= $no++ ?>" value="<?= rupiah($a['nom_cair']); ?>" class="form-control" required>
-                                                                    </div>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <label for="">Edit Nominal</label>
+                                                                            <input type="text" name="nom_cair" id="uang<?= $no++ ?>" value="<?= rupiah($a['nom_cair']); ?>" class="form-control" required>
+                                                                        </div>
 
-                                                                    <div class="form-group">
-                                                                        <label for="">Ket. Pencairan</label><br>
-                                                                        <input type="radio" name="stas" value="tunai" <?= $a['stas'] === 'tunai' ? 'checked' : ''; ?> required> Cair Tunai
-                                                                        <input type="radio" name="stas" value="barang" <?= $a['stas'] === 'barang' ? 'checked' : ''; ?> required> Cair Barang
+                                                                        <div class="form-group">
+                                                                            <label for="">Ket. Pencairan</label><br>
+                                                                            <input type="radio" name="stas" value="tunai" <?= $a['stas'] === 'tunai' ? 'checked' : ''; ?> required> Cair Tunai
+                                                                            <input type="radio" name="stas" value="barang" <?= $a['stas'] === 'barang' ? 'checked' : ''; ?> required> Cair Barang
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                                    <button type="submit" name="ed_nom" class="btn btn-primary">Simpan perubahan</button>
-                                                                </div>
-                                                            </form>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                                                        <button type="submit" name="ed_nom" class="btn btn-primary">Simpan perubahan</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            <?php } ?>
-                                        </td>
+                                                <?php } ?>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
+                                        <th colspan="5">SUB JUMLAH</th>
+                                        <th><?= rupiah($tt['tot']) ?></th>
+                                        <th colspan="3"><?= rupiah($tt['tot2']) ?></th>
                                     </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                    <th colspan="5">SUB JUMLAH</th>
-                                    <th><?= rupiah($tt['tot']) ?></th>
-                                    <th colspan="3"><?= rupiah($tt['tot2']) ?></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

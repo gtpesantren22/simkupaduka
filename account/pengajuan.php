@@ -20,7 +20,7 @@ include 'head.php';
         <div class="clearfix"></div>
 
         <div class="">
-            <div class="col-md-12 col-sm-12  ">
+            <div class="col-md-12 col-sm-12 ">
                 <div class="x_panel">
                     <div class="x_title">
                         <h2><i class="fa fa-bars"></i> Data Pengajuan Pencairan <small>Realisasi</small></h2>
@@ -36,56 +36,58 @@ include 'head.php';
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-badgeledby="home-tab">
 
-                                <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
-                                    <thead>
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Lembaga</th>
-                                            <th>Periode</th>
-                                            <th>Verval / Approv / Cair / SPJ</th>
-                                            <th>Nominal</th>
-                                            <th>#</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.spj != 2 AND kode_pengajuan NOT LIKE '%DISP.%' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
-                                        while ($a = mysqli_fetch_assoc($dt_bos)) {
-                                            $kd_pj = $a['kode_pengajuan'];
-                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-                                            $kfe = $jml['jml'] + $jml2['jml'];
-
-                                            if (preg_match("/DISP./i", $kd_pj)) {
-                                                $rt = "<span class='badge badge-danger'>DISPOSISI</span>";
-                                            } else {
-                                                $rt = '';
-                                            }
-                                        ?>
+                                <div class="table-responsive">
+                                    <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+                                        <thead>
                                             <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= $a['nama'] . ' ' . $rt ?></td>
-                                                <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
-                                                <td>
-                                                    <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                                    <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                                    <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                                    <?php if ($a['spj'] == 0) { ?>
-                                                        <span class="badge badge-danger"><i class="fa fa-times"></i> belum upload</span>
-                                                    <?php } else if ($a['spj'] == 1) { ?>
-                                                        <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
-                                                            proses verifikasi</span>
-                                                    <?php } else { ?>
-                                                        <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
-                                                    <?php } ?>
-                                                </td>
-                                                <td><?= rupiah($kfe) ?></td>
-                                                <td><a href="<?= 'pengajuan_detail.php?kode=' . $a['kode_pengajuan'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Cek & Verifikasi</button></a></td>
+                                                <th>No</th>
+                                                <th>Lembaga</th>
+                                                <th>Periode</th>
+                                                <th>Verval / Approv / Cair / SPJ</th>
+                                                <th>Nominal</th>
+                                                <th>#</th>
                                             </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $no = 1;
+                                            $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.spj != 2 AND kode_pengajuan NOT LIKE '%DISP.%' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
+                                            while ($a = mysqli_fetch_assoc($dt_bos)) {
+                                                $kd_pj = $a['kode_pengajuan'];
+                                                $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                                $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                                $kfe = $jml['jml'] + $jml2['jml'];
+
+                                                if (preg_match("/DISP./i", $kd_pj)) {
+                                                    $rt = "<span class='badge badge-danger'>DISPOSISI</span>";
+                                                } else {
+                                                    $rt = '';
+                                                }
+                                            ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><?= $a['nama'] . ' ' . $rt ?></td>
+                                                    <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
+                                                    <td>
+                                                        <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                        <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                        <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                        <?php if ($a['spj'] == 0) { ?>
+                                                            <span class="badge badge-danger"><i class="fa fa-times"></i> belum upload</span>
+                                                        <?php } else if ($a['spj'] == 1) { ?>
+                                                            <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
+                                                                proses verifikasi</span>
+                                                        <?php } else { ?>
+                                                            <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
+                                                        <?php } ?>
+                                                    </td>
+                                                    <td><?= rupiah($kfe) ?></td>
+                                                    <td><a href="<?= 'pengajuan_detail.php?kode=' . $a['kode_pengajuan'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Cek & Verifikasi</button></a></td>
+                                                </tr>
+                                            <?php } ?>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
 
                         </div>
