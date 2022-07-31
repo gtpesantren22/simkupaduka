@@ -106,9 +106,14 @@
 </script>
 <script type="text/javascript">
     var rupiah = document.getElementById('uang');
+    var rupiah2 = document.getElementById('uang2');
 
     rupiah.addEventListener('keyup', function(e) {
         rupiah.value = formatRupiah(this.value);
+    });
+
+    rupiah2.addEventListener('keyup', function(e) {
+        rupiah2.value = formatRupiah(this.value);
     });
 
     /* Fungsi formatRupiah */
