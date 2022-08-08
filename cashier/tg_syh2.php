@@ -307,17 +307,18 @@ if (isset($_POST['add'])) {
     $by = $nominal + $_POST['masuk'];
     $ttl = $_POST['ttl'];
     $alm = $dp['desa'] . '-' . $dp['kec'] . '-' . $dp['kab'];
+    $hp = $dp['hp'];
 
     $pesan = '_(Ini adalah pesan otomatis dari sistem)_
 *Assalamualaikum Wr. Wb*
-Kami dari *Pengurus Syahriyah* Pesantren Darul Lughah Wal Karomah
-menginfokan bahwa data dibawah ini
+Kami dari *Bendahara Pesantren* Darul Lughah Wal Karomah
+menginfokan bahwa pembayaran atas :
     
 Nama : *' . $nama . '*
 Alamat : *' . $alm . '* 
 Nominal Pembayaran: *' . rupiah($nominal) . '*
 Tanggal Bayar : *' . $tgl . '*
-Pembayaran Untuk: *Syahriyah tahun ' . $tahun . '*
+Pembayaran Untuk: *Tanggungan bulan ' . $bulan[$bulan_bayar] . '*
 Penerima: *' . $kasir . '*
 
 _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
@@ -359,7 +360,27 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
                             document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
                         }, millisecondsToWait);
                     </script>
-                <?php }
+
+                <?php
+                    // Japri 1
+                    $curl = curl_init();
+                    curl_setopt_array(
+                        $curl,
+                        array(
+                            CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => '',
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $hp . '&message=' . $pesan,
+                        )
+                    );
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                }
             } else {
                 $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
 
@@ -377,7 +398,26 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
                         }, millisecondsToWait);
                     </script>
                     ";
-            <?php }
+            <?php
+                    // Japri 1
+                    $curl = curl_init();
+                    curl_setopt_array(
+                        $curl,
+                        array(
+                            CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
+                            CURLOPT_RETURNTRANSFER => true,
+                            CURLOPT_ENCODING => '',
+                            CURLOPT_MAXREDIRS => 10,
+                            CURLOPT_TIMEOUT => 0,
+                            CURLOPT_FOLLOWLOCATION => true,
+                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                            CURLOPT_CUSTOMREQUEST => 'POST',
+                            CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $hp . '&message=' . $pesan,
+                        )
+                    );
+                    $response = curl_exec($curl);
+                    curl_close($curl);
+                }
             }
         } else {
             ?>
