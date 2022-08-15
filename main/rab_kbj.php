@@ -3,9 +3,10 @@ include 'head.php';
 require 'vendors/PHPExcel/Classes/PHPExcel.php';
 
 $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM kebijakan WHERE tahun = '$tahun_ajaran'"));
+$sisa = 50000000 - $tot['jml'];
 
-$sisa = ($tot['jml'] / 50000000) * 100;
-$prsn = round($sisa, 1);
+$sisaPors = ($tot['jml'] / 50000000) * 100;
+$prsn = round($sisaPors, 1);
 
 if ($prsn <= 20) {
     $bg = 'bg-primary';
@@ -89,7 +90,7 @@ if ($prsn <= 20) {
                                 <?php
                                 $no = 1;
                                 $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM kebijakan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan "));
+                                // $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM kebijakan "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
                                     <tr>
                                         <td><?= $no++ ?></td>
@@ -107,7 +108,7 @@ if ($prsn <= 20) {
                             <tfoot>
                                 <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                     <th colspan="4">SUB JUMLAH</th>
-                                    <th colspan="3"><?= rupiah($tt['tot']) ?></th>
+                                    <th colspan="3"><?= rupiah($tot['jml']) ?></th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -309,26 +310,46 @@ if (isset($_POST['save'])) {
     $tgl = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl']));
     $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
 
-    $sql = mysqli_query($conn, "INSERT INTO kebijakan VALUES ('$id', '$kode', '$lembaga','$bidang','$jenis','$nominal','$tgl','$pj','$ket','$tahun', NOW())");
-    if ($sql) { ?>
+    if ($sisa < $nominal) {
+        echo "
         <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'RAB berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'rab_kbj.php' ?>"
-                }, millisecondsToWait);
-
+        $(document).ready(function() {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'error',
+                title: 'Maaf. Limit sudah tidak mencukupi',
+                showConfirmButton: false
             });
-        </script>
+            var millisecondsToWait = 1500;
+            setTimeout(function() {
+                    document.location.href = 'rab_kbj.php'
+                }, millisecondsToWait);
+                
+            });
+            </script>
+            ";
+    } else {
+        $sql = mysqli_query($conn, "INSERT INTO kebijakan VALUES ('$id', '$kode', '$lembaga','$bidang','$jenis','$nominal','$tgl','$pj','$ket','$tahun', NOW())");
 
-<?php    } else {
-        echo "DATA TAK MAU MASUK";
+        if ($sql) {
+            echo "
+            <script>
+                $(document).ready(function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'RAB berhasil tersimpan',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1500;
+                    setTimeout(function() {
+                        document.location.href = 'rab_kbj.php' 
+                    }, millisecondsToWait);
+
+                });
+            </script>
+            ";
+        }
     }
 }
 ?>
