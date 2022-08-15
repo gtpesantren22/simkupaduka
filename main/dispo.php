@@ -1,6 +1,8 @@
 <?php
 include 'head.php';
 
+$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun_ajaran'"));
+$tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun_ajaran'"));
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -26,7 +28,7 @@ include 'head.php';
                     <div class="x_title">
                         <h2><i class="fa fa-bars"></i> Data Pencairan Disposisi <small>Pencairan</small></h2>
                         <ul class="nav navbar-right panel_toolbox">
-                            <li><button class="btn btn-info btn-sm" data-toggle="modal" data-target="#tambah_bos"><i class="fa fa-plus-square"></i> Tambah Data</button></li>
+                            <li></li>
                         </ul>
                         <div class="clearfix"></div>
                     </div>
@@ -36,7 +38,23 @@ include 'head.php';
 
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-badgeledby="home-tab">
-
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="alert alert-danger" role="alert">
+                                            <strong>LIMIT : <?= rupiah(50000000); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="alert alert-success" role="alert">
+                                            <strong>Terpakai : <?= rupiah($tot['jml'] + $tot2['jml']); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="alert alert-info" role="alert">
+                                            <strong>Sisa Dana : <?= rupiah(50000000 - ($tot['jml'] + $tot2['jml'])); ?></strong>
+                                        </div>
+                                    </div>
+                                </div>
                                 <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
                                     <thead>
                                         <tr>
@@ -44,38 +62,55 @@ include 'head.php';
                                             <th>Kode</th>
                                             <th>Lembaga</th>
                                             <th>Tanggal</th>
-                                            <th>Nominal</th>
-                                            <th>Uraian</th>
-                                            <th>#</th>
+                                            <th>Nominal Cair</th>
+                                            <th>Status</th>
+                                            <!-- <th>#</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM disposisi a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' ORDER BY id_disp DESC");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND a.kode_pengajuan LIKE 'DISP.%' ");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
-                                            // $kd_pj = $a['kode_pengajuan'];
-                                            // $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' "));
-                                            // $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' "));
-                                            // $kfe = $jml['jml'] + $jml2['jml'];
+                                            $kd_pj = $a['kode_pengajuan'];
+                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                            $kfe = $jml['jml'] + $jml2['jml'];
                                         ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
-                                                <td><?= $a['kode'] ?></td>
+                                                <td><?= $a['kode_pengajuan'] ?></td>
                                                 <td><?= $a['nama'] ?></td>
-                                                <td><?= $a['tanggal'] ?></td>
-                                                <td><?= rupiah($a['nominal']) ?></td>
-                                                <td><?= $a['uraian'] ?></td>
+                                                <td><?= $a['at'] ?></td>
+                                                <td><?= rupiah($kfe) ?></td>
                                                 <td>
+                                                    <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                    <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                    <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                    <?php if ($a['spj'] == 0) { ?>
+                                                        <span class="badge badge-danger"><i class="fa fa-times"></i> belum upload</span>
+                                                    <?php } else if ($a['spj'] == 1) { ?>
+                                                        <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
+                                                            proses verifikasi</span>
+                                                    <?php } else { ?>
+                                                        <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
+                                                    <?php } ?>
+                                                </td>
+                                                <!-- <td>
                                                     <a href="<?= 'edit_disp.php?id=' . $a['id_disp'] ?>"><button class="btn btn-warning btn-sm"><i class="fa fa-edit"></i> Edit</button></a>
                                                     <a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=dsp&id=' . $a['id_disp'] ?>"><button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i> Del</button></a>
-                                                </td>
+                                                </td> -->
                                             </tr>
                                         <?php } ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="4"></th>
+                                            <th colspan="2"><?= rupiah($tot['jml'] + $tot2['jml']); ?></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -85,79 +120,7 @@ include 'head.php';
     <div class="clearfix"></div>
 </div>
 
-<!-- Modal Tambah Data BOS-->
-<div class="modal fade" id="tambah_bos" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
 
-            <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Tambah Data Pencairan Disposisi</h4>
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
-                <div class="modal-body">
-
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Lembaga pemohon <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <select name="kode" id="" class="form-control" required>
-                                <option value=""> -pilih lembaga- </option>
-                                <?php
-                                $dw = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran'");
-                                while ($k = mysqli_fetch_assoc($dw)) { ?>
-                                    <option value="<?= $k['kode'] ?>"><?= $k['kode'] . '. ' . $k['nama'] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nominal <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6  form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left " id="uang" name="nominal" required>
-                            <span class="form-control-feedback left" aria-hidden="true">Rp.</span>
-                        </div>
-
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align">Tanggal Disposisi <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 xdisplay_inputx form-group row has-feedback">
-
-                            <input type="text" name="tgl_bayar" class="form-control has-feedback-left" id="datePick" placeholder="" aria-describedby="inputSuccess2Status4">
-                            <span class="fa fa-calendar-o form-control-feedback left" aria-hidden="true"></span>
-                            <span id="inputSuccess2Status4" class="sr-only">(success)</span>
-
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Uraian <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <textarea name="uraian" required="required" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Catatan <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <textarea name="catatan" required="required" class="form-control"> </textarea>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="save_bos" class="btn btn-success">Simpan data</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
-<!-- /page content -->
 
 <?php include 'foot.php'; ?>
 <!-- Datatables -->
@@ -191,65 +154,3 @@ include 'head.php';
         });
     });
 </script>
-<script type="text/javascript">
-    var rupiah = document.getElementById('uang');
-
-    rupiah.addEventListener('keyup', function(e) {
-        rupiah.value = formatRupiah(this.value);
-    });
-
-    /* Fungsi formatRupiah */
-    function formatRupiah(angka, prefix) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
-    }
-</script>
-<?php
-if (isset($_POST['save_bos'])) {
-    $kode = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kode']));
-    $nominal = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nominal']));
-    $uraian = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['uraian']));
-    $tgl_bayar = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_bayar']));
-    $catatan = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['catatan']));
-    $nom = preg_replace("/[^0-9]/", "", $nominal);
-
-    $data = mysqli_fetch_array(mysqli_query($conn, "SELECT max(kode) as kodeTerbesar FROM disposisi WHERE tahun = '$tahun_ajaran'"));
-    $kodeB = $data['kodeTerbesar'];
-    $urutan = (int) substr($kodeB, 4, 4);
-    $urutan++;
-    $huruf =   $kode . "_";
-    $kodeBarang = $huruf . sprintf("%04s", $urutan);
-
-    $sql = mysqli_query($conn, "INSERT INTO disposisi VALUES ('', '$kodeBarang', '$kode', '$tgl_bayar', '$nom', '$uraian', '$catatana', NOW(), '$tahun_ajaran' ) ");
-    if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Data berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "dispo.php"
-                }, millisecondsToWait);
-
-            });
-        </script>
-
-<?php    }
-}
-?>
