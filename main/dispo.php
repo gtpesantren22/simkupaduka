@@ -3,6 +3,22 @@ include 'head.php';
 
 $tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun_ajaran'"));
 $tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun_ajaran'"));
+
+$total = $tot['jml'] + $tot2['jml'];
+$sisa = ($total / 50000000) * 100;
+$prsn = round($sisa, 1);
+
+if ($prsn <= 20) {
+    $bg = 'bg-primary';
+} elseif ($prsn > 20 && $prsn <= 40) {
+    $bg = 'bg-success';
+} elseif ($prsn > 40 && $prsn <= 60) {
+    $bg = 'bg-info';
+} elseif ($prsn > 60 && $prsn <= 80) {
+    $bg = 'bg-warning';
+} elseif ($prsn > 80 && $prsn <= 100) {
+    $bg = 'bg-danger';
+}
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -52,6 +68,11 @@ $tot2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM
                                     <div class="col-md-4">
                                         <div class="alert alert-info" role="alert">
                                             <strong>Sisa Dana : <?= rupiah(50000000 - ($tot['jml'] + $tot2['jml'])); ?></strong>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped <?= $bg; ?>" role="progressbar" style="width: <?= $prsn; ?>%" aria-valuenow="<?= $prsn; ?>" aria-valuemin="0" aria-valuemax="100"><?= $prsn; ?>%</div>
                                         </div>
                                     </div>
                                 </div>

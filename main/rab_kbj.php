@@ -2,8 +2,23 @@
 include 'head.php';
 require 'vendors/PHPExcel/Classes/PHPExcel.php';
 
-//$kode = $_GET['kode'];
-//$l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kode' "));
+$tot = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM kebijakan WHERE tahun = '$tahun_ajaran'"));
+
+$sisa = ($tot['jml'] / 50000000) * 100;
+$prsn = round($sisa, 1);
+
+if ($prsn <= 20) {
+    $bg = 'bg-primary';
+} elseif ($prsn > 20 && $prsn <= 40) {
+    $bg = 'bg-success';
+} elseif ($prsn > 40 && $prsn <= 60) {
+    $bg = 'bg-info';
+} elseif ($prsn > 60 && $prsn <= 80) {
+    $bg = 'bg-warning';
+} elseif ($prsn > 80 && $prsn <= 100) {
+    $bg = 'bg-danger';
+}
+
 ?>
 <!-- Datatables -->
 <link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -36,6 +51,28 @@ require 'vendors/PHPExcel/Classes/PHPExcel.php';
                     </div>
                     <div class="x_content">
                         <!-- A -->
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="alert alert-danger" role="alert">
+                                    <strong>LIMIT : <?= rupiah(50000000); ?></strong>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-success" role="alert">
+                                    <strong>Terpakai : <?= rupiah($tot['jml']); ?></strong>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="alert alert-info" role="alert">
+                                    <strong>Sisa Dana : <?= rupiah(50000000 - $tot['jml']); ?></strong>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped <?= $bg; ?>" role="progressbar" style="width: <?= $prsn; ?>%" aria-valuenow="<?= $prsn; ?>" aria-valuemin="0" aria-valuemax="100"><?= $prsn; ?>%</div>
+                                </div>
+                            </div>
+                        </div>
                         <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
                             <thead>
                                 <tr>
