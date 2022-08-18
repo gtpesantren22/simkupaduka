@@ -6,6 +6,9 @@ $kode_pengajuan = $_GET['kode'];
 $lem = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lembaga' AND tahun = '$tahun_ajaran' "));
 $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kode_pengajuan' AND tahun = '$tahun_ajaran' "));
 
+$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun_ajaran' "));
+$jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun_ajaran' "));
+$kfe = 50000000 - ($jml['jml'] + $jml2['jml']);
 ?>
 
 <div class="content-wrapper">
@@ -319,24 +322,32 @@ if (isset($_POST['save'])) {
         $stas = 'tunai';
     }
 
+    if ($harga > $kfe) {
+        echo "
+            <script>
+                alert('Maaf, Limit disposisi sudah tidak mencukupi');
+                window.location = 'pengajuan_add_disp.php?kode=" . $kd_pjn . "';
+            </script>
+        ";
+    } else {
 
-
-    $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','-', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$stas')");
-    if ($sql) { ?>
-
-        <script>
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Pengajuan berhasil tersimpan',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 1000;
-            setTimeout(function() {
-                document.location.href = "<?= 'pengajuan_add_disp.php?kode=' . $kode_pengajuan ?>"
-            }, millisecondsToWait);
-        </script>
-<?php
+        $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','-', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$stas')");
+        if ($sql) {
+            echo "
+                <script>
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Pengajuan berhasil tersimpan',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = 'pengajuan_add_disp.php?kode=' " . $kode_pengajuan . "'
+                }, millisecondsToWait);
+            </script>
+            ";
+        }
     }
 }
 
