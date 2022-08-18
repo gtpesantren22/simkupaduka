@@ -70,88 +70,9 @@ include 'head.php';
                                                     <td>Rp. <?= number_format($a['total'], 0, '.', '.') ?></td>
                                                     <td><?= $a['tahun'] ?></td>
                                                     <td>
-                                                        <a data-toggle="modal" data-target="#modal_edit<?= $a['id_tangg']; ?>" href="#"><i class="fa fa-cog"></i> Edit</a> |
+                                                        <!-- <a data-toggle="modal" data-target="#modal_edit<?= $a['id_tangg']; ?>" href="#"><i class="fa fa-cog"></i> Edit</a> | -->
+                                                        <a href="bpOk_ed.php?id=<?= $a['id_tangg']; ?>"><i class="fa fa-cog"></i> Edit</a> |
                                                         <a data-toggle="modal" data-target="#modal_del<?= $a['id_tangg']; ?>" href="#"><i class="fa fa-trash-o"></i> Hapus</a>
-
-                                                        <!-- Modal Edit Data-->
-                                                        <div class="modal fade" id="modal_edit<?= $a['id_tangg']; ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                                            <div class="modal-dialog modal-lg">
-                                                                <div class="modal-content">
-
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title" id="myModalLabel">Edit data pembiayaan pesantren</h4>
-                                                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <form class="form-horizontal form-label-left" action="" method="post">
-                                                                        <input type="hidden" name="id_tangg" value="<?= $a['id_tangg']; ?>">
-                                                                        <div class="modal-body">
-                                                                            <div class="row">
-
-                                                                                <div class="col-lg-6">
-                                                                                    <div class="item form-group">
-                                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">NIS <span class="required">*</span>
-                                                                                        </label>
-                                                                                        <div class="col-md-9 col-sm-9">
-                                                                                            <input type="text" id="first-name" name="nis" value="<?= $a['nis'] ?>" required="required" class="form-control " readonly>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="item form-group">
-                                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama <span class="required">*</span>
-                                                                                        </label>
-                                                                                        <div class="col-md-9 col-sm-9">
-                                                                                            <input type="text" id="first-name" name="nama" value="<?= $a['nama'] ?>" required="required" class="form-control " readonly>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="item form-group">
-                                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">No. Briva <span class="required">*</span>
-                                                                                        </label>
-                                                                                        <div class="col-md-9 col-sm-9">
-                                                                                            <input type="text" id="first-name" name="briva" value="<?= $a['briva'] ?>" required="required" class="form-control " readonly>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                </div>
-
-                                                                                <div class="col-lg-6">
-                                                                                    <div class="item form-group">
-                                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Jul-Apr <span class="required">*</span>
-                                                                                        </label>
-                                                                                        <div class="col-md-9 col-sm-9  form-group has-feedback">
-                                                                                            <input type="text" class="form-control has-feedback-left " id="uang<?= $a['briva'] ?>" name="ju_ap" value="<?= $a['ju_ap'] ?>" required>
-                                                                                            <span class="form-control-feedback left" aria-hidden="true">Rp.</span>
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                    <div class="item form-group">
-                                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Mei-Jun <span class="required">*</span>
-                                                                                        </label>
-                                                                                        <div class="col-md-9 col-sm-9  form-group has-feedback">
-                                                                                            <input type="text" class="form-control has-feedback-left " id="uang1<?= $a['briva'] ?>" name="me_ju" value="<?= $a['me_ju'] ?>" required>
-                                                                                            <span class="form-control-feedback left" aria-hidden="true">Rp.</span>
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                    <div class="item form-group">
-                                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Total <span class="required">*</span>
-                                                                                        </label>
-                                                                                        <div class="col-md-9 col-sm-9  form-group has-feedback">
-                                                                                            <input type="text" class="form-control has-feedback-left " id="uang2<?= $a['briva'] ?>" name="total" value="<?= number_format($a['total']) ?>" required readonly>
-                                                                                            <span class="form-control-feedback left" aria-hidden="true">Rp.</span>
-                                                                                        </div>
-
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
-                                                                        </div>
-                                                                    </form>
-
-                                                                </div>
-                                                            </div>
-                                                        </div>
 
                                                         <!-- Modal Hapus -->
                                                         <div class="modal fade bs-example-modal-sm" id="modal_del<?= $a['id_tangg']; ?>" tabindex="-1" role="dialog" aria-hidden="true">
@@ -280,68 +201,8 @@ include 'head.php';
         });
     });
 </script>
-<?php foreach ($dt_bos as $a) : ?>
-    <script type="text/javascript">
-        var rupiah<?= $a['briva']; ?> = document.getElementById('uang<?= $a['briva']; ?>');
-        var rupiah1<?= $a['briva']; ?> = document.getElementById('uang1<?= $a['briva']; ?>');
-        var rupiah2<?= $a['briva']; ?> = document.getElementById('uang2<?= $a['briva']; ?>');
 
-        rupiah<?= $a['briva']; ?>.addEventListener('keyup', function(e) {
-            rupiah<?= $a['briva']; ?>.value = formatRupiah(this.value);
-        });
 
-        rupiah1<?= $a['briva']; ?>.addEventListener('keyup', function(e) {
-            rupiah1<?= $a['briva']; ?>.value = formatRupiah(this.value);
-        });
-
-        rupiah2<?= $a['briva']; ?>.addEventListener('keyup', function(e) {
-            rupiah2<?= $a['briva']; ?>.value = formatRupiah(this.value);
-        });
-
-        /* Fungsi formatRupiah */
-        function formatRupiah(angka, prefix) {
-            var number_string = angka.replace(/[^,\d]/g, '').toString(),
-                split = number_string.split(','),
-                sisa = split[0].length % 3,
-                rupiah = split[0].substr(0, sisa),
-                ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            // tambahkan titik jika yang di input sudah menjadi angka ribuan
-            if (ribuan) {
-                separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
-        }
-    </script>
-<?php endforeach; ?>
-<script type="text/javascript">
-    var rupiah = document.getElementById('uang');
-
-    rupiah.addEventListener('keyup', function(e) {
-        rupiah.value = formatRupiah(this.value);
-    });
-
-    /* Fungsi formatRupiah */
-    function formatRupiah(angka, prefix) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
-    }
-</script>
 
 <?php
 if (isset($_POST['save'])) {
@@ -402,33 +263,6 @@ if (isset($_POST['save'])) {
     }
 }
 
-if (isset($_POST['edit'])) {
-
-    $id_tangg = $_POST['id_tangg'];
-    $ju_ap = preg_replace("/[^0-9]/", "", $_POST['ju_ap']);
-    $me_ju = preg_replace("/[^0-9]/", "", $_POST['me_ju']);
-    $total = ($ju_ap * 10) + ($me_ju * 2);
-
-    $sql = mysqli_query($conn, "UPDATE tangg SET ju_ap = '$ju_ap', me_ju = '$me_ju', total = '$total' WHERE id_tangg = $id_tangg AND tahun = '$tahun_ajaran' ");
-    if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Tanggungan berhasil perbarui',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "bpOk.php"
-                }, millisecondsToWait);
-
-            });
-        </script>
-
-    <?php    }
-}
 
 if (isset($_POST['delete'])) {
 
