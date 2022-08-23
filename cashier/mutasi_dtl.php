@@ -421,7 +421,7 @@ if (isset($_POST['verval'])) {
     $dts = mysqli_fetch_assoc(mysqli_query($conn_santri, "SELECT a.tgl_mutasi, b.* FROM mutasi a JOIN tb_santri b ON a.nis=b.nis WHERE a.id_mutasi = $id_mutasi "));
     $psn = '*INFORMASI MUTASI*
 
-Atas nama :
+*PENERBITAN SURAT BERHENTI*
     
 Nama : ' . $dts['nama'] . '
 Alamat : ' . $dts['desa'] . '-' . $dts['kec'] . '-' . $dts['kab'] . '
