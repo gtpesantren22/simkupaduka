@@ -137,7 +137,7 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                         <th>Bulan</th>
                                         <th>PJ</th>
                                         <th>Nominal</th>
-                                        <!-- <th>Tgl</th> -->
+                                        <th>Cair</th>
                                         <th>Ket</th>
                                         <th>#</th>
                                     </tr>
@@ -187,6 +187,7 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                                     </form>
                                                 <?php } ?>
                                             </td>
+                                            <td><?= $ls_jns['stas']; ?></td>
                                             <td>
                                                 <?php if ($ck['verval'] == 0 && $ck['stts'] == 'no') { ?>
                                                     <a href="<?= 'hapus.php?kd=del_real_sm&id=' . $ls_jns['id_realis'] ?>" onclick="return confirm('Yakin akan dihapus ?')"><button class="btn btn-danger btn-xs">Hapus</button></a>

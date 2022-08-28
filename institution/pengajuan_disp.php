@@ -1,7 +1,9 @@
 <?php
 include 'atas.php';
 
-$ss = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND kode_pengajuan LIKE '%DISP.%' AND tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1");
+// AND kode_pengajuan LIKE '%DISP.%'
+
+$ss = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol'  AND tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1");
 $ck = mysqli_fetch_assoc($ss);
 $ck2 = mysqli_num_rows($ss);
 $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' AND tahun = '$tahun_ajaran' "));

@@ -156,8 +156,8 @@ $kfe = 50000000 - ($jml['jml'] + $jml2['jml']);
                                         <th>Bulan</th>
                                         <th>PJ</th>
                                         <th>Nominal</th>
-                                        <!-- <th>Tgl</th> -->
                                         <th>Ket</th>
+                                        <th>Cair</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -206,6 +206,7 @@ $kfe = 50000000 - ($jml['jml'] + $jml2['jml']);
                                                     </form>
                                                 <?php } ?>
                                             </td>
+                                            <td><?= $ls_jns['stas']; ?></td>
                                             <td>
                                                 <?php if ($ck['verval'] == 0 && $ck['stts'] == 'no') { ?>
                                                     <a href="<?= 'hapus.php?kd=del_real_sm_disp&id=' . $ls_jns['id_realis'] ?>" onclick="return confirm('Yakin akan dihapus ?')"><button class="btn btn-danger btn-xs">Hapus</button></a>
@@ -331,8 +332,8 @@ if (isset($_POST['save'])) {
         ";
     } else {
 
-        $sql = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','-', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$stas')");
-        if ($sql) {
+        $sql12 = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','-', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$stas')");
+        if ($sql12) {
             echo "
                 <script>
                 Swal.fire({
@@ -343,7 +344,7 @@ if (isset($_POST['save'])) {
                 });
                 var millisecondsToWait = 1000;
                 setTimeout(function() {
-                    document.location.href = 'pengajuan_add_disp.php?kode=' " . $kode_pengajuan . "'
+                    document.location.href = 'pengajuan_add_disp.php?kode=' " . $kd_pjn . "'
                 }, millisecondsToWait);
             </script>
             ";
