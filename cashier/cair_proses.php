@@ -309,7 +309,7 @@ if (isset($_POST['cairkan'])) {
 
     $jumlah_dipilih = count($id_pnj);
 
-    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir', '$tahun_ajaran')");
+    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj', '$lembaga', '$nominal', '$nominal_cair', '$tgl_cair','$kasir', '$tahun_ajaran')");
     $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' AND tahun = '$tahun_ajaran' ");
 
     for ($x = 0; $x < $jumlah_dipilih; $x++) {
@@ -323,6 +323,19 @@ if (isset($_POST['cairkan'])) {
 
         mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
     }
+
+    $psn = '
+*INFORMASI PENCAIRAN PENGAJUAN*
+
+Pencairan pengajuan dari :
+    
+Lembaga : ' . $data['nama'] . '
+Kode Pengjuan : ' . $kd_pnj . '
+Pada : ' . $tgl_cair . '
+Nomnal : ' . rupiah($nominal_cair) . '
+
+*_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
+Terimakasih';
 
     if ($sql && $pnj && $add && $del) { ?>
         <script>
@@ -338,7 +351,26 @@ if (isset($_POST['cairkan'])) {
             }, millisecondsToWait);
         </script>
 
-    <?php    }
+    <?php
+
+        $curl2 = curl_init();
+        curl_setopt_array(
+            $curl2,
+            array(
+                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
+            )
+        );
+        $response = curl_exec($curl2);
+        curl_close($curl2);
+    }
 }
 
 if (isset($_POST['all'])) {
@@ -369,6 +401,19 @@ if (isset($_POST['all'])) {
         mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kd_pnj', '$nominal_cair', '$nominal', '$sisa', '$tgl_setor', '$tahun_ajaran' ) ");
     }
 
+    $psn = '
+*INFORMASI PENCAIRAN PENGAJUAN*
+
+Pencairan pengajuan dari :
+    
+Lembaga : ' . $data['nama'] . '
+Kode Pengjuan : ' . $kd_pnj . '
+Pada : ' . $tgl_cair . '
+Nomnal : ' . rupiah($nominal_cair) . '
+
+*_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
+Terimakasih';
+
     if ($sql && $pnj && $add && $del) { ?>
         <script>
             Swal.fire({
@@ -383,6 +428,24 @@ if (isset($_POST['all'])) {
             }, millisecondsToWait);
         </script>
 
-<?php    }
+<?php
+        $curl2 = curl_init();
+        curl_setopt_array(
+            $curl2,
+            array(
+                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_ENCODING => '',
+                CURLOPT_MAXREDIRS => 10,
+                CURLOPT_TIMEOUT => 0,
+                CURLOPT_FOLLOWLOCATION => true,
+                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                CURLOPT_CUSTOMREQUEST => 'POST',
+                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
+            )
+        );
+        $response = curl_exec($curl2);
+        curl_close($curl2);
+    }
 }
 ?>
