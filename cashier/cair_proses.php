@@ -1,7 +1,7 @@
 <?php
 require 'atas.php';
 $kode = $_GET['kode'];
-$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
+$data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a JOIN lembaga b ON a.lembaga=b.kode WHERE a.kode_pengajuan = '$kode' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' "));
 $crr = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal_cair) as jml FROM pencairan WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
 $dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom_cair, 0)) AS tunai, SUM(IF( stas = 'barang', nom_cair, 0)) AS brg FROM real_sm WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
 $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as jml FROM real_sm WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' "));
