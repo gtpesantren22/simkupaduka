@@ -159,7 +159,13 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputPassword3" class="col-sm-3 control-label">Cirator</label>
+                                        <label for="inputPassword3" class="col-sm-3 control-label">Penerima</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" id="" name="penerima" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputPassword3" class="col-sm-3 control-label">Pencair</label>
                                         <div class="col-sm-9">
                                             <input type="text" name="kasir" class="form-control" value="<?= $nama_user ?>" readonly>
                                         </div>
@@ -234,7 +240,13 @@ $plih = mysqli_query($conn, "SELECT *  FROM real_sm WHERE kode_pengajuan = '$kod
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputPassword3" class="col-sm-3 control-label">Cirator</label>
+                        <label for="inputPassword3" class="col-sm-3 control-label">Penerima</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="" name="penerima" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-3 control-label">Pencair</label>
                         <div class="col-sm-9">
                             <input type="text" name="kasir" class="form-control" value="<?= $nama_user ?>" readonly>
                         </div>
@@ -302,6 +314,7 @@ if (isset($_POST['cairkan'])) {
     $id_pnj = $_POST['id_pnj'];
     $kd_pnj = $_POST['kode_pengajuan'];
     $lembaga = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lembaga']));
+    $penerima = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['penerima']));
     $nominal = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal'])));
     $nominal_cair = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['hiddentotal'])));
     $tgl_cair = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_cair']));
@@ -309,7 +322,7 @@ if (isset($_POST['cairkan'])) {
 
     $jumlah_dipilih = count($id_pnj);
 
-    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj', '$lembaga', '$nominal', '$nominal_cair', '$tgl_cair','$kasir', '$tahun_ajaran')");
+    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj', '$lembaga', '$nominal', '$nominal_cair', '$tgl_cair','$kasir', '$penerima', '$tahun_ajaran')");
     $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' AND tahun = '$tahun_ajaran' ");
 
     for ($x = 0; $x < $jumlah_dipilih; $x++) {
@@ -333,6 +346,7 @@ Lembaga : ' . $data['nama'] . '
 Kode Pengjuan : ' . $kd_pnj . '
 Pada : ' . $tgl_cair . '
 Nomnal : ' . rupiah($nominal_cair) . '
+Penerima : ' . $penerima . '
 
 *_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
 Terimakasih';
@@ -401,9 +415,10 @@ if (isset($_POST['all'])) {
     $nominal_cair = $dt['jml'];
     $tgl_cair = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_cair']));
     $kasir = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kasir']));
+    $penerima = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['penerima']));
 
 
-    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir', '$tahun_ajaran')");
+    $sql = mysqli_query($conn, "INSERT INTO pencairan VALUES ('$id', '$kd_pnj','$lembaga','$nominal','$nominal_cair', '$tgl_cair','$kasir', '$penerima', '$tahun_ajaran')");
     $pnj = mysqli_query($conn, "UPDATE pengajuan SET cair = 1 WHERE kode_pengajuan = '$kd_pnj' AND tahun = '$tahun_ajaran' ");
 
     while ($x = mysqli_fetch_assoc($plih)) {
@@ -428,6 +443,7 @@ Lembaga : ' . $data['nama'] . '
 Kode Pengjuan : ' . $kd_pnj . '
 Pada : ' . $tgl_cair . '
 Nomnal : ' . rupiah($nominal_cair) . '
+Kode Pengjuan : ' . $penerima . '
 
 *_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
 Terimakasih';
