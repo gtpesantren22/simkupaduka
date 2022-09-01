@@ -343,7 +343,7 @@ if (isset($_POST['cairkan'])) {
 Pencairan pengajuan dari :
     
 Lembaga : ' . $data['nama'] . '
-Kode Pengjuan : ' . $kd_pnj . '
+Kode Pengajuan : ' . $kd_pnj . '
 Pada : ' . $tgl_cair . '
 Nomnal : ' . rupiah($nominal_cair) . '
 Penerima : ' . $penerima . '
@@ -440,10 +440,10 @@ if (isset($_POST['all'])) {
 Pencairan pengajuan dari :
     
 Lembaga : ' . $data['nama'] . '
-Kode Pengjuan : ' . $kd_pnj . '
+Kode Pengajuan : ' . $kd_pnj . '
 Pada : ' . $tgl_cair . '
 Nomnal : ' . rupiah($nominal_cair) . '
-Kode Pengjuan : ' . $penerima . '
+Penerima : ' . $penerima . '
 
 *_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
 Terimakasih';
