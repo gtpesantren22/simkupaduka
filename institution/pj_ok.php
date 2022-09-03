@@ -25,7 +25,7 @@ $psn = '
 Ada pengajuan baru dari :
     
 Lembaga : ' . $lm['nama'] . '
-Kode Pengjuan : ' . $kd . '
+Kode Pengajuan : ' . $kd . '
 Periode : ' . $perod . '
 Pada : ' . $dt['at'] . '
 Nomnal : ' . rupiah($jml['jm']) . '

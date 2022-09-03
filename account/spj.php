@@ -287,7 +287,7 @@ if (isset($_POST['save'])) {
 Ada pelaporan SPJ dari :
     
 Lembaga : ' . $nm_lm . '
-Kode Pengjuan : ' . $kode . '
+Kode Pengajuan : ' . $kode . '
 Pada : ' . $at . '
 
 *_SPJ telah disetujui oleh TIM ACCOUNTING. Selesai_*
@@ -393,7 +393,7 @@ if (isset($_POST['nono'])) {
 Ada Penolakan SPJ dari :
     
 Lembaga : ' . $nm_lm . '
-Kode Pengjuan : ' . $kode . '
+Kode Pengajuan : ' . $kode . '
 Pada : ' . $at . '
 
 *_SPJ DITOLAK oleh TIM ACCOUNTING. dengan catatan ' . $isi . '_*

@@ -179,7 +179,7 @@ if (isset($_POST['upload'])) {
 Ada pelaporan SPJ dari :
     
 Lembaga : ' . $kol_nama . '
-Kode Pengjuan : ' . $kode . '
+Kode Pengajuan : ' . $kode . '
 Pada : ' . $at . '
 
 *_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
