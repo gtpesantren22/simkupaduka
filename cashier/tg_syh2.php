@@ -351,23 +351,8 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 
                 if ($qr && $qr2) {
                     // Japri 1
-                    $curl = curl_init();
-                    curl_setopt_array(
-                        $curl,
-                        array(
-                            CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_ENCODING => '',
-                            CURLOPT_MAXREDIRS => 10,
-                            CURLOPT_TIMEOUT => 0,
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                            CURLOPT_CUSTOMREQUEST => 'POST',
-                            CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $hpNo . '&message=' . $pesan,
-                        )
-                    );
-                    $response = curl_exec($curl);
-                    curl_close($curl);
+                    kirim_person($api_key, $hpNo, $psn);
+
         ?>
                     <script>
                         Swal.fire({
@@ -389,23 +374,8 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 
                 if ($qr) {
                     // Japri 1
-                    $curl = curl_init();
-                    curl_setopt_array(
-                        $curl,
-                        array(
-                            CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
-                            CURLOPT_RETURNTRANSFER => true,
-                            CURLOPT_ENCODING => '',
-                            CURLOPT_MAXREDIRS => 10,
-                            CURLOPT_TIMEOUT => 0,
-                            CURLOPT_FOLLOWLOCATION => true,
-                            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                            CURLOPT_CUSTOMREQUEST => 'POST',
-                            CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $hpNo . '&message=' . $pesan,
-                        )
-                    );
-                    $response = curl_exec($curl);
-                    curl_close($curl);
+                    kirim_person($api_key, $hpNo, $psn);
+
                 ?>
                     <script>
                         Swal.fire({
