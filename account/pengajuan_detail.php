@@ -502,60 +502,9 @@ Nominal : ' . rupiah($tt['tot']) . '
 *_dimohon kepada KEPALA PESANTREN untuk segera mengecek dan menyetujui nya di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
-        $curl2 = curl_init();
-        curl_setopt_array(
-            $curl2,
-            array(
-                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
-            )
-        );
-        $response = curl_exec($curl2);
-        curl_close($curl2);
-
-        $curl3 = curl_init();
-        curl_setopt_array(
-            $curl3,
-            array(
-                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=FbXW8kqR5ik6w6iCB49GZK&message=' . $psn,
-            )
-        );
-        $response = curl_exec($curl3);
-        curl_close($curl3);
-
-        // Japri 1
-        $curl = curl_init();
-        curl_setopt_array(
-            $curl,
-            array(
-                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=082264061060&message=' . $psn,
-            )
-        );
-        $response = curl_exec($curl);
-        curl_close($curl);
+        kirim_group($api_key, 'DfBeAZ3zGcR5qvLmBdKJaZ', $psn);
+        kirim_group($api_key, 'FbXW8kqR5ik6w6iCB49GZK', $psn);
+        kirim_person($api_key, '082264061060', $psn);
     } else {
         echo "DATA TAK MAU MASUK";
     }
@@ -606,60 +555,11 @@ dengan catatan : _*' . $pesan . '*_
 
 Terimakasih';
 
-        $curl2 = curl_init();
-        curl_setopt_array(
-            $curl2,
-            array(
-                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=DfBeAZ3zGcR5qvLmBdKJaZ&message=' . $psn,
-            )
-        );
-        $response = curl_exec($curl2);
-        curl_close($curl2);
+        kirim_group($api_key, 'DfBeAZ3zGcR5qvLmBdKJaZ', $psn);
+        kirim_group($api_key, 'FbXW8kqR5ik6w6iCB49GZK', $psn);
+        kirim_person($api_key, $l['hp'], $psn);
 
-        $curl3 = curl_init();
-        curl_setopt_array(
-            $curl3,
-            array(
-                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessageGroup',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&id_group=FbXW8kqR5ik6w6iCB49GZK&message=' . $psn,
-            )
-        );
-        $response = curl_exec($curl3);
-        curl_close($curl3);
-
-        // Japri 1
-        $curl = curl_init();
-        curl_setopt_array(
-            $curl,
-            array(
-                CURLOPT_URL => 'http://8.215.26.187:3000/api/sendMessage',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => 'apiKey=fb209be1f23625e43cbf285e57c0c0f2&phone=' . $l['hp'] . '&message=' . $psn,
-            )
-        );
-        $response = curl_exec($curl);
-        curl_close($curl);
+        //
     } else {
         echo "DATA TAK MAU MASUK";
     }

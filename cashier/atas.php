@@ -10,6 +10,7 @@ if (!isset($_SESSION['lvl_kasir_qwertyuiop'])) {
 }
 
 include '../koneksi.php';
+include '../func_wa.php';
 require '../institution/libs/vendor/autoload.php';
 
 use Ramsey\Uuid\Uuid;

@@ -10,6 +10,7 @@ if (!isset($_SESSION['lvl_account_qwertyuiop'])) {
 }
 include '../main/libs/vendor/autoload.php';
 include '../koneksi.php';
+include '../func_wa.php';
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
