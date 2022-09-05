@@ -11,6 +11,7 @@ if (!isset($_SESSION['lvl_lmbg_qwertyuiop'])) {
 
 require 'libs/vendor/autoload.php';
 include '../koneksi.php';
+include '../func_wa.php';
 
 use Ramsey\Uuid\Uuid;
 
