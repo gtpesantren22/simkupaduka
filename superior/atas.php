@@ -10,6 +10,7 @@ if (!isset($_SESSION['lvl_super_qwertyuiop'])) {
 }
 
 include '../koneksi.php';
+include '../func_wa.php';
 
 
 require '../institution/libs/vendor/autoload.php';
@@ -19,6 +20,7 @@ use Ramsey\Uuid\Uuid;
 $uuid = Uuid::uuid4()->toString();
 
 $id = $_SESSION['id'];
+$lmb = $_SESSION['lmb'];
 $tahun_ajaran = $_SESSION['tahun'];
 
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM user WHERE id_user = '$id' "));

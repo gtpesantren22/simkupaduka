@@ -51,11 +51,11 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama, b.hp FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.stts != 2 AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama, b.hp FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.file_spj != '' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             $kd_pj = $a['kode_pengajuan'];
-                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran'"));
+                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran'"));
                                             $pjan = $jml['jml'] + $jml2['jml'];
 
                                             if (preg_match("/DISP./i", $kd_pj)) {
@@ -120,7 +120,22 @@ include 'head.php';
                                                                     <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nominal <span class="required">*</span>
                                                                     </label>
                                                                     <div class="col-md-6 col-sm-6 ">
-                                                                        <input type="text" id="first-name" required="required" disabled value="<?= rupiah($pjan) ?>" class="form-control ">
+                                                                        <input type="text" id="first-name" name="cair" required="required" value="<?= rupiah($pjan) ?>" class="form-control" readonly>
+                                                                    </div>
+                                                                </div>
+                                                                <div class='item form-group'>
+                                                                    <label class='col-form-label col-md-3 col-sm-3 label-align' for='first-name'>Dana Terserap <span class='required'>*</span>
+                                                                    </label>
+                                                                    <div class='col-md-6 col-sm-6  form-group has-feedback'>
+                                                                        <input type='text' class='form-control has-feedback-left ' id='uang' name='serap' required>
+                                                                        <span class='form-control-feedback left' aria-hidden='true'>Rp.</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tanggal setor <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="date" id="" required="required" name="tgl_setor" class="form-control ">
                                                                     </div>
                                                                 </div>
                                                                 <div class="item form-group">
@@ -264,7 +279,31 @@ include 'head.php';
         });
     });
 </script>
+<script type="text/javascript">
+    var rupiah = document.getElementById('uang');
 
+    rupiah.addEventListener('keyup', function(e) {
+        rupiah.value = formatRupiah(this.value);
+    });
+
+    /* Fungsi formatRupiah */
+    function formatRupiah(angka, prefix) {
+        var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        // tambahkan titik jika yang di input sudah menjadi angka ribuan
+        if (ribuan) {
+            separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+    }
+</script>
 <?php
 
 if (isset($_POST['save'])) {
@@ -274,6 +313,11 @@ if (isset($_POST['save'])) {
     $nm_lm = $_POST['nm_lm'];
     $hp = $_POST['hp'];
     $at = date('d-m-Y H:i');
+    $idrls = rand(0, 999999999);
+    $cair = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['cair'])));
+    $serap = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['serap'])));
+    $sisa = $cair - $serap;
+    $tgl_setor = $_POST['tgl_setor'];
 
     if (preg_match("/DISP./i", $kode)) {
         $rt = "*(DISPOSISI)*";
@@ -297,6 +341,8 @@ Terimakasih';
 
     $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
     $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
+    $sql3 = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode', '$cair', '$serap', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
+
     if ($sql) { ?>
         <script>
             $(document).ready(function() {

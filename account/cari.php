@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 include '../koneksi.php';
 $bb = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");
 

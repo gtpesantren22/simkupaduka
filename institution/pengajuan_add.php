@@ -365,7 +365,7 @@ if (isset($_POST['save'])) {
                 <script>
                     Swal.fire({
                         position: 'top-end',
-                        icon: 'error',
+                        icon: 'success',
                         title: 'Pengajuan berhasil tersimpan',
                         showConfirmButton: false
                     });
