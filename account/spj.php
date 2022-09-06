@@ -336,7 +336,6 @@ Pada : ' . $at . '
 
 *_SPJ telah disetujui oleh TIM ACCOUNTING. Selesai_*
 
-*NB : Dimohon untuk lakukan pengembalian sisa dana kepada Accounting. Agar pengajuan berikutnya bisa diproses*
 Terimakasih';
 
     if ($serap > $cair) {

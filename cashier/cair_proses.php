@@ -413,6 +413,8 @@ Nomnal : ' . rupiah($nominal_cair) . '
 Penerima : ' . $penerima . '
 
 *_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
+
+*NB : Jika dana sudah terealisasikan, diharapkan segera membuat SPJ serta melakukan pengembalian dana sisa realisasi* 
 Terimakasih';
 
     if ($sql && $pnj && $add && $del) { ?>
