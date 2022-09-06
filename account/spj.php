@@ -339,32 +339,53 @@ Pada : ' . $at . '
 *NB : Dimohon untuk lakukan pengembalian sisa dana kepada Accounting. Agar pengajuan berikutnya bisa diproses*
 Terimakasih';
 
-    $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
-    $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
-    $sql3 = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode', '$cair', '$serap', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
-
-    if ($sql) { ?>
-        <script>
+    if ($serap > $cair) {
+        echo "
+    <script>
             $(document).ready(function() {
                 Swal.fire({
                     position: 'top-end',
-                    icon: 'success',
-                    title: 'SPJ sudah di verifikasi',
+                    icon: 'error',
+                    title: 'Maaf. Nominal terserap melebihi',
                     showConfirmButton: false
                 });
                 var millisecondsToWait = 1000;
                 setTimeout(function() {
-                    document.location.href = "spj.php"
+                    document.location.href = 'spj.php'
                 }, millisecondsToWait);
 
             });
         </script>
+    ";
+    } else {
 
-    <?php
+        $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
+        $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
+        $sql3 = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode', '$cair', '$serap', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
 
-        kirim_group($api_key, 'DfBeAZ3zGcR5qvLmBdKJaZ', $psn);
-        kirim_group($api_key, 'FbXW8kqR5ik6w6iCB49GZK', $psn);
-        kirim_person($api_key, $hp, $psn);
+        if ($sql) { ?>
+            <script>
+                $(document).ready(function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'SPJ sudah di verifikasi',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1000;
+                    setTimeout(function() {
+                        document.location.href = "spj.php"
+                    }, millisecondsToWait);
+
+                });
+            </script>
+
+        <?php
+
+            kirim_group($api_key, 'DfBeAZ3zGcR5qvLmBdKJaZ', $psn);
+            kirim_group($api_key, 'FbXW8kqR5ik6w6iCB49GZK', $psn);
+            kirim_person($api_key, $hp, $psn);
+        }
     }
 }
 
