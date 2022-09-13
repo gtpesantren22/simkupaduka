@@ -310,10 +310,10 @@ if (isset($_POST['add'])) {
     $alm = $dp['desa'] . '-' . $dp['kec'] . '-' . $dp['kab'];
     $hpNo = $dp['hp'];
 
-    $pesan = '_(Ini adalah pesan otomatis dari sistem)_
-*Assalamualaikum Wr. Wb*
-Kami dari *Bendahara Pesantren* Darul Lughah Wal Karomah
-menginfokan bahwa pembayaran atas :
+    $pesan = '
+*KWITANSI PEMBAYARAN ELEKTRONIK*
+*PP DARUL LUGHAH WAL KAROMAH*
+Bendahara Pondok Pesantren Darul Lughah Wal Karomah telah menerima pembayaran BP dari wali santri berikut :
     
 No. BRIVA : *' . $dpBr['briva'] . '*
 Nama : *' . $nama . '*
@@ -323,8 +323,12 @@ Tanggal Bayar : *' . $tgl . '*
 Pembayaran Untuk: *BP (Biaya Pendidikan) bulan ' . $bulan[$bulan_bayar] . '*
 Penerima: *' . $kasir . '*
 
-_*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
-*Terimakasih*';
+Bukti Penerimaan ini *DISIMPAN* oleh wali santri sebagai bukti pembayaran Biaya Pendidikan PP Darul Lughah Wal Karomah Tahun Pelajaran 2022/2023.
+*Hal – hal yang berkaitan dengan Teknis keuangan dapat menghubungi Contact Person Bendahara berikut :*
+*https://wa.me/6287757777273*
+*https://wa.me/6285235583647*
+
+Terimakasih';
 
     if ($by > $ttl) { ?>
         <script>
