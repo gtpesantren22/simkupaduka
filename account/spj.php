@@ -2,16 +2,16 @@
 include 'head.php';
 ?>
 <!-- Datatables -->
-<link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
 <!-- bootstrap-daterangepicker -->
-<link href="../main/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 <!-- bootstrap-datetimepicker -->
-<link href="../main/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<link href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 <!-- page content -->
 <div class="right_col" role="main">
@@ -81,13 +81,15 @@ include 'head.php';
                                                 <td><?= rupiah($pjan) ?></td>
                                                 <td><a href="<?= '../institution/spj_file/' . $a['file_spj'] ?>"><i class="fa fa-download"></i> Unduh Berkas</a></td>
                                                 <td>
-                                                    <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah_bos<?= $a['id_spj'] ?>"><i class="fa fa-check"></i> Setujui</button>
                                                     <?php if ($a['stts'] == 1) { ?>
+                                                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#tambah_bos<?= $a['id_spj'] ?>"><i class="fa fa-check"></i> Setujui</button>
                                                         <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#tolak_bos<?= $a['id_spj'] ?>"><i class="fa fa-times"></i> Tolak</button>
+                                                    <?php } elseif ($a['stts'] == 2) { ?>
+                                                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#uploads<?= $a['id_spj'] ?>"><i class="fa fa-money"></i> Upload Sisa</button>
                                                     <?php } ?>
                                                 </td>
                                             </tr>
-                                            <!-- Modal Tambah Data BOS-->
+                                            <!-- Modal Setujui BOS-->
                                             <div class="modal fade" id="tambah_bos<?= $a['id_spj'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
@@ -123,7 +125,7 @@ include 'head.php';
                                                                         <input type="text" id="first-name" name="cair" required="required" value="<?= rupiah($pjan) ?>" class="form-control" readonly>
                                                                     </div>
                                                                 </div>
-                                                                <div class='item form-group'>
+                                                                <!-- <div class='item form-group'>
                                                                     <label class='col-form-label col-md-3 col-sm-3 label-align' for='first-name'>Dana Terserap <span class='required'>*</span>
                                                                     </label>
                                                                     <div class='col-md-6 col-sm-6  form-group has-feedback'>
@@ -137,7 +139,7 @@ include 'head.php';
                                                                     <div class="col-md-6 col-sm-6 ">
                                                                         <input type="date" id="" required="required" name="tgl_setor" class="form-control ">
                                                                     </div>
-                                                                </div>
+                                                                </div> -->
                                                                 <div class="item form-group">
                                                                     <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tanggal disetujui <span class="required">*</span>
                                                                     </label>
@@ -232,6 +234,76 @@ include 'head.php';
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- Modal Upload BOS-->
+                                            <div class="modal fade" id="uploads<?= $a['id_spj'] ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg">
+                                                    <div class="modal-content">
+
+                                                        <div class="modal-header">
+                                                            <h4 class="modal-title" id="myModalLabel">Form persetujuan SPJ</h4>
+                                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                                            </button>
+                                                        </div>
+                                                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
+                                                            <div class="modal-body">
+                                                                <input type="hidden" name="id" value="<?= $a['id_spj']; ?>">
+                                                                <input type="hidden" name="kode" value="<?= $a['kode_pengajuan']; ?>">
+                                                                <input type="hidden" name="hp" value="<?= $a['hp']; ?>">
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Lembaga <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" id="first-name" name="nm_lm" required="required" readonly value="<?= $a['nama'] ?>" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Periode <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" id="first-name" required="required" disabled value="<?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?>" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nominal <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" id="first-name" name="cair" required="required" value="<?= rupiah($pjan) ?>" class="form-control" readonly>
+                                                                    </div>
+                                                                </div>
+                                                                <div class='item form-group'>
+                                                                    <label class='col-form-label col-md-3 col-sm-3 label-align' for='first-name'>Dana Terserap <span class='required'>*</span>
+                                                                    </label>
+                                                                    <div class='col-md-6 col-sm-6  form-group has-feedback'>
+                                                                        <input type='text' class='form-control has-feedback-left ' id='uang' name='serap' required>
+                                                                        <span class='form-control-feedback left' aria-hidden='true'>Rp.</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tanggal setor <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="date" id="" required="required" name="tgl_setor" class="form-control ">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item form-group">
+                                                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Menyetujui <span class="required">*</span>
+                                                                    </label>
+                                                                    <div class="col-md-6 col-sm-6 ">
+                                                                        <input type="text" required="required" name="user" value="<?= $nama_user ?>" class="form-control" readonly>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                <button type="submit" name="upload" class="btn btn-success"><i class="fa fa-check"></i> Setujui</button>
+                                                            </div>
+                                                        </form>
+
+                                                    </div>
+                                                </div>
+                                            </div>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -249,23 +321,23 @@ include 'head.php';
 
 <?php include 'foot.php'; ?>
 <!-- Datatables -->
-<script src="../main/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="../main/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="../main/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-<script src="../main/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-<script src="../main/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../main/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-<script src="../main/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 <!-- bootstrap-daterangepicker -->
-<script src="../main/vendors/moment/min/moment.min.js"></script>
-<script src="../main/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="vendors/moment/min/moment.min.js"></script>
+<script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- bootstrap-datetimepicker -->
-<script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
     $(document).ready(function() {
         $('#datatable2').DataTable();
@@ -313,11 +385,11 @@ if (isset($_POST['save'])) {
     $nm_lm = $_POST['nm_lm'];
     $hp = $_POST['hp'];
     $at = date('d-m-Y H:i');
-    $idrls = rand(0, 999999999);
-    $cair = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['cair'])));
-    $serap = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['serap'])));
-    $sisa = $cair - $serap;
-    $tgl_setor = $_POST['tgl_setor'];
+    // $idrls = rand(0, 999999999);
+    // $cair = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['cair'])));
+    // $serap = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['serap'])));
+    // $sisa = $cair - $serap;
+    // $tgl_setor = $_POST['tgl_setor'];
 
     if (preg_match("/DISP./i", $kode)) {
         $rt = "*(DISPOSISI)*";
@@ -334,8 +406,7 @@ Lembaga : ' . $nm_lm . '
 Kode Pengajuan : ' . $kode . '
 Pada : ' . $at . '
 
-*_SPJ telah disetujui oleh TIM ACCOUNTING. Selesai_*
-
+*_SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran  kepada SUB BAGIAN ACCOUNTING. Untuk bisa melakukan pengajuan berikutnya._*
 
 Terimakasih';
 
@@ -361,6 +432,89 @@ Terimakasih';
 
         $sql = mysqli_query($conn, "UPDATE spj SET stts = 2 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
         $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 2 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
+        // $sql3 = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode', '$cair', '$serap', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
+
+        if ($sql) { ?>
+            <script>
+                $(document).ready(function() {
+                    Swal.fire({
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'SPJ sudah di verifikasi',
+                        showConfirmButton: false
+                    });
+                    var millisecondsToWait = 1000;
+                    setTimeout(function() {
+                        document.location.href = "spj.php"
+                    }, millisecondsToWait);
+
+                });
+            </script>
+
+        <?php
+
+            kirim_group($api_key, 'DfBeAZ3zGcR5qvLmBdKJaZ', $psn);
+            kirim_group($api_key, 'FbXW8kqR5ik6w6iCB49GZK', $psn);
+            kirim_person($api_key, $hp, $psn);
+        }
+    }
+}
+
+if (isset($_POST['upload'])) {
+
+    $id = $_POST['id'];
+    $kode = $_POST['kode'];
+    $nm_lm = $_POST['nm_lm'];
+    $hp = $_POST['hp'];
+    $at = date('d-m-Y H:i');
+    $idrls = rand(0, 999999999);
+    $cair = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['cair'])));
+    $serap = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['serap'])));
+    $sisa = $cair - $serap;
+    $tgl_setor = $_POST['tgl_setor'];
+
+    if (preg_match("/DISP./i", $kode)) {
+        $rt = "*(DISPOSISI)*";
+    } else {
+        $rt = '';
+    }
+
+    $psn = '
+*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : ' . $nm_lm . '
+Kode Pengajuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_Hard copy SPJ dan sisa belanja anggaran telah disetor kepada SUB BAGIAN ACCOUNTING. Untuk pengajuan berikutnya sudah bisa dilakukan._*
+
+Terimakasih
+https://simkupaduka.ppdwk.com/';
+
+    if ($serap > $cair) {
+        echo "
+    <script>
+            $(document).ready(function() {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Maaf. Nominal terserap melebihi',
+                    showConfirmButton: false
+                });
+                var millisecondsToWait = 1000;
+                setTimeout(function() {
+                    document.location.href = 'spj.php'
+                }, millisecondsToWait);
+
+            });
+        </script>
+    ";
+    } else {
+
+        $sql = mysqli_query($conn, "UPDATE spj SET stts = 3 WHERE id_spj = '$id' AND tahun = '$tahun_ajaran' ");
+        $sql2 = mysqli_query($conn, "UPDATE pengajuan SET spj = 3 WHERE kode_pengajuan = '$kode' AND tahun = '$tahun_ajaran' ");
         $sql3 = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode', '$cair', '$serap', '$sisa', '$tgl_setor', '$tahun_ajaran') ");
 
         if ($sql) { ?>
