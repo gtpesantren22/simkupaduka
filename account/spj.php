@@ -406,7 +406,7 @@ Lembaga : ' . $nm_lm . '
 Kode Pengajuan : ' . $kode . '
 Pada : ' . $at . '
 
-*_SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran  kepada SUB BAGIAN ACCOUNTING. Untuk bisa melakukan pengajuan berikutnya._*
+*_SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran  kepada SUB BAGIAN ACCOUNTING. Untuk bisa melakukan pengajuan berikutnya._*
 
 Terimakasih';
 
