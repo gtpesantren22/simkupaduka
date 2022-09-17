@@ -355,7 +355,7 @@ Terimakasih';
 
                 if ($qr && $qr2) {
                     // Japri 1
-                    kirim_person($api_key, $hpNo, $psn);
+                    kirim_person($api_key, $hpNo, $pesan);
 
         ?>
                     <script>
@@ -378,7 +378,7 @@ Terimakasih';
 
                 if ($qr) {
                     // Japri 1
-                    kirim_person($api_key, $hpNo, $psn);
+                    kirim_person($api_key, $hpNo, $pesan);
 
                 ?>
                     <script>
