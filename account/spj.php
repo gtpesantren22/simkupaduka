@@ -40,6 +40,7 @@ include 'head.php';
                                     <thead>
                                         <tr>
                                             <th>No</th>
+                                            <th>Kode</th>
                                             <th>Lembaga</th>
                                             <th>Periode</th>
                                             <th>Status</th>
@@ -66,6 +67,7 @@ include 'head.php';
                                         ?>
                                             <tr>
                                                 <td><?= $no++ ?></td>
+                                                <td><?= $kd_pj ?></td>
                                                 <td><?= $a['nama'] . ' ' . $rt; ?></td>
                                                 <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
                                                 <td>
