@@ -5,7 +5,6 @@ session_start();
 
 require 'libs/vendor/autoload.php';
 require '../koneksi.php';
-require '../func_wa.php';
 
 use Ramsey\Uuid\Uuid;
 
