@@ -157,6 +157,13 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                         </li>
                         <!-- Control Sidebar Toggle Button -->
 
+                        <!-- Notifications: style can be found in dropdown.less -->
+                        <li class="dropdown notifications-menu">
+                            <a href="logout.php" onclick="return confirm('Yakin akan logout ?')">
+                                <i class="fa fa-power-off"></i> Keluar
+                            </a>
+
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -203,7 +210,7 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                     <li><a href="info.php"><i class="fa fa-info-circle text-yellow"></i> <span>Informasi</span></a></li>
                     <li><a href="setting.php"><i class="fa fa-cog text-red"></i> <span>Pengaturan</span></a></li>
                     <hr>
-                    <a onclick="return confirm('Yakin akan dihapus ?')" href="logout.php"><button class="btn btn-danger btn-block"><i class="fa fa-power-off"></i> Logout</button></a>
+                    <a onclick="return confirm('Yakin akan keluar ?')" href="logout.php"><button class="btn btn-danger btn-block"><i class="fa fa-power-off"></i> Keluar</button></a>
                 </ul>
             </section>
             <!-- /.sidebar -->

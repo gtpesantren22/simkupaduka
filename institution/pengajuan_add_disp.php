@@ -156,8 +156,8 @@ $kfe = 50000000 - ($jml['jml'] + $jml2['jml']);
                                         <th>Bulan</th>
                                         <th>PJ</th>
                                         <th>Nominal</th>
-                                        <th>Ket</th>
                                         <th>Cair</th>
+                                        <th>Ket</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
