@@ -1,6 +1,7 @@
 <?php
 include 'fungsi.php';
 include 'bawah.php';
+include '../func_wa.php';
 
 $kd = $_GET['kd'];
 $dt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd' AND tahun = '$tahun_ajaran'"));
@@ -28,9 +29,9 @@ Lembaga : ' . $lm['nama'] . '
 Kode Pengajuan : ' . $kd . '
 Periode : ' . $perod . '
 Pada : ' . $dt['at'] . '
-Nomnal : ' . rupiah($jml['jm']) . '
+Nominal : ' . rupiah($jml['jm']) . '
 
-*_dimohon kepada TIM ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
 Terimakasih';
 
 if ($sql) { ?>
