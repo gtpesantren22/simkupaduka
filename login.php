@@ -162,6 +162,11 @@ if (isset($_POST['masuk'])) {
           </script>
           ";
         } else {
+          $agent = @$_SERVER['HTTP_USER_AGENT'];
+          $ip = @$_SERVER['REMOTE_ADDR'];
+          $rinci = $dt['nama'] . ', ' . $dt['level'] . ', ' . $dt['lembaga'];
+          mysqli_query($conn, "INSERT INTO user_log(rinci,ip,agent,waktu) VALUES('$rinci','$ip','$agent',now())");
+
           if ($lvl == 'admin') {
             $_SESSION['lvl_adm_qwertyuiop'] = true;
             $link = 'main/index.php';
