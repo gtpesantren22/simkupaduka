@@ -3,7 +3,7 @@ include 'atas.php';
 
 // AND kode_pengajuan NOT LIKE '%DISP.%'
 
-$ss = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol'  AND tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1");
+$ss = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' ORDER BY no_urut DESC LIMIT 1");
 $ck = mysqli_fetch_assoc($ss);
 $ck2 = mysqli_num_rows($ss);
 $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' AND tahun = '$tahun_ajaran' "));
@@ -35,10 +35,10 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                         <?php if ($ck2 < 1) { ?>
                             <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
                             <br><br>
-                        <?php } elseif ($ck['verval'] == 1 && $ck['spj'] != 2) { ?>
+                        <?php } elseif ($ck['verval'] == 1 && $ck['spj'] != 3) { ?>
                             <button class="btn btn-success" disabled><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
                             <br><br>
-                        <?php } elseif ($ck['verval'] == 1 && $ck['spj'] == 2 || $ck['verval'] == NULL) { ?>
+                        <?php } elseif ($ck['verval'] == 1 && $ck['spj'] == 3 || $ck['verval'] == NULL) { ?>
                             <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
                             <br><br>
                         <?php }  ?>

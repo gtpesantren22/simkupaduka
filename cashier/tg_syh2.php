@@ -43,8 +43,10 @@ $nis = $_GET['nis'];
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Identitas santri</h3>
                                         <div class="box-tools pull-right">
-                                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                            <button class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i></button>
+                                            <button class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
                                         </div>
                                     </div><!-- /.box-header -->
                                     <div class="box-body">
@@ -60,7 +62,8 @@ $nis = $_GET['nis'];
                                                 </tr>
                                                 <tr>
                                                     <th>Alamat</th>
-                                                    <th>: <?= $sn['desa'] . ' - ' . $sn['kec'] . ' - ' . $sn['kab']; ?></th>
+                                                    <th>: <?= $sn['desa'] . ' - ' . $sn['kec'] . ' - ' . $sn['kab']; ?>
+                                                    </th>
                                                 </tr>
                                                 <tr>
                                                     <th>Formal</th>
@@ -106,10 +109,10 @@ $nis = $_GET['nis'];
                                                         $tnnOk = $tnn;
                                                     }
                                                 ?>
-                                                    <tr>
-                                                        <th><?= $bulan[$i]; ?></th>
-                                                        <th><?= rupiah($tnnOk); ?></th>
-                                                    </tr>
+                                                <tr>
+                                                    <th><?= $bulan[$i]; ?></th>
+                                                    <th><?= rupiah($tnnOk); ?></th>
+                                                </tr>
                                                 <?php } ?>
                                             </table>
                                         </div>
@@ -125,7 +128,8 @@ $nis = $_GET['nis'];
                                     <div class="icon">
                                         <i class="ion ion-cash"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="small-box-footer">More info <i
+                                            class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                                 <div class="small-box bg-green">
                                     <div class="inner">
@@ -135,7 +139,8 @@ $nis = $_GET['nis'];
                                     <div class="icon">
                                         <i class="ion ion-stats-bars"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="small-box-footer">More info <i
+                                            class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                                 <div class="small-box bg-red">
                                     <div class="inner">
@@ -145,7 +150,8 @@ $nis = $_GET['nis'];
                                     <div class="icon">
                                         <i class="ion ion-pie-graph"></i>
                                     </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                                    <a href="#" class="small-box-footer">More info <i
+                                            class="fa fa-arrow-circle-right"></i></a>
                                 </div>
                             </div>
                             <div class="col-md-8">
@@ -153,8 +159,10 @@ $nis = $_GET['nis'];
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Hisytrory bayar santri</h3>
                                         <div class="box-tools pull-right">
-                                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                            <button class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                                            <button class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i></button>
+                                            <button class="btn btn-box-tool" data-widget="remove"><i
+                                                    class="fa fa-times"></i></button>
                                         </div>
                                     </div><!-- /.box-header -->
                                     <div class="box-body">
@@ -173,30 +181,70 @@ $nis = $_GET['nis'];
                                                 </thead>
                                                 <tbody>
                                                     <?php while ($r = mysqli_fetch_assoc($bayar)) { ?>
-                                                        <tr>
-                                                            <td><?= $no++; ?></td>
-                                                            <td><?= $r['tgl']; ?></td>
-                                                            <td><?= rupiah($r['nominal']); ?></td>
-                                                            <td><?= $bulan[$r['bulan']]; ?></td>
-                                                            <td><?= $r['tahun']; ?></td>
-                                                            <td><span class="label label-success"><?= $r['kasir']; ?></span></td>
-                                                            <td>
-                                                                <a href="hapus.php?kd=del_by&id=<?= $r['id']; ?>" onclick="return confirm('Yakin akan dihapus?. Ini akan menghapus data di dekosan juga')"><span class="label label-danger">Del</span></a>
-                                                            </td>
-                                                        </tr>
+                                                    <tr>
+                                                        <td><?= $no++; ?></td>
+                                                        <td><?= $r['tgl']; ?></td>
+                                                        <td><?= rupiah($r['nominal']); ?></td>
+                                                        <td><?= $bulan[$r['bulan']]; ?></td>
+                                                        <td><?= $r['tahun']; ?></td>
+                                                        <td><span class="label label-success"><?= $r['kasir']; ?></span>
+                                                        </td>
+                                                        <td>
+                                                            <form action="" method="post">
+                                                                <a href="hapus.php?kd=del_by&id=<?= $r['id']; ?>"
+                                                                    onclick="return confirm('Yakin akan dihapus?. Ini akan menghapus data di dekosan juga')"><span
+                                                                        class="btn btn-danger btn-xs">Del</span></a>
+                                                                <button class="btn btn-warning btn-xs" type="submit"
+                                                                    name="edit">Edit</button>
+                                                                <input type="hidden" name="id" value="<?= $r['id']; ?>">
+                                                                <input type="hidden" name="tgl"
+                                                                    value="<?= $r['tgl']; ?>">
+                                                                <input type="hidden" name="bulan"
+                                                                    value="<?= $r['bulan']; ?>">
+                                                                <input type="hidden" name="nominal"
+                                                                    value="<?= $r['nominal']; ?>">
+                                                            </form>
+                                                        </td>
+                                                    </tr>
                                                     <?php } ?>
                                                 </tbody>
                                             </table>
                                         </div><!-- /.table-responsive -->
                                     </div><!-- /.box-body -->
                                 </div><!-- /.box -->
+                                <?php if (isset($_POST['edit'])) { ?>
+                                <h5>Edit Nominal dari ID : <?= $_POST['id']; ?></h5>
+                                <form action="" method="post">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="id" value="<?= $_POST['id']; ?>"
+                                            readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="tgl" value="<?= $_POST['tgl']; ?>"
+                                            readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="bulan"
+                                            value="<?= $bulan[$_POST['bulan']]; ?>" readonly>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="uang2" name="nominal"
+                                            value="<?= $_POST['nominal']; ?>">
+                                    </div>
+                                    <div class="form-group">
+                                        <button class="btn btn-success btn-sm" type="submit"
+                                            name="simpan-edit">Simpan</button>
+                                    </div>
+                                </form>
+                                <?php } ?>
                             </div>
                             <div class="col-md-4">
                                 <div class="box box-danger">
                                     <div class="box-header with-border">
                                         <h3 class="box-title">Input Pembayaran Baru</h3>
                                         <div class="box-tools pull-right">
-                                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                            <button class="btn btn-box-tool" data-widget="collapse"><i
+                                                    class="fa fa-minus"></i></button>
                                         </div>
                                     </div><!-- /.box-header -->
                                     <div class="box-body">
@@ -208,11 +256,13 @@ $nis = $_GET['nis'];
                                             <div class="box-body">
                                                 <div class="form-group">
                                                     <label for="exampleInputEmail1">Nominal Pembyaran</label>
-                                                    <input type="text" name="nominal" class="form-control" id="uang" placeholder="Masukan nominal" required>
+                                                    <input type="text" name="nominal" class="form-control" id="uang"
+                                                        placeholder="Masukan nominal" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="exampleInputPassword1">Tanggal</label>
-                                                    <input type="date" name="tgl" class="form-control" id="exampleInputPassword1" placeholder="Password" required>
+                                                    <input type="date" name="tgl" class="form-control"
+                                                        id="exampleInputPassword1" placeholder="Password" required>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="exampleInputPassword1">Dekosan</label><br>
@@ -225,12 +275,13 @@ $nis = $_GET['nis'];
                                                         <option value=""> -pilih bulan- </option>
                                                         <?php
                                                         for ($i = 1; $i <= 12; $i++) { ?>
-                                                            <option value="<?= $i; ?>"><?= $bulan[$i]; ?></option>
+                                                        <option value="<?= $i; ?>"><?= $bulan[$i]; ?></option>
                                                         <?php } ?>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
-                                                    <button type="submit" name="add" class="btn btn-primary"><i class="fa fa-save"></i> Simpan</button>
+                                                    <button type="submit" name="add" class="btn btn-primary"><i
+                                                            class="fa fa-save"></i> Simpan</button>
                                                 </div>
                                             </div><!-- /.box-body -->
 
@@ -265,28 +316,28 @@ $nis = $_GET['nis'];
 <script src="../institution/dist/sw/sweetalert2.all.min.js"></script>
 
 <script>
-    function masuk(txt, data) {
-        document.getElementById('nis').value = data; // ini berfungsi mengisi value yang ber id textbox
-        //$("#cek").modal('hide'); // ini berfungsi untuk menyembunyikan modal
-    }
-    $(function() {
-        //$(".select2").select2();
-        $("#example1_bst").DataTable();
-        $("#example2_bst").DataTable();
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
-        });
+function masuk(txt, data) {
+    document.getElementById('nis').value = data; // ini berfungsi mengisi value yang ber id textbox
+    //$("#cek").modal('hide'); // ini berfungsi untuk menyembunyikan modal
+}
+$(function() {
+    //$(".select2").select2();
+    $("#example1_bst").DataTable();
+    $("#example2_bst").DataTable();
+    $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false
     });
+});
 </script>
 <script>
-    $(document).ready(function() {
-        $(".cari1").select2();
-    });
+$(document).ready(function() {
+    $(".cari1").select2();
+});
 </script>
 <?php
 include 'bawah.php';
@@ -310,10 +361,10 @@ if (isset($_POST['add'])) {
     $alm = $dp['desa'] . '-' . $dp['kec'] . '-' . $dp['kab'];
     $hpNo = $dp['hp'];
 
-    $pesan = '_(Ini adalah pesan otomatis dari sistem)_
-*Assalamualaikum Wr. Wb*
-Kami dari *Bendahara Pesantren* Darul Lughah Wal Karomah
-menginfokan bahwa pembayaran atas :
+    $pesan = '
+*KWITANSI PEMBAYARAN ELEKTRONIK*
+*PP DARUL LUGHAH WAL KAROMAH*
+Bendahara Pondok Pesantren Darul Lughah Wal Karomah telah menerima pembayaran BP dari wali santri berikut :
     
 No. BRIVA : *' . $dpBr['briva'] . '*
 Nama : *' . $nama . '*
@@ -323,23 +374,27 @@ Tanggal Bayar : *' . $tgl . '*
 Pembayaran Untuk: *BP (Biaya Pendidikan) bulan ' . $bulan[$bulan_bayar] . '*
 Penerima: *' . $kasir . '*
 
-_*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
-*Terimakasih*';
+Bukti Penerimaan ini *DISIMPAN* oleh wali santri sebagai bukti pembayaran Biaya Pendidikan PP Darul Lughah Wal Karomah Tahun Pelajaran 2022/2023.
+*Hal – hal yang berkaitan dengan Teknis keuangan dapat menghubungi Contact Person Bendahara berikut :*
+*https://wa.me/6287757777273*
+*https://wa.me/6285235583647*
+
+Terimakasih';
 
     if ($by > $ttl) { ?>
-        <script>
-            Swal.fire({
-                position: 'top-end',
-                icon: 'error',
-                title: 'Maaf. Pembayaran Melebihi',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 1000;
-            setTimeout(function() {
-                document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
-            }, millisecondsToWait);
-        </script>
-        <?php
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'error',
+    title: 'Maaf. Pembayaran Melebihi',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+}, millisecondsToWait);
+</script>
+<?php
         exit;
     } else {
 
@@ -351,63 +406,84 @@ _*- Pesan ini bisa disimpan sebagai bukti pembayaran*_
 
                 if ($qr && $qr2) {
                     // Japri 1
-                    kirim_person($api_key, $hpNo, $psn);
+                    kirim_person($api_key, $hpNo, $pesan);
 
         ?>
-                    <script>
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Data Pembayaran telah ditambahkan',
-                            showConfirmButton: false
-                        });
-                        var millisecondsToWait = 1000;
-                        setTimeout(function() {
-                            document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
-                        }, millisecondsToWait);
-                    </script>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'Data Pembayaran telah ditambahkan',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+}, millisecondsToWait);
+</script>
 
-                <?php
+<?php
                 }
             } else {
                 $qr = mysqli_query($conn, "INSERT INTO pembayaran VALUES ('', '$nis', '$nama', '$tgl', '$nominal', '$bulan_bayar', '$tahun_ajaran', '$kasir') ");
 
                 if ($qr) {
                     // Japri 1
-                    kirim_person($api_key, $hpNo, $psn);
+                    kirim_person($api_key, $hpNo, $pesan);
 
                 ?>
-                    <script>
-                        Swal.fire({
-                            position: 'top-end',
-                            icon: 'success',
-                            title: 'Data Pembayaran telah ditambahkan',
-                            showConfirmButton: false
-                        });
-                        var millisecondsToWait = 1000;
-                        setTimeout(function() {
-                            document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
-                        }, millisecondsToWait);
-                    </script>
-                    ";
-            <?php
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'Data Pembayaran telah ditambahkan',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+}, millisecondsToWait);
+</script>
+";
+<?php
                 }
             }
         } else {
             ?>
-            <script>
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'error',
-                    title: 'Maaf Pembayaran sudah ada',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
-                }, millisecondsToWait);
-            </script>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'error',
+    title: 'Maaf Pembayaran sudah ada',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+}, millisecondsToWait);
+</script>
 <?php
         }
     }
+}
+
+if (isset($_POST['simpan-edit'])) {
+    $id = $_POST['id'];
+    $nominal = preg_replace("/[^0-9]/", "", $_POST['nominal']);
+
+    $sql = mysqli_query($conn, "UPDATE pembayaran SET nominal = '$nominal' WHERE id = $id ");
+    if ($sql) { ?>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'Pembayaran sudah terupdate',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "<?= 'tg_syh2.php?nis=' . $nis ?>"
+}, millisecondsToWait);
+</script>
+<?php }
 }

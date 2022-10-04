@@ -137,8 +137,8 @@ $ck = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode
                                         <th>Bulan</th>
                                         <th>PJ</th>
                                         <th>Nominal</th>
-                                        <th>Cair</th>
                                         <th>Ket</th>
+                                        <th>Cair</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>

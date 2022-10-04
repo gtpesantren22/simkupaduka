@@ -258,7 +258,9 @@ Kode Pengajuan : ' . $kd_pj . '
 Nominal : ' . rupiah($tt['tot']) . '
 *telah DISETUJUI oleh KEPALA PESANTREN pada ' . $tgl . '*
 
-*_dimohon kepada KASiR untuk segera melakukan pencairan di https://simkupaduka.ppdwk.com/_*
+*_Pengajuan anda sudah disetujui, Silahkan menghubungi Adm Pencairan untuk pengambilan dana._*
+
+https://simkupaduka.ppdwk.com/
 Terimakasih';
 
     $psn2 = '

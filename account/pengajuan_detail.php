@@ -564,10 +564,10 @@ Terimakasih';
         echo "DATA TAK MAU MASUK";
     }
 } else if (isset($_POST['ed_nom'])) {
-    $ket = $_POST['ket'];
+    $ket = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['ket']));
     $id_rsm = $_POST['id_rsm'];
     $nom_cair = preg_replace("/[^0-9]/", "", $_POST['nom_cair']);
-    $stas = $_POST['stas'];
+    $stas = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['stas']));
 
     $sql = mysqli_query($conn, "UPDATE real_sm SET nom_cair = '$nom_cair', stas = '$stas', ket = '$ket' WHERE id_realis = '$id_rsm' AND tahun = '$tahun_ajaran' ");
 

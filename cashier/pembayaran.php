@@ -35,6 +35,7 @@ include 'atas.php';
                                         <th>No</th>
                                         <th>Nama</th>
                                         <th>Tanggal Bayar</th>
+                                        <th>Bulan</th>
                                         <th>Nominal</th>
                                         <th>Tahun Ajaran</th>
                                         <th>Penerima</th>
@@ -45,21 +46,23 @@ include 'atas.php';
                                     <?php
                                     $rls = mysqli_query($conn, "SELECT * FROM pembayaran WHERE tahun = '$tahun_ajaran' ORDER BY tgl DESC ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) { ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $ls_jns['nama']; ?></td>
-                                            <td><?= $ls_jns['tgl']; ?></td>
-                                            <td><?= rupiah($ls_jns['nominal']); ?></td>
-                                            <td><?= $ls_jns['tahun']; ?></td>
-                                            <td><?= $ls_jns['kasir']; ?></td>
-                                            <td>
-                                                <button class="btn btn-warning btn-xs">Edit</button>
-                                                <a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=del_by&id=' . $ls_jns['id'] ?>">
-                                                    <button class="btn btn-danger btn-xs">Hapus</button>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <!-- Modal -->
+                                    <tr>
+                                        <td><?= $no++; ?></td>
+                                        <td><?= $ls_jns['nama']; ?></td>
+                                        <td><?= $ls_jns['tgl']; ?></td>
+                                        <td><?= $bulan[$ls_jns['bulan']]; ?></td>
+                                        <td><?= rupiah($ls_jns['nominal']); ?></td>
+                                        <td><?= $ls_jns['tahun']; ?></td>
+                                        <td><?= $ls_jns['kasir']; ?></td>
+                                        <td>
+                                            <button class="btn btn-warning btn-xs">Edit</button>
+                                            <a onclick="return confirm('Yakin akan dihapus ?')"
+                                                href="<?= 'hapus.php?kd=del_by&id=' . $ls_jns['id'] ?>">
+                                                <button class="btn btn-danger btn-xs">Hapus</button>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!-- Modal -->
 
                                     <?php } ?>
                                 </tbody>
@@ -89,23 +92,23 @@ include 'atas.php';
 <script src="../institution/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="../institution/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-    function masuk(txt, data) {
-        document.getElementById('nis').value = data; // ini berfungsi mengisi value yang ber id textbox
-        $("#tambah").modal('hide'); // ini berfungsi untuk menyembunyikan modal
-    }
-    $(function() {
-        $(".select2").select2();
-        $("#example1_bst").DataTable();
-        $("#example2_bst").DataTable();
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
-        });
+function masuk(txt, data) {
+    document.getElementById('nis').value = data; // ini berfungsi mengisi value yang ber id textbox
+    $("#tambah").modal('hide'); // ini berfungsi untuk menyembunyikan modal
+}
+$(function() {
+    $(".select2").select2();
+    $("#example1_bst").DataTable();
+    $("#example2_bst").DataTable();
+    $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false
     });
+});
 </script>
 
 <?php
