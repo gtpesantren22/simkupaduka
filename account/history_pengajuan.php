@@ -36,7 +36,8 @@ include 'head.php';
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-badgeledby="home-tab">
                                 <div class="table-responsive">
-                                    <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+                                    <table id="datatable" class="table table-striped table-bordered table-sm"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -45,6 +46,7 @@ include 'head.php';
                                                 <th>Periode</th>
                                                 <th>Verval / Approv / Cair / SPJ</th>
                                                 <th>Nominal</th>
+                                                <th>Terserap</th>
                                                 <th>#</th>
                                             </tr>
                                         </thead>
@@ -56,29 +58,36 @@ include 'head.php';
                                                 $kd_pj = $a['kode_pengajuan'];
                                                 $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
                                                 $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
+                                                $jml3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM real_sisa WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
                                                 $kfe = $jml['jml'] + $jml2['jml'];
                                             ?>
-                                                <tr>
-                                                    <td><?= $no++ ?></td>
-                                                    <td><?= $a['kode_pengajuan'] ?></td>
-                                                    <td><?= $a['nama'] ?></td>
-                                                    <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
-                                                    <td>
-                                                        <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                                        <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                                        <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                                        <?php if ($a['spj'] == 0) { ?>
-                                                            <span class="badge badge-danger"><i class="fa fa-times"></i> belum upload</span>
-                                                        <?php } else if ($a['spj'] == 1) { ?>
-                                                            <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
-                                                                proses verifikasi</span>
-                                                        <?php } else { ?>
-                                                            <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td><?= rupiah($kfe) ?></td>
-                                                    <td><a href="<?= 'history_detail.php?kode=' . $a['id_pn'] ?>"><button class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Lihat history</button></a></td>
-                                                </tr>
+                                            <tr>
+                                                <td><?= $no++ ?></td>
+                                                <td><?= $a['kode_pengajuan'] ?></td>
+                                                <td><?= $a['nama'] ?></td>
+                                                <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
+                                                <td>
+                                                    <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                    <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                    <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                                    <?php if ($a['spj'] == 0) { ?>
+                                                    <span class="badge badge-danger"><i class="fa fa-times"></i> belum
+                                                        upload</span>
+                                                    <?php } else if ($a['spj'] == 1) { ?>
+                                                    <span class="badge badge-warning btn-xs"><i
+                                                            class="fa fa-spinner fa-refresh-animate"></i>
+                                                        proses verifikasi</span>
+                                                    <?php } else { ?>
+                                                    <span class="badge badge-success"><i class="fa fa-check"></i> sudah
+                                                        selesai</span>
+                                                    <?php } ?>
+                                                </td>
+                                                <td><?= rupiah($kfe) ?></td>
+                                                <td><?= rupiah($jml3['dana_serap']) ?></td>
+                                                <td><a href="<?= 'history_detail.php?kode=' . $a['id_pn'] ?>"><button
+                                                            class="btn btn-primary btn-sm"><i class="fa fa-search"></i>
+                                                            Lihat history</button></a></td>
+                                            </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
@@ -114,15 +123,15 @@ include 'head.php';
 <!-- bootstrap-datetimepicker -->
 <script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
