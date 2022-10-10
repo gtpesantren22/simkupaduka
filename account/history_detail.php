@@ -2,14 +2,17 @@
 include 'head.php';
 $kode = $_GET['kode'];
 $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM pengajuan WHERE id_pn = '$kode' AND tahun = '$tahun_ajaran' "));
-$kode_p = $data['kode_pengajuan'];
 
 $kd_l = $data['lembaga'];
 $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kd_l' AND tahun = '$tahun_ajaran' "));
 $kd_pj = $data['kode_pengajuan'];
-$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-$jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-$kfe = $jml['jml'] + $jml2['jml'];
+
+if ($data['cair'] == 1) {
+    $tbl_slct = 'realis';
+} else {
+    $tbl_slct = 'real_sm';
+}
+$jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT *, SUM(nominal) AS jml, SUM(nom_cair) AS jml_cair, SUM(nom_serap) AS jml_serap FROM $tbl_slct WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
 
 
 $veral = mysqli_query($conn, "SELECT * FROM verifikasi WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
@@ -45,7 +48,8 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                         <h2><i class="fa fa-bars"></i> History Pengajuan <small>Realisasi</small></h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <a href="history_pengajuan.php">
-                                <li><button class="btn btn-warning btn-sm"><i class="fa fa-plus-arrow-left"></i> Kembali</button></li>
+                                <li><button class="btn btn-warning btn-sm"><i class="fa fa-plus-arrow-left"></i>
+                                        Kembali</button></li>
                             </a>
                         </ul>
                         <div class="clearfix"></div>
@@ -83,7 +87,7 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                 <center>
                                     <p style="font-size: 23px;">
                                         <b>NOMINAL PENGAJUAN</b><br>
-                                        <b style="color: limegreen;"><?= rupiah($kfe); ?>
+                                        <b style="color: limegreen;"><?= rupiah($jml['jml']); ?>
                                         </b>
                                     </p>
                                 </center>
@@ -92,18 +96,24 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                             <div class="col-sm-3 invoice-col">
                                 <center>
                                     <b>Status Pengajuan</b><br>
-                                    Verval : <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?><br>
-                                    Approv : <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?><br>
-                                    Cair : <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?><br>
+                                    Verval :
+                                    <?= $a['verval'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?><br>
+                                    Approv :
+                                    <?= $a['apr'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?><br>
+                                    Cair :
+                                    <?= $a['cair'] == 1 ? "<span class='badge badge-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='badge badge-danger'><i class='fa fa-times'></i> belum</span>"; ?><br>
                                     SPJ : <?php if ($a['spj'] == 0) { ?>
-                                        <span class="badge badge-danger"><i class="fa fa-times"></i> belum upload</span>
+                                    <span class="badge badge-danger"><i class="fa fa-times"></i> belum upload</span>
                                     <?php } else if ($a['spj'] == 1) { ?>
-                                        <span class="badge badge-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
-                                            proses verifikasi</span>
+                                    <span class="badge badge-warning btn-xs"><i
+                                            class="fa fa-spinner fa-refresh-animate"></i>
+                                        proses verifikasi</span>
                                     <?php } else { ?>
 
-                                        <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
-                                        <a href="../institution/spj_file/<?= $spj['file_spj']; ?>"> <span class="badge badge-warning"><i class="fa fa-download"> Unduh SPJ</i></span></a>
+                                    <span class="badge badge-success"><i class="fa fa-check"></i> sudah selesai</span>
+                                    <a href="../institution/spj_file/<?= $spj['file_spj']; ?>"> <span
+                                            class="badge badge-warning"><i class="fa fa-download"> Unduh
+                                                SPJ</i></span></a>
 
                                     <?php } ?>
                                 </center>
@@ -142,16 +152,16 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                                 </a>
                                             </div>
                                             <?php while ($vv = mysqli_fetch_assoc($veral)) { ?>
-                                                <div class="block_content">
-                                                    <h2 class="title">
-                                                        <b><i>Diverifikasi oleh <?= $vv['user']; ?></i></b>
-                                                    </h2>
-                                                    <div class="byline">
-                                                        <span>Waktu verifikasi</span>
-                                                    </div>
-                                                    <p class="excerpt">Pada : <span><?= $vv['tgl_verval']; ?></span>
-                                                    </p>
+                                            <div class="block_content">
+                                                <h2 class="title">
+                                                    <b><i>Diverifikasi oleh <?= $vv['user']; ?></i></b>
+                                                </h2>
+                                                <div class="byline">
+                                                    <span>Waktu verifikasi</span>
                                                 </div>
+                                                <p class="excerpt">Pada : <span><?= $vv['tgl_verval']; ?></span>
+                                                </p>
+                                            </div>
                                             <?php }; ?>
                                         </div>
                                     </li>
@@ -163,16 +173,16 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                                 </a>
                                             </div>
                                             <?php while ($app = mysqli_fetch_assoc($apr)) { ?>
-                                                <div class="block_content">
-                                                    <h2 class="title">
-                                                        <b><i>Disetujui oleh <?= $app['user']; ?></i></b>
-                                                    </h2>
-                                                    <div class="byline">
-                                                        <span>Waktu persetujuan</span>
-                                                    </div>
-                                                    <p class="excerpt">Pada : <span><?= $app['tgl_apr']; ?></span>
-                                                    </p>
+                                            <div class="block_content">
+                                                <h2 class="title">
+                                                    <b><i>Disetujui oleh <?= $app['user']; ?></i></b>
+                                                </h2>
+                                                <div class="byline">
+                                                    <span>Waktu persetujuan</span>
                                                 </div>
+                                                <p class="excerpt">Pada : <span><?= $app['tgl_apr']; ?></span>
+                                                </p>
+                                            </div>
                                             <?php }; ?>
                                         </div>
                                     </li>
@@ -184,22 +194,23 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                                 </a>
                                             </div>
                                             <?php while ($acc = mysqli_fetch_assoc($cair)) { ?>
-                                                <div class="block_content">
-                                                    <h2 class="title">
-                                                        <b><i>Dicairkan oleh <?= $acc['kasir']; ?></i></b>
-                                                    </h2>
-                                                    <div class="byline">
-                                                        <span>Waktu pencairan</span>
-                                                    </div>
-                                                    <p class="excerpt">Pada : <span><?= $acc['tgl_cair']; ?></span><br>
-                                                        Nominal : <span><?= rupiah($acc['nominal_cair']); ?></span></p>
+                                            <div class="block_content">
+                                                <h2 class="title">
+                                                    <b><i>Dicairkan oleh <?= $acc['kasir']; ?></i></b>
+                                                </h2>
+                                                <div class="byline">
+                                                    <span>Waktu pencairan</span>
                                                 </div>
+                                                <p class="excerpt">Pada : <span><?= $acc['tgl_cair']; ?></span><br>
+                                                    Nominal : <span><?= rupiah($acc['nominal_cair']); ?></span></p>
+                                            </div>
                                             <?php }; ?>
                                         </div>
                                     </li>
                                 </ul>
                                 <div class="table-responsive">
-                                    <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+                                    <table id="datatable2" class="table table-striped table-bordered table-sm"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -207,37 +218,39 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
                                                 <th>Periode</th>
                                                 <th>PJ</th>
                                                 <th>Nominal</th>
+                                                <th>Cair</th>
+                                                <th>Serap</th>
                                                 <th>Keterangan</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php
                                             $no = 1;
-                                            if ($data['cair'] == 1) {
-                                                $dt_bos = mysqli_query($conn, "SELECT * FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM realis WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
-                                            } else {
-                                                $dt_bos = mysqli_query($conn, "SELECT * FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' ");
-                                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tot FROM real_sm WHERE kode_pengajuan = '$kode_p' AND tahun = '$tahun_ajaran' "));
-                                            }
+
+                                            $dt_bos = mysqli_query($conn, "SELECT * FROM $tbl_slct WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' ");
                                             while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                                <tr>
-                                                    <td><?= $no++ ?></td>
-                                                    <td><?= $a['kode'] ?></td>
-                                                    <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
-                                                    <td><?= $a['pj'] ?></td>
-                                                    <td><?= rupiah($a['nominal']) ?></td>
-                                                    <td><?= $a['ket'] ?></td>
-                                                    <!-- <td>
+                                            <tr>
+                                                <td><?= $no++ ?></td>
+                                                <td><?= $a['kode'] ?></td>
+                                                <td><?= $bulan[$a['bulan']] . ' ' . $a['tahun'] ?></td>
+                                                <td><?= $a['pj'] ?></td>
+                                                <td><?= rupiah($a['nominal']) ?></td>
+                                                <td><?= rupiah($a['nom_cair']) ?></td>
+                                                <td><?= rupiah($a['nom_serap']) ?></td>
+                                                <td><?= $a['ket'] ?></td>
+                                                <!-- <td>
                                             <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_realis']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
                                         </td> -->
-                                                </tr>
+                                            </tr>
                                             <?php } ?>
                                         </tbody>
                                         <tfoot>
                                             <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                                 <th colspan="4">SUB JUMLAH</th>
-                                                <th colspan="2"><?= rupiah($tt['tot']) ?></th>
+                                                <th><?= rupiah($jml['jml']) ?></th>
+                                                <th><?= rupiah($jml['jml_cair']) ?></th>
+                                                <th><?= rupiah($jml['jml_serap']) ?></th>
+                                                <th></th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -273,15 +286,15 @@ $a = mysqli_fetch_assoc(mysqli_query($conn, "SELECT a.*, b.nama FROM pengajuan a
 <!-- bootstrap-datetimepicker -->
 <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>

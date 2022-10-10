@@ -46,7 +46,7 @@ include 'head.php';
                                                 <th>Periode</th>
                                                 <th>Verval / Approv / Cair / SPJ</th>
                                                 <th>Nominal</th>
-                                                <th>Terserap</th>
+                                                <!-- <th>Terserap</th> -->
                                                 <th>#</th>
                                             </tr>
                                         </thead>
@@ -83,7 +83,7 @@ include 'head.php';
                                                     <?php } ?>
                                                 </td>
                                                 <td><?= rupiah($kfe) ?></td>
-                                                <td><?= rupiah($jml3['dana_serap']) ?></td>
+                                                <!-- <td><?= rupiah($jml3['dana_serap']) ?></td> -->
                                                 <td><a href="<?= 'history_detail.php?kode=' . $a['id_pn'] ?>"><button
                                                             class="btn btn-primary btn-sm"><i class="fa fa-search"></i>
                                                             Lihat history</button></a></td>

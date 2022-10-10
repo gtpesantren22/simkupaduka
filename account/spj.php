@@ -46,6 +46,8 @@ include 'head.php';
                                             <th>Periode</th>
                                             <th>Status</th>
                                             <th>Nominal</th>
+                                            <th>Cair</th>
+                                            <th>Serap</th>
                                             <th>Berkas</th>
                                             <th>#</th>
                                         </tr>
@@ -53,12 +55,16 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama, b.hp FROM spj a JOIN lembaga b ON a.lembaga=b.kode WHERE a.file_spj != '' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama, b.hp, c.cair FROM spj a JOIN lembaga b ON a.lembaga=b.kode JOIN pengajuan c ON a.kode_pengajuan=c.kode_pengajuan WHERE a.file_spj != '' AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' AND c.tahun = '$tahun_ajaran' ");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                             $kd_pj = $a['kode_pengajuan'];
-                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
-                                            $jml2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran'"));
-                                            $pjan = $jml['jml'] + $jml2['jml'];
+
+                                            if ($a['cair'] == 1) {
+                                                $tbl_slct = 'realis';
+                                            } else {
+                                                $tbl_slct = 'real_sm';
+                                            }
+                                            $jml = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS jml, SUM(nom_cair) AS jml_cair, SUM(nom_serap) AS jml_serap FROM $tbl_slct WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun_ajaran' "));
 
                                             if (preg_match("/DISP./i", $kd_pj)) {
                                                 $rt = "<span class='badge badge-danger'>DISPOSISI</span>";
@@ -84,7 +90,9 @@ include 'head.php';
                                                     selesai</span>
                                                 <?php } ?>
                                             </td>
-                                            <td><?= rupiah($pjan) ?></td>
+                                            <td><?= rupiah($jml['jml']) ?></td>
+                                            <td><?= rupiah($jml['jml_cair']) ?></td>
+                                            <td><?= rupiah($jml['jml_serap']) ?></td>
                                             <td><a href="<?= '../institution/spj_file/' . $a['file_spj'] ?>"><i
                                                         class="fa fa-download"></i> Unduh Berkas</a></td>
                                             <td>
