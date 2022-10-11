@@ -6,8 +6,8 @@ $conn_santri = mysqli_connect("localhost", "root", "", "db_santri");
 
 // $conn = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_sentral");
 // $conn_dekos = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_dekos");
-// $conn_sekretaris  = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_sekretaris ");
-// $conn_santri  = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_santri ");
+// $conn_sekretaris  = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_sekretaris");
+// $conn_santri  = mysqli_connect("localhost", "u9048253_dwk", "PesantrenDWKIT2021", "u9048253_santri");
 
 $key = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM api WHERE nama = 'Bendahara' "));
 $api_key = $key['nama_key'];
