@@ -113,11 +113,11 @@ $info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                                     <!-- inner menu: contains the actual data -->
                                     <ul class="menu">
                                         <?php while ($if = mysqli_fetch_assoc($info)) { ?>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-envelope text-aqua"></i> <?= $if['judul'] ?>
-                                                </a>
-                                            </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-envelope text-aqua"></i> <?= $if['judul'] ?>
+                                            </a>
+                                        </li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -134,7 +134,8 @@ $info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                             <ul class="dropdown-menu">
                                 <!-- User image -->
                                 <li class="user-header">
-                                    <img src="../institution/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                    <img src="../institution/dist/img/user2-160x160.jpg" class="img-circle"
+                                        alt="User Image">
                                     <p>
                                         <?= $nama_user ?>
                                         <small>Operator <?= $level ?></small>
@@ -147,7 +148,8 @@ $info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                                         <a href="setting.php" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="logout.php" onclick="return confirm('Yakin akan logout ?')" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="logout.php" onclick="return confirm('Yakin akan logout ?')"
+                                            class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -221,12 +223,14 @@ $info = mysqli_query($conn, "SELECT * FROM info WHERE tahun = '$tahun_ajaran'");
                             <li><a href="pes.php"><i class="fa fa-circle-o"></i> Pesantren</a></li>
                         </ul>
                     </li>
-                    <li><a href="mutasi.php"><i class="fa fa-external-link-square"></i> <span>Mutasi Santri</span></a></li>
+                    <li><a href="mutasi.php"><i class="fa fa-external-link-square"></i> <span>Mutasi Santri</span></a>
+                    </li>
                     <li class="header">ADDON</li>
                     <li><a href="info.php"><i class="fa fa-info-circle text-yellow"></i> <span>Informasi</span></a></li>
                     <li><a href="setting.php"><i class="fa fa-cog text-red"></i> <span>Pengaturan</span></a></li>
                     <hr>
-                    <a onclick="return confirm('Yakin akan logout ?')" href="logout.php"><button class="btn btn-danger btn-block"><i class="fa fa-power-off"></i> Logout</button></a>
+                    <a onclick="return confirm('Yakin akan logout ?')" href="logout.php"><button
+                            class="btn btn-danger btn-block"><i class="fa fa-power-off"></i> Logout</button></a>
                 </ul>
             </section>
             <!-- /.sidebar -->
