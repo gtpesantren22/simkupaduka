@@ -355,7 +355,7 @@ if (isset($_POST['save'])) {
         ";
     } else {
 
-        $sql12 = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','-', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$stas')");
+        $sql12 = mysqli_query($conn, "INSERT INTO real_sm VALUES ('$id', '$lembaga','$bidang','$jenis','-', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$kd_pjn', '$nominal', '$nominal', '$stas')");
         if ($sql12) {
             echo "
                 <script>
