@@ -48,8 +48,10 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 </address>
                                 <hr>
                                 <address>
-                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#tambah_bos"><i class="fa fa-plus-square"> </i> Tambah Data</button><br>
-                                    <a href="rab.php"><button class="btn btn-warning btn-sm"><i class="fa fa-chevron-circle-left"></i> Kembali</button></a>
+                                    <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#tambah_bos"><i
+                                            class="fa fa-plus-square"> </i> Tambah Data</button><br>
+                                    <a href="rab.php"><button class="btn btn-warning btn-sm"><i
+                                                class="fa fa-chevron-circle-left"></i> Kembali</button></a>
                                 </address>
                             </div>
                             <!-- /.col -->
@@ -62,8 +64,10 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 </address>
                                 <hr>
                                 <address>
-                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download Excel</button><br>
-                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#kosongi"><i class="fa fa-times"></i> Kosongi RAB</button><br>
+                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download
+                                        Excel</button><br>
+                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#kosongi"><i
+                                            class="fa fa-times"></i> Kosongi RAB</button><br>
                                 </address>
 
                             </div>
@@ -128,18 +132,20 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND jenis = 'A' AND tahun = '$tahun_ajaran' ");
                                 $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND jenis = 'A' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $a['kode'] ?></td>
+                                    <td><?= $a['nama'] ?></td>
+                                    <td><?= $a['rencana'] ?></td>
+                                    <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
+                                    <td><?= rupiah($a['harga_satuan']) ?></td>
+                                    <td><?= rupiah($a['total']) ?></td>
+                                    <td>
+                                        <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
+                                            href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
+                                                class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                    </td>
+                                </tr>
                                 <?php } ?>
                             </tbody>
                             <tfoot>
@@ -172,18 +178,20 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND jenis = 'B' AND tahun = '$tahun_ajaran' ");
                                 $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND jenis = 'B' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $a['kode'] ?></td>
+                                    <td><?= $a['nama'] ?></td>
+                                    <td><?= $a['rencana'] ?></td>
+                                    <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
+                                    <td><?= rupiah($a['harga_satuan']) ?></td>
+                                    <td><?= rupiah($a['total']) ?></td>
+                                    <td>
+                                        <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
+                                            href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
+                                                class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                    </td>
+                                </tr>
                                 <?php } ?>
                             </tbody>
                             <tfoot>
@@ -216,18 +224,20 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND jenis = 'C' AND tahun = '$tahun_ajaran' ");
                                 $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND jenis = 'C' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $a['kode'] ?></td>
+                                    <td><?= $a['nama'] ?></td>
+                                    <td><?= $a['rencana'] ?></td>
+                                    <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
+                                    <td><?= rupiah($a['harga_satuan']) ?></td>
+                                    <td><?= rupiah($a['total']) ?></td>
+                                    <td>
+                                        <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
+                                            href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
+                                                class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                    </td>
+                                </tr>
                                 <?php } ?>
                             </tbody>
                             <tfoot>
@@ -260,18 +270,20 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND jenis = 'D' AND tahun = '$tahun_ajaran' ");
                                 $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND jenis = 'D' AND tahun = '$tahun_ajaran' "));
                                 while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a['kode'] ?></td>
-                                        <td><?= $a['nama'] ?></td>
-                                        <td><?= $a['rencana'] ?></td>
-                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                        <td><?= rupiah($a['harga_satuan']) ?></td>
-                                        <td><?= rupiah($a['total']) ?></td>
-                                        <td>
-                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $a['kode'] ?></td>
+                                    <td><?= $a['nama'] ?></td>
+                                    <td><?= $a['rencana'] ?></td>
+                                    <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
+                                    <td><?= rupiah($a['harga_satuan']) ?></td>
+                                    <td><?= rupiah($a['total']) ?></td>
+                                    <td>
+                                        <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
+                                            href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
+                                                class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                    </td>
+                                </tr>
                                 <?php } ?>
                             </tbody>
                             <tfoot>
@@ -303,16 +315,20 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
+            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action=""
+                method="post">
                 <div class="modal-body">
                     <div class="item form-group">
-                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Pilih Lembaga <span class="required">*</span></label>
+                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Pilih Lembaga <span
+                                class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 ">
-                            <input type="text" id="first-name" name="lembaga" disabled class="form-control" value="<?= $l['kode'] . '. ' . $l['nama'] ?>">
+                            <input type="text" id="first-name" name="lembaga" disabled class="form-control"
+                                value="<?= $l['kode'] . '. ' . $l['nama'] ?>">
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Bidang/bagian <span class="required">*</span>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Bidang/bagian <span
+                                class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
                             <select name="bidang" class="form-control" id="" required>
@@ -320,13 +336,14 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 <?php
                                 $qr2 = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
                                 while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
-                                    <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
+                                <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>. <?= $a2['nama'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Pilih Jenis Belanja <span class="required">*</span></label>
+                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Pilih Jenis Belanja
+                            <span class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 ">
                             <select name="jenis" id="" required class="form-control">
                                 <option value=""> -- pilih jenis -- </option>
@@ -338,14 +355,16 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama Barang/Kegiatan <span class="required">*</span>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Nama
+                            Barang/Kegiatan <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
                             <input type="text" id="first-name" name="nama" required="required" class="form-control ">
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Rencana Waktu <span class="required">*</span>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="last-name">Rencana Waktu <span
+                                class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
                             <select name="rencana" id="" required class="form-control">
@@ -357,25 +376,30 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">QTY/Satuan <span class="required">*</span></label>
+                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">QTY/Satuan <span
+                                class="required">*</span></label>
                         <div class="col-md-3 col-sm-6 ">
                             <input id="middle-name" class="form-control" type="number" name="qty" required>
                         </div>
                         <div class="col-md-3 col-sm-6 ">
-                            <input id="middle-name" class="form-control" type="text" name="satuan" required placeholder="ex : rim,pack,pcs,dll">
+                            <input id="middle-name" class="form-control" type="text" name="satuan" required
+                                placeholder="ex : rim,pack,pcs,dll">
                         </div>
                     </div>
                     <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Harga Satuan <span class="required">*</span>
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Harga Satuan <span
+                                class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6  form-group has-feedback">
-                            <input type="text" class="form-control has-feedback-left " id="uang" name="harga_satuan" required>
+                            <input type="text" class="form-control has-feedback-left " id="uang" name="harga_satuan"
+                                required>
                             <span class="form-control-feedback left" aria-hidden="true">Rp.</span>
                         </div>
 
                     </div>
                     <div class="item form-group">
-                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Tahun Ajaran<span class="required">*</span></label>
+                        <label for="tahun" class="col-form-label col-md-3 col-sm-3 label-align">Tahun Ajaran<span
+                                class="required">*</span></label>
                         <div class="col-md-6 col-sm-6 ">
                             <select name="tahun" id="" required class="form-control">
                                 <option value=""> -- pilih tahun -- </option>
@@ -403,11 +427,13 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
                 </button>
             </div>
-            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
+            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action=""
+                method="post">
                 <div class="modal-body">
                     <input type="hidden" name="lembaga" value="<?= $kode; ?>">
                     <p>Yakin akan di kosongi ?</p>
-                    <p style="color: red; font-style: italic; font-weight: bold;">* Fitur ini akan mengkosongi semua RAB yang ada</p>
+                    <p style="color: red; font-style: italic; font-weight: bold;">* Fitur ini akan mengkosongi semua RAB
+                        yang ada</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -438,46 +464,46 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
 <!-- bootstrap-datetimepicker -->
 <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 <script type="text/javascript">
-    var rupiah = document.getElementById('uang');
-    var rupiah2 = document.getElementById('uang_2');
+var rupiah = document.getElementById('uang');
+var rupiah2 = document.getElementById('uang_2');
 
-    rupiah.addEventListener('keyup', function(e) {
-        rupiah.value = formatRupiah(this.value);
-    });
-    rupiah2.addEventListener('keyup', function(e) {
-        rupiah2.value = formatRupiah(this.value);
-    });
+rupiah.addEventListener('keyup', function(e) {
+    rupiah.value = formatRupiah(this.value);
+});
+rupiah2.addEventListener('keyup', function(e) {
+    rupiah2.value = formatRupiah(this.value);
+});
 
-    /* Fungsi formatRupiah */
-    function formatRupiah(angka, prefix) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+/* Fungsi formatRupiah */
+function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if (ribuan) {
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
     }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+}
 </script>
 <?php
 if (isset($_POST['save'])) {
@@ -497,23 +523,23 @@ if (isset($_POST['save'])) {
 
     $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', NOW())");
     if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Kode berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'rab_detail.php?kode=' . $lembaga ?>"
-                }, millisecondsToWait);
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Kode berhasil tersimpan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "<?= 'rab_detail.php?kode=' . $lembaga ?>"
+    }, millisecondsToWait);
 
-            });
-        </script>
+});
+</script>
 
-    <?php    } else {
+<?php    } else {
         echo "DATA TAK MAU MASUK";
     }
 }
@@ -524,21 +550,21 @@ if (isset($_POST['kosongkan'])) {
     $lembaga = $_POST['lembaga'];
     $sql = mysqli_query($conn, "DELETE FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'RAB sudah di kosongi',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'rab_detail.php?kode=' . $lembaga ?>"
-                }, millisecondsToWait);
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'RAB sudah di kosongi',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "<?= 'rab_detail.php?kode=' . $lembaga ?>"
+    }, millisecondsToWait);
 
-            });
-        </script>
+});
+</script>
 
 <?php    } else {
         echo "DATA TAK MAU MASUK";
