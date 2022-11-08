@@ -68,7 +68,7 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                                         </tr>
                                         <tr>
                                             <td>Anggaran RAB</td>
-                                            <td> : <?= rupiah($jns['total']) ?></td>
+                                            <td> : <?= rupiah($jns['total']) ?> <b><i><?= '(' . rupiah($l['harga_satuan']) . ' x ' . $l['qty'] . ' ' . $l['satuan'] . ')' ?></i></b></td>
                                         </tr>
                                         <tr>
                                             <td>Realisasi</td>
@@ -76,7 +76,7 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                                         </tr>
                                         <tr>
                                             <td>Sisa</td>
-                                            <td> : <?= rupiah($sisa) ?></td>
+                                            <td> : <?= rupiah($sisa) ?> <b><i><?= '(' . $sisa / $l['harga_satuan'] . ' ' . $l['satuan'] . ')' ?></i></b></td>
                                         </tr>
                                         <tr>
                                             <td>Pembelajaan</td>
@@ -102,21 +102,38 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                                         <h2>Input pembelanjaan</h2>
                                         <div class="table-responsive">
                                             <table class="countries_list">
+
                                                 <tr>
-                                                    <th>Tanggal Belanja *</th>
+                                                    <th>Tanggal Realisasi *</th>
                                                     <th><input type="text" class="form-control" name="tgl" id="datePick" required></th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Bulan Realisasi *</th>
+                                                    <th>
+                                                        <select name="bulan" class="form-control" required>
+                                                            <option value=""> -- pilih bulan -- </option>
+                                                            <?php
+                                                            for ($i = 1; $i < count($bulan); $i++) { ?>
+                                                                <option value="<?= $i ?>"><?= $bulan[$i] ?></option>
+                                                            <?php } ?>
+                                                        </select>
+                                                    </th>
                                                 </tr>
                                                 <tr>
                                                     <th>Nama PJ *</th>
                                                     <th><input type="text" class="form-control" name="pj" required></th>
                                                 </tr>
                                                 <tr>
-                                                    <th>Nominal *</th>
-                                                    <th><input type="text" class="form-control" name="nominal" id="uang" required></th>
+                                                    <th>Jumlah QTY *</th>
+                                                    <th><input type="number" class="form-control" name="qty" placeholder="Jumlah QTY yang akan diambil" required></th>
                                                 </tr>
                                                 <tr>
-                                                    <th>Ket</th>
-                                                    <th><textarea class="form-control" name="ket"></textarea>
+                                                    <th>Nominal Cair *</th>
+                                                    <th><input type="text" class="form-control" name="nominal_cair" id="uang" required></th>
+                                                </tr>
+                                                <tr>
+                                                    <th>Nominal Terserap *</th>
+                                                    <th><input type="text" class="form-control" name="nominal_serap" id="uang_2" required></th>
                                                 </tr>
                                                 <tr>
                                                     <th colspan="2">
@@ -258,30 +275,34 @@ if (isset($_POST['save'])) {
     $bidang = $l['bidang'];
     $jenis = $l['jenis'];
     $kode = $kode;
-    $nominal = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal'])));
     $tgl = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl']));
+    $bulan = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bulan']));
     $pj = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['pj']));
     $tahun = $l['tahun'];
-    $ket = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['ket']));
+    $qty = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['qty']));
+    $nominal = $qty * $l['harga_satuan'];
+    $nominal_cair = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal_cair'])));
+    $nominal_serap = htmlspecialchars(mysqli_real_escape_string($conn, preg_replace("/[^0-9]/", "", $_POST['nominal_serap'])));
+
+    $ket = $jns['nama'] . ' - @ ' . $qty . ' x ' . number_format($l['harga_satuan'], 0, ',', '.');
 
     if ($nominal > $sisa) { ?>
         <script>
             $(document).ready(function() {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Maaf...',
-                    text: 'Nominal belanja anda melebihi sisa Anggaran RAB'
-                })
-                var millisecondsToWait = 2000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'real_add.php?kode=' . $kode ?>"
-                }, millisecondsToWait);
-
-            });
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Maaf...',
+                            text: 'Nominal belanja anda melebihi sisa Anggaran RAB'
+                        })
+                        var millisecondsToWait = 2000;
+                        setTimeout(function() {
+                            document.location.href = "<?= 'real_add.php?kode=' . $kode ?>"
+                        }, millisecondsToWait);
+                        });
         </script>
         <?php
     } else {
-        $sql = mysqli_query($conn, "INSERT INTO realis VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nominal', '$tgl', '$pj', '-','$tahun_ajaran','$ket', 0)");
+        $sql = mysqli_query($conn, "INSERT INTO realis VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$qty', '$nominal', '$tgl', '$pj', '$bulan','$tahun_ajaran','$ket', '$$kode', '$nominal_cair', '$nominal_serap', 'tunai')");
         if ($sql) { ?>
             <script>
                 $(document).ready(function() {
