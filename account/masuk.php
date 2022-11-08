@@ -28,7 +28,8 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
             <div class="tile-stats">
                 <div class="icon"><i class="fa fa-money"></i>
                 </div>
-                <div class="count">Rp. <?= number_format(($tot['jm'] + $tot2['jm'] + $tot3['jm'] + $tot4['jm']), 0, '.', '.') ?></div>
+                <div class="count">Rp.
+                    <?= number_format(($tot['jm'] + $tot2['jm'] + $tot3['jm'] + $tot4['jm']), 0, '.', '.') ?></div>
 
                 <h3>Total pemasukan tahun ini</h3>
                 <p>Pemasukan ini diadapatkan dari data BOS, Pemasukan Pesantren, dan Biaya pendidikan santri</p>
@@ -46,7 +47,8 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                             </li>
                             <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-expanded="false"><i class="fa fa-wrench"></i></a>
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                     <a class="dropdown-item" href="#">Settings 1</a>
                                     <a class="dropdown-item" href="#">Settings 2</a>
@@ -61,13 +63,16 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
 
                         <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Pemasukan BOS</a>
+                                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                    aria-controls="home" aria-selected="true">Pemasukan BOS</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Pemasukan Pesantren</a>
+                                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                    aria-controls="profile" aria-selected="false">Pemasukan Pesantren</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" id="aki-tab" data-toggle="tab" href="#aki" role="tab" aria-controls="aki" aria-selected="false">Saldo Realisasi</a>
+                                <a class="nav-link" id="aki-tab" data-toggle="tab" href="#aki" role="tab"
+                                    aria-controls="aki" aria-selected="false">Saldo Realisasi</a>
                             </li>
                         </ul>
                         <div class="tab-content" id="myTabContent">
@@ -102,15 +107,15 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                         $no = 1;
                                         $dt_bos = mysqli_query($conn, "SELECT * FROM bos WHERE tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                            <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= $a['kode'] ?></td>
-                                                <td><?= $a['uraian'] ?></td>
-                                                <td><?= $a['periode'] ?></td>
-                                                <td>Rp. <?= number_format($a['nominal'], 0, '.', '.') ?></td>
-                                                <td><?= $a['tgl_setor'] ?></td>
-                                                <td><?= $a['tahun'] ?></td>
-                                            </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a['kode'] ?></td>
+                                            <td><?= $a['uraian'] ?></td>
+                                            <td><?= $a['periode'] ?></td>
+                                            <td>Rp. <?= number_format($a['nominal'], 0, '.', '.') ?></td>
+                                            <td><?= $a['tgl_setor'] ?></td>
+                                            <td><?= $a['tahun'] ?></td>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -124,7 +129,8 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <div class="col-md-12">
                                         <div class="alert alert-warning">
                                             <h5>Data pemasukan Pesantren</h5>
-                                            <h5>Total Pemasukan : Rp. <?= number_format($tot2['jm'], 0, '.', '.') ?></h5>
+                                            <h5>Total Pemasukan : Rp. <?= number_format($tot2['jm'], 0, '.', '.') ?>
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>
@@ -146,15 +152,15 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                         $no = 1;
                                         $dt = mysqli_query($conn, "SELECT * FROM pesantren WHERE tahun = '$tahun_ajaran'");
                                         while ($a = mysqli_fetch_assoc($dt)) { ?>
-                                            <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= $a['kode'] ?></td>
-                                                <td><?= $a['uraian'] ?></td>
-                                                <td><?= $a['periode'] ?></td>
-                                                <td>Rp. <?= number_format($a['nominal'], 0, '.', '.') ?></td>
-                                                <td><?= $a['tgl_bayar'] ?></td>
-                                                <td><?= $a['tahun'] ?></td>
-                                            </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a['kode'] ?></td>
+                                            <td><?= $a['uraian'] ?></td>
+                                            <td><?= $a['periode'] ?></td>
+                                            <td>Rp. <?= number_format($a['nominal'], 0, '.', '.') ?></td>
+                                            <td><?= $a['tgl_bayar'] ?></td>
+                                            <td><?= $a['tahun'] ?></td>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -172,7 +178,9 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                         </div>
                                     </div>
                                     <div class="col-md-2">
-                                        <button class="btn btn-lg btn-info btn-block" data-toggle="modal" data-target="#tambah_aki"><i class="fa fa-plus-square"></i> Tambah Data</button>
+                                        <button class="btn btn-lg btn-info btn-block" data-toggle="modal"
+                                            data-target="#tambah_aki"><i class="fa fa-plus-square"></i> Tambah
+                                            Data</button>
                                     </div>
                                 </div>
                                 <hr>
@@ -191,7 +199,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran'");
+                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY kode_pengajuan ASC");
                                         while ($a = mysqli_fetch_assoc($dt)) {
                                             $kd = explode('.', $a['kode_pengajuan']);
                                             $lm = $kd[0];
@@ -199,15 +207,15 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             $th = $kd[2];
                                             $nm =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' AND tahun = '$tahun_ajaran' "));
                                         ?>
-                                            <tr>
-                                                <td><?= $no++ ?></td>
-                                                <td><?= $a['kode_pengajuan'] ?></td>
-                                                <td><?= $nm['nama'] ?></td>
-                                                <td><?= $bk[$bl] . ' ' . $th ?></td>
-                                                <td>Rp. <?= number_format($a['dana_cair'], 0, '.', '.') ?></td>
-                                                <td>Rp. <?= number_format($a['dana_serap'], 0, '.', '.') ?></td>
-                                                <td>Rp. <?= number_format($a['sisa'], 0, '.', '.') ?></td>
-                                            </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a['kode_pengajuan'] ?></td>
+                                            <td><?= $nm['nama'] ?></td>
+                                            <td><?= $bk[$bl] . ' ' . $th ?></td>
+                                            <td>Rp. <?= number_format($a['dana_cair'], 0, '.', '.') ?></td>
+                                            <td>Rp. <?= number_format($a['dana_serap'], 0, '.', '.') ?></td>
+                                            <td>Rp. <?= number_format($a['sisa'], 0, '.', '.') ?></td>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -217,52 +225,77 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                         <div class="modal-content">
 
                                             <div class="modal-header">
-                                                <h4 class="modal-title" id="myModalLabel">Tambah data saldo realisasi</h4>
-                                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                                                <h4 class="modal-title" id="myModalLabel">Tambah data saldo realisasi
+                                                </h4>
+                                                <button type="button" class="close" data-dismiss="modal"><span
+                                                        aria-hidden="true">×</span>
                                                 </button>
                                             </div>
-                                            <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
+                                            <form id="demo-form2" data-parsley-validate
+                                                class="form-horizontal form-label-left input_mask" action=""
+                                                method="post">
                                                 <div class="modal-body">
                                                     <div class="item form-group">
-                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pilih Realisasi <span class="required">*</span>
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="first-name">Pilih Realisasi <span
+                                                                class="required">*</span>
                                                         </label>
                                                         <div class="col-md-5 col-sm-5">
-                                                            <select name="kode_pengajuan" class="form-control" id="search_query" required>
+                                                            <select name="kode_pengajuan" class="form-control"
+                                                                id="search_query" required>
                                                                 <option value=""> -pilih kode realis- </option>
                                                                 <?php
                                                                 $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode GROUP BY kode_pengajuan AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
-                                                                    <option value="<?= $a['kode_pengajuan'] ?>"><?= $a['kode_pengajuan'] ?> (<?= $a['nama'] . ', ' . $bulan[$a['bulan']] . ' ' . $a['tahun'] ?>)</option>
+                                                                <option value="<?= $a['kode_pengajuan'] ?>">
+                                                                    <?= $a['kode_pengajuan'] ?>
+                                                                    (<?= $a['nama'] . ', ' . $bulan[$a['bulan']] . ' ' . $a['tahun'] ?>)
+                                                                </option>
                                                                 <?php } ?>
                                                             </select>
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <button class="btn btn-success" type="button" id="button_find"><i class="fa fa-search"></i> Cek</button>
+                                                            <button class="btn btn-success" type="button"
+                                                                id="button_find"><i class="fa fa-search"></i>
+                                                                Cek</button>
                                                         </div>
                                                     </div>
                                                     <div id="display_results"></div>
                                                     <div class='item form-group'>
-                                                        <label class='col-form-label col-md-3 col-sm-3 label-align' for='first-name'>Dana Terserap <span class='required'>*</span>
+                                                        <label class='col-form-label col-md-3 col-sm-3 label-align'
+                                                            for='first-name'>Dana Terserap <span
+                                                                class='required'>*</span>
                                                         </label>
                                                         <div class='col-md-6 col-sm-6  form-group has-feedback'>
-                                                            <input type='text' class='form-control has-feedback-left ' id='uang_3' name='nominal' required>
-                                                            <span class='form-control-feedback left' aria-hidden='true'>Rp.</span>
+                                                            <input type='text' class='form-control has-feedback-left '
+                                                                id='uang_3' name='nominal' required>
+                                                            <span class='form-control-feedback left'
+                                                                aria-hidden='true'>Rp.</span>
                                                         </div>
                                                     </div>
                                                     <div class='item form-group'>
-                                                        <label class='col-form-label col-md-3 col-sm-3 label-align'>Tanggal Setor <span class='required'>*</span>
+                                                        <label
+                                                            class='col-form-label col-md-3 col-sm-3 label-align'>Tanggal
+                                                            Setor <span class='required'>*</span>
                                                         </label>
-                                                        <div class='col-md-6 col-sm-6 xdisplay_inputx form-group row has-feedback'>
+                                                        <div
+                                                            class='col-md-6 col-sm-6 xdisplay_inputx form-group row has-feedback'>
 
-                                                            <input type='text' name='tgl_setor' class='form-control has-feedback-left' id='datePick3' placeholder='' aria-describedby='inputSuccess2Status4'>
-                                                            <span class='fa fa-calendar-o form-control-feedback left' aria-hidden='true'></span>
-                                                            <span id='inputSuccess2Status4' class='sr-only'>(success)</span>
+                                                            <input type='text' name='tgl_setor'
+                                                                class='form-control has-feedback-left' id='datePick3'
+                                                                placeholder='' aria-describedby='inputSuccess2Status4'>
+                                                            <span class='fa fa-calendar-o form-control-feedback left'
+                                                                aria-hidden='true'></span>
+                                                            <span id='inputSuccess2Status4'
+                                                                class='sr-only'>(success)</span>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="submit" name="save_aki" class="btn btn-success">Simpan data</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" name="save_aki" class="btn btn-success">Simpan
+                                                        data</button>
                                                 </div>
                                             </form>
 
@@ -301,77 +334,77 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
 <script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
-        $('#datatable4').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
+    $('#datatable4').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick3').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    $('#datePick3').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 <script type='text/javascript'>
-    $(document).ready(function() {
-        //$("#search_results").slideUp();
-        $("#button_find").click(function(event) {
-            event.preventDefault();
-            ajax_search();
-        });
+$(document).ready(function() {
+    //$("#search_results").slideUp();
+    $("#button_find").click(function(event) {
+        event.preventDefault();
+        ajax_search();
+    });
+});
+
+function ajax_search() {
+
+    var judul = $("#search_query").val();
+    $.ajax({
+        url: "cari.php",
+        data: "judul=" + judul,
+        success: function(data) {
+            // jika data sukses diambil dari server, tampilkan di <select id=kota>
+            $("#display_results").html(data);
+        }
     });
 
-    function ajax_search() {
-
-        var judul = $("#search_query").val();
-        $.ajax({
-            url: "cari.php",
-            data: "judul=" + judul,
-            success: function(data) {
-                // jika data sukses diambil dari server, tampilkan di <select id=kota>
-                $("#display_results").html(data);
-            }
-        });
-
-    }
+}
 </script>
 <script type="text/javascript">
-    var rupiah = document.getElementById('uang');
-    var rupiah2 = document.getElementById('uang_2');
-    var rupiah3 = document.getElementById('uang_3');
+var rupiah = document.getElementById('uang');
+var rupiah2 = document.getElementById('uang_2');
+var rupiah3 = document.getElementById('uang_3');
 
-    rupiah.addEventListener('keyup', function(e) {
-        rupiah.value = formatRupiah(this.value);
-    });
-    rupiah2.addEventListener('keyup', function(e) {
-        rupiah2.value = formatRupiah(this.value);
-    });
-    rupiah3.addEventListener('keyup', function(e) {
-        rupiah3.value = formatRupiah(this.value);
-    });
+rupiah.addEventListener('keyup', function(e) {
+    rupiah.value = formatRupiah(this.value);
+});
+rupiah2.addEventListener('keyup', function(e) {
+    rupiah2.value = formatRupiah(this.value);
+});
+rupiah3.addEventListener('keyup', function(e) {
+    rupiah3.value = formatRupiah(this.value);
+});
 
-    /* Fungsi formatRupiah */
-    function formatRupiah(angka, prefix) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+/* Fungsi formatRupiah */
+function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if (ribuan) {
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
     }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+}
 </script>
 
 <?php
@@ -386,21 +419,21 @@ if (isset($_POST['save_aki'])) {
 
     $sql = mysqli_query($conn, "INSERT INTO real_sisa VALUES ('$id', '$kode_pengajuan', '$cair', '$nominal', '$sisa', '$tgl_setor', '$tahun_ajaran' ) ");
     if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Sisa berhasil disimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "masuk.php"
-                }, millisecondsToWait);
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Sisa berhasil disimpan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "masuk.php"
+    }, millisecondsToWait);
 
-            });
-        </script>
+});
+</script>
 
 <?php    }
 }
