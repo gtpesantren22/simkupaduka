@@ -33,14 +33,17 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <?php if ($ck2 < 1) { ?>
-                            <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
-                            <br><br>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i
+                                class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
+                        <br><br>
                         <?php } elseif ($ck['verval'] == 1 && $ck['spj'] != 3) { ?>
-                            <button class="btn btn-success" disabled><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
-                            <br><br>
+                        <button class="btn btn-success" disabled><i class="fa fa-plus-square"></i> Tambah Pengajuan
+                            Baru</button>
+                        <br><br>
                         <?php } elseif ($ck['verval'] == 1 && $ck['spj'] == 3 || $ck['verval'] == NULL) { ?>
-                            <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
-                            <br><br>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#staticBackdrop"><i
+                                class="fa fa-plus-square"></i> Tambah Pengajuan Baru</button>
+                        <br><br>
                         <?php }  ?>
                         <div class="table-responsive">
                             <table id="example1_bst" class="table table-bordered table-striped">
@@ -62,32 +65,37 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                     $rls = mysqli_query($conn, "SELECT * FROM pengajuan WHERE lembaga = '$kol' AND kode_pengajuan NOT LIKE '%DISP.%' AND tahun = '$tahun_ajaran' GROUP BY kode_pengajuan ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $ls_jns['kode_pengajuan']; ?></td>
-                                            <td><?= $bulan[$ls_jns['bulan']]; ?></td>
-                                            <td><?= $ls_jns['tahun']; ?></td>
-                                            <td>
-                                                <?= $ls_jns['verval'] == 1 ? "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                            </td>
-                                            <td>
-                                                <?= $ls_jns['apr'] == 1 ? "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                            </td>
-                                            <td>
-                                                <?= $ls_jns['cair'] == 1 ? "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>"; ?>
-                                            </td>
-                                            <td>
-                                                <?php if ($ls_jns['spj'] == 0) { ?>
-                                                    <span class="label label-danger"><i class="fa fa-times"></i> belum upload</span>
-                                                <?php } else if ($ls_jns['spj'] == 1) { ?>
-                                                    <button class="btn btn-warning btn-xs"><i class="fa fa-spinner fa-refresh-animate"></i>
-                                                        proses verifikasi</button>
-                                                <?php } else { ?>
-                                                    <span class="label label-success"><i class="fa fa-check"></i> sudah selesai</span>
-                                                <?php } ?>
-                                            </td>
-                                            <td><a href="<?= 'pengajuan_add.php?kode=' . $ls_jns['kode_pengajuan'] ?>"><button class="btn btn-info btn-xs"><i class="fa fa-search"></i> cek</button></a></td>
-                                        </tr>
+                                    <tr>
+                                        <td><?= $no++; ?></td>
+                                        <td><?= $ls_jns['kode_pengajuan']; ?></td>
+                                        <td><?= $bulan[$ls_jns['bulan']]; ?></td>
+                                        <td><?= $ls_jns['tahun']; ?></td>
+                                        <td>
+                                            <?= $ls_jns['verval'] == 1 ? "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                        </td>
+                                        <td>
+                                            <?= $ls_jns['apr'] == 1 ? "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                        </td>
+                                        <td>
+                                            <?= $ls_jns['cair'] == 1 ? "<span class='label label-success'><i class='fa fa-check'></i> sudah</span>" : "<span class='label label-danger'><i class='fa fa-times'></i> belum</span>"; ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($ls_jns['spj'] == 0) { ?>
+                                            <span class="label label-danger"><i class="fa fa-times"></i> belum
+                                                upload</span>
+                                            <?php } else if ($ls_jns['spj'] == 1) { ?>
+                                            <button class="btn btn-warning btn-xs"><i
+                                                    class="fa fa-spinner fa-refresh-animate"></i>
+                                                proses verifikasi</button>
+                                            <?php } else { ?>
+                                            <span class="label label-success"><i class="fa fa-check"></i> sudah
+                                                selesai</span>
+                                            <?php } ?>
+                                        </td>
+                                        <td><a href="<?= 'pengajuan_add.php?kode=' . $ls_jns['kode_pengajuan'] ?>"><button
+                                                    class="btn btn-info btn-xs"><i class="fa fa-search"></i>
+                                                    cek</button></a></td>
+                                    </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>
@@ -99,11 +107,13 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
     </section><!-- /.content -->
 </div>
 
-<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class=" modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Tambah Pemasukan BOS</h4>
             </div>
             <form action="" method="post" class="form-horizontal">
@@ -121,7 +131,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                 <option value=""> -- pilih bulan -- </option>
                                 <?php
                                 for ($i = 1; $i < count($bulan); $i++) { ?>
-                                    <option value="<?= $i ?>"><?= $bulan[$i] ?></option>
+                                <option value="<?= $i ?>"><?= $bulan[$i] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -152,17 +162,17 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
 <script src="plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
-    $(function() {
-        $("#example1_bst").DataTable();
-        $('#example2').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": false,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false
-        });
+$(function() {
+    $("#example1_bst").DataTable();
+    $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": false,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false
     });
+});
 </script>
 <?php
 include 'bawah.php';
@@ -177,7 +187,14 @@ if (isset($_POST['save'])) {
     $lembaga = $kol;
     $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
     $bln = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bulan']));
-    $kd_pjn = $lembaga . '.' . date('dd') . '.' . $bln . '.' . $tahun;
+
+    $data = mysqli_fetch_assoc(mysqli_query($conn, "SELECT COUNT(*) as jml FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' "));
+    $kodeBarang = $data['jml'] + 1;
+    $noUrut = (int) substr($kodeBarang, 0, 3);
+    $kodeBarang = sprintf("%03s", $noUrut) . '.' . $lembaga . '.' . date('dd') . '.' . $bln . '.' . $tahun;
+    $kd_pjn = htmlspecialchars($kodeBarang);
+
+    // $kd_pjn = $lembaga . '.' . date('dd') . '.' . $bln . '.' . $tahun;
 
 
     $cek = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' AND tahun = '$tahun_ajaran' "));
@@ -187,18 +204,18 @@ if (isset($_POST['save'])) {
 
         if ($sql && $sql1) {
 ?>
-            <script>
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Pengajuan baru berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "<?= 'pengajuan.php' ?>"
-                }, millisecondsToWait);
-            </script>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'Pengajuan baru berhasil tersimpan',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "<?= 'pengajuan.php' ?>"
+}, millisecondsToWait);
+</script>
 <?php
         }
     }
