@@ -194,6 +194,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <th>Dana Cair</th>
                                             <th>Terserap</th>
                                             <th>Sisa</th>
+                                            <th>Tgl Upload</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -215,6 +216,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <td>Rp. <?= number_format($a['dana_cair'], 0, '.', '.') ?></td>
                                             <td>Rp. <?= number_format($a['dana_serap'], 0, '.', '.') ?></td>
                                             <td>Rp. <?= number_format($a['sisa'], 0, '.', '.') ?></td>
+                                            <td><?= $a['tgl_upload'] ?></td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
