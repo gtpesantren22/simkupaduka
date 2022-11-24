@@ -216,7 +216,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <td>Rp. <?= number_format($a['dana_cair'], 0, '.', '.') ?></td>
                                             <td>Rp. <?= number_format($a['dana_serap'], 0, '.', '.') ?></td>
                                             <td>Rp. <?= number_format($a['sisa'], 0, '.', '.') ?></td>
-                                            <td><?= $a['tgl_upload'] ?></td>
+                                            <td><?= $a['tgl_setor'] ?></td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
