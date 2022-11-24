@@ -199,7 +199,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY kode_pengajuan ASC");
+                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY tgl_setor DESC");
                                         while ($a = mysqli_fetch_assoc($dt)) {
                                             $kd = explode('.', $a['kode_pengajuan']);
                                             $lm = $kd[0];

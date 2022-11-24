@@ -472,7 +472,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY kode_pengajuan ASC");
+                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY tgl_setor ASC");
                                         while ($a = mysqli_fetch_assoc($dt)) {
                                             $kd = explode('.', $a['kode_pengajuan']);
                                             $lm = $kd[0];
@@ -525,7 +525,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                                 id="search_query" required>
                                                                 <option value=""> -pilih kode realis- </option>
                                                                 <?php
-                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode WHERE a.tahun = '$tahun_ajaran' GROUP BY kode_pengajuan ");
+                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' GROUP BY kode_pengajuan ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
                                                                 <option value="<?= $a['kode_pengajuan'] ?>">
                                                                     <?= $a['kode_pengajuan'] ?>
