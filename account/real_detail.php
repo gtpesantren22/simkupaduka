@@ -187,7 +187,7 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                             </div>
                                         </td>
                                         <td>
-                                            <a href="<?= 'edit_rab.php?kode=' . $a['kode']; ?>"><span
+                                            <a href="<?= 'edit_rab.php?kode=' . $r1['kode']; ?>"><span
                                                     class="fa fa-edit text-warning"> Edit</span></a>
                                         </td>
                                     </tr>
