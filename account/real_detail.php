@@ -58,8 +58,10 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                 </address>
                                 <hr>
                                 <address>
-                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download Excel</button><br>
-                                    <a href="real.php"><button class="btn btn-warning btn-sm"><i class="fa fa-chevron-circle-left"></i> Kembali</button></a>
+                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download
+                                        Excel</button><br>
+                                    <a href="real.php"><button class="btn btn-warning btn-sm"><i
+                                                class="fa fa-chevron-circle-left"></i> Kembali</button></a>
                                 </address>
                             </div>
                             <!-- /.col -->
@@ -133,9 +135,9 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                         <!-- /.row -->
                         <hr>
                         <div class="table-responsive">
-                            <table class="table countries_list">
+                            <table id="datatable" class="table countries_list" style="width:100%">
                                 <thead>
-                                    <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
+                                    <tr>
                                         <th>No</th>
                                         <th>Barang/Kegiatan</th>
                                         <th>Anggaran RAB</th>
@@ -144,57 +146,53 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                         <th>Pemakaian (%)</th>
                                     </tr>
                                 </thead>
-                                <?php
-                                while ($ls_jns = mysqli_fetch_assoc($jns)) {
-                                    $jenis = $ls_jns['jenis'] ?>
-                                    <thead>
-                                        <tr style="color: white; background-color: plum; font-weight: bold;">
-                                            <th colspan="7"><?= $ls_jns['nm_jenis'] ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
-                                        $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
-                                        $dt3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tt FROM realis WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY kode "));
 
-                                        while ($r1 = mysqli_fetch_assoc($dt1)) {
-                                            $kd = $r1['kode'];
-                                            $rs = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' GROUP BY kode "));
-                                            $sisa = $r1['total'] - $rs['nom'];
-                                            $prc = round(($rs['nom'] / $r1['total']) * 100, 0);
-                                            if ($prc >= 0 && $prc <= 25) {
-                                                $bg = 'bg-success';
-                                            } elseif ($prc >= 26 && $prc <= 50) {
-                                                $bg = 'bg-info';
-                                            } elseif ($prc >= 51 && $prc <= 75) {
-                                                $bg = 'bg-warning';
-                                            } elseif ($prc >= 76 && $prc <= 100) {
-                                                $bg = 'bg-danger';
-                                            }
-                                        ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><a href="<?= 'real_add.php?kode=' . $r1['kode'] ?>"><?= $r1['nama'] ?></a></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                                <td><?= rupiah($rs['nom']) ?></td>
-                                                <td><?= rupiah($sisa) ?></td>
-                                                <td>
-                                                    <div class="progress">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>" role="progressbar" style="width: <?= $prc ?>%" aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100"><?= $prc ?>%</div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                        <tr>
-                                            <th colspan="2">TOTAL</th>
-                                            <th><?= rupiah($dt2['tt']) ?></th>
-                                            <th><?= rupiah($dt3['tt']) ?></th>
-                                            <th></th>
-                                            <th colspan="2">TOTAL</th>
-                                        </tr>
-                                    </tbody>
-                                <?php } ?>
+                                <tbody>
+                                    <?php
+                                    $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
+                                    $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE  lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
+                                    $dt3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tt FROM realis WHERE  lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY lembaga "));
+
+                                    while ($r1 = mysqli_fetch_assoc($dt1)) {
+                                        $kd = $r1['kode'];
+                                        $rs = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE  tahun = '$tahun_ajaran' GROUP BY lembaga "));
+                                        $sisa = $r1['total'] - $rs['nom'];
+                                        $prc = round(($rs['nom'] / $r1['total']) * 100, 0);
+                                        if ($prc >= 0 && $prc <= 25) {
+                                            $bg = 'bg-success';
+                                        } elseif ($prc >= 26 && $prc <= 50) {
+                                            $bg = 'bg-info';
+                                        } elseif ($prc >= 51 && $prc <= 75) {
+                                            $bg = 'bg-warning';
+                                        } elseif ($prc >= 76 && $prc <= 100) {
+                                            $bg = 'bg-danger';
+                                        }
+                                    ?>
+                                    <tr>
+                                        <td><?= $no++; ?></td>
+                                        <td><a href="<?= 'real_add.php?kode=' . $r1['kode'] ?>"><?= $r1['nama'] ?></a>
+                                        </td>
+                                        <td><?= rupiah($r1['total']) ?></td>
+                                        <td><?= rupiah($rs['nom']) ?></td>
+                                        <td><?= rupiah($sisa) ?></td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>"
+                                                    role="progressbar" style="width: <?= $prc ?>%"
+                                                    aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100">
+                                                    <?= $prc ?>%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                    <!-- <tr>
+                                        <th colspan="2">TOTAL</th>
+                                        <th><?= rupiah($dt2['tt']) ?></th>
+                                        <th><?= rupiah($dt3['tt']) ?></th>
+                                        <th></th>
+                                        <th colspan="2">TOTAL</th>
+                                    </tr> -->
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -231,15 +229,15 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
 <!-- bootstrap-datetimepicker -->
 <script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
