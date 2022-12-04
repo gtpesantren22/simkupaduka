@@ -139,11 +139,13 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                 <thead>
                                     <tr>
                                         <th>No</th>
+                                        <th>Kode</th>
                                         <th>Barang/Kegiatan</th>
                                         <th>Anggaran RAB</th>
                                         <th>Realiasasi</th>
                                         <th>Sisa</th>
                                         <th>Pemakaian (%)</th>
+                                        <th>#</th>
                                     </tr>
                                 </thead>
 
@@ -170,6 +172,7 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                     ?>
                                     <tr>
                                         <td><?= $no++; ?></td>
+                                        <td><?= $r1['kode'] ?></td>
                                         <td><a href="<?= 'real_add.php?kode=' . $r1['kode'] ?>"><?= $r1['nama'] ?></a>
                                         </td>
                                         <td><?= rupiah($r1['total']) ?></td>
@@ -182,6 +185,10 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                                     aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100">
                                                     <?= $prc ?>%</div>
                                             </div>
+                                        </td>
+                                        <td>
+                                            <a href="<?= 'edit_rab.php?kode=' . $a['kode']; ?>"><span
+                                                    class="fa fa-edit text-warning"> Edit</span></a>
                                         </td>
                                     </tr>
                                     <?php } ?>
