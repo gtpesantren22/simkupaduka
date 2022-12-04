@@ -14,13 +14,19 @@ $api_key = $key['nama_key'];
 
 function rupiah($angka)
 {
-    $hasil_rupiah = "Rp. " . number_format($angka, 0, ',', '.');
-    return $hasil_rupiah;
+    if ($angka != '') {
+        return $hasil_rupiah = "Rp. " . number_format($angka, 0, ',', '.');
+    } else {
+        return $hasil_rupiah = "Rp. " . number_format(0, 0, ',', '.');
+    }
 }
 function rupiah2($angka)
 {
-    $hasil_rupiah = number_format($angka, 0, ',', '.');
-    return $hasil_rupiah;
+    if ($angka != '') {
+        return $hasil_rupiah =  number_format($angka, 0, ',', '.');
+    } else {
+        return $hasil_rupiah =  number_format(0, 0, ',', '.');
+    }
 }
 
 $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", "Agustus", "September", "Oktober", "November", "Desember");

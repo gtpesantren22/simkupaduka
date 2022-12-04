@@ -155,7 +155,7 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
 
                                     while ($r1 = mysqli_fetch_assoc($dt1)) {
                                         $kd = $r1['kode'];
-                                        $rs = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE  tahun = '$tahun_ajaran' GROUP BY lembaga "));
+                                        $rs = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) as nom FROM realis WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY lembaga "));
                                         $sisa = $r1['total'] - $rs['nom'];
                                         $prc = round(($rs['nom'] / $r1['total']) * 100, 0);
                                         if ($prc >= 0 && $prc <= 25) {
