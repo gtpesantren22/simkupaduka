@@ -34,6 +34,8 @@ include 'atas.php';
                                     <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                         <th>No</th>
                                         <th>Nama</th>
+                                        <th>JKL</th>
+                                        <th>KelSas</th>
                                         <th>Tanggal Bayar</th>
                                         <th>Bulan</th>
                                         <th>Nominal</th>
@@ -44,11 +46,13 @@ include 'atas.php';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $rls = mysqli_query($conn, "SELECT * FROM pembayaran WHERE tahun = '$tahun_ajaran' ORDER BY tgl DESC ");
+                                    $rls = mysqli_query($conn, "SELECT a.*, b.jkl, b.k_formal, b.t_formal FROM pembayaran a JOIN tb_santri b ON a.nis=b.nis WHERE a.tahun = '$tahun_ajaran' ORDER BY a.tgl DESC ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) { ?>
                                     <tr>
                                         <td><?= $no++; ?></td>
                                         <td><?= $ls_jns['nama']; ?></td>
+                                        <td><?= $ls_jns['jkl']; ?></td>
+                                        <td><?= $ls_jns['k_formal'] . ' - ' . $ls_jns['t_formal']; ?></td>
                                         <td><?= $ls_jns['tgl']; ?></td>
                                         <td><?= $bulan[$ls_jns['bulan']]; ?></td>
                                         <td><?= rupiah($ls_jns['nominal']); ?></td>
