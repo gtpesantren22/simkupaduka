@@ -49,8 +49,10 @@ $level = $user['level'];
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="description" content="Mega Able Bootstrap admin template made using Bootstrap 4 and it has huge amount of ready made feature, UI components, pages which completely fulfills any dashboard needs." />
-    <meta name="keywords" content="bootstrap, bootstrap admin template, admin theme, admin dashboard, dashboard template, admin template, responsive" />
+    <meta name="description"
+        content="Mega Able Bootstrap admin template made using Bootstrap 4 and it has huge amount of ready made feature, UI components, pages which completely fulfills any dashboard needs." />
+    <meta name="keywords"
+        content="bootstrap, bootstrap admin template, admin theme, admin dashboard, dashboard template, admin template, responsive" />
     <meta name="author" content="codedthemes" />
     <!-- Favicon icon -->
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
@@ -69,7 +71,10 @@ $level = $user['level'];
     <!-- scrollbar.css -->
     <link rel="stylesheet" type="text/css" href="assets/css/jquery.mCustomScrollbar.css">
     <!-- am chart export.css -->
-    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css"
+        media="all" />
+    <!-- morris chart -->
+    <link rel="stylesheet" type="text/css" href="assets/css/morris.js/css/morris.css">
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css" />
@@ -181,10 +186,12 @@ $level = $user['level'];
                                     </li>
                                     <li class="waves-effect waves-light">
                                         <div class="media">
-                                            <img class="d-flex align-self-center img-radius" src="assets/images/faq_man.png" alt="Generic placeholder image">
+                                            <img class="d-flex align-self-center img-radius"
+                                                src="assets/images/faq_man.png" alt="Generic placeholder image">
                                             <div class="media-body">
                                                 <h5 class="notification-user"><?= $nama_user ?></h5>
-                                                <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
+                                                <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer
+                                                    elit.</p>
                                                 <span class="notification-time">30 minutes ago</span>
                                             </div>
                                         </div>
@@ -222,7 +229,8 @@ $level = $user['level'];
                         <div class="pcoded-inner-navbar main-menu">
                             <div class="">
                                 <div class="main-menu-header">
-                                    <img class="img-80 img-radius" src="assets/images/kpl2.jpeg" alt="User-Profile-Image">
+                                    <img class="img-80 img-radius" src="assets/images/kpl2.jpeg"
+                                        alt="User-Profile-Image">
                                     <div class="user-details">
                                         <span id="more-details"><?= $nama_user ?><i class="fa fa-caret-down"></i></span>
                                     </div>
@@ -232,7 +240,8 @@ $level = $user['level'];
                                     <ul>
                                         <li class="more-details">
                                             <a href="user-profile.html"><i class="ti-user"></i>View Profile</a>
-                                            <a href="auth-normal-sign-in.html"><i class="ti-layout-sidebar-left"></i>Logout</a>
+                                            <a href="auth-normal-sign-in.html"><i
+                                                    class="ti-layout-sidebar-left"></i>Logout</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -257,21 +266,24 @@ $level = $user['level'];
                                 <li class="pcoded-hasmenu">
                                     <a href="javascript:void(0)" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-credit-card"></i></span>
-                                        <span class="pcoded-mtext" data-i18n="nav.basic-components.main">Realisasi</span>
+                                        <span class="pcoded-mtext"
+                                            data-i18n="nav.basic-components.main">Realisasi</span>
                                         <span class="pcoded-mcaret"></span>
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li class=" ">
                                             <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Data Realisasi</span>
+                                                <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Data
+                                                    Realisasi</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
                                             <a href="pengajuan.php" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Pengajuan</span>
+                                                <span class="pcoded-mtext"
+                                                    data-i18n="nav.basic-components.breadcrumbs">Pengajuan</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
@@ -287,14 +299,16 @@ $level = $user['level'];
                                         <li class=" ">
                                             <a href="masuk.php" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Pemasukan</span>
+                                                <span class="pcoded-mtext"
+                                                    data-i18n="nav.basic-components.alert">Pemasukan</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
                                             <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext" data-i18n="nav.basic-components.breadcrumbs">Pengeluaran</span>
+                                                <span class="pcoded-mtext"
+                                                    data-i18n="nav.basic-components.breadcrumbs">Pengeluaran</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>

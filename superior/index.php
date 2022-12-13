@@ -10,6 +10,8 @@ $kas = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(IF( ket = 'masuk', nom
 
 $msk = $tot['jm'] + $tot2['jm'] + $tot3['jm'] + $tot4['jm'];
 $sld = $kas['masuk'] - $kas['keluar'];
+
+$lembaga = mysqli_query($conn, "SELECT * FROM lembaga WHERE tahun = '$tahun_ajaran' ");
 ?>
 
 <div class="pcoded-content">
@@ -120,6 +122,25 @@ $sld = $kas['masuk'] - $kas['keluar'];
                                 </div>
                             </div>
                         </div>
+                        <div class="col-xl-12 col-md-6">
+                            <div class="card feed-card card-info">
+                                <div class="card-header">
+                                    <h5><i class="ti-chart"></i> Statistik Penggunaan Dana</h5>
+                                    <div class="card-header-right">
+                                        <ul class="list-unstyled card-option">
+                                            <li><i class="fa fa fa-wrench open-card-option"></i></li>
+                                            <li><i class="fa fa-window-maximize full-card"></i></li>
+                                            <li><i class="fa fa-minus minimize-card"></i></li>
+                                            <li><i class="fa fa-refresh reload-card"></i></li>
+                                            <li><i class="fa fa-trash close-card"></i></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-block">
+                                    <div id="morris-bar-chart"></div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-xl-12 col-md-6">
                             <div class="card feed-card card-info">
@@ -142,14 +163,17 @@ $sld = $kas['masuk'] - $kas['keluar'];
                                         $kpp = $ar['kode_pengajuan'];
                                         $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS nm, tgl FROM real_sm WHERE kode_pengajuan = '$kpp' AND tahun = '$tahun_ajaran' "));
                                     ?>
-                                        <div class="row m-b-30">
-                                            <div class="col-auto p-r-0">
-                                                <i class="fa fa-bell bg-c-blue feed-icon"></i>
-                                            </div>
-                                            <div class="col">
-                                                <h6 class="m-b-5">Pengajuan dari <strong style="font-weight: bold; font-style: italic; color: #ff5252;"><?= $ar['nama']; ?></strong> <span class="text-muted f-right f-13"><?= $dt2['tgl']; ?></span></h6>
-                                            </div>
+                                    <div class="row m-b-30">
+                                        <div class="col-auto p-r-0">
+                                            <i class="fa fa-bell bg-c-blue feed-icon"></i>
                                         </div>
+                                        <div class="col">
+                                            <h6 class="m-b-5">Pengajuan dari <strong
+                                                    style="font-weight: bold; font-style: italic; color: #ff5252;"><?= $ar['nama']; ?></strong>
+                                                <span class="text-muted f-right f-13"><?= $dt2['tgl']; ?></span>
+                                            </h6>
+                                        </div>
+                                    </div>
                                     <?php } ?>
                                     <div class="text-center">
                                         <a href="pengajuan.php" class="b-b-primary text-primary">Cek pengajuan</a>
@@ -171,3 +195,34 @@ $sld = $kas['masuk'] - $kas['keluar'];
 <?php
 include 'bawah.php';
 ?>
+
+<script>
+$(document).ready(function() {
+    // Morris bar chart
+
+    Morris.Bar({
+        element: 'morris-bar-chart',
+        data: [
+            <?php while ($ar = mysqli_fetch_assoc($lembaga)) {
+                    $kdl = $ar['kode'];
+                    $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL(SUM(total),0) AS jml FROM rab WHERE lembaga = '$kdl' AND tahun = '$tahun_ajaran' "));
+                    $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL(SUM(nominal),0) AS jml FROM realis WHERE lembaga = '$kdl' AND tahun = '$tahun_ajaran' "));
+                    $trb = $rab['jml'] == 0 ? 10 : $rab['jml'];
+                    $psrn = round(($pakai['jml'] / $trb) * 100, 2);
+                    // $psrn = (0 / 230000) * 100;
+                ?> {
+                y: '<?= $ar['nama'] ?>',
+                a: <?= $psrn ?>
+            },
+            <?php } ?>
+        ],
+        xkey: 'y',
+        ykeys: ['a'],
+        labels: ['(%)'],
+        barColors: ['#5D9CEC'],
+        hideHover: 'auto',
+        gridLineColor: '#eef0f2',
+        resize: true
+    });
+});
+</script>

@@ -27,6 +27,9 @@
 <script src="assets/pages/widget/amchart/light.js"></script>
 <script src="assets/pages/widget/amchart/pie.min.js"></script>
 <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<!-- Morris Chart js -->
+<script src="assets/js/raphael/raphael.min.js"></script>
+<script src="assets/js/morris.js/morris.js"></script>
 <!-- menu js -->
 <script src="assets/js/pcoded.min.js"></script>
 <script src="assets/js/vertical-layout.min.js "></script>
@@ -34,11 +37,11 @@
 <script type="text/javascript" src="assets/pages/dashboard/custom-dashboard.js"></script>
 <script type="text/javascript" src="assets/js/script.js "></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
-<script src="../main/dist/sweetalert2.all.min.js"></script>
+<script src="main/dist/sweetalert2.all.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#table_id').DataTable();
-    });
+$(document).ready(function() {
+    $('#table_id').DataTable();
+});
 </script>
 
 </body>
