@@ -297,8 +297,8 @@ Terimakasih';
         </script>
 
 <?php
-        kirim_group($api_key, 'DfBeAZ3zGcR5qvLmBdKJaZ', $psn);
-        kirim_group($api_key, 'FbXW8kqR5ik6w6iCB49GZK', $psn);
+        kirim_group($api_key, '120363040973404347@g.us', $psn);
+        kirim_group($api_key, '120363042148360147@g.us', $psn);
         kirim_person($api_key, $l['hp'], $psn);
     } else {
         echo "DATA TAK MAU MASUK";

@@ -433,7 +433,7 @@ Terimakasih';
 
     if ($sql2 && $sql) {
 
-        kirim_group($api_key, 'CnbjJ9vz2Dh7KkNzI3769h', $psn);
+        kirim_group($api_key, '120363028015516743@g.us', $psn);
 
         echo "
             <script>
