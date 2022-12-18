@@ -59,8 +59,10 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                 </address>
                                 <hr>
                                 <address>
-                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download Excel</button><br>
-                                    <a href="real.php"><button class="btn btn-warning btn-sm"><i class="fa fa-chevron-circle-left"></i> Kembali</button></a>
+                                    <button class="btn btn-primary btn-sm"><i class="fa fa-download"></i> Download
+                                        Excel</button><br>
+                                    <a href="real.php"><button class="btn btn-warning btn-sm"><i
+                                                class="fa fa-chevron-circle-left"></i> Kembali</button></a>
                                 </address>
                             </div>
                             <!-- /.col -->
@@ -148,13 +150,13 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                 <?php
                                 while ($ls_jns = mysqli_fetch_assoc($jns)) {
                                     $jenis = $ls_jns['jenis'] ?>
-                                    <thead>
-                                        <tr style="color: white; background-color: plum; font-weight: bold;">
-                                            <th colspan="7"><?= $ls_jns['nm_jenis'] ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
+                                <thead>
+                                    <tr style="color: white; background-color: plum; font-weight: bold;">
+                                        <th colspan="7"><?= $ls_jns['nm_jenis'] ?></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
                                         $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
                                         $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
                                         $dt3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tt FROM realis WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY kode "));
@@ -174,27 +176,31 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
                                                 $bg = 'bg-danger';
                                             }
                                         ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><a href="<?= 'real_add.php?kode=' . $r1['kode'] ?>"><?= $r1['nama'] ?></a></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                                <td><?= rupiah($rs['nom']) ?></td>
-                                                <td><?= rupiah($sisa) ?></td>
-                                                <td>
-                                                    <div class="progress">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>" role="progressbar" style="width: <?= $prc ?>%" aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100"><?= $prc ?>%</div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        <?php } ?>
-                                        <tr>
-                                            <th colspan="2">TOTAL</th>
-                                            <th><?= rupiah($dt2['tt']) ?></th>
-                                            <th><?= rupiah($dt3['tt']) ?></th>
-                                            <th></th>
-                                            <th colspan="2">TOTAL</th>
-                                        </tr>
-                                    </tbody>
+                                    <tr>
+                                        <td><?= $no++; ?></td>
+                                        <td><a href="<?= 'real_add.php?kode=' . $r1['kode'] ?>"><?= $r1['nama'] ?></a>
+                                        </td>
+                                        <td><?= rupiah($r1['total']) ?></td>
+                                        <td><?= rupiah($rs['nom']) ?></td>
+                                        <td><?= rupiah($sisa) ?></td>
+                                        <td>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>"
+                                                    role="progressbar" style="width: <?= $prc ?>%"
+                                                    aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100">
+                                                    <?= $prc ?>%</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <th colspan="2">TOTAL</th>
+                                        <th><?= rupiah($dt2['tt']) ?></th>
+                                        <th><?= rupiah($dt3['tt']) ?></th>
+                                        <th></th>
+                                        <th colspan="2">TOTAL</th>
+                                    </tr>
+                                </tbody>
                                 <?php } ?>
                             </table>
                         </div>
@@ -232,46 +238,46 @@ $jns = mysqli_query($conn, "SELECT jenis, IF(jenis = 'A', 'A. Belanja Barang', I
 <!-- bootstrap-datetimepicker -->
 <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 <script type="text/javascript">
-    var rupiah = document.getElementById('uang');
-    var rupiah2 = document.getElementById('uang_2');
+var rupiah = document.getElementById('uang');
+var rupiah2 = document.getElementById('uang_2');
 
-    rupiah.addEventListener('keyup', function(e) {
-        rupiah.value = formatRupiah(this.value);
-    });
-    rupiah2.addEventListener('keyup', function(e) {
-        rupiah2.value = formatRupiah(this.value);
-    });
+rupiah.addEventListener('keyup', function(e) {
+    rupiah.value = formatRupiah(this.value);
+});
+rupiah2.addEventListener('keyup', function(e) {
+    rupiah2.value = formatRupiah(this.value);
+});
 
-    /* Fungsi formatRupiah */
-    function formatRupiah(angka, prefix) {
-        var number_string = angka.replace(/[^,\d]/g, '').toString(),
-            split = number_string.split(','),
-            sisa = split[0].length % 3,
-            rupiah = split[0].substr(0, sisa),
-            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+/* Fungsi formatRupiah */
+function formatRupiah(angka, prefix) {
+    var number_string = angka.replace(/[^,\d]/g, '').toString(),
+        split = number_string.split(','),
+        sisa = split[0].length % 3,
+        rupiah = split[0].substr(0, sisa),
+        ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        // tambahkan titik jika yang di input sudah menjadi angka ribuan
-        if (ribuan) {
-            separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
-
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+    // tambahkan titik jika yang di input sudah menjadi angka ribuan
+    if (ribuan) {
+        separator = sisa ? '.' : '';
+        rupiah += separator + ribuan.join('.');
     }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : (rupiah ? rupiah : '');
+}
 </script>
 <?php
 if (isset($_POST['save'])) {
@@ -289,21 +295,21 @@ if (isset($_POST['save'])) {
 
     $sql = mysqli_query($conn, "INSERT INTO rab VALUES ('', '$lembaga','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran')");
     if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Kode berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "rab_ma.php"
-                }, millisecondsToWait);
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Kode berhasil tersimpan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "rab_ma.php"
+    }, millisecondsToWait);
 
-            });
-        </script>
+});
+</script>
 
 <?php    }
 }

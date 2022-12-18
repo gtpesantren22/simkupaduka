@@ -117,6 +117,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                     <th>QTY</th>
                                     <th>Harga Satuan</th>
                                     <th>Jumlah</th>
+                                    <th>%</th>
                                     <th>#</th>
                                 </tr>
                             </thead>
@@ -125,7 +126,10 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                 $no = 1;
                                 $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
                                 $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
-                                while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
+                                while ($a = mysqli_fetch_assoc($dt_bos)) {
+                                    $kd_rab = $a['kode'];
+                                    $rls  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT vol FROM realis WHERE kode = '$kd_rab'"));
+                                ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $a['kode'] ?></td>
@@ -134,6 +138,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                                     <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
                                     <td><?= rupiah($a['harga_satuan']) ?></td>
                                     <td><?= rupiah($a['total']) ?></td>
+                                    <td><?= round($rls['vol'] / $a['qty'] * 100, 1); ?>%</td>
                                     <td>
                                         <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
                                             href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
