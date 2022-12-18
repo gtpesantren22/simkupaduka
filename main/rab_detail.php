@@ -107,56 +107,58 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                         <hr>
 
 
-                        <table id="datatable" class="table table-striped table-bordered" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kode</th>
-                                    <th>Nama Barang</th>
-                                    <th>Rencana Waktu</th>
-                                    <th>QTY</th>
-                                    <th>Harga Satuan</th>
-                                    <th>Jumlah</th>
-                                    <th>%</th>
-                                    <th>#</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                $no = 1;
-                                $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
-                                $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
-                                while ($a = mysqli_fetch_assoc($dt_bos)) {
-                                    $kd_rab = $a['kode'];
-                                    $rls  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT vol FROM realis WHERE kode = '$kd_rab'"));
-                                ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $a['kode'] ?></td>
-                                    <td><?= $a['nama'] ?></td>
-                                    <td><?= $a['rencana'] ?></td>
-                                    <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
-                                    <td><?= rupiah($a['harga_satuan']) ?></td>
-                                    <td><?= rupiah($a['total']) ?></td>
-                                    <td><?= round($rls['vol'] / $a['qty'] * 100, 1); ?>%</td>
-                                    <td>
-                                        <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
-                                            href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
-                                                class="fa fa-trash-o text-danger"> Hapus</span></a>
-                                        <a href="<?= 'edit_rab.php?kode=' . $a['kode']; ?>"><span
-                                                class="fa fa-edit text-warning"> Edit</span></a>
-                                    </td>
-                                </tr>
-                                <?php } ?>
-                            </tbody>
-                            <tfoot>
-                                <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                    <th colspan="6">SUB JUMLAH</th>
-                                    <th colspan="2"><?= rupiah($tt['tot']) ?></th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                        <div class="table-responsive">
+                            <table id="datatable" class="table table-striped table-bordered" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode</th>
+                                        <th>Nama Barang</th>
+                                        <th>Rencana Waktu</th>
+                                        <th>QTY</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Jumlah</th>
+                                        <th>%</th>
+                                        <th>#</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $no = 1;
+                                    $dt_bos = mysqli_query($conn, "SELECT * FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
+                                    $tt = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tot FROM rab WHERE lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
+                                    while ($a = mysqli_fetch_assoc($dt_bos)) {
+                                        $kd_rab = $a['kode'];
+                                        $rls  = mysqli_fetch_assoc(mysqli_query($conn, "SELECT vol FROM realis WHERE kode = '$kd_rab'"));
+                                    ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $a['kode'] ?></td>
+                                        <td><?= $a['nama'] ?></td>
+                                        <td><?= $a['rencana'] ?></td>
+                                        <td><?= $a['qty'] . ' ' . $a['satuan'] ?></td>
+                                        <td><?= rupiah($a['harga_satuan']) ?></td>
+                                        <td><?= rupiah($a['total']) ?></td>
+                                        <td><?= round($rls['vol'] / $a['qty'] * 100, 1); ?>%</td>
+                                        <td>
+                                            <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')"
+                                                href="<?= 'hapus.php?kd=rab&id=' . $a['id_rab']; ?>"><span
+                                                    class="fa fa-trash-o text-danger"> Hapus</span></a>
+                                            <a href="<?= 'edit_rab.php?kode=' . $a['kode']; ?>"><span
+                                                    class="fa fa-edit text-warning"> Edit</span></a>
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
+                                        <th colspan="6">SUB JUMLAH</th>
+                                        <th colspan="3"><?= rupiah($tt['tot']) ?></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
 
+                        </div>
                         <!-- A -->
                         <!-- <h4>A. BELANJA BARANG</h4>
                         <table id="" class="table table-striped table-bordered" style="width:100%">
