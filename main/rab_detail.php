@@ -40,6 +40,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                         <div class="row invoice-info">
                             <div class="col-sm-2 invoice-col">
                                 <address>
+                                    <strong>Kode Lembaga</strong><br>
                                     <strong>Nama Lembaga</strong><br>
                                     <strong>Pelakasana</strong><br>
                                     <strong>PJ/HP</strong><br>
@@ -54,6 +55,7 @@ $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = 
                             <!-- /.col -->
                             <div class="col-sm-3 invoice-col">
                                 <address>
+                                    <strong>: <?= $l['kode'] ?></strong><br>
                                     <strong>: <?= $l['nama'] ?></strong><br>
                                     <strong>: <?= $l['pelaksana'] ?></strong><br>
                                     <strong>: <?= $l['pj'] . ' / ' . $l['hp'] ?></strong><br>
