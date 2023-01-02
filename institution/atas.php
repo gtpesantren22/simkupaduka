@@ -116,11 +116,11 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                                     <!-- inner menu: contains the actual data -->
                                     <ul class="menu">
                                         <?php while ($if = mysqli_fetch_assoc($info)) { ?>
-                                            <li>
-                                                <a href="#">
-                                                    <i class="fa fa-envelope text-aqua"></i> <?= $if['judul'] ?>
-                                                </a>
-                                            </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-envelope text-aqua"></i> <?= $if['judul'] ?>
+                                            </a>
+                                        </li>
                                         <?php } ?>
                                     </ul>
                                 </li>
@@ -150,7 +150,8 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                                         <a href="setting.php" class="btn btn-default btn-flat">Profile</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="logout.php" onclick="return confirm('Yakin akan logout ?')" class="btn btn-default btn-flat">Sign out</a>
+                                        <a href="logout.php" onclick="return confirm('Yakin akan logout ?')"
+                                            class="btn btn-default btn-flat">Sign out</a>
                                     </div>
                                 </li>
                             </ul>
@@ -206,11 +207,13 @@ $info = mysqli_query($conn, "SELECT * FROM info");
                     </li>
                     <li><a href="spj.php"><i class="fa fa-list"></i> <span>SPJ</span></a></li>
                     <li><a href="pengajuan_disp.php"><i class="fa fa-money"></i> <span>Disposisi</span></a></li>
+                    <li><a href="pak.php"><i class="fa fa-file"></i> <span>PAK Online</span></a></li>
                     <li class="header">ADDON</li>
                     <li><a href="info.php"><i class="fa fa-info-circle text-yellow"></i> <span>Informasi</span></a></li>
                     <li><a href="setting.php"><i class="fa fa-cog text-red"></i> <span>Pengaturan</span></a></li>
                     <hr>
-                    <a onclick="return confirm('Yakin akan keluar ?')" href="logout.php"><button class="btn btn-danger btn-block"><i class="fa fa-power-off"></i> Keluar</button></a>
+                    <a onclick="return confirm('Yakin akan keluar ?')" href="logout.php"><button
+                            class="btn btn-danger btn-block"><i class="fa fa-power-off"></i> Keluar</button></a>
                 </ul>
             </section>
             <!-- /.sidebar -->

@@ -36,7 +36,8 @@ include 'head.php';
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <div class="table-responsive">
-                                    <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+                                    <table id="datatable2" class="table table-striped table-bordered table-sm"
+                                        style="width:100%">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
@@ -52,98 +53,151 @@ include 'head.php';
                                             $no = 1;
                                             $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM akses a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
                                             while ($a = mysqli_fetch_assoc($dt_bos)) { ?>
-                                                <tr>
-                                                    <td><?= $no++ ?></td>
-                                                    <td><?= $a['nama'] ?></td>
-                                                    <td><?= $a['login'] ?></td>
-                                                    <td><?= $a['disposisi'] ?></td>
-                                                    <td><?= $a['tahun'] ?></td>
-                                                    <td>
-                                                        <a data-toggle="modal" data-target="#modal_del<?= $a['id_akses']; ?>" href="#"><i class="fa fa-trash-o"></i></a> |
-                                                        <a data-toggle="modal" data-target="#medit<?= $a['id_akses']; ?>" href="#"><i class="fa fa-edit"></i></a>
+                                            <tr>
+                                                <td><?= $no++ ?></td>
+                                                <td><?= $a['nama'] ?></td>
+                                                <td><?= $a['login'] ?></td>
+                                                <td><?= $a['disposisi'] ?></td>
+                                                <td><?= $a['tahun'] ?></td>
+                                                <td>
+                                                    <a data-toggle="modal"
+                                                        data-target="#modal_del<?= $a['id_akses']; ?>" href="#"><i
+                                                            class="fa fa-trash-o"></i></a> |
+                                                    <a data-toggle="modal" data-target="#medit<?= $a['id_akses']; ?>"
+                                                        href="#"><i class="fa fa-edit"></i></a>
 
-                                                        <!-- Modal Hapus -->
-                                                        <div class="modal fade bs-example-modal-sm" id="modal_del<?= $a['id_akses']; ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                                            <div class="modal-dialog modal-sm">
-                                                                <div class="modal-content">
+                                                    <!-- Modal Hapus -->
+                                                    <div class="modal fade bs-example-modal-sm"
+                                                        id="modal_del<?= $a['id_akses']; ?>" tabindex="-1" role="dialog"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog modal-sm">
+                                                            <div class="modal-content">
 
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title" id="myModalLabel2">Hapus Daftar Kode</h4>
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <form action="" method="post">
-                                                                        <input type="hidden" name="id_akses" value="<?= $a['id_akses']; ?>">
-                                                                        <div class="modal-body">
-                                                                            <h4>Yakin akan menghapu data ini ?</h4>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                                                            <button type="submit" name="delete" class="btn btn-danger">Ya.! Hapus Pon</button>
-                                                                        </div>
-                                                                    </form>
-
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="myModalLabel2">Hapus
+                                                                        Daftar Kode</h4>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal" aria-label="Close"><span
+                                                                            aria-hidden="true">×</span>
+                                                                    </button>
                                                                 </div>
+                                                                <form action="" method="post">
+                                                                    <input type="hidden" name="id_akses"
+                                                                        value="<?= $a['id_akses']; ?>">
+                                                                    <div class="modal-body">
+                                                                        <h4>Yakin akan menghapu data ini ?</h4>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">No</button>
+                                                                        <button type="submit" name="delete"
+                                                                            class="btn btn-danger">Ya.! Hapus
+                                                                            Pon</button>
+                                                                    </div>
+                                                                </form>
+
                                                             </div>
                                                         </div>
+                                                    </div>
 
-                                                        <!-- Modal Edit Data-->
-                                                        <div class="modal fade" id="medit<?= $a['id_akses']; ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                                            <div class="modal-dialog modal-lg">
-                                                                <div class="modal-content">
+                                                    <!-- Modal Edit Data-->
+                                                    <div class="modal fade" id="medit<?= $a['id_akses']; ?>"
+                                                        tabindex="-1" role="dialog" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg">
+                                                            <div class="modal-content">
 
-                                                                    <div class="modal-header">
-                                                                        <h4 class="modal-title" id="myModalLabel">Tambah Data Bidang Lembaga</h4>
-                                                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
-                                                                        </button>
-                                                                    </div>
-                                                                    <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
-                                                                        <input type="hidden" name="id_akses" value="<?= $a['id_akses']; ?>">
-                                                                        <div class="modal-body">
-                                                                            <div class="item form-group">
-                                                                                <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun <span class="required">*</span></label>
-                                                                                <div class="col-md-6 col-sm-6 ">
-                                                                                    <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $a['nama']; ?>">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="item form-group">
-                                                                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
-                                                                                </label>
-                                                                                <div class="col-md-6 col-sm-6 ">
-                                                                                    <p>
-                                                                                        <input type="radio" class="flat" name="login" id="genderM" value="Y" <?= $a['login'] == 'Y' ? 'checked' : '' ?> /> Ya
-                                                                                        <input type="radio" class="flat" name="login" id="genderF" value="T" <?= $a['login'] == 'T' ? 'checked' : '' ?> /> Tidak
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="item form-group">
-                                                                                <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
-                                                                                </label>
-                                                                                <div class="col-md-6 col-sm-6 ">
-                                                                                    <p>
-                                                                                        <input type="radio" class="flat" name="disp" id="genderM" value="Y" <?= $a['disposisi'] == 'Y' ? 'checked' : '' ?> /> Ya
-                                                                                        <input type="radio" class="flat" name="disp" id="genderF" value="T" <?= $a['disposisi'] == 'T' ? 'checked' : '' ?> /> Tidak
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="item form-group">
-                                                                                <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun <span class="required">*</span></label>
-                                                                                <div class="col-md-6 col-sm-6 ">
-                                                                                    <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun_ajaran; ?>">
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="modal-footer">
-                                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                            <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
-                                                                        </div>
-                                                                    </form>
-
+                                                                <div class="modal-header">
+                                                                    <h4 class="modal-title" id="myModalLabel">Tambah
+                                                                        Data Bidang Lembaga</h4>
+                                                                    <button type="button" class="close"
+                                                                        data-dismiss="modal"><span
+                                                                            aria-hidden="true">×</span>
+                                                                    </button>
                                                                 </div>
+                                                                <form id="demo-form2" data-parsley-validate
+                                                                    class="form-horizontal form-label-left input_mask"
+                                                                    action="" method="post">
+                                                                    <input type="hidden" name="id_akses"
+                                                                        value="<?= $a['id_akses']; ?>">
+                                                                    <div class="modal-body">
+                                                                        <div class="item form-group">
+                                                                            <label for="middle-name"
+                                                                                class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                                                                <span class="required">*</span></label>
+                                                                            <div class="col-md-6 col-sm-6 ">
+                                                                                <input id="middle-name"
+                                                                                    class="form-control" type="text"
+                                                                                    name="pj" readonly
+                                                                                    value="<?= $a['nama']; ?>">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item form-group">
+                                                                            <label
+                                                                                class="col-form-label col-md-3 col-sm-3 label-align"
+                                                                                for="first-name">Akses Login <span
+                                                                                    class="required">*</span>
+                                                                            </label>
+                                                                            <div class="col-md-6 col-sm-6 ">
+                                                                                <p>
+                                                                                    <input type="radio" class="flat"
+                                                                                        name="login" id="genderM"
+                                                                                        value="Y"
+                                                                                        <?= $a['login'] == 'Y' ? 'checked' : '' ?> />
+                                                                                    Ya
+                                                                                    <input type="radio" class="flat"
+                                                                                        name="login" id="genderF"
+                                                                                        value="T"
+                                                                                        <?= $a['login'] == 'T' ? 'checked' : '' ?> />
+                                                                                    Tidak
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item form-group">
+                                                                            <label
+                                                                                class="col-form-label col-md-3 col-sm-3 label-align"
+                                                                                for="first-name">Disposisi <span
+                                                                                    class="required">*</span>
+                                                                            </label>
+                                                                            <div class="col-md-6 col-sm-6 ">
+                                                                                <p>
+                                                                                    <input type="radio" class="flat"
+                                                                                        name="disp" id="genderM"
+                                                                                        value="Y"
+                                                                                        <?= $a['disposisi'] == 'Y' ? 'checked' : '' ?> />
+                                                                                    Ya
+                                                                                    <input type="radio" class="flat"
+                                                                                        name="disp" id="genderF"
+                                                                                        value="T"
+                                                                                        <?= $a['disposisi'] == 'T' ? 'checked' : '' ?> />
+                                                                                    Tidak
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item form-group">
+                                                                            <label for="middle-name"
+                                                                                class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                                                                <span class="required">*</span></label>
+                                                                            <div class="col-md-6 col-sm-6 ">
+                                                                                <input id="middle-name"
+                                                                                    class="form-control" type="text"
+                                                                                    name="pj" readonly
+                                                                                    value="<?= $tahun_ajaran; ?>">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary"
+                                                                            data-dismiss="modal">Close</button>
+                                                                        <button type="submit" name="edit"
+                                                                            class="btn btn-success">Simpan data</button>
+                                                                    </div>
+                                                                </form>
+
                                                             </div>
                                                         </div>
-                                                    </td>
-                                                </tr>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                             <?php } ?>
                                         </tbody>
                                     </table>
@@ -161,10 +215,12 @@ include 'head.php';
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask" action="" method="post">
+                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask"
+                            action="" method="post">
                             <div class="modal-body">
                                 <div class="item form-group">
-                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pilih Lembaga <span class="required">*</span>
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pilih
+                                        Lembaga <span class="required">*</span>
                                     </label>
                                     <div class="col-md-6 col-sm-6 ">
                                         <select name="lembaga" id="" class="form-control" required>
@@ -173,23 +229,26 @@ include 'head.php';
                                             $sal = mysqli_query($conn, "SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun_ajaran') ");
                                             while ($r = mysqli_fetch_assoc($sal)) {
                                             ?>
-                                                <option value="<?= $r['kode']; ?>"><?= $r['nama']; ?></option>
+                                            <option value="<?= $r['kode']; ?>"><?= $r['nama']; ?></option>
                                             <?php } ?>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="item form-group">
-                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses
+                                        Login <span class="required">*</span>
                                     </label>
                                     <div class="col-md-6 col-sm-6 ">
                                         <p>
                                             <input type="radio" class="flat" name="login" id="genderM" value="Y" /> Ya
-                                            <input type="radio" class="flat" name="login" id="genderF" value="T" /> Tidak
+                                            <input type="radio" class="flat" name="login" id="genderF" value="T" />
+                                            Tidak
                                         </p>
                                     </div>
                                 </div>
                                 <div class="item form-group">
-                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                        for="first-name">Disposisi <span class="required">*</span>
                                     </label>
                                     <div class="col-md-6 col-sm-6 ">
                                         <p>
@@ -199,15 +258,76 @@ include 'head.php';
                                     </div>
                                 </div>
                                 <div class="item form-group">
-                                    <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun <span class="required">*</span></label>
+                                    <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                        <span class="required">*</span></label>
                                     <div class="col-md-6 col-sm-6 ">
-                                        <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun_ajaran; ?>">
+                                        <input id="middle-name" class="form-control" type="text" name="pj" readonly
+                                            value="<?= $tahun_ajaran; ?>">
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                                 <button type="submit" name="save" class="btn btn-success">Simpan data</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-sm-12  ">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Setting Akses PAK Online</h2>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                        <?php
+                        $tgl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM akses WHERE lembaga = 'umum' "));
+                        ?>
+                        <form id="demo-form2" data-parsley-validate class="form-horizontal form-label-left input_mask"
+                            action="" method="post">
+                            <div class="modal-body">
+                                <div class="item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tgl
+                                        Aktif
+                                        PAK <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <h3 class="badge badge-success">
+                                            <?= date('d F Y', strtotime($tgl['login'])) . ' s/d ' . date('d F Y', strtotime($tgl['disposisi'])); ?>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <div class="item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Dari
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <input type="date" name="dari" id="" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Sampai
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <input type="date" name="sampai" id="" class="form-control" required>
+                                    </div>
+                                </div>
+                                <div class="item form-group">
+                                    <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                        <span class="required">*</span></label>
+                                    <div class="col-md-6 col-sm-6 ">
+                                        <input id="middle-name" class="form-control" type="text" name="tahun" readonly
+                                            value="<?= $tahun_ajaran; ?>">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" name="save_date" class="btn btn-success">Ganti Tanggal
+                                    Akses</button>
                             </div>
                         </form>
 
@@ -242,17 +362,17 @@ include 'head.php';
 <!-- bootstrap-datetimepicker -->
 <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 
 <?php
@@ -264,23 +384,23 @@ if (isset($_POST['save'])) {
 
     $sql = mysqli_query($conn, "INSERT INTO akses VALUES ('', '$lembaga', '$login','$disp','$tahun_ajaran')");
     if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Akses berhasil tersimpan',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "set_akses.php"
-                }, millisecondsToWait);
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Akses berhasil tersimpan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "set_akses.php"
+    }, millisecondsToWait);
 
-            });
-        </script>
+});
+</script>
 
-    <?php    }
+<?php    }
 }
 
 if (isset($_POST['edit'])) {
@@ -291,46 +411,73 @@ if (isset($_POST['edit'])) {
 
     $sql = mysqli_query($conn, "UPDATE akses SET login =  '$login', disposisi = '$disp' WHERE id_akses = $id_akses ");
     if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Hak akses sudah berhasil diperbarui',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "set_akses.php"
-                }, millisecondsToWait);
-            });
-        </script>
-
-    <?php    }
-}
-
-if (isset($_POST['delete'])) {
-
-    $id_akses = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['id_akses']));
-
-    $sql = mysqli_query($conn, "DELETE FROM akses WHERE id_akses = $id_akses ");
-    if ($sql) { ?>
-        <script>
-            $(document).ready(function() {
-                Swal.fire({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Hak akses sudah berhasil diperbarui',
-                    showConfirmButton: false
-                });
-                var millisecondsToWait = 1000;
-                setTimeout(function() {
-                    document.location.href = "set_akses.php"
-                }, millisecondsToWait);
-            });
-        </script>
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Hak akses sudah berhasil diperbarui',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "set_akses.php"
+    }, millisecondsToWait);
+});
+</script>
 
 <?php    }
 }
 
+if (isset($_POST['save_date'])) {
+
+    $dari = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['dari']));
+    $sampai = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['sampai']));
+
+    $sql = mysqli_query($conn, "UPDATE akses SET login = '$dari', disposisi = '$sampai' WHERE lembaga = 'umum' ");
+    if ($sql) { ?>
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Tanggal Aktif PAK sudah diperbarui',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "set_akses.php"
+    }, millisecondsToWait);
+});
+</script>
+
+<?php    }
+}
+
+if (isset($_POST['save'])) {
+
+    $lembaga = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lembaga']));
+    $login = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['login']));
+    $disp = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['disp']));
+
+    $sql = mysqli_query($conn, "INSERT INTO akses VALUES ('', '$lembaga', '$login','$disp','$tahun_ajaran')");
+    if ($sql) { ?>
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Akses berhasil tersimpan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "set_akses.php"
+    }, millisecondsToWait);
+
+});
+</script>
+
+<?php    }
+}
 ?>
