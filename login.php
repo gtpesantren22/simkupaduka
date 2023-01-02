@@ -52,7 +52,7 @@ include 'koneksi.php';
           <select name="tahun" id="" class="form-control" required>
             <!-- <option value=""> -pilih tahun ajaran- </option> -->
             <?php
-            $sq = mysqli_query($conn, "SELECT * FROM tahun");
+            $sq = mysqli_query($conn, "SELECT * FROM tahun ORDER BY id_tahun DESC");
             while ($r = mysqli_fetch_assoc($sq)) { ?>
               <option value="<?= $r['nama_tahun']; ?>">Tahun Pelajaran - <?= $r['nama_tahun']; ?></option>
             <?php } ?>
