@@ -139,7 +139,7 @@ $skr = date('Y-m-d');
                                             <td><?= $r1['qty'] ?></td>
                                             <td><?= rupiah($r1['harga_satuan']) ?></td>
                                             <td><?= rupiah($r1['total']) ?></td>
-                                            <td class="text-success"><?= $pakaiSm['qty'] > 0 ? "<span class='label label-warning'>proses</span>" : round($sisa, 1).'%' ?></td>
+                                            <td class="text-success"><?= $pakaiSm['qty'] > 0 ? "<span class='label label-warning'>dalam pengajuan</span>" : round($sisa, 1).'%' ?></td>
                                             <td>
                                                 <?php if($pakaiSm['qty'] > 0 || $sisa == 100){
 
