@@ -100,56 +100,64 @@ $no = 1;
             <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title">Data Table With Full Features</h3>
+                        <h3 class="box-title">Data RAB Saya</h3>
                     </div><!-- /.box-header -->
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table id="example2" class="table table-bordered table-striped">
+                            <table id="example1_bst" class="table table-bordered table-striped">
                                 <thead>
                                     <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                         <th>No</th>
                                         <th>Kode</th>
                                         <th>Barang/Kegiatan</th>
-                                        <th>Rencana</th>
-                                        <th>Bagian</th>
-                                        <th>Anggaran RAB</th>
+                                        <th>QTY</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Total</th>
+                                        <th>Terpakai</th>
+                                        <td>#</td>
                                     </tr>
                                 </thead>
-                                <?php
-                                while ($ls_jns = mysqli_fetch_assoc($jns)) {
-                                    $jenis = $ls_jns['jenis'] ?>
-                                    <thead>
-                                        <tr style="color: white; background-color: darkkhaki; font-weight: bold;">
-                                            <th colspan="8"><?= $ls_jns['nm_jenis'] ?></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kol' AND tahun = '$tahun_ajaran' ");
-                                        $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
 
-                                        while ($r1 = mysqli_fetch_assoc($dt1)) {
-                                            $kd = $r1['kode'];
-                                            $kdb = $r1['bidang'];
-                                            $nmb = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM bidang WHERE kode = '$kdb' AND tahun = '$tahun_ajaran' "));
-                                        ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><?= $r1['kode'] ?></td>
-                                                <td><?= $r1['nama'] ?></td>
-                                                <td><?= $r1['rencana'] ?></td>
-                                                <td><?= $nmb['nama'] ?></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                                <!-- <td><a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $r1['id_rab']; ?>"><button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> Hapus</button></a></td> -->
+                                <tbody>
+                                    <?php
+                                    $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE  lembaga = '$kol' AND tahun = '$tahun_ajaran' ");
+                                    $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE  lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
 
-                                            </tr>
-                                        <?php } ?>
+                                    while ($r1 = mysqli_fetch_assoc($dt1)) {
+                                        $kd = $r1['kode'];
+                                        $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL (SUM(nominal),0) AS jml, IFNULL (SUM(vol),0) AS qty FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
+                                        $pakaiSm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL (SUM(nominal),0) AS jml, IFNULL (SUM(vol),0) AS qty FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
+
+                                        $sisa = $pakai['jml'] / $r1['total']*100;
+                                    ?>
                                         <tr>
-                                            <th colspan="5">TOTAL</th>
-                                            <th><?= rupiah($dt2['tt']) ?></th>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= $r1['kode'] ?></td>
+                                            <td><?= $r1['nama'] ?></td>
+                                            <td><?= $r1['qty'] ?></td>
+                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                            <td><?= rupiah($r1['total']) ?></td>
+                                            <td class="text-success"><?= $pakaiSm['qty'] > 0 ? "<span class='label label-warning'>proses</span>" : round($sisa, 1).'%' ?></td>
+                                            <td>
+                                                <?php if($pakaiSm['qty'] > 0){
+
+                                                }elseif($pakaiSm['qty'] < 1 && $pakai['qty'] < 1){ ?>
+                                                <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $r1['id_rab']; ?>"><button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> Hapus</button></a>
+                                                <a href="<?= 'hapus.php?kd=rab&id=' . $r1['id_rab']; ?>"><button class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Edit</button></a>
+                                                <?php } elseif ($pakaiSm['qty'] < 1 && $pakai['qty'] > 0) { ?>
+                                                    <a href="<?= 'hapus.php?kd=rab&id=' . $r1['id_rab']; ?>"><button class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i> Edit</button></a>
+                                                <?php } ?>
+                                            </td>
                                         </tr>
-                                    </tbody>
-                                <?php } ?>
+                                    <?php } ?>
+
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th colspan="5">TOTAL</th>
+                                        <th><?= rupiah($dt2['tt']) ?></th>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div><!-- /.box-body -->
@@ -284,7 +292,27 @@ $no = 1;
         </div>
     </div>
 </div>
-
+<link rel="stylesheet" href="plugins/datatables/dataTables.bootstrap.css">
+<!-- jQuery 2.1.4 -->
+<script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<!-- Bootstrap 3.3.5 -->
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<!-- DataTables -->
+<script src="plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script>
+    $(function() {
+        $("#example1_bst").DataTable();
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false
+        });
+    });
+</script>
 <?php
 include 'bawah.php';
 
