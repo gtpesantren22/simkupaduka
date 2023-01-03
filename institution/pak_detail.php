@@ -1,7 +1,6 @@
 <?php
 require 'atas.php';
 
-
 $l = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$kol' AND tahun = '$tahun_ajaran' "));
 
 $data = mysqli_query($conn, "SELECT jenis, nama, kode, total, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kol'  AND tahun = '$tahun_ajaran'
@@ -22,8 +21,10 @@ if ($pesern >= 0 && $pesern <= 25) {
 }
 
 $jns = mysqli_query($conn, "SELECT kode, jenis, bidang, IF(jenis = 'A', 'A. Belanja Barang', IF(jenis = 'B', 'B. Langganan Daya dan Jasa', IF(jenis = 'C', 'C. Belanja Kegiatan','D. Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' GROUP BY jenis ");
-
 $no = 1;
+
+$tgl = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM akses WHERE lembaga = 'umum' "));
+$skr = date('Y-m-d');
 ?>
 
 <div class="content-wrapper">
@@ -42,6 +43,7 @@ $no = 1;
     <!-- Main content -->
     <section class="content">
         <!-- Small boxes (Stat box) -->
+        <?php if ($skr >= $tgl['login'] && $skr <= $tgl['disposisi']) { ?>
         <div class="row">
             <div class="col-lg-6 col-xs-6">
                 <!-- small box -->
@@ -126,7 +128,7 @@ $no = 1;
                                     while ($r1 = mysqli_fetch_assoc($dt1)) {
                                         $kd = $r1['kode'];
                                         $pakai = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL (SUM(nominal),0) AS jml, IFNULL (SUM(vol),0) AS qty FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
-                                        $pakaiSm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL (SUM(nominal),0) AS jml, IFNULL (SUM(vol),0) AS qty FROM realis WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
+                                        $pakaiSm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT IFNULL (SUM(nominal),0) AS jml, IFNULL (SUM(vol),0) AS qty FROM real_sm WHERE kode = '$kd' AND tahun = '$tahun_ajaran' "));
 
                                         $sisa = $pakai['jml'] / $r1['total']*100;
                                     ?>
@@ -139,7 +141,7 @@ $no = 1;
                                             <td><?= rupiah($r1['total']) ?></td>
                                             <td class="text-success"><?= $pakaiSm['qty'] > 0 ? "<span class='label label-warning'>proses</span>" : round($sisa, 1).'%' ?></td>
                                             <td>
-                                                <?php if($pakaiSm['qty'] > 0){
+                                                <?php if($pakaiSm['qty'] > 0 || $sisa == 100){
 
                                                 }elseif($pakaiSm['qty'] < 1 && $pakai['qty'] < 1){ ?>
                                                 <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $r1['id_rab']; ?>"><button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i> Hapus</button></a>
@@ -164,6 +166,7 @@ $no = 1;
                 </div><!-- /.box -->
             </div>
         </div>
+        <?php } ?>
     </section><!-- /.content -->
 </div>
 
