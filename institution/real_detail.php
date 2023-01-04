@@ -36,7 +36,8 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                     <div class="box-header with-border">
                         <i class="fa fa-bullhorn"></i>
                         <h3 class="box-title">Informasi RAB</h3>
-                        <a href="real_data.php"><button class="btn btn-warning pull-right btn-xs"><i class="fa fa-arrow-left"></i> Kembali</button></a>
+                        <a href="real_data.php"><button class="btn btn-warning pull-right btn-xs"><i
+                                    class="fa fa-arrow-left"></i> Kembali</button></a>
                     </div><!-- /.box-header -->
                     <div class="box-body">
 
@@ -93,7 +94,9 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                         <hr>
 
                         <div class="progress active">
-                            <div class="progress-bar <?= $bg ?> progress-bar-striped" role="progressbar" aria-valuenow="<?= $pesern ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $pesern ?>%"><?= $pesern ?>%
+                            <div class="progress-bar <?= $bg ?> progress-bar-striped" role="progressbar"
+                                aria-valuenow="<?= $pesern ?>" aria-valuemin="0" aria-valuemax="100"
+                                style="width: <?= $pesern ?>%"><?= $pesern ?>%
                             </div>
                         </div>
                     </div><!-- /.box-body -->
@@ -126,15 +129,15 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                                     $rls = mysqli_query($conn, "SELECT * FROM realis WHERE kode = '$kode' AND tahun = '$tahun_ajaran' ");
                                     while ($ls_jns = mysqli_fetch_assoc($rls)) {
                                     ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $ls_jns['kode'] ?></a></td>
-                                            <td><?= $ls_jns['tgl'] ?></a></td>
-                                            <td><?= $ls_jns['pj'] ?></a></td>
-                                            <td><?= rupiah($ls_jns['nominal']) ?></td>
-                                            <td><?= $ls_jns['ket'] ?></a></td>
-                                            <!-- <td><a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=del_real&id=' . $ls_jns['id_realis'] ?>"><span class="fa fa-trash"></span> Hapus</a></td> -->
-                                        </tr>
+                                    <tr>
+                                        <td><?= $no++; ?></td>
+                                        <td><?= $ls_jns['kode'] ?></a></td>
+                                        <td><?= $ls_jns['tgl'] ?></a></td>
+                                        <td><?= $ls_jns['pj'] ?></a></td>
+                                        <td><?= rupiah($ls_jns['nominal']) ?></td>
+                                        <td><?= $ls_jns['ket'] ?></a></td>
+                                        <!-- <td><a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=del_real&id=' . $ls_jns['id_realis'] ?>"><span class="fa fa-trash"></span> Hapus</a></td> -->
+                                    </tr>
                                     <?php } ?>
                                     <tr>
                                         <th colspan="4">TOTAL</th>
