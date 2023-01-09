@@ -176,9 +176,7 @@ $(function() {
 </script>
 <?php
 include 'bawah.php';
-?>
 
-<?php
 if (isset($_POST['save'])) {
 
     $pj = mysqli_fetch_assoc(mysqli_query($conn, "SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun_ajaran'"));

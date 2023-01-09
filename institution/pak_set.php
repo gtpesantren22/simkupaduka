@@ -46,3 +46,14 @@ if ($kd === 'kembali') {
         ";
     }
 }
+
+if ($kd === 'rab') {
+    $sql = mysqli_query($conn, "DELETE FROM rab_sm WHERE kode = '$id' ");
+    if ($sql) {
+        echo "
+        <script>
+            window.location = 'pak_detail.php?kode=" . $pak . "';
+        </script>
+        ";
+    }
+}
