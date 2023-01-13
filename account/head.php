@@ -128,6 +128,7 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                 </li>
                                 <li><a href="history_pengajuan.php"><i class="fa fa-bookmark"></i> History Pengajuan </span></a></li>
                                 <li><a href="info.php"><i class="fa fa-clipboard"></i> Informasi </span></a></li>
+                                <li><a href="pak.php"><i class="fa fa-globe"></i> PAK Online </span></a></li>
                             </ul>
                         </div>
 
