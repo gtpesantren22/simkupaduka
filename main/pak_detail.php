@@ -26,24 +26,25 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
         <div class="row">
             <div class="tile_count">
                 <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="tile_stats_count">
                             <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang di PAK</span>
                             <div class="count"><?= rupiah($dt_pak['tt']); ?></div>
 
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="col-md-4">
                         <div class="tile_stats_count">
                             <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang akan diajukan</span>
                             <div class="count"><?= rupiah($dt_rab['tt']); ?></div>
 
                         </div>
                     </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-success" type="button" data-toggle="modal" data-target=".bs-example-modal-sm"><i class="fa fa-check"></i>
-                            Setujui</button>
-                        <button class="btn btn-danger" type="button" data-toggle="modal" data-target=".tolak"><i class="fa fa-times"></i> Tolak</button>
+                    <div class="col-md-4">
+                        <button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target=".bs-example-modal-sm"><i class="fa fa-check"></i>
+                            Sinkron RAB PAK Dihapus</button>
+                        <button class="btn btn-danger btn-sm" type="button" data-toggle="modal" data-target=".tolak"><i class="fa fa-times"></i> Sinkron RAB PAK Diedit</button>
+                        <button class="btn btn-danger btn-sm" type="button" data-toggle="modal" data-target=".tolak"><i class="fa fa-times"></i> Sinkron RAB Baru</button>
                     </div>
                 </div>
             </div>

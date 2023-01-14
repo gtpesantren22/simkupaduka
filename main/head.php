@@ -134,6 +134,7 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                     <ul class="nav child_menu">
                                         <li><a href="rab.php">Lembaga</a></li>
                                         <li><a href="rab_kbj.php">Kebijakan</a></li>
+                                        <li><a href="pak.php">PAK</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="#"><i class="fa fa-credit-card"></i> Realisasi <span class="fa fa-chevron-down"></span></a>
