@@ -164,7 +164,8 @@ include 'head.php';
                                                                 </label>
                                                                 <div class="col-md-6 col-sm-6 ">
                                                                     <input type="text" id="first-name" name="cair"
-                                                                        required="required" value="<?= rupiah($jml['jml_cair']) ?>"
+                                                                        required="required"
+                                                                        value="<?= rupiah($jml['jml_cair']) ?>"
                                                                         class="form-control" readonly>
                                                                 </div>
                                                             </div>
@@ -381,7 +382,8 @@ include 'head.php';
                                                                 </label>
                                                                 <div class="col-md-6 col-sm-6 ">
                                                                     <input type="text" id="first-name" name="cair"
-                                                                        required="required" value="<?= rupiah($jml['jml_cair']) ?>"
+                                                                        required="required"
+                                                                        value="<?= rupiah($jml['jml_cair']) ?>"
                                                                         class="form-control" readonly>
                                                                 </div>
                                                             </div>

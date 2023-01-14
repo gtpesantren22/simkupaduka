@@ -3,6 +3,9 @@ include 'head.php';
 
 $kode = $_GET['kode'];
 $lm = $_GET['lm'];
+
+$dt_pak = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM pak_detail WHERE kode_pak = '$kode' AND tahun = '$tahun_ajaran' "));
+$dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -26,19 +29,21 @@ $lm = $_GET['lm'];
                     <div class="col-md-5">
                         <div class="tile_stats_count">
                             <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang di PAK</span>
-                            <div class="count">Rp. 250.000.000</div>
+                            <div class="count"><?= rupiah($dt_pak['tt']); ?></div>
 
                         </div>
                     </div>
                     <div class="col-md-5">
                         <div class="tile_stats_count">
                             <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang akan diajukan</span>
-                            <div class="count">Rp. 250.000.000</div>
+                            <div class="count"><?= rupiah($dt_rab['tt']); ?></div>
 
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-success"><i class="fa fa-check"></i> Setujui</button>
+                        <button class="btn btn-success" type="button" data-toggle="modal"
+                            data-target=".bs-example-modal-sm"><i class="fa fa-check"></i>
+                            Setujui</button>
                         <button class="btn btn-danger"><i class="fa fa-times"></i> Tolak</button>
                     </div>
                 </div>
@@ -61,7 +66,8 @@ $lm = $_GET['lm'];
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+                                <table id="datatable" class="table table-striped table-bordered table-sm"
+                                    style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -78,25 +84,25 @@ $lm = $_GET['lm'];
                                         <?php
                                         $no = 1;
                                         $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pak_detail a JOIN rab b ON a.kode_rab=b.kode WHERE a.kode_pak = '$kode' AND a.tahun = '$tahun_ajaran' ");
-                                        $dt_pak = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM pak_detail WHERE kode_pak = '$kode' AND tahun = '$tahun_ajaran' "));
+
                                         while ($r1 = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><?= $r1['kode_rab'] ?></td>
-                                                <td><?= $r1['nama'] ?></td>
-                                                <td><?= $r1['qty'] ?></td>
-                                                <td><?= rupiah($r1['harga_satuan']) ?></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                                <td class="text-success">
-                                                    <?= $r1['ket'] == 'hapus' ? "<span class='badge badge-danger btn-rounded'>hapus</span>" : "<span class='badge badge-success btn-rounded'>edit</span>" ?>
-                                                </td>
-                                                <!-- <td>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= $r1['kode_rab'] ?></td>
+                                            <td><?= $r1['nama'] ?></td>
+                                            <td><?= $r1['qty'] ?></td>
+                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                            <td><?= rupiah($r1['total']) ?></td>
+                                            <td class="text-success">
+                                                <?= $r1['ket'] == 'hapus' ? "<span class='badge badge-danger btn-rounded'>hapus</span>" : "<span class='badge badge-success btn-rounded'>edit</span>" ?>
+                                            </td>
+                                            <!-- <td>
                                                     <?php if ($pakde['status'] === 'belum' || $pakde['status'] === 'ditolak') { ?>
                                                         <a onclick="return confirm('Yakin akan dikembalikan ?')" href="<?= 'pak_set.php?kd=kembali&pak=' . $r1['kode_pak'] . '&id=' . $r1['kode_rab']; ?>"><button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button></a>
                                                     <?php } ?>
                                                 </td> -->
-                                            </tr>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -123,7 +129,8 @@ $lm = $_GET['lm'];
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+                                <table id="datatable2" class="table table-striped table-bordered table-sm"
+                                    style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -139,18 +146,17 @@ $lm = $_GET['lm'];
                                         <?php
                                         $no = 1;
                                         $dt_bos = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
-                                        $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$kol' AND tahun = '$tahun_ajaran' "));
                                         while ($r1 = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><?= $r1['kode'] ?></td>
-                                                <td><?= $r1['nama'] ?></td>
-                                                <td><?= $r1['qty'] ?></td>
-                                                <td><?= $r1['satuan'] ?></td>
-                                                <td><?= rupiah($r1['harga_satuan']) ?></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                            </tr>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= $r1['kode'] ?></td>
+                                            <td><?= $r1['nama'] ?></td>
+                                            <td><?= $r1['qty'] ?></td>
+                                            <td><?= $r1['satuan'] ?></td>
+                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                            <td><?= rupiah($r1['total']) ?></td>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
@@ -166,6 +172,50 @@ $lm = $_GET['lm'];
 </div>
 <!-- /page content -->
 
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form action="" method="post">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel2">Setujui PAK</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Jika PAK ini sudah benar, selanjutnya akan diupload oleh admin.</p>
+                    <p>Yakin akan dilanjutkan ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="setujui" class="btn btn-primary">Setujui</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form action="" method="post">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel2">Penolakan PAK</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Jika PAK ini sudah benar, selanjutnya akan diupload oleh admin.</p>
+                    <p>Yakin akan dilanjutkan ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="setujui" class="btn btn-primary">Setujui</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?php include 'foot.php'; ?>
 <!-- Datatables -->
@@ -189,17 +239,17 @@ $lm = $_GET['lm'];
 <script src="../main/vendors/ckeditor-full/ckeditor.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 
 
@@ -209,18 +259,39 @@ if (isset($_POST['del'])) {
 
     $sql = mysqli_query($conn, "DELETE FROM info WHERE id_info = '$id_info' AND tahun = '$tahun_ajaran' ");
     if ($sql) { ?>
-        <script>
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Informasi berhasil dihapus',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 1000;
-            setTimeout(function() {
-                document.location.href = "info.php"
-            }, millisecondsToWait);
-        </script>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'Informasi berhasil dihapus',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "info.php"
+}, millisecondsToWait);
+</script>
+
+<?php    }
+}
+
+if (isset($_POST['setujui'])) {
+    // $id_info =  $_POST['id_info'];
+
+    $sql = mysqli_query($conn, "UPDATE pak SET status = 'disetujui' WHERE kode_pak = '$kode' ");
+    if ($sql) { ?>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'PAK sudah disetujui',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "pak.php"
+}, millisecondsToWait);
+</script>
 
 <?php    }
 }
