@@ -6,6 +6,8 @@ $lm = $_GET['lm'];
 
 $dt_pak = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM pak_detail WHERE kode_pak = '$kode' AND tahun = '$tahun_ajaran' "));
 $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' "));
+
+$rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -26,25 +28,23 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
         <div class="row">
             <div class="tile_count">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="tile_stats_count">
-                            <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang di PAK</span>
-                            <div class="count"><?= rupiah($dt_pak['tt']); ?></div>
+                            <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang asal</span>
+                            <div class="count"><?= rupiah($rab['tt']); ?></div>
 
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="tile_stats_count">
-                            <span class="count_top"><i class="fa fa-money"></i> Nominal RAB yang akan diajukan</span>
-                            <div class="count"><?= rupiah($dt_rab['tt']); ?></div>
-
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target=".bs-example-modal-sm"><i class="fa fa-check"></i>
-                            Sinkron RAB PAK Dihapus</button>
-                        <button class="btn btn-danger btn-sm" type="button" data-toggle="modal" data-target=".tolak"><i class="fa fa-times"></i> Sinkron RAB PAK Diedit</button>
-                        <button class="btn btn-danger btn-sm" type="button" data-toggle="modal" data-target=".tolak"><i class="fa fa-times"></i> Sinkron RAB Baru</button>
+                    <div class="col-md-6">
+                        <button class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target=".hapus"><i
+                                class="fa fa-refresh"></i> Sinkron RAB PAK
+                            Dihapus</button>
+                        <button class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target=".edit">
+                            <i class="fa fa-refresh"></i>
+                            Sinkron RAB PAK Diedit</button>
+                        <button class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target=".upload">
+                            <i class="fa fa-upload"></i>
+                            Upload RAB Baru</button>
                     </div>
                 </div>
             </div>
@@ -66,7 +66,8 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
+                                <table id="datatable" class="table table-striped table-bordered table-sm"
+                                    style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -86,24 +87,30 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
 
                                         while ($r1 = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><?= $r1['kode_rab'] ?></td>
-                                                <td><?= $r1['nama'] ?></td>
-                                                <td><?= $r1['qty'] ?></td>
-                                                <td><?= rupiah($r1['harga_satuan']) ?></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                                <td class="text-success">
-                                                    <?= $r1['ket'] == 'hapus' ? "<span class='badge badge-danger btn-rounded'>hapus</span>" : "<span class='badge badge-success btn-rounded'>edit</span>" ?>
-                                                </td>
-                                                <!-- <td>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= $r1['kode_rab'] ?></td>
+                                            <td><?= $r1['nama'] ?></td>
+                                            <td><?= $r1['qty'] ?></td>
+                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                            <td><?= rupiah($r1['total']) ?></td>
+                                            <td class="text-success">
+                                                <?= $r1['ket'] == 'hapus' ? "<span class='badge badge-danger btn-rounded'>hapus</span>" : "<span class='badge badge-success btn-rounded'>edit</span>" ?>
+                                            </td>
+                                            <!-- <td>
                                                     <?php if ($pakde['status'] === 'belum' || $pakde['status'] === 'ditolak') { ?>
                                                         <a onclick="return confirm('Yakin akan dikembalikan ?')" href="<?= 'pak_set.php?kd=kembali&pak=' . $r1['kode_pak'] . '&id=' . $r1['kode_rab']; ?>"><button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button></a>
                                                     <?php } ?>
                                                 </td> -->
-                                            </tr>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="5">TOTAL</th>
+                                            <th colspan="2"><?= rupiah($dt_pak['tt']); ?></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
 
@@ -128,7 +135,8 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
+                                <table id="datatable2" class="table table-striped table-bordered table-sm"
+                                    style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -146,17 +154,23 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
                                         $dt_bos = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
                                         while ($r1 = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
-                                            <tr>
-                                                <td><?= $no++; ?></td>
-                                                <td><?= $r1['kode'] ?></td>
-                                                <td><?= $r1['nama'] ?></td>
-                                                <td><?= $r1['qty'] ?></td>
-                                                <td><?= $r1['satuan'] ?></td>
-                                                <td><?= rupiah($r1['harga_satuan']) ?></td>
-                                                <td><?= rupiah($r1['total']) ?></td>
-                                            </tr>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= $r1['kode'] ?></td>
+                                            <td><?= $r1['nama'] ?></td>
+                                            <td><?= $r1['qty'] ?></td>
+                                            <td><?= $r1['satuan'] ?></td>
+                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                            <td><?= rupiah($r1['total']) ?></td>
+                                        </tr>
                                         <?php } ?>
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="6">TOTAL</th>
+                                            <th><?= rupiah($dt_rab['tt']); ?></th>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                             </div>
 
@@ -170,43 +184,67 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
 </div>
 <!-- /page content -->
 
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade hapus" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <form action="" method="post">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel2">Setujui PAK</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                    <h4 class="modal-title" id="myModalLabel2">Sinkron PAK yang Dihapus</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Jika PAK ini sudah benar, selanjutnya akan diupload oleh admin.</p>
+                    <p>Fitur ini akan menghapus item RAB yang di PAK dengan status DIHAPUS</p>
                     <p>Yakin akan dilanjutkan ?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="setujui" class="btn btn-primary">Setujui</button>
+                    <button type="submit" name="hapus" class="btn btn-warning">Sinkron</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<div class="modal fade tolak" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade edit" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <form action="" method="post">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel2">Penolakan PAK</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                    <h4 class="modal-title" id="myModalLabel2">Sinkron PAK yang Diedit</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <label for="">Masukan Pesan</label>
-                    <textarea name="" id="" class="form-control" required></textarea>
+                    <p>Fitur ini akan mengganti item RAB yang di PAK dengan status DIEDIT</p>
+                    <p>Yakin akan dilanjutkan ?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="tolak" class="btn btn-danger">Tolak</button>
+                    <button type="submit" name="edit" class="btn btn-warning">Sinkron</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade upload" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <form action="" method="post">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel2">Upload RAB yang baru</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Fitur ini akan mengupload item RAB yang baru.</p>
+                    <p>Yakin akan dilanjutkan ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="upload" class="btn btn-success">Upload</button>
                 </div>
             </form>
         </div>
@@ -235,81 +273,112 @@ $dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM r
 <script src="../main/vendors/ckeditor-full/ckeditor.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('#datatable2').DataTable();
-        $('#datatable3').DataTable();
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
 
-        $('#datePick').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
-        $('#datePick2').datetimepicker({
-            format: 'YYYY-MM-DD'
-        });
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
     });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 
 
 <?php
-if (isset($_POST['del'])) {
-    $id_info =  $_POST['id_info'];
+if (isset($_POST['hapus'])) {
 
-    $sql = mysqli_query($conn, "DELETE FROM info WHERE id_info = '$id_info' AND tahun = '$tahun_ajaran' ");
+    $data = mysqli_query($conn, "SELECT * FROM pak_detail WHERE ket = 'hapus' AND kode_pak = '$kode' AND tahun = '$tahun_ajaran' ");
+    while ($a = mysqli_fetch_assoc($data)) {
+        $kd_rab = $a['kode_rab'];
+        $sql = mysqli_query($conn, "DELETE FROM rab WHERE kode = '$kd_rab' ");
+    }
     if ($sql) { ?>
-        <script>
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'Informasi berhasil dihapus',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 1000;
-            setTimeout(function() {
-                document.location.href = "info.php"
-            }, millisecondsToWait);
-        </script>
-
-    <?php    }
-}
-
-if (isset($_POST['setujui'])) {
-    // $id_info =  $_POST['id_info'];
-
-    $sql = mysqli_query($conn, "UPDATE pak SET status = 'disetujui' WHERE kode_pak = '$kode' ");
-    if ($sql) { ?>
-        <script>
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'PAK sudah disetujui',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 1000;
-            setTimeout(function() {
-                document.location.href = "pak.php"
-            }, millisecondsToWait);
-        </script>
-
-    <?php    }
-}
-
-if (isset($_POST['tolak'])) {
-    // $id_info =  $_POST['id_info'];
-
-    $sql = mysqli_query($conn, "UPDATE pak SET status = 'ditolak' WHERE kode_pak = '$kode' ");
-    if ($sql) { ?>
-        <script>
-            Swal.fire({
-                position: 'top-end',
-                icon: 'success',
-                title: 'PAK sudah ditolak',
-                showConfirmButton: false
-            });
-            var millisecondsToWait = 1000;
-            setTimeout(function() {
-                document.location.href = "pak.php"
-            }, millisecondsToWait);
-        </script>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'RAB Berhasil disinkron',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "pak.php"
+}, millisecondsToWait);
+</script>
 
 <?php    }
 }
+
+if (isset($_POST['edit'])) {
+
+    $data = mysqli_query($conn, "SELECT * FROM pak_detail WHERE ket = 'edit' AND kode_pak = '$kode' AND tahun = '$tahun_ajaran' ");
+    while ($a = mysqli_fetch_assoc($data)) {
+        $kd_rab = $a['kode_rab'];
+        $jml = $a['qty'];
+        $sql = mysqli_query($conn, "UPDATE rab SET qty = qty - $jml WHERE kode = '$kd_rab' ");
+    }
+    if ($sql) { ?>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'RAB Berhasil disinkron',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "pak.php"
+}, millisecondsToWait);
+</script>
+
+<?php    }
+}
+
+if (isset($_POST['upload'])) {
+
+    $data = mysqli_query($conn, "INSERT INTO rab SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
+    // $data = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
+    // while ($a = mysqli_fetch_assoc($data)) {
+    //     $kd_rab = $a['kode'];
+    //     $jml = $a['qty'];
+    //     $sql = mysqli_query($conn, "DELETE FROM rab  WHERE kode = '$kd_rab' ");
+    // }
+    if ($data) {
+
+        $psn = '
+*INFORMASI PENOLAKAN PAK*
+
+Ada pengajuan baru dari :
+    
+Lembaga : ' . $lm['nama'] . '
+Kode PAK : ' . $kode . '
+
+PAK ditolak oleh accounting dengan catatan :
+*' . mysqli_real_escape_string($conn, $_POST['catatan']) . '*
+
+Terimakasih';
+
+        kirim_group($api_key, '120363042148360147@g.us', $psn);
+        kirim_group($api_key, '120363042148360147@g.us', $psn);
+
+    ?>
+<script>
+Swal.fire({
+    position: 'top-end',
+    icon: 'success',
+    title: 'RAB Berhasil disinkron',
+    showConfirmButton: false
+});
+var millisecondsToWait = 1000;
+setTimeout(function() {
+    document.location.href = "pak.php"
+}, millisecondsToWait);
+</script>
+
+<?php    }
+}
+
 ?>

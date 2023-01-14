@@ -10,6 +10,7 @@ if (!isset($_SESSION['lvl_adm_qwertyuiop'])) {
 }
 include 'libs/vendor/autoload.php';
 include '../koneksi.php';
+include '../func_wa.php';
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
@@ -109,7 +110,8 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                             <h3>General</h3>
                             <ul class="nav side-menu">
                                 <li><a href="index.php"><i class="fa fa-dashboard"></i> Dahsboard </span></a></li>
-                                <li><a><i class="fa fa-folder-open"></i> Master Data <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-folder-open"></i> Master Data <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="santri.php">Data santri</a></li>
                                         <!-- <li><a>Daftar Biaya Pendidikan<span class="fa fa-chevron-down"></span></a>
@@ -124,33 +126,38 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                                         <li><a href="kode.php"> Daftar Kode </span></a></li>
                                     </ul>
                                 </li>
-                                <li><a><i class="fa fa-money"></i> Pemasukan <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-money"></i> Pemasukan <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="masuk.php">Semua Pemasukan</a></li>
                                         <li><a href="bp.php">Biaya Pendidikan</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#"><i class="fa fa-shopping-cart"></i> Rencana Belanja <span class="fa fa-chevron-down"></span></a>
+                                <li><a href="#"><i class="fa fa-shopping-cart"></i> Rencana Belanja <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="rab.php">Lembaga</a></li>
                                         <li><a href="rab_kbj.php">Kebijakan</a></li>
                                         <li><a href="pak.php">PAK</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#"><i class="fa fa-credit-card"></i> Realisasi <span class="fa fa-chevron-down"></span></a>
+                                <li><a href="#"><i class="fa fa-credit-card"></i> Realisasi <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="real.php">Data</a></li>
                                         <li><a href="pengajuan.php">Pengajuan</a></li>
                                         <li><a href="spj.php">SPJ</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#"><i class="fa fa-money"></i> Saldo Utama <span class="fa fa-chevron-down"></span></a>
+                                <li><a href="#"><i class="fa fa-money"></i> Saldo Utama <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="masuk_saldo.php">Pemasukan</a></li>
                                         <li><a href="keluar_saldo.php">Pengeluaran</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="#"><i class="fa fa-bank"></i> Disposisi <span class="fa fa-chevron-down"></span></a>
+                                <li><a href="#"><i class="fa fa-bank"></i> Disposisi <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="dispo.php">Data disposisi</a></li>
                                         <li><a href="dispo_sisa.php">Pengembalian</a></li>
@@ -159,16 +166,19 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                             </ul>
                             <h3>AddOn</h3>
                             <ul class="nav side-menu">
-                                <li><a><i class="fa fa-user-md"></i> User Akun <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-user-md"></i> User Akun <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="akun.php">Data Akun</a></li>
                                         <li><a href="#">Profil</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="info.php"><i class="fa fa-clipboard"></i> Informasi </span></a></li>
-                                <li><a href="history_pengajuan.php"><i class="fa fa-bookmark"></i> History Pengajuan </span></a></li>
+                                <li><a href="history_pengajuan.php"><i class="fa fa-bookmark"></i> History Pengajuan
+                                        </span></a></li>
                                 <li><a href="#"><i class="fa fa-bookmark"></i> Dana Cadangan </span></a></li>
-                                <li><a><i class="fa fa-list"></i> Cetak Laporan <span class="fa fa-chevron-down"></span></a>
+                                <li><a><i class="fa fa-list"></i> Cetak Laporan <span
+                                            class="fa fa-chevron-down"></span></a>
                                     <ul class="nav child_menu">
                                         <li><a href="#">Tutup Kas</a></li>
                                         <li><a href="#">BA Pem. Kas</a></li>
@@ -215,13 +225,17 @@ $bulan = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July
                     <nav class="nav navbar-nav">
                         <ul class="navbar-right">
                             <li class="nav-item dropdown open" style="padding-left: 15px;">
-                                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true" id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
+                                <a href="javascript:;" class="user-profile dropdown-toggle" aria-haspopup="true"
+                                    id="navbarDropdown" data-toggle="dropdown" aria-expanded="false">
                                     <img src="production/images/D (1).png" alt=""><?= $nama_user ?>
                                 </a>
-                                <div class="dropdown-menu dropdown-usermenu pull-right" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-usermenu pull-right"
+                                    aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="javascript:;"> Profile</a>
                                     <a class="dropdown-item" href="set_akses.php"> Setting Akses</a>
-                                    <a class="dropdown-item" href="logout.php" onclick="return confirm('Yakin akan logout ?')"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                    <a class="dropdown-item" href="logout.php"
+                                        onclick="return confirm('Yakin akan logout ?')"><i
+                                            class="fa fa-sign-out pull-right"></i> Log Out</a>
                                 </div>
                             </li>
                         </ul>

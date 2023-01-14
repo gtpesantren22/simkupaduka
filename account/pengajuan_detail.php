@@ -590,7 +590,8 @@ $(document).ready(function() {
 });
 </script>
 
-<?php $psn = '
+<?php
+        $psn = '
 *INFORMASI PENOLAKAN PENGAJUAN* ' . $rt . '
 
 pengajuan dari :
