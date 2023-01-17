@@ -504,7 +504,7 @@ setTimeout(function() {
 }
 
 if (isset($_POST['ajukan'])) {
-    $sql = mysqli_query($conn, "UPDATE pak SET status = 'proses' WHERE kode_pak = '$kode_pak' ");
+    $sql = mysqli_query($conn, "UPDATE pak SET status = 'ajukan' WHERE kode_pak = '$kode_pak' ");
 
     $psn = '
 *INFORMASI PENGAJUAN PAK*
@@ -514,13 +514,13 @@ Ada pengajuan baru dari :
 Lembaga : ' . $l['nama'] . '
 Kode PAK : ' . $kode . '
 
-*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+*_dimohon kepada SEKRETARIAT untuk segera mengecek nya di https://sekretaris.ppdwk.com/_*
 Terimakasih';
 
     if ($sql) {
         kirim_group($api_key, '120363040973404347@g.us', $psn);
         kirim_group($api_key, '120363042148360147@g.us', $psn);
-        kirim_person($api_key, '082302301003', $psn);
+        kirim_person($api_key, '085604414629', $psn);
 
         echo "
         <script>
