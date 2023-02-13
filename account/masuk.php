@@ -9,16 +9,16 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
 
 ?>
 <!-- Datatables -->
-<link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
-<link href="../main/vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+<link href="vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 
 <!-- bootstrap-daterangepicker -->
-<link href="../main/vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
+<link href="vendors/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet">
 <!-- bootstrap-datetimepicker -->
-<link href="../main/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<link href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
 <!-- page content -->
 <div class="right_col" role="main">
@@ -81,13 +81,17 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <br>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-10">
                                         <div class="alert alert-success">
                                             <h5>Data pemasukan BOS</h5>
                                             <h5>Total Pemasukan : Rp. <?= number_format($tot['jm'], 0, '.', '.') ?></h5>
                                         </div>
                                     </div>
-
+                                    <div class="col-md-2">
+                                        <button class="btn btn-lg btn-info btn-block" data-toggle="modal"
+                                            data-target="#tambah_bos"><i class="fa fa-plus-square"></i> Tambah
+                                            Data</button>
+                                    </div>
                                 </div>
                                 <hr>
                                 <table id="datatable" class="table table-striped table-bordered" style="width:100%">
@@ -100,6 +104,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <th>Nominal</th>
                                             <th>Tanggal Bayar</th>
                                             <th>Tahun</th>
+                                            <th>Act</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -115,10 +120,137 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <td>Rp. <?= number_format($a['nominal'], 0, '.', '.') ?></td>
                                             <td><?= $a['tgl_setor'] ?></td>
                                             <td><?= $a['tahun'] ?></td>
+                                            <td>
+                                                <a href="<?= 'edit_bos.php?id=' . $a['id_bos']; ?>"><button
+                                                        class="btn btn-warning btn-sm"><i class="fa fa-cog"></i>
+                                                        Edit</button></a>
+                                                <a onclick="return confirm('Yakin akan dihapus ?')"
+                                                    href="<?= 'hapus.php?kd=bos&id=' . $a['id_bos']; ?>"><button
+                                                        class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i>
+                                                        Del</button></a>
+                                            </td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
+                                <!-- Modal Tambah Data BOS-->
+                                <div class="modal fade" id="tambah_bos" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="myModalLabel">Tambah data pemasukan BOS</h4>
+                                                <button type="button" class="close" data-dismiss="modal"><span
+                                                        aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <form id="demo-form2" data-parsley-validate
+                                                class="form-horizontal form-label-left input_mask" action=""
+                                                method="post">
+                                                <div class="modal-body">
+
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="first-name">Kode <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <select name="kode" class="form-control" id="" required>
+                                                                <option value=""> -pilih lembaga- </option>
+                                                                <?php
+                                                                $qr = mysqli_query($conn, "SELECT * FROM lembaga WHERE lv = 'lf' AND tahun = '$tahun_ajaran' ");
+                                                                while ($a = mysqli_fetch_assoc($qr)) { ?>
+                                                                <option value="<?= $a['kode'] ?>"><?= $a['kode'] ?>.
+                                                                    <?= $a['nama'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="last-name">Uraian <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <input type="text" id="last-name" name="uraian"
+                                                                required="required" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label for="middle-name"
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Periode
+                                                            <span class="required">*</span></label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <input id="middle-name" class="form-control" type="text"
+                                                                name="periode" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="first-name">Nominal <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                            <input type="text" class="form-control has-feedback-left "
+                                                                id="uang" name="nominal" required>
+                                                            <span class="form-control-feedback left"
+                                                                aria-hidden="true">Rp.</span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label for="tahun"
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                                            <span class="required">*</span></label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <select name="tahun" id="" required class="form-control">
+                                                                <option value=""> -- pilih tahun -- </option>
+                                                                <?php
+                                                                $th = date('Y');
+                                                                for ($i = 2020; $i <= $th; $i++) { ?>
+                                                                <option value="<?= $i; ?>"><?= $i; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Tanggal
+                                                            Bayar <span class="required">*</span>
+                                                        </label>
+                                                        <div
+                                                            class="col-md-6 col-sm-6 xdisplay_inputx form-group row has-feedback">
+
+                                                            <input type="text" name="tgl_bayar"
+                                                                class="form-control has-feedback-left" id="datePick"
+                                                                placeholder="" aria-describedby="inputSuccess2Status4">
+                                                            <span class="fa fa-calendar-o form-control-feedback left"
+                                                                aria-hidden="true"></span>
+                                                            <span id="inputSuccess2Status4"
+                                                                class="sr-only">(success)</span>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label for="middle-name"
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Inputer
+                                                            <span class="required">*</span></label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <input id="middle-name" class="form-control" type="text"
+                                                                name="kasir" readonly value="<?= $nama_user ?>"
+                                                                required>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" name="save_bos" class="btn btn-success">Simpan
+                                                        data</button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -126,12 +258,17 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                             <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                                 <br>
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-10">
                                         <div class="alert alert-warning">
                                             <h5>Data pemasukan Pesantren</h5>
                                             <h5>Total Pemasukan : Rp. <?= number_format($tot2['jm'], 0, '.', '.') ?>
                                             </h5>
                                         </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-lg btn-info btn-block" data-toggle="modal"
+                                            data-target="#tambah_pes"><i class="fa fa-plus-square"></i> Tambah
+                                            Data</button>
                                     </div>
                                 </div>
                                 <hr>
@@ -145,6 +282,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <th>Nominal</th>
                                             <th>Tanggal Bayar</th>
                                             <th>Tahun</th>
+                                            <th>Act</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -160,11 +298,145 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <td>Rp. <?= number_format($a['nominal'], 0, '.', '.') ?></td>
                                             <td><?= $a['tgl_bayar'] ?></td>
                                             <td><?= $a['tahun'] ?></td>
+                                            <td>
+                                                <a href="<?= 'edit_pes.php?id=' . $a['id_pes']; ?>"><button
+                                                        class="btn btn-warning btn-sm"><i class="fa fa-cog"></i>
+                                                        Edit</button></a>
+                                                <a onclick="return confirm('Yakin akan dihapus ?')"
+                                                    href="<?= 'hapus.php?kd=pes&id=' . $a['id_pes']; ?>"><button
+                                                        class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i>
+                                                        Del</button></a>
+                                            </td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
 
+                                <!-- Modal Tambah Data Pemsaukan Pesantren-->
+                                <div class="modal fade" id="tambah_pes" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title" id="myModalLabel">Tambah data pemasukan dari
+                                                    Pesantren</h4>
+                                                <button type="button" class="close" data-dismiss="modal"><span
+                                                        aria-hidden="true">×</span>
+                                                </button>
+                                            </div>
+                                            <form id="demo-form2" data-parsley-validate
+                                                class="form-horizontal form-label-left input_mask" action=""
+                                                method="post">
+                                                <div class="modal-body">
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="first-name">Lembaga <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <select name="lembaga" class="form-control" id="" required>
+                                                                <option value=""> -pilih lembaga- </option>
+                                                                <?php
+                                                                $qr = mysqli_query($conn, "SELECT * FROM lembaga WHERE lv = 'ps' AND tahun = '$tahun_ajaran' ");
+                                                                while ($a = mysqli_fetch_assoc($qr)) { ?>
+                                                                <option value="<?= $a['kode'] ?>"><?= $a['kode'] ?>.
+                                                                    <?= $a['nama'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="first-name">Bidang/bagian <span
+                                                                class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <select name="bidang" class="form-control" id="" required>
+                                                                <option value=""> -pilih bidang- </option>
+                                                                <?php
+                                                                $qr2 = mysqli_query($conn, "SELECT * FROM bidang WHERE tahun = '$tahun_ajaran'");
+                                                                while ($a2 = mysqli_fetch_assoc($qr2)) { ?>
+                                                                <option value="<?= $a2['kode'] ?>"><?= $a2['kode'] ?>.
+                                                                    <?= $a2['nama'] ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="last-name">Uraian <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <input type="text" id="last-name" name="uraian"
+                                                                required="required" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label for="middle-name"
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Periode
+                                                            <span class="required">*</span></label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <input id="middle-name" class="form-control" type="text"
+                                                                name="periode" required>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label class="col-form-label col-md-3 col-sm-3 label-align"
+                                                            for="first-name">Nominal <span class="required">*</span>
+                                                        </label>
+                                                        <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                            <input type="text" class="form-control has-feedback-left "
+                                                                id="uang_2" name="nominal" required>
+                                                            <span class="form-control-feedback left"
+                                                                aria-hidden="true">Rp.</span>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label for="tahun"
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                                            <span class="required">*</span></label>
+                                                        <div class="col-md-6 col-sm-6 ">
+                                                            <select name="tahun" id="" required class="form-control">
+                                                                <option value=""> -- pilih tahun -- </option>
+                                                                <?php
+                                                                $th = date('Y');
+                                                                for ($i = 2022; $i <= $th; $i++) { ?>
+                                                                <option value="<?= $i; ?>"><?= $i; ?></option>
+                                                                <?php } ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="item form-group">
+                                                        <label
+                                                            class="col-form-label col-md-3 col-sm-3 label-align">Tanggal
+                                                            Bayar <span class="required">*</span>
+                                                        </label>
+                                                        <div
+                                                            class="col-md-6 col-sm-6 xdisplay_inputx form-group row has-feedback">
+
+                                                            <input type="text" name="tgl_bayar"
+                                                                class="form-control has-feedback-left" id="datePick2"
+                                                                placeholder="" aria-describedby="inputSuccess2Status4">
+                                                            <span class="fa fa-calendar-o form-control-feedback left"
+                                                                aria-hidden="true"></span>
+                                                            <span id="inputSuccess2Status4"
+                                                                class="sr-only">(success)</span>
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Close</button>
+                                                    <button type="submit" name="save_pes" class="btn btn-success">Simpan
+                                                        data</button>
+                                                </div>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- SAldo Aki -->
@@ -194,18 +466,18 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <th>Dana Cair</th>
                                             <th>Terserap</th>
                                             <th>Sisa</th>
-                                            <th>Tgl Upload</th>
+                                            <th>Act</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY tgl_setor DESC");
+                                        $dt = mysqli_query($conn, "SELECT * FROM real_sisa WHERE tahun = '$tahun_ajaran' ORDER BY tgl_setor ASC");
                                         while ($a = mysqli_fetch_assoc($dt)) {
                                             $kd = explode('.', $a['kode_pengajuan']);
                                             $lm = $kd[0];
-                                            $bl = $kd[1];
-                                            $th = $kd[2];
+                                            $bl = $kd[2];
+                                            $th = $kd[3];
                                             $nm =  mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' AND tahun = '$tahun_ajaran' "));
                                         ?>
                                         <tr>
@@ -216,11 +488,17 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                             <td>Rp. <?= number_format($a['dana_cair'], 0, '.', '.') ?></td>
                                             <td>Rp. <?= number_format($a['dana_serap'], 0, '.', '.') ?></td>
                                             <td>Rp. <?= number_format($a['sisa'], 0, '.', '.') ?></td>
-                                            <td><?= $a['tgl_setor'] ?></td>
+                                            <td>
+                                                <a onclick="return confirm('Yakin akan dihapus ?')"
+                                                    href="<?= 'hapus.php?kd=sisa&id=' . $a['id_sisa']; ?>"><button
+                                                        class="btn btn-danger btn-sm"><i class="fa fa-trash-o"></i>
+                                                        Del</button></a>
+                                            </td>
                                         </tr>
                                         <?php } ?>
                                     </tbody>
                                 </table>
+
                                 <!-- Modal Tambah Data Akien-->
                                 <div class="modal fade" id="tambah_aki" tabindex="-1" role="dialog" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
@@ -247,7 +525,7 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
                                                                 id="search_query" required>
                                                                 <option value=""> -pilih kode realis- </option>
                                                                 <?php
-                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode GROUP BY kode_pengajuan AND a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' ");
+                                                                $qr = mysqli_query($conn, "SELECT a.*, b.nama FROM realis a JOIN lembaga b ON a.lembaga = b.kode WHERE a.tahun = '$tahun_ajaran' AND b.tahun = '$tahun_ajaran' GROUP BY kode_pengajuan ");
                                                                 while ($a = mysqli_fetch_assoc($qr)) { ?>
                                                                 <option value="<?= $a['kode_pengajuan'] ?>">
                                                                     <?= $a['kode_pengajuan'] ?>
@@ -317,41 +595,23 @@ $bk = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "July", 
 
 <?php include 'foot.php'; ?>
 <!-- Datatables -->
-<script src="../main/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="../main/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="../main/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="../main/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-<script src="../main/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-<script src="../main/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../main/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-<script src="../main/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<script src="vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 <!-- bootstrap-daterangepicker -->
-<script src="../main/vendors/moment/min/moment.min.js"></script>
-<script src="../main/vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+<script src="vendors/moment/min/moment.min.js"></script>
+<script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- bootstrap-datetimepicker -->
-<script src="../main/vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-
-<script>
-$(document).ready(function() {
-    $('#datatable2').DataTable();
-    $('#datatable3').DataTable();
-    $('#datatable4').DataTable();
-
-    $('#datePick').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-    $('#datePick2').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-    $('#datePick3').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-});
-</script>
+<script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script type='text/javascript'>
 $(document).ready(function() {
     //$("#search_results").slideUp();
@@ -374,6 +634,23 @@ function ajax_search() {
     });
 
 }
+</script>
+<script>
+$(document).ready(function() {
+    $('#datatable2').DataTable();
+    $('#datatable3').DataTable();
+    $('#datatable4').DataTable();
+
+    $('#datePick').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    $('#datePick2').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+    $('#datePick3').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 <script type="text/javascript">
 var rupiah = document.getElementById('uang');
@@ -410,6 +687,72 @@ function formatRupiah(angka, prefix) {
 </script>
 
 <?php
+if (isset($_POST['save_bos'])) {
+
+    $id = $uuid;
+    $kode = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['kode']));
+    $uraian = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['uraian']));
+    $periode = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['periode']));
+    $nominal = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nominal']));
+    $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
+    $tgl_bayar = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_bayar']));
+    $nom = preg_replace("/[^0-9]/", "", $nominal);
+    // $kasir = htmlspecialchars(mysqli_real_escape_string($conn, $kasir));
+
+    $sql = mysqli_query($conn, "INSERT INTO bos VALUES ('$id', '$kode', '$kode', '$uraian', '$periode', '$nom', '$tahun_ajaran', '$tgl_bayar', '$nama_user', NOW() ) ");
+    if ($sql) { ?>
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Data BOS berhasil tersimpan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "masuk.php"
+    }, millisecondsToWait);
+
+});
+</script>
+
+<?php    }
+}
+
+if (isset($_POST['save_pes'])) {
+    $lembaga = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['lembaga']));
+    $bidang = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['bidang']));
+    $kode = $lembaga . '.' . $bidang;
+    $tgl_bayar = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_bayar']));
+    $uraian = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['uraian']));
+    $periode = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['periode']));
+    $nominal = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['nominal']));
+    $tahun = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tahun']));
+    $tgl_bayar = htmlspecialchars(mysqli_real_escape_string($conn, $_POST['tgl_bayar']));
+    $nom = preg_replace("/[^0-9]/", "", $nominal);
+
+    $sql = mysqli_query($conn, "INSERT INTO pesantren VALUES ('$uuid', '$lembaga', '$bidang', '$kode', '$uraian', '$periode', '$nom', '$tahun_ajaran', '$tgl_bayar', NOW() ) ");
+    if ($sql) { ?>
+<script>
+$(document).ready(function() {
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Pemasukan Pesantern berhasil ditambahkan',
+        showConfirmButton: false
+    });
+    var millisecondsToWait = 1000;
+    setTimeout(function() {
+        document.location.href = "masuk.php"
+    }, millisecondsToWait);
+
+});
+</script>
+
+<?php    }
+}
+
 if (isset($_POST['save_aki'])) {
 
     $id = $uuid;
@@ -439,4 +782,5 @@ $(document).ready(function() {
 
 <?php    }
 }
+
 ?>
