@@ -1,5 +1,7 @@
 <?php
 include 'head.php';
+
+$cair = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan LIKE '%DISP.%' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -35,6 +37,7 @@ include 'head.php';
 
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-badgeledby="home-tab">
+                                <div class="alert alert-success">TOTAL PENCAIRAN DARI DISPOSISI : <?= rupiah($cair['jml']) ?></div>
                                 <div class="table-responsive">
                                     <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
                                         <thead>
