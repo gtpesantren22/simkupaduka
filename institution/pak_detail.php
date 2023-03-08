@@ -480,7 +480,8 @@ if (isset($_POST['save'])) {
 }
 
 if (isset($_POST['ajukan'])) {
-    $sql = mysqli_query($conn, "UPDATE pak SET status = 'ajukan' WHERE kode_pak = '$kode_pak' ");
+    // $sql = mysqli_query($conn, "UPDATE pak SET status = 'ajukan' WHERE kode_pak = '$kode_pak' ");
+    $sql = mysqli_query($conn, "UPDATE pak SET status = 'proses' WHERE kode_pak = '$kode_pak' ");
 
     $psn = '
 *INFORMASI PENGAJUAN PAK*
@@ -496,7 +497,9 @@ Terimakasih';
     if ($sql) {
         kirim_group($api_key, '120363040973404347@g.us', $psn);
         kirim_group($api_key, '120363042148360147@g.us', $psn);
-        kirim_person($api_key, '085604414629', $psn);
+        kirim_person($api_key, '082302301003', $psn);
+        // kirim_person($api_key, '085604414629', $psn);
+        // kirim_person('f4064efa9d05f66f9be6151ec91ad846', '085236924510', $psn);
 
         echo "
         <script>
