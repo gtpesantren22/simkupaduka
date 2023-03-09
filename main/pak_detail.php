@@ -169,7 +169,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <?= var_dump($dt_sm) ?>
+                                <?= var_dump(mysqli_fetch_all($dt_sm)) ?>
                             </div>
                         </div>
                     </div>
