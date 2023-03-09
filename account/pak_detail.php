@@ -158,7 +158,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                         <?php } ?>
                                     </tbody>
                                 </table>
-                                <?= var_dump(mysqli_fetch_all($dt_sm)) ?>
+                                <?= mysqli_fetch_array($dt_sm) ?>
                             </div>
 
                         </div>
