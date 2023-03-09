@@ -36,8 +36,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target=".hapus"><i
-                                class="fa fa-refresh"></i> Sinkron RAB PAK
+                        <button class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target=".hapus"><i class="fa fa-refresh"></i> Sinkron RAB PAK
                             Dihapus</button>
                         <button class="btn btn-warning btn-sm" type="button" data-toggle="modal" data-target=".edit">
                             <i class="fa fa-refresh"></i>
@@ -66,8 +65,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                <table id="datatable" class="table table-striped table-bordered table-sm"
-                                    style="width:100%">
+                                <table id="datatable" class="table table-striped table-bordered table-sm" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -87,22 +85,22 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
 
                                         while ($r1 = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $r1['kode_rab'] ?></td>
-                                            <td><?= $r1['nama'] ?></td>
-                                            <td><?= $r1['qty'] ?></td>
-                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
-                                            <td><?= rupiah($r1['total']) ?></td>
-                                            <td class="text-success">
-                                                <?= $r1['ket'] == 'hapus' ? "<span class='badge badge-danger btn-rounded'>hapus</span>" : "<span class='badge badge-success btn-rounded'>edit</span>" ?>
-                                            </td>
-                                            <!-- <td>
+                                            <tr>
+                                                <td><?= $no++; ?></td>
+                                                <td><?= $r1['kode_rab'] ?></td>
+                                                <td><?= $r1['nama'] ?></td>
+                                                <td><?= $r1['qty'] ?></td>
+                                                <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                                <td><?= rupiah($r1['total']) ?></td>
+                                                <td class="text-success">
+                                                    <?= $r1['ket'] == 'hapus' ? "<span class='badge badge-danger btn-rounded'>hapus</span>" : "<span class='badge badge-success btn-rounded'>edit</span>" ?>
+                                                </td>
+                                                <!-- <td>
                                                     <?php if ($pakde['status'] === 'belum' || $pakde['status'] === 'ditolak') { ?>
                                                         <a onclick="return confirm('Yakin akan dikembalikan ?')" href="<?= 'pak_set.php?kd=kembali&pak=' . $r1['kode_pak'] . '&id=' . $r1['kode_rab']; ?>"><button class="btn btn-xs btn-danger"><i class="fa fa-trash-o"></i></button></a>
                                                     <?php } ?>
                                                 </td> -->
-                                        </tr>
+                                            </tr>
                                         <?php } ?>
                                     </tbody>
                                     <tfoot>
@@ -135,8 +133,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
                             <!-- Pemasukan BOS -->
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
 
-                                <table id="datatable2" class="table table-striped table-bordered table-sm"
-                                    style="width:100%">
+                                <table id="datatable2" class="table table-striped table-bordered table-sm" style="width:100%">
                                     <thead>
                                         <tr>
                                             <th>No</th>
@@ -151,18 +148,18 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
-                                        while ($r1 = mysqli_fetch_assoc($dt_bos)) {
+                                        $dt_sm = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
+                                        while ($r1 = mysqli_fetch_assoc($dt_sm)) {
                                         ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= $r1['kode'] ?></td>
-                                            <td><?= $r1['nama'] ?></td>
-                                            <td><?= $r1['qty'] ?></td>
-                                            <td><?= $r1['satuan'] ?></td>
-                                            <td><?= rupiah($r1['harga_satuan']) ?></td>
-                                            <td><?= rupiah($r1['total']) ?></td>
-                                        </tr>
+                                            <tr>
+                                                <td><?= $no++; ?></td>
+                                                <td><?= $r1['kode'] ?></td>
+                                                <td><?= $r1['nama'] ?></td>
+                                                <td><?= $r1['qty'] ?></td>
+                                                <td><?= $r1['satuan'] ?></td>
+                                                <td><?= rupiah($r1['harga_satuan']) ?></td>
+                                                <td><?= rupiah($r1['total']) ?></td>
+                                            </tr>
                                         <?php } ?>
                                     </tbody>
                                     <tfoot>
@@ -190,8 +187,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
             <form action="" method="post">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel2">Sinkron PAK yang Dihapus</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">×</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -212,8 +208,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
             <form action="" method="post">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel2">Sinkron PAK yang Diedit</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">×</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -234,8 +229,7 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
             <form action="" method="post">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel2">Upload RAB yang baru</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">×</span>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -273,17 +267,17 @@ $rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab 
 <script src="../main/vendors/ckeditor-full/ckeditor.js"></script>
 
 <script>
-$(document).ready(function() {
-    $('#datatable2').DataTable();
-    $('#datatable3').DataTable();
+    $(document).ready(function() {
+        $('#datatable2').DataTable();
+        $('#datatable3').DataTable();
 
-    $('#datePick').datetimepicker({
-        format: 'YYYY-MM-DD'
+        $('#datePick').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+        $('#datePick2').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
     });
-    $('#datePick2').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-});
 </script>
 
 
@@ -296,20 +290,20 @@ if (isset($_POST['hapus'])) {
         $sql = mysqli_query($conn, "DELETE FROM rab WHERE kode = '$kd_rab' ");
     }
     if ($sql) { ?>
-<script>
-Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'RAB Berhasil disinkron',
-    showConfirmButton: false
-});
-var millisecondsToWait = 1000;
-setTimeout(function() {
-    document.location.href = "pak.php"
-}, millisecondsToWait);
-</script>
+        <script>
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'RAB Berhasil disinkron',
+                showConfirmButton: false
+            });
+            var millisecondsToWait = 1000;
+            setTimeout(function() {
+                document.location.href = "pak.php"
+            }, millisecondsToWait);
+        </script>
 
-<?php    }
+    <?php    }
 }
 
 if (isset($_POST['edit'])) {
@@ -321,20 +315,20 @@ if (isset($_POST['edit'])) {
         $sql = mysqli_query($conn, "UPDATE rab SET qty = qty - $jml WHERE kode = '$kd_rab' ");
     }
     if ($sql) { ?>
-<script>
-Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'RAB Berhasil disinkron',
-    showConfirmButton: false
-});
-var millisecondsToWait = 1000;
-setTimeout(function() {
-    document.location.href = "pak.php"
-}, millisecondsToWait);
-</script>
+        <script>
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'RAB Berhasil disinkron',
+                showConfirmButton: false
+            });
+            var millisecondsToWait = 1000;
+            setTimeout(function() {
+                document.location.href = "pak.php"
+            }, millisecondsToWait);
+        </script>
 
-<?php    }
+    <?php    }
 }
 
 if (isset($_POST['upload'])) {
@@ -365,18 +359,18 @@ Terimakasih';
         kirim_group($api_key, '120363042148360147@g.us', $psn);
 
     ?>
-<script>
-Swal.fire({
-    position: 'top-end',
-    icon: 'success',
-    title: 'RAB Berhasil disinkron',
-    showConfirmButton: false
-});
-var millisecondsToWait = 1000;
-setTimeout(function() {
-    document.location.href = "pak.php"
-}, millisecondsToWait);
-</script>
+        <script>
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'RAB Berhasil disinkron',
+                showConfirmButton: false
+            });
+            var millisecondsToWait = 1000;
+            setTimeout(function() {
+                document.location.href = "pak.php"
+            }, millisecondsToWait);
+        </script>
 
 <?php    }
 }

@@ -143,8 +143,8 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
-                                        while ($r1 = mysqli_fetch_assoc($dt_bos)) {
+                                        $dt_sm = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
+                                        while ($r1 = mysqli_fetch_assoc($dt_sm)) {
                                         ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
