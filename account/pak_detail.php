@@ -159,6 +159,8 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                     </tbody>
                                 </table>
                                 <?= mysqli_fetch_array($dt_sm) ?>
+                                <?= $lm ?>
+                                <?= $tahun_ajaran ?>
                             </div>
 
                         </div>
