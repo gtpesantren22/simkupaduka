@@ -2,11 +2,11 @@
 include 'head.php';
 
 $kode = $_GET['kode'];
-$lm = $_GET['lm'];
+$lmmg = $_GET['lm'];
 
 $dt_pak = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM pak_detail WHERE kode_pak = '$kode' AND tahun = '$tahun_ajaran' "));
-$dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' "));
-$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lm' AND tahun = '$tahun_ajaran' "));
+$dt_rab = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$lmmg' AND tahun = '$tahun_ajaran' "));
+$lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode = '$lmmg' AND tahun = '$tahun_ajaran' "));
 ?>
 <!-- Datatables -->
 <link href="../main/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
@@ -143,7 +143,7 @@ $lm = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM lembaga WHERE kode =
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_sm = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lm' AND tahun = '$tahun_ajaran' ");
+                                        $dt_sm = mysqli_query($conn, "SELECT * FROM rab_sm WHERE lembaga = '$lmmg' AND tahun = '$tahun_ajaran' ");
                                         while ($r1 = mysqli_fetch_assoc($dt_sm)) {
                                         ?>
                                             <tr>
