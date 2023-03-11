@@ -444,7 +444,7 @@ if (isset($_POST['save'])) {
     $rb = $dt_rab['tt'];
     $ttl = $rb + $total;
     if ($pak >= $ttl) {
-        $ss = mysqli_query($conn, "INSERT INTO rab_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', NOW() )");
+        $ss = mysqli_query($conn, "INSERT INTO rab_sm VALUES ('$id', '$lembaga','$bidang','$jenis','$kode', '$nama','$rencana','$qty','$satuan','$harga_satuan','$total','$tahun_ajaran', NOW(), 'belum', '$kode_pak' )");
         if ($ss) { ?>
             <script>
                 Swal.fire({
