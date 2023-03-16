@@ -99,16 +99,12 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                                                 <form action="" method="post">
                                                     <th>
                                                         <input type="number" class="form-control" name="jml" required>
-                                                        <input type="hidden" class="form-control" name="sisa"
-                                                            value="<?= $jns['qty'] - $rel['jml']; ?>">
-                                                        <input type="hidden" class="form-control" name="kd_rab"
-                                                            value="<?= $jns['kode'] ?>">
+                                                        <input type="hidden" class="form-control" name="sisa" value="<?= $jns['qty'] - $rel['jml']; ?>">
+                                                        <input type="hidden" class="form-control" name="kd_rab" value="<?= $jns['kode'] ?>">
                                                         <small class="text-danger">* QTY ini tidak boleh melebihi dari
                                                             QTY yang
                                                             tersisa</small><br><br>
-                                                        <button type="submit" name="edit"
-                                                            class="btn btn-sm btn-success pull-right"><i
-                                                                class="fa fa-check"></i> Simpan</button>
+                                                        <button type="submit" name="edit" class="btn btn-sm btn-success pull-right"><i class="fa fa-check"></i> Simpan</button>
                                                     </th>
                                                 </form>
                                             </tr>
@@ -120,9 +116,7 @@ $prc = round(($rel['nn'] / $jns['total']) * 100, 0);
                         <hr>
 
                         <div class="progress active">
-                            <div class="progress-bar <?= $bg ?> progress-bar-striped" role="progressbar"
-                                aria-valuenow="<?= $pesern ?>" aria-valuemin="0" aria-valuemax="100"
-                                style="width: <?= $pesern ?>%"><?= $pesern ?>%
+                            <div class="progress-bar <?= $bg ?> progress-bar-striped" role="progressbar" aria-valuenow="<?= $pesern ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?= $pesern ?>%"><?= $pesern ?>%
                             </div>
                         </div>
                     </div><!-- /.box-body -->
@@ -166,7 +160,7 @@ if (isset($_POST['edit'])) {
         $ket = 'edit';
         $tahun = $jns['tahun'];
 
-        $sql = mysqli_query($conn, "INSERT INTO pak_detail VALUES ('', '$kd_pak', '$kd_rab', '$qty', '$satuan', '$harga_satuan', '$total', '$ket', '$tahun')");
+        $sql = mysqli_query($conn, "INSERT INTO pak_detail VALUES ('', '$kd_pak', '$kd_rab', '$qty', '$satuan', '$harga_satuan', '$total', '$ket', '$tahun', 'belum')");
         if ($sql) {
             echo "
             <script>
