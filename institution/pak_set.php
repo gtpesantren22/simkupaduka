@@ -25,7 +25,7 @@ if ($kd === 'del') {
         </script>
         ";
     } else {
-        $sql = mysqli_query($conn, "INSERT INTO pak_detail VALUES ('', '$kd_pak', '$kd_rab', '$qty', '$satuan', '$harga_satuan', '$total', '$ket', '$tahun')");
+        $sql = mysqli_query($conn, "INSERT INTO pak_detail VALUES ('', '$kd_pak', '$kd_rab', '$qty', '$satuan', '$harga_satuan', '$total', '$ket', '$tahun', 'belum')");
         if ($sql) {
             echo "
         <script>
