@@ -489,9 +489,9 @@ if (isset($_POST['ajukan'])) {
 Ada pengajuan baru dari :
     
 Lembaga : ' . $l['nama'] . '
-Kode PAK : ' . $kode . '
+Kode PAK : ' . $kode_pak . '
 
-*_dimohon kepada SEKRETARIAT untuk segera mengecek nya di https://sekretaris.ppdwk.com/_*
+*_dimohon kepada BENDAHARA untuk segera mengecek nya_*
 Terimakasih';
 
     if ($sql) {
