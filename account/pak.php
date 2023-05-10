@@ -50,16 +50,17 @@ include 'head.php';
                                     <tbody>
                                         <?php
                                         $no = 1;
-                                        $dt_bos = mysqli_query($conn, "SELECT * FROM pak WHERE tahun = '$tahun_ajaran' AND status = 'proses' ");
+                                        $dt_bos = mysqli_query($conn, "SELECT a.*, b.nama FROM pak a JOIN lembaga b ON a.lembaga=b.kode WHERE a.tahun = '$tahun_ajaran' AND a.status = 'proses' ");
                                         while ($a = mysqli_fetch_assoc($dt_bos)) {
                                         ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
                                                 <td><?= $a['kode_pak']; ?></td>
+                                                <td><?= $a['nama']; ?></td>
                                                 <td><?= $a['tgl_pak']; ?></td>
                                                 <td><?= $a['status']; ?></td>
                                                 <td><?= $a['tahun']; ?></td>
-                                                <td><a href="<?= 'pak_detail.php?kode=' . $a['kode_pak']. '&lm=' . $a['lembaga'] ?>"><button class="btn btn-info btn-sm"><i class="fa fa-search"></i>
+                                                <td><a href="<?= 'pak_detail.php?kode=' . $a['kode_pak'] . '&lm=' . $a['lembaga'] ?>"><button class="btn btn-info btn-sm"><i class="fa fa-search"></i>
                                                             Cek PAK</button></a></td>
                                             </tr>
                                         <?php } ?>
