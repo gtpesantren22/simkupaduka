@@ -1,7 +1,0 @@
-{
-    "require": {
-        "fortawesome/font-awesome": "^4.4.0",
-        "driftyco/ionicons": "^2.0",
-        "ramsey/uuid": "^3.9"
-    }
-}
