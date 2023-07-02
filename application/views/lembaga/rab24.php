@@ -224,11 +224,10 @@
                                                     <td class="wrap-text" rowspan="<?= count($list); ?>">
                                                         <?= '#' . $kodePak . ' - ' . $item->nama_dppk; ?><br>
                                                         <b>Jml Item : <?= count($list) ?></b><br>
-                                                        <?php if ($cekData < 1) { ?>
-                                                            <!-- <a class="tbl-confirm" value="Kode RAB akan direalis secara otomatis oleh sistem" href="<?= base_url('lembaga/realisKode/' . $kodePak) ?>">Realis Kode Item RAB</a> -->
+                                                        < <!-- <a class="tbl-confirm" value="Kode RAB akan direalis secara otomatis oleh sistem" href="<?= base_url('lembaga/realisKode/' . $kodePak) ?>">Realis Kode Item RAB</a> -->
 
                                                             <a href="#" class="getDataLink" data-kode_pak="<?= $kodePak ?>">Realis Kode Item RAB</a>
-                                                        <?php } ?>
+
                                                     </td>
                                                 <?php endif; ?>
                                                 <td><?= $item->kode ?></td>
