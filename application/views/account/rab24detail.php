@@ -74,6 +74,7 @@
                                         <th>Program</th>
                                         <th>Kode RAB</th>
                                         <th>Nama Barang</th>
+                                        <th>Rnc</th>
                                         <th>QTY</th>
                                         <th>Hrg Satuan</th>
                                         <th>Total</th>
@@ -95,6 +96,7 @@
                                                 <?php endif; ?>
                                                 <td><?= $item->kode ?></td>
                                                 <td><?= $item->nama ?></td>
+                                                <td><?= $item->rencana ?></td>
                                                 <td><?= $item->qty . ' ' . $item->satuan ?></td>
                                                 <td><?= rupiah($item->harga_satuan) ?></td>
                                                 <td><?= rupiah($item->total) ?></td>
