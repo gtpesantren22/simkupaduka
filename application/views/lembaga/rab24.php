@@ -185,7 +185,7 @@
                                 </form>
                             </div> -->
                             <div class="col-md-6">
-                                <?php if ($cekData < 1) { ?>
+                                <?php if ($cekData > 0) { ?>
                                     <button class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#tambah_bos"><i class="bx bx-plus"></i>Input RAB</button>
                                     <button class="btn btn-success btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-cloud-upload"></i>Upload RAB</button>
                                     <a href="<?= base_url('lembaga/kosongiRab') ?>" value="Data RAB ini akan dikosongi/dihapus seluruhnya" class="btn btn-danger btn-sm mb-1 tbl-confirm"><i class="bx bx-trash-alt"></i>Kosongi</a>
