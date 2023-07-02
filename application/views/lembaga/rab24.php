@@ -195,12 +195,14 @@
                                         <button class="btn btn-success btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-cloud-upload"></i>Upload RAB</button>
                                         <a href="<?= base_url('lembaga/kosongiRab') ?>" value="Data RAB ini akan dikosongi/dihapus seluruhnya" class="btn btn-danger btn-sm mb-1 tbl-confirm"><i class="bx bx-trash-alt"></i>Kosongi</a>
                                         <a href="<?= base_url('lembaga/ajukanRab24') ?>" value="Data RAB akan diajukan ke Bendahara dan tidak ada perubahan lagi" class="btn btn-warning btn-sm mb-1 tbl-confirm"><i class="bx bx-up-arrow-circle"></i>Ajukan ke Bendahara</a>
+                                        <button class="btn btn-info btn-sm mb-1" id="button_find2" data-bs-toggle="modal" data-bs-target="#addLembaga"><i class="bx bx-list-ul"></i>Daftar DPPK</button>
                                     <?php }
                                 } else { ?>
                                     <button class="btn btn-sm btn-primary mb-1" data-bs-toggle="modal" data-bs-target="#tambah_bos"><i class="bx bx-plus"></i>Input RAB</button>
                                     <button class="btn btn-success btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-cloud-upload"></i>Upload RAB</button>
                                     <a href="<?= base_url('lembaga/kosongiRab') ?>" value="Data RAB ini akan dikosongi/dihapus seluruhnya" class="btn btn-danger btn-sm mb-1 tbl-confirm"><i class="bx bx-trash-alt"></i>Kosongi</a>
                                     <a href="<?= base_url('lembaga/ajukanRab24') ?>" value="Data RAB akan diajukan ke Bendahara dan tidak ada perubahan lagi" class="btn btn-warning btn-sm mb-1 tbl-confirm"><i class="bx bx-up-arrow-circle"></i>Ajukan ke Bendahara</a>
+                                    <button class="btn btn-info btn-sm mb-1" id="button_find2" data-bs-toggle="modal" data-bs-target="#addLembaga"><i class="bx bx-list-ul"></i>Daftar DPPK</button>
                                 <?php } ?>
 
 
