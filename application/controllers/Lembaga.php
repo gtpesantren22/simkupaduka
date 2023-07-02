@@ -1055,7 +1055,7 @@ Terimakasih';
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
 
 		$data['data'] = $this->model->getBy2('rab_sm24', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->result();
-		$data['cekData'] = $this->db->query("SELECT * FROM rab_list WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND status = 'belum' ")->num_rows();
+		$data['cekData'] = $this->db->query("SELECT * FROM rab_list WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND status <> 'belum' ")->num_rows();
 
 		$dppk = $this->model->getRabByDppk($this->lembaga, $this->tahun)->result();
 		$data['rab'] = array();
