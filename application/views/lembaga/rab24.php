@@ -242,10 +242,11 @@
                                                             if ($cekData) {
                                                                 if ($cekData->status === 'belum' || $cekData->status === 'ditolak') {
                                                             ?>
-
                                                                     <a href="#" class="getDataLink" data-kode_pak="<?= $kodePak ?>">Realis Kode Item RAB</a>
-                                                            <?php }
-                                                            } ?>
+                                                                <?php }
+                                                            } else { ?>
+                                                                <a href="#" class="getDataLink" data-kode_pak="<?= $kodePak ?>">Realis Kode Item RAB</a>
+                                                            <?php } ?>
                                                     </td>
                                                 <?php endif; ?>
                                                 <td><?= $item->kode ?></td>
@@ -260,8 +261,10 @@
                                                         if ($cekData->status === 'belum' || $cekData->status === 'ditolak') {
                                                     ?>
                                                             <a class="tombol-hapus" href="<?= base_url('lembaga/delRabSm24/' .  $item->id_rab); ?>"><span class="text-danger"><i class="bx bx-trash"></i></span></a>
-                                                    <?php }
-                                                    } ?>
+                                                        <?php }
+                                                    } else { ?>
+                                                        <a class="tombol-hapus" href="<?= base_url('lembaga/delRabSm24/' .  $item->id_rab); ?>"><span class="text-danger"><i class="bx bx-trash"></i></span></a>
+                                                    <?php } ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>
