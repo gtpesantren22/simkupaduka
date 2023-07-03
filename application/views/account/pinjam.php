@@ -90,8 +90,8 @@
                                             <td><?= $a->peminjam ?></td>
                                             <td><?= rupiah($a->nominal / $a->jml_cicil) ?> (<?= $a->jml_cicil ?> kali) </td>
                                             <td>
-                                                <a href="<?= base_url('account?delPinjam/' . $a->id_pinjam); ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
-                                                <a href="<?= base_url('account?infoPinjam/' . $a->id_pinjam); ?>" class="btn btn-success btn-sm"><i class="bx bx-note"></i></a>
+                                                <a href="<?= base_url('account/delPinjam/' . $a->id_pinjam); ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
+                                                <a href="<?= base_url('account/infoPinjam/' . $a->id_pinjam); ?>" class="btn btn-success btn-sm"><i class="bx bx-note"></i></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -114,7 +114,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data Peminjaman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account?savePinjam'); ?>
+            <?= form_open('account/savePinjam'); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Tanggal Pinjam</label>

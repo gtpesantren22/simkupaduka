@@ -233,14 +233,14 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                                 <?php foreach ($mitraHasil as $row) : ?>
                                                     <li class="list-group-item d-flex justify-content-between align-items-center">
                                                         <?= $infoMitra[$row->id_mitra]->nama ?>
-                                                        <span class="badge bg-primary rounded-pill"><?= $isiMitra[$row->id_mitra] ?></span>
+                                                        <!-- <span class="badge bg-primary rounded-pill"><?= $isiMitra[$row->id_mitra] ?></span> -->
                                                         <!-- <span class="badge bg-danger"><i class="bx bx-printer"></i></span> -->
                                                         <!-- <span class="badge bg-secondary"><i class="bx bx-send"></i></span> -->
                                                         <div class="btn-group" role="group" aria-label="Basic example">
+                                                            <button type="button" class="btn btn-warning btn-sm"><?= $isiMitra[$row->id_mitra] ?></button>
                                                             <a href="<?= base_url('kasir/notaMitra/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" target="_blank" class="btn btn-outline-dark btn-sm"><i class="bx bx-printer"></i>
                                                             </a>
-                                                            <button type="button" class="btn btn-outline-dark btn-sm"><i class="bx bx-send"></i>
-                                                            </button>
+                                                            <button type="button" class="btn btn-outline-dark btn-sm"><i class="bx bx-send"></i></button>
                                                         </div>
                                                     </li>
                                                 <?php endforeach; ?>

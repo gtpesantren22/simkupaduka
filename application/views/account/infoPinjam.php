@@ -18,7 +18,7 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <a href="<?= base_url('account?pinjam'); ?>" class="btn btn-light btn-sm"><i class="bx bx-subdirectory-left"></i>
+                    <a href="<?= base_url('account/pinjam'); ?>" class="btn btn-light btn-sm"><i class="bx bx-subdirectory-left"></i>
                         Kembali</a>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                     </div>
                     <div class="col">
                         <h4>Input pembayaran cicilan</h3>
-                            <?= form_open('account?addCicil') ?>
+                            <?= form_open('account/addCicil') ?>
                             <input type="hidden" name="kode_pinjam" value="<?= $dataPinjam->kode_pinjam ?>">
                             <div class="form-group mb-2">
                                 <!-- <label for="">Tgl Setor</label> -->
@@ -104,7 +104,7 @@
                                             <td><?= $r1->tgl_setor ?></td>
                                             <td><?= rupiah($r1->nominal) ?></td>
                                             <td>
-                                                <a href="<?= base_url('account?delCicil/' . $r1->id_cicilan) ?>" class="btn btn-danger btn-sm tombol-hapus">Del</a>
+                                                <a href="<?= base_url('account/delCicil/' . $r1->id_cicilan) ?>" class="btn btn-danger btn-sm tombol-hapus">Del</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
