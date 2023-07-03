@@ -23,9 +23,9 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <?php if (!$pj) { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
+                            <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button> -->
                         <?php } else if ($pj->spj == 3) { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
+                            <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button> -->
                         <?php } ?>
 
                         <div class="table-responsive mt-3">
@@ -90,7 +90,7 @@
 </div>
 <!--end page wrapper -->
 
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -132,4 +132,4 @@
             <?= form_close(); ?>
         </div>
     </div>
-</div>
+</div> -->
