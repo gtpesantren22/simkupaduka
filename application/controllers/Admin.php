@@ -1933,7 +1933,7 @@ Updater : ' . $this->user . '
 
 *Terimkasih*';
 
-		$this->model->update('saldo', $saldo, 'name', 'bank');
+		$this->model->update2('saldo', $saldo, 'name', 'bank', 'tahun', $this->tahun);
 		if ($this->db->affected_rows() > 0) {
 			kirim_person($this->apiKey, '082264061060', $psn);
 			kirim_person($this->apiKey, '085258222376', $psn);
@@ -1961,7 +1961,7 @@ Updater : ' . $this->user . '
 
 *Terimkasih*';
 
-		$this->model->update('saldo', $saldo, 'name', 'cash');
+		$this->model->update('saldo', $saldo, 'name', 'cash', 'tahun', $this->tahun);
 		if ($this->db->affected_rows() > 0) {
 			kirim_person($this->apiKey, '082264061060', $psn);
 			kirim_person($this->apiKey, '085258222376', $psn);

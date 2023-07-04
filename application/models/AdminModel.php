@@ -31,6 +31,13 @@ class AdminModel extends CI_Model
         $this->db->update($table, $data);
     }
 
+    public function update2($table, $data, $where, $dtwhere, $where2, $dtwhere2)
+    {
+        $this->db->where($where, $dtwhere);
+        $this->db->where($where2, $dtwhere2);
+        $this->db->update($table, $data);
+    }
+
     public function delete($table, $where, $dtwhere)
     {
         $this->db->where($where, $dtwhere);
