@@ -150,8 +150,12 @@
                     var formData = new FormData();
                     formData.append('image', blob, 'image.jpg');
 
+                    const baseUrl = '<?= base_url(''); ?>';
+
+                    // console.log(baseUrl + 'lembaga/save_img')
                     // Send the blob data to the server using AJAX
-                    fetch('save_image.php', {
+
+                    fetch(baseUrl + 'lembaga/save_img', {
                             method: 'POST',
                             body: formData
                         })
@@ -165,6 +169,10 @@
                 }, 'image/jpeg');
             });
         }
+    </script>
+
+    <script>
+        window.print()
     </script>
 </body>
 

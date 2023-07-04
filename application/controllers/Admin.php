@@ -50,9 +50,9 @@ class Admin extends CI_Controller
 		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml;
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
-		$data['saldo'] = $this->model->getBy('saldo', 'name', 'bank');
-		$data['cash'] = $this->model->getBy('saldo', 'name', 'cash');
 
+		$data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
+		$data['cash'] = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $data['tahun']);
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/index', $data);

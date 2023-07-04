@@ -181,7 +181,7 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th colspan="3">Total</th>
+                                        <th colspan="4">Total</th>
                                         <th><?= rupiah($dt->brg_asal) ?></th>
                                         <th><?= rupiah($dt->brg) ?></th>
                                         <th><?= rupiah($dt->brg_serap) ?></th>

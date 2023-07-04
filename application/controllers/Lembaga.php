@@ -1314,4 +1314,25 @@ Terimakasih';
 			redirect('lembaga/rab24');
 		}
 	}
+
+	public function save_img()
+	{
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			// Ambil data gambar yang dikirim melalui POST
+			$imageData = $_FILES['image']['tmp_name'];
+
+			// Tentukan path dan nama file untuk menyimpan gambar
+			$name = rand();
+			$filename = base_url('vertical/assets/nota/' . $name . '.jpg');
+
+			// Pindahkan file gambar ke direktori dalam aplikasi
+			if (move_uploaded_file($imageData, $filename)) {
+				echo 'Gambar berhasil masuk.';
+			} else {
+				echo 'Terjadi kesalahan saat menyimpan gambar.';
+			}
+		} else {
+			echo 'Metode request yang diterima harus POST.';
+		}
+	}
 }

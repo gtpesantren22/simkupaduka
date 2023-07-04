@@ -107,6 +107,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li>
                             <a href="<?= base_url('account/pak'); ?>"><i class="bx bx-right-arrow-alt"></i>PAK</a>
                         </li>
+                        <li>
+                            <a href="<?= base_url('account/analisis'); ?>"><i class="bx bx-right-arrow-alt"></i>Analisis Belanja</a>
+                        </li>
                     </ul>
                 </li>
                 <li>

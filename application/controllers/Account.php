@@ -55,8 +55,8 @@ class Account extends CI_Controller
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 		$data['pakData'] = $this->model->getBy2('pak', 'tahun', $this->tahun, 'status', 'proses');
 
-		$data['saldo'] = $this->model->getBy('saldo', 'name', 'bank');
-		$data['cash'] = $this->model->getBy('saldo', 'name', 'cash');
+		$data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
+		$data['cash'] = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $data['tahun']);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/index', $data);
@@ -1612,5 +1612,21 @@ Terimakasih';
 			$this->session->set_flashdata('error', 'Pengajuan RAB tidak bisa ditolak');
 			redirect('account/rab24');
 		}
+	}
+
+	function analisis()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['dtasal'] = $this->db->query("SELECT * FROM rab WHERE tahun = '2023/2024' GROUP BY rencana ")->result();
+		$data['bulan'] = $this->bulan;
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/analisis', $data);
+		$this->load->view('account/foot');
 	}
 }
