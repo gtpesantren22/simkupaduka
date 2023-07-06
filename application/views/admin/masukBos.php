@@ -42,8 +42,7 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div class="text-white ms-auto font-35">
-                                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#addPes"><i class="bx bx-plus-circle"></i>
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPes"><i class="bx bx-plus-circle"></i>
                                                     Tambah</button>
                                             </div>
                                         </div>
@@ -70,22 +69,20 @@
                                     <?php
                                     $no = 1;
                                     foreach ($bos as $a) : ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a->kode ?></td>
-                                        <td><?= $a->uraian ?></td>
-                                        <td><?= $a->periode ?></td>
-                                        <td>Rp. <?= number_format($a->nominal, 0, '.', '.') ?></td>
-                                        <td><?= $a->tgl_setor ?></td>
-                                        <td><?= $a->tahun ?></td>
-                                        <td>
-                                            <a href="<?= 'editBos/' . $a->id_bos; ?>" class="btn btn-warning btn-sm"><i
-                                                    class="bx bx-edit"></i> Edit</a>
-                                            <a href="<?= 'delBos/' . $a->id_bos; ?>"
-                                                class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i>
-                                                Del</a>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a->kode ?></td>
+                                            <td><?= $a->uraian ?></td>
+                                            <td><?= $a->periode ?></td>
+                                            <td>Rp. <?= number_format($a->nominal, 0, '.', '.') ?></td>
+                                            <td><?= $a->tgl_setor ?></td>
+                                            <td><?= $a->tahun ?></td>
+                                            <td>
+                                                <a href="<?= 'editBos/' . $a->id_bos; ?>" class="btn btn-warning btn-sm"><i class="bx bx-edit"></i> Edit</a>
+                                                <a href="<?= 'delBos/' . $a->id_bos; ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i>
+                                                    Del</a>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
@@ -114,8 +111,8 @@
                         <option value=""> -pilih lembaga- </option>
                         <?php
                         foreach ($lembaga as $a) { ?>
-                        <option value="<?= $a->kode ?>"><?= $a->kode ?>.
-                            <?= $a->nama ?></option>
+                            <option value="<?= $a->kode ?>"><?= $a->kode ?>.
+                                <?= $a->nama ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -137,8 +134,8 @@
                     <select name="tahun" class="form-control" id="" required>
                         <option value=""> -pilih tahun- </option>
                         <?php
-                        foreach ($tahun as $a) { ?>
-                        <option value="<?= $a->nama_tahun ?>"><?= $a->nama_tahun ?></option>
+                        foreach ($tahunData as $a) { ?>
+                            <option value="<?= $a->nama_tahun ?>"><?= $a->nama_tahun ?></option>
                         <?php } ?>
                     </select>
                 </div>

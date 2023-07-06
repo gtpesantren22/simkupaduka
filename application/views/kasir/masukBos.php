@@ -134,7 +134,7 @@
                     <select name="tahun" class="form-control" id="" required>
                         <option value=""> -pilih tahun- </option>
                         <?php
-                        foreach ($tahun as $a) { ?>
+                        foreach ($tahunData as $a) { ?>
                             <option value="<?= $a->nama_tahun ?>"><?= $a->nama_tahun ?></option>
                         <?php } ?>
                     </select>

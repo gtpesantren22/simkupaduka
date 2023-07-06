@@ -198,4 +198,40 @@ class KasirModel extends CI_Model
     {
         return $this->db->get($table);
     }
+
+
+    function getBySum2($table, $where1, $dtwhere1, $where2, $dtwhere2, $sum)
+    {
+        $this->db->select('*');
+        $this->db->select_sum($sum, 'jml');
+        $this->db->where($where1, $dtwhere1);
+        $this->db->where($where2, $dtwhere2);
+        return $this->db->get($table);
+    }
+
+
+    function getBy3($table, $where1, $dtwhere1, $where2, $dtwhere2, $where3, $dtwhere3)
+    {
+        $this->db->where($where1, $dtwhere1);
+        $this->db->where($where2, $dtwhere2);
+        $this->db->where($where3, $dtwhere3);
+        return $this->db->get($table);
+    }
+
+
+    function getByJoin3($table1, $table2, $on1, $on2, $where1, $where2, $dtwhere1, $dtwhere2)
+    {
+        $this->db->from($table1);
+        $this->db->join($table2, 'ON ' . $table1 . '.' . $on1 . '=' . $table2 . '.' . $on2);
+        $this->db->where($where1, $dtwhere1);
+        $this->db->where($where2, $dtwhere2);
+        return $this->db->get();
+    }
+
+    public function selectSum($table, $sum, $where, $dtwhere)
+    {
+        $this->db->select_sum($sum);
+        $this->db->where($where, $dtwhere);
+        return $this->db->get($table);
+    }
 }
