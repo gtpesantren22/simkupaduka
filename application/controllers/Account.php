@@ -1622,7 +1622,11 @@ Terimakasih';
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['dtasal'] = $this->db->query("SELECT * FROM rab WHERE tahun = '2023/2024' GROUP BY rencana ")->result();
+		$data['dtasal'] = $this->db->query("SELECT *
+FROM rab
+WHERE tahun = '2023/2024'
+GROUP BY rencana
+ORDER BY CAST(rencana AS UNSIGNED) ASC ")->result();
 		$data['bulan'] = $this->bulan;
 
 		$this->load->view('account/head', $data);

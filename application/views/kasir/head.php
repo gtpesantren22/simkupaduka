@@ -79,6 +79,32 @@
                         </li>
                     </ul>
                 </li>
+
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-money'></i>
+                        </div>
+                        <div class="menu-title">Pemasukan</div>
+                    </a>
+                    <ul>
+                        <li> <a href="<?= base_url('kasir/pesantren'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan
+                                Pesantren</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('kasir/bos'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan
+                                BOS</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('kasir/sisa'); ?>"><i class="bx bx-right-arrow-alt"></i>Saldo
+                                Realisasi</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('kasir/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya
+                                Pendidikan</a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li>
                     <a href="javascript:;" class="has-arrow">
                         <div class="parent-icon"><i class='bx bx-shopping-bag'></i>

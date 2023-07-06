@@ -1028,4 +1028,215 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
             redirect('kasir/infoPinjam/' . $dataPinjam->id_pinjam);
         }
     }
+
+    public function pesantren()
+    {
+        $data['pes'] = $this->model->getBy('pesantren', 'tahun', $this->tahun)->result();
+        $data['sumPes'] = $this->model->selectSum('pesantren', 'nominal', 'tahun', $this->tahun)->row();
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['tahunData'] = $this->model->getAll('tahun')->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/masukPes', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function pesAdd()
+    {
+        $data = [
+            'id_pes' => $this->uuid->v4(),
+            'lembaga' => $this->input->post('lembaga', true),
+            'bidang' => $this->input->post('bidang', true),
+            'kode' => $this->input->post('lembaga', true) . '.' . $this->input->post('bidang', true),
+            'uraian' => $this->input->post('uraian', true),
+            'periode' => $this->input->post('periode', true),
+            'nominal' => rmRp($this->input->post('nominal', true)),
+            'tgl_bayar' => $this->input->post('tgl_bayar', true),
+            'tahun' => $this->input->post('tahun', true),
+            'at' => date('Y-m-d H:i:s')
+        ];
+
+        $this->model->input('pesantren', $data);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Input Pemasukan Pesantren Berhasil');
+            redirect('kasir/pesantren');
+        } else {
+            $this->session->set_flashdata('error', 'Input Pemasukan Pesantren Gagal');
+            redirect('kasir/pesantren');
+        }
+    }
+
+    public function editPes($id)
+    {
+        $data['pes'] = $this->model->getBy('pesantren', 'id_pes', $id)->row();
+        $data['sumPes'] = $this->model->selectSum('pesantren', 'nominal', 'tahun', $this->tahun)->row();
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['tahun'] = $this->model->getAll('tahun')->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/editPes', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function saveEditPes()
+    {
+        $id = $this->input->post('id_pes', true);
+        $data = [
+            'lembaga' => $this->input->post('lembaga', true),
+            'bidang' => $this->input->post('bidang', true),
+            'kode' => $this->input->post('lembaga', true) . '.' . $this->input->post('bidang', true),
+            'uraian' => $this->input->post('uraian', true),
+            'periode' => $this->input->post('periode', true),
+            'nominal' => rmRp($this->input->post('nominal', true)),
+            'tgl_bayar' => $this->input->post('tgl_bayar', true),
+            'tahun' => $this->input->post('tahun', true),
+            'at' => date('Y-m-d H:i:s')
+        ];
+
+        $this->model->update('pesantren', $data, 'id_pes', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Edit Pemasukan Pesantren Berhasil');
+            redirect('kasir/pesantren');
+        } else {
+            $this->session->set_flashdata('error', 'Edit Pemasukan Pesantren Gagal');
+            redirect('kasir/pesantren');
+        }
+    }
+
+    public function delPes($id)
+    {
+        $this->model->delete('pesantren', 'id_pes', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Hapus Pemasukan Pesantren Berhasil');
+            redirect('kasir/pesantren');
+        } else {
+            $this->session->set_flashdata('error', 'Hapus Pemasukan Pesantren Gagal');
+            redirect('kasir/pesantren');
+        }
+    }
+
+    public function bos()
+    {
+        $data['bos'] = $this->model->getBy('bos', 'tahun', $this->tahun)->result();
+        $data['sumBos'] = $this->model->selectSum('bos', 'nominal', 'tahun', $this->tahun)->row();
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['tahun'] = $this->model->getAll('tahun')->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/masukBos', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function bosAdd()
+    {
+        $data = [
+            'id_bos' => $this->uuid->v4(),
+            'lembaga' => $this->input->post('lembaga', true),
+            'kode' => $this->input->post('lembaga', true) . '.' . $this->input->post('bidang', true),
+            'uraian' => $this->input->post('uraian', true),
+            'periode' => $this->input->post('periode', true),
+            'nominal' => rmRp($this->input->post('nominal', true)),
+            'tgl_setor' => $this->input->post('tgl_setor', true),
+            'tahun' => $this->input->post('tahun', true),
+            'kasir' => $this->input->post('kasir', true),
+            'at' => date('Y-m-d H:i:s')
+        ];
+
+        $this->model->input('bos', $data);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Input Pemasukan BOS Berhasil');
+            redirect('kasir/bos');
+        } else {
+            $this->session->set_flashdata('error', 'Input Pemasukan BOS Gagal');
+            redirect('kasir/bos');
+        }
+    }
+
+    public function editBos($id)
+    {
+        $data['pes'] = $this->model->getBy('bos', 'id_bos', $id)->row();
+        $data['sumBos'] = $this->model->selectSum('bos', 'nominal', 'tahun', $this->tahun)->row();
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['tahunData'] = $this->model->getAll('tahun')->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/editBos', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function saveEditBos()
+    {
+        $id = $this->input->post('id_bos', true);
+        $data = [
+            'lembaga' => $this->input->post('lembaga', true),
+            'kode' => $this->input->post('lembaga', true),
+            'uraian' => $this->input->post('uraian', true),
+            'periode' => $this->input->post('periode', true),
+            'nominal' => rmRp($this->input->post('nominal', true)),
+            'tgl_setor' => $this->input->post('tgl_setor', true),
+            'tahun' => $this->input->post('tahun', true),
+        ];
+
+        $this->model->update('bos', $data, 'id_bos', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Edit Pemasukan Bos Berhasil');
+            redirect('kasir/bos');
+        } else {
+            $this->session->set_flashdata('error', 'Edit Pemasukan Bos Gagal');
+            redirect('kasir/bos');
+        }
+    }
+
+    public function delBos($id)
+    {
+        $this->model->delete('bos', 'id_bos', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Hapus Pemasukan Bos Berhasil');
+            redirect('kasir/bos');
+        } else {
+            $this->session->set_flashdata('error', 'Hapus Pemasukan Bos Gagal');
+            redirect('kasir/bos');
+        }
+    }
+
+    public function bpMasuk()
+    {
+        $data['data'] = $this->model->getBy('pembayaran', 'tahun', $this->tahun)->result();
+        $data['sumBp'] = $this->model->selectSum('pembayaran', 'nominal', 'tahun', $this->tahun)->row();
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['tahun'] = $this->model->getAll('tahun')->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['bulan_cal'] = $this->bulan;
+
+        for ($i = 1; $i <= 12; $i++) {
+            $i !== 5 && $i !== 6 ? $field = 'ju_ap' : $field = 'me_ju';
+
+            $tangg_perbulan = $this->model->getBySum('tangg', 'tahun', $this->tahun, $field)->row();
+            $bayar_perbulan = $this->model->getBySum2('pembayaran', 'tahun', $this->tahun, 'bulan', $i, 'nominal')->row();
+            $jml_tangg[] = array(
+                'bulan' => $i,
+                'tangg' => $tangg_perbulan->jml,
+                'bayar' => $bayar_perbulan->jml,
+                'bayar_prsn' => $bayar_perbulan->jml / $tangg_perbulan->jml * 100,
+                'kurang' => $tangg_perbulan->jml - $bayar_perbulan->jml,
+                'kurang_prsn' => ($tangg_perbulan->jml - $bayar_perbulan->jml) / $tangg_perbulan->jml * 100,
+            );
+        }
+
+        $data['jml_tangg'] = $jml_tangg;
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/masukBp', $data);
+        $this->load->view('kasir/foot');
+    }
 }

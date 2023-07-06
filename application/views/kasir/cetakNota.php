@@ -155,7 +155,7 @@
                     // console.log(baseUrl + 'lembaga/save_img')
                     // Send the blob data to the server using AJAX
 
-                    fetch(baseUrl + 'lembaga/save_img', {
+                    fetch('save_image', {
                             method: 'POST',
                             body: formData
                         })

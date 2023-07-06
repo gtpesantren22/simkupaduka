@@ -53,3 +53,4 @@ $route['default_controller'] = 'login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['admin/uploadBp']      = 'Admin/uploadBp';
+$route['save_image'] = 'save_image';
