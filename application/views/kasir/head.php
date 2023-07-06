@@ -69,14 +69,18 @@
                     <a href="javascript:;" class="has-arrow">
                         <div class="parent-icon"><i class='bx bx-donate-blood'></i>
                         </div>
-                        <div class="menu-title">Pencairan</div>
+                        <div class="menu-title">Pengeluaran</div>
                     </a>
                     <ul>
-                        <li> <a href="<?= base_url('kasir/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan</a>
+                        <li> <a href="<?= base_url('kasir/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Pengajuan</a>
                         </li>
                         <li>
                             <a href="<?= base_url('kasir/pengajuanDisp'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan Disposisi</a>
                         </li>
+                        <li>
+                            <a href="<?= base_url('kasir/lain'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Lainnya</a>
+                        </li>
+
                     </ul>
                 </li>
 
