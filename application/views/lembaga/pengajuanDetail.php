@@ -1,3 +1,45 @@
+<style>
+    /* Gaya untuk indikator loading */
+    #loading-indicator {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+
+    .spinner {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 4px solid #fff;
+        border-top-color: #007bff;
+        animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+</style>
+
+<div id="loading-indicator">
+    <div class="spinner"></div>
+</div>
+
+
 <div class="flash-data" data-flashdata="<?= $this->session->flashdata('ok') ?>"></div>
 <div class="flash-data-error" data-flashdata="<?= $this->session->flashdata('error') ?>"></div>
 
@@ -186,7 +228,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Ajukan Sekarang</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
             </div>
             <?= form_close() ?>
         </div>
@@ -196,8 +238,18 @@
 <!--end page wrapper -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
+    function showLoadingIndicator() {
+        document.getElementById('loading-indicator').style.display = 'block';
+    }
+
+    // Menyembunyikan indikator loading setelah proses Ajax selesai
+    function hideLoadingIndicator() {
+        document.getElementById('loading-indicator').style.display = 'none';
+    }
+
     $(document).ready(function() {
         $('#selectDppk').change(function() {
+            showLoadingIndicator()
             var dppk = $(this).val();
 
             $.ajax({
@@ -208,6 +260,7 @@
                 },
                 success: function(response) {
                     $('#tabelData').html(response);
+                    hideLoadingIndicator()
                 }
             });
         });

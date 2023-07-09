@@ -204,14 +204,15 @@ class Lembaga extends CI_Controller
 	public function getDataBydppk()
 	{
 		$dppk = $this->input->post('dppk', true);
-		$data['rab'] = $this->model->getByOrd('rab_sm24', 'kode_pak', $dppk, 'nama')->result();
+		// $data['rab'] = $this->model->getByOrd('rab_sm24', 'kode_pak', $dppk, 'nama')->result();
+		$data['rab'] = $this->db->query("SELECT rab.*, rab_sm24.kegiatan FROM rab JOIN rab_sm24 ON rab.kode=rab_sm24.kode WHERE rab_sm24.kode_pak = '$dppk' AND rab.tahun = '$this->tahun' AND rab_sm24.tahun = '$this->tahun'  ")->result();
 		foreach ($data['rab'] as $kye) {
 			$kode_rab = $kye->kode;
 
-			$realSm = $this->db->query("SELECT SUM(real_sm.vol) as jml FROM real_sm JOIN rab_sm24 ON real_sm.kode = rab_sm24.kode WHERE real_sm.tahun = '$this->tahun' AND real_sm.kode = '$kode_rab' ")->row();
+			$realSm = $this->db->query("SELECT SUM(real_sm.vol) as jml FROM real_sm JOIN rab ON real_sm.kode = rab.kode WHERE real_sm.tahun = '$this->tahun' AND real_sm.kode = '$kode_rab' ")->row();
 			$data['realSm'][$kode_rab] = $realSm ? $realSm->jml : 0;
 
-			$real = $this->db->query("SELECT SUM(realis.vol) as jml FROM realis JOIN rab_sm24 ON realis.kode = rab_sm24.kode WHERE realis.tahun = '$this->tahun' AND realis.kode = '$kode_rab' ")->row();
+			$real = $this->db->query("SELECT SUM(realis.vol) as jml FROM realis JOIN rab ON realis.kode = rab.kode WHERE realis.tahun = '$this->tahun' AND realis.kode = '$kode_rab' ")->row();
 			$data['real'][$kode_rab] = $real ? $real->jml : 0;
 		}
 		$view = $this->load->view('lembaga/dataRabDppk', $data, true);

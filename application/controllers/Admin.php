@@ -2206,4 +2206,50 @@ Terimakasih';
 		$this->load->view('admin/analistOut', $data);
 		$this->load->view('admin/foot');
 	}
+
+	public function pagu()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['data'] = $this->model->getBy('pagu', 'tahun', $data['tahun'])->result();
+		$data['ta'] = $this->model->getAll('tahun')->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/pagu', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function addPagu()
+	{
+		$data = [
+			'kode_pagu' => 'PAGU-' . rand(0, 9999),
+			'nama' => $this->input->post('nama', true),
+			'nominal' => rmRp($this->input->post('nominal', true)),
+			'tahun' => $this->input->post('tahun', true),
+		];
+
+		$this->model->input('pagu', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Add Pagu Berhasil');
+			redirect('admin/pagu');
+		} else {
+			$this->session->set_flashdata('error', 'Add Pagu Gagal');
+			redirect('admin/pagu');
+		}
+	}
+
+	public function delPagu($id)
+	{
+
+		$this->model->delete('pagu', 'id_pagu', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Pagu berhasil dihapus');
+			redirect('admin/pagu');
+		} else {
+			$this->session->set_flashdata('error', 'Pagu tidak bisa dihapus');
+			redirect('admin/pagu');
+		}
+	}
 }

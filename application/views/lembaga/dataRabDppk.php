@@ -29,7 +29,7 @@
                 <tr>
                     <th scope="row">
                         <div class="form-check form-check-success">
-                            <input class="form-check-input checkboxTarget" name="kodeRab[<?= $no ?>]" type="checkbox" value="<?= $rab->kode ?>" id="">
+                            <input class="form-check-input checkboxTarget" <?= $sisa == 0 ? 'disabled' : '' ?> name="kodeRab[<?= $no ?>]" type="checkbox" value="<?= $rab->kode ?>" id="">
                         </div>
                     </th>
                     <td><?= $no ?></td>
@@ -41,7 +41,7 @@
                     <td class="price"><?= rupiah($rab->harga_satuan) ?></td>
                     <td><?= $rab->qty  ?></td>
                     <td>
-                        <input type="number" style="width: 100%;" class="form-control form-control-sm qtyInput" name="qty[<?= $no ?>]" value="<?= $sisa ?>" min="0" max="<?= $sisa ?>">
+                        <input type="number" style="width: 100%;" class="form-control form-control-sm qtyInput" <?= $sisa == 0 ? 'disabled' : '' ?> name="qty[<?= $no ?>]" value="<?= $sisa ?>" min="0" max="<?= $sisa ?>">
                         <input type="hidden" name="sisa[<?= $no ?>]" value="<?= $sisa ?>">
                         <input type="hidden" name="kode_pjn[<?= $no ?>]" value="<?= $sisa ?>">
                     </td>

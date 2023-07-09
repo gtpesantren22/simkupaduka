@@ -128,6 +128,27 @@ function kirim_tmp($key, $no_hp, $pesan, $tmp, $link_logo)
     curl_close($curl2);
 }
 
+function kirim_nota($key, $no_hp, $url_file, $as_document, $caption)
+{
+    $curl2 = curl_init();
+    curl_setopt_array(
+        $curl2,
+        array(
+            CURLOPT_URL => 'http://191.101.3.115:3000/api/sendMediaFromUrl',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => 'apiKey=' . $key . '&phone=' . $no_hp . '&url_file=' . $url_file . '&as_document=' . $as_document . '&caption=' . $caption,
+        )
+    );
+    $response = curl_exec($curl2);
+    curl_close($curl2);
+}
+
 function gel($gel)
 {
     $nm = array(0, 70000, 120000, 170000);

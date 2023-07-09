@@ -10,7 +10,7 @@ class Save_image extends CI_Controller
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Periksa apakah ada file gambar yang dikirim
             if (isset($_FILES['image'])) {
-                $uploadPath = './vertical/assets/nota/'; // Ganti dengan direktori tujuan penyimpanan gambar
+                $uploadPath = APPPATH . './vertical/assets/nota/'; // Ganti dengan direktori tujuan penyimpanan gambar
                 $filename = rand() . '.jpg'; // Nama file yang diinginkan
 
                 // Pindahkan file gambar ke direktori tujuan
