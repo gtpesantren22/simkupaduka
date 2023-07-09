@@ -23,9 +23,9 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <?php if (!$pj) { ?>
-                            <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button> -->
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
                         <?php } else if ($pj->spj == 3) { ?>
-                            <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button> -->
+                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
                         <?php } ?>
 
                         <div class="table-responsive mt-3">
