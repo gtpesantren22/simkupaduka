@@ -245,7 +245,7 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                                     </li>
                                                 <?php endforeach; ?>
                                             </ul>
-                                            <a target="_blank" href="<?= base_url('kasir/notaKPA/' . $pjn->kode_pengajuan) ?>" class="btn btn-sm btn-primary">Cetak Nota KPA</a>
+                                            <a target="_blank" href="<?= base_url('kasir/notaKPA/' . $pjn->kode_pengajuan) ?>" class="btn btn-sm btn-primary mt-3">Cetak Nota KPA</a>
                                         </div>
                                     </div>
                                 </div>
