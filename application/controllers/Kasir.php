@@ -149,7 +149,7 @@ class Kasir extends CI_Controller
         $jml = $this->db->query("SELECT SUM(nom_cair) as nom_cair, SUM(nom_serap) as nom_serap FROM real_sm WHERE kode_pengajuan = '$kd_pnj' ")->row();
         $dataReal = $this->model->getBy('real_sm', 'kode_pengajuan', $kd_pnj)->result();
 
-        $lembaga =  $dataPj->lembaga;
+        $lembaga =  $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $dataPj->lembaga)->row();
         $tgl_cair = $this->input->post('tgl_cair', true);
         $kasir = $this->input->post('kasir', true);
         $penerima = $this->input->post('penerima', true);
@@ -200,7 +200,7 @@ class Kasir extends CI_Controller
 
 Pencairan pengajuan dari :
     
-Lembaga : ' . $lembaga . '
+Lembaga : ' . $lembaga->nama . '
 Kode Pengajuan : ' . $kd_pnj . '
 Pada : ' . $tgl_cair . '
 Nominal : ' . rupiah($jml->nom_serap) . '
