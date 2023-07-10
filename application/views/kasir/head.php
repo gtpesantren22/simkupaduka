@@ -132,6 +132,19 @@
                         <div class="menu-title">Mutasi Santri</div>
                     </a>
                 </li>
+
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-hdd'></i>
+                        </div>
+                        <div class="menu-title">Input Rekap</div>
+                    </a>
+                    <ul>
+                        <li> <a href="<?= base_url('kasir/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a></li>
+                    </ul>
+                </li>
+
+
                 <li class="menu-label">AddOn</li>
                 <li>
                     <a href="<?= base_url('kasir/info'); ?>">
