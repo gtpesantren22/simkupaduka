@@ -1324,7 +1324,7 @@ Bendahara PPDWK
 
         $data['ajuanData'] = $this->db->query("SELECT order_mitra.*, real_sm.*, rab.nama, rab.satuan, mitra.nama AS namaMitra FROM order_mitra JOIN real_sm ON order_mitra.kode=real_sm.kode JOIN rab ON order_mitra.kode=rab.kode JOIN mitra ON order_mitra.id_mitra=mitra.id_mitra WHERE order_mitra.kode_pengajuan = '$kodePj' ORDER BY order_mitra.id_mitra ");
 
-        $data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $data['ajuanData']);
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $data['ajuanData']->row('lembaga'));
         $data['kasir'] = $this->user;
 
         $this->load->view('kasir/cetakNotaKPA', $data);
