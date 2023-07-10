@@ -170,48 +170,8 @@
                     <table width="100%" border="1">
                         <tr style="background: rgba(217, 225, 242, 1)">
                             <th class="text-center" colspan="2" style="width: 25%">
-                                Mitra Tujuan
+                                List Pengajuan Non Tunai
                             </th>
-                        </tr>
-                        <tr>
-                            <th style="
-									width: 5%;
-									font-size: 12px;
-									background: rgba(217, 225, 242, 1);
-								">
-                                ID Mitra
-                            </th>
-                            <th><?= substr($mitra->id_mitra, 0, 8)  ?>****************************</th>
-                        </tr>
-                        <tr>
-                            <th style="
-									width: 5%;
-									font-size: 12px;
-									background: rgba(217, 225, 242, 1);
-								">
-                                Nama Mitra
-                            </th>
-                            <th><?= $mitra->nama ?></th>
-                        </tr>
-                        <tr>
-                            <th style="
-									width: 5%;
-									font-size: 12px;
-									background: rgba(217, 225, 242, 1);
-								">
-                                PJ Mitra
-                            </th>
-                            <th><?= $mitra->pj ?></th>
-                        </tr>
-                        <tr>
-                            <th style="
-									width: 5%;
-									font-size: 12px;
-									background: rgba(217, 225, 242, 1);
-								">
-                                No. HP
-                            </th>
-                            <th><?= $mitra->hp ?></th>
                         </tr>
                     </table>
                     <br />
@@ -221,18 +181,18 @@
                             <th class="text-center" colspan="3">Nama Item</th>
                             <th class="text-center">Quantity</th>
                             <th class="text-center">Satuan</th>
-                            <th class="text-center">Tanggal</th>
+                            <th class="text-center">Mitra</th>
                         </tr>
                         <tbody>
                             <?php
                             $no = 1;
-                            foreach ($order_mitra->result() as $dtm) : ?>
+                            foreach ($ajuanData->result() as $dtm) : ?>
                                 <tr>
                                     <td class="text-center"><?= $no++ ?></td>
                                     <td colspan="3"><?= $dtm->nama ?></td>
                                     <td class="text-center"><?= $dtm->vol ?></td>
                                     <td><?= $dtm->satuan ?></td>
-                                    <td><?= $dtm->tgl_order ?></td>
+                                    <td><?= $dtm->namaMitra ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -279,7 +239,7 @@
         </section>
 
     </div>
-    <button id="exportButton" onclick="saveImage()" data-id_mitra="<?= $mitra->id_mitra ?>" data-kode_pengajuan="<?= $kode_pj ?>" data-hp="<?= $mitra->hp ?>">
+    <button id="exportButton" onclick="saveImage()" data-kode_pengajuan="<?= $kode_pj ?>" data-hp="<?= $lembaga->row('hp') ?>">
         <b style="color: white;">Kirim Nota</b>
     </button>
     <!-- <button onclick="closeWindow()">
@@ -336,7 +296,7 @@
             var element = document.getElementById("htmlContent");
             var button = document.getElementById('exportButton');
 
-            var id_mitra = button.getAttribute('data-id_mitra');
+            var id_mitra = '';
             var kode_pengajuan = button.getAttribute('data-kode_pengajuan');
             var hp = button.getAttribute('data-hp');
 

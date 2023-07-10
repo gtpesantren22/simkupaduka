@@ -917,7 +917,7 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
 
         $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, real_sm.*, rab.nama, rab.satuan FROM order_mitra JOIN real_sm ON order_mitra.kode=real_sm.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
 
-        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun, 'kode', $data['order_mitra']->row('lembaga'));
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $data['order_mitra']->row('lembaga'));
         $data['kasir'] = $this->user;
 
         $this->load->view('kasir/cetakNota', $data);
