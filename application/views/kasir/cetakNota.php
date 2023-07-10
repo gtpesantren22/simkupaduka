@@ -370,8 +370,8 @@
                                 data: {
                                     apiKey: "f4064efa9d05f66f9be6151ec91ad846",
                                     phone: hp,
-                                    // url_file: baseUrl + "vertical/aseests/nota/" + kode_pengajuan + "_" + id_mitra + ".jpg",
-                                    url_file: "https://cdns.klimg.com/bola.net/library/upload/21/2023/03/645x430/motogp_1c91939.jpg",
+                                    url_file: baseUrl + "vertical/assets/nota/" + kode_pengajuan + "_" + id_mitra + ".jpg",
+                                    // url_file: "https://cdns.klimg.com/bola.net/library/upload/21/2023/03/645x430/motogp_1c91939.jpg",
                                     as_document: 0,
                                     caption: "Informasi Order Baru dari Bendahara pesanten",
                                 },
