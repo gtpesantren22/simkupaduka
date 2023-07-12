@@ -405,8 +405,8 @@ class Lembaga extends CI_Controller
 		$bulan = $this->bulan;
 		$data = [
 			'stts' => 'yes',
-			'verval' => 1,
-			'apr' => 1
+			// 'verval' => 1,
+			// 'apr' => 1
 		];
 
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
@@ -1335,5 +1335,34 @@ Terimakasih';
 		} else {
 			echo 'Metode request yang diterima harus POST.';
 		}
+	}
+
+	function sarpras()
+	{
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$data['data'] = $this->model->getBy('sarpras', 'tahun', $this->tahun)->result();
+		$data['bulan'] = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+		$data['pj'] = $this->db->query("SELECT * FROM sarpras WHERE tahun = '$this->tahun' ORDER BY tanggal DESC LIMIT 1")->row();
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/sarpras', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	function sarpAdd()
+	{
+		$pj = $this->db->query("SELECT COUNT(*) as jml FROM sarpras WHERE tahun = '$this->tahun'")->row();
+		$urut = $pj->jml + 1;
+
+		$tahunInput = $this->input->post('tahun', true);
+		$bln = $this->input->post('bulan', true);
+
+		// $dataKode = $this->db->query("SELECT COUNT(*) as jml FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' ")->row();
+		// $kodeBarang = $dataKode->jml + 1;
+		$noUrut = (int) substr($urut, 0, 3);
+		$kodePj = sprintf("%03s", $noUrut) . '.SRPS.' . date('dd') . '.' . date('m') . '.' . date('Y');
 	}
 }

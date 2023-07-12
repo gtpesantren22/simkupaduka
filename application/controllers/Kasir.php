@@ -1386,4 +1386,62 @@ Bendahara PPDWK
             redirect('kasir/outRutin');
         }
     }
+
+    public function outHarian()
+    {
+
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $data['data'] = $this->db->query("SELECT pengeluaran_harian.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_harian ON pengeluaran_harian.lembaga=lembaga.kode JOIN bidang ON pengeluaran_harian.lembaga=bidang.kode WHERE pengeluaran_harian.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ")->result();
+
+        $data['sumData'] = $this->model->getBySum('pengeluaran_harian', 'tahun', $data['tahun'], 'nominal')->row();
+
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $data['tahun'])->result();
+        $data['pagu'] = $this->model->getBy('pagu', 'tahun', $data['tahun'])->result();
+
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/outHarian', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function saveOutHarian()
+    {
+        $data = [
+            "id_harian" => $this->uuid->v4(),
+            "lembaga" => $this->input->post('lembaga', true),
+            "bidang" => $this->input->post('bidang', true),
+            "pagu" => $this->input->post('pagu', true),
+            "jenis" => $this->input->post('jenis', true),
+            "nominal" => rmRp($this->input->post('nominal', true)),
+            "tanggal" => $this->input->post('tanggal', true),
+            "kasir" => $this->user,
+            "tahun" => $this->tahun,
+            "at" => date('Y-m-d H:i:s')
+        ];
+
+        $this->model->input('pengeluaran_harian', $data);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Input data sukses');
+            redirect('kasir/outHarian');
+        } else {
+            $this->session->set_flashdata('error', 'Input data gagal');
+            redirect('kasir/outHarian');
+        }
+    }
+
+    public function delOutHarian($id)
+    {
+        $this->model->delete('pengeluaran_harian', 'id_harian', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Hapus data sukses');
+            redirect('kasir/outHarian');
+        } else {
+            $this->session->set_flashdata('error', 'Hapus data gagal');
+            redirect('kasir/outHarian');
+        }
+    }
 }

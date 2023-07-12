@@ -110,6 +110,15 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <div class="menu-title">PAK Online</div>
                     </a>
                 </li>
+                <?php if ($user->lembaga === '27') : ?>
+                    <li>
+                        <a href="<?= base_url('lembaga/sarpras'); ?>">
+                            <div class="parent-icon"><i class='bx bx-data'></i>
+                            </div>
+                            <div class="menu-title">Sarpras <span class="badge bg-danger">KHUSUS</span></div>
+                        </a>
+                    </li>
+                <?php endif;  ?>
                 <li class="menu-label">AddOn</li>
                 <li>
                     <a href="<?= base_url('lembaga/info'); ?>">

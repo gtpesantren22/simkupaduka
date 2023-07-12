@@ -141,6 +141,7 @@
                     </a>
                     <ul>
                         <li> <a href="<?= base_url('kasir/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a></li>
+                        <li> <a href="<?= base_url('kasir/outHarian'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Harian</a></li>
                     </ul>
                 </li>
 

@@ -2228,6 +2228,7 @@ Terimakasih';
 			'nama' => $this->input->post('nama', true),
 			'nominal' => rmRp($this->input->post('nominal', true)),
 			'tahun' => $this->input->post('tahun', true),
+			'at' => date('Y-m-d H:i:s'),
 		];
 
 		$this->model->input('pagu', $data);
