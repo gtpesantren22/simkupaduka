@@ -10,7 +10,7 @@
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-wallet"></i></a>
+                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-cog"></i></a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Realisasi</li>
                     </ol>
@@ -22,11 +22,6 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <?php if (!$pj) { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
-                        <?php } else if ($pj->status == 'selesai') { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
-                        <?php } ?>
 
                         <div class="table-responsive mt-3">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -65,7 +60,7 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td><a href="<?= base_url('lembaga/sarprasDetail/' . $ls_jns->kode_pengajuan) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i>
+                                            <td><a href="<?= base_url('account/sarprasDetail/' . $ls_jns->kode_pengajuan) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i>
                                                         cek</button></a></td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -81,48 +76,47 @@
 </div>
 <!--end page wrapper -->
 
-<?php if (!$pj || $pj->status == 'selesai') { ?>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Buat Pengajuan Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <?= form_open('lembaga/sarpAdd'); ?>
-                <input type="hidden" name="jenis" value="biasa">
-                <div class="modal-body">
-                    <div class="form-group mb-3">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Bulan *</label>
-                        <div class="col-sm-10">
-                            <select name="bulan" class="form-control" required>
-                                <option value=""> -- pilih bulan -- </option>
-                                <?php
-                                for ($i = 1; $i < count($bulan); $i++) { ?>
-                                    <option <?= date('m') == $i ? 'selected' : '' ?> value="<?= $i ?>"><?= $bulan[$i] ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Tanggal *</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="date" name="tanggal">
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="tahun" value="<?= $tahun ?>" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Buat Pengajuan</button>
-                </div>
-                <?= form_close(); ?>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Buat Pengajuan Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+            <?= form_open('account/sarpAdd'); ?>
+            <input type="hidden" name="jenis" value="biasa">
+            <div class="modal-body">
+                <div class="form-group mb-3">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Bulan *</label>
+                    <div class="col-sm-10">
+                        <select name="bulan" class="form-control" required>
+                            <option value=""> -- pilih bulan -- </option>
+                            <?php
+                            for ($i = 1; $i < count($bulan); $i++) { ?>
+                                <option <?= date('m') == $i ? 'selected' : '' ?> value="<?= $i ?>"><?= $bulan[$i] ?></option>
+                            <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Tanggal *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" id="date" name="tanggal">
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="tahun" value="<?= $tahun ?>" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Buat Pengajuan</button>
+            </div>
+            <?= form_close(); ?>
         </div>
     </div>
-<?php } ?>
+</div>

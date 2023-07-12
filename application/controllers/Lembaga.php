@@ -1358,11 +1358,128 @@ Terimakasih';
 		$urut = $pj->jml + 1;
 
 		$tahunInput = $this->input->post('tahun', true);
-		$bln = $this->input->post('bulan', true);
+		$bulan = $this->input->post('bulan', true);
+		$tanggal = $this->input->post('tanggal', true);
 
 		// $dataKode = $this->db->query("SELECT COUNT(*) as jml FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' ")->row();
 		// $kodeBarang = $dataKode->jml + 1;
 		$noUrut = (int) substr($urut, 0, 3);
 		$kodePj = sprintf("%03s", $noUrut) . '.SRPS.' . date('dd') . '.' . date('m') . '.' . date('Y');
+
+		$data = [
+			'id_sarpras' => $this->uuid->v4(),
+			'kode_pengajuan' => $kodePj,
+			'tanggal' => $tanggal,
+			'bulan' => $bulan,
+			'status' => 'belum',
+			'tahun' => $this->tahun,
+			'at' => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('sarpras', $data);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Pengajuan baru berhasil dibuat');
+			redirect('lembaga/sarpras');
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan baru tidak bisa');
+			redirect('lembaga/sarpras');
+		}
+	}
+
+	function sarprasDetail($kode)
+	{
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$data['data'] = $this->db->query("SELECT sarpras_detail.*, lembaga.nama FROM sarpras_detail JOIN lembaga ON sarpras_detail.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND sarpras_detail.tahun = '$this->tahun' ")->result();
+
+		$data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM sarpras_detail WHERE kode_pengajuan = '$kode' ")->row();
+
+		$data['bulan'] = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+		$data['pj'] = $this->db->query("SELECT * FROM sarpras WHERE kode_pengajuan = '$kode'")->row();
+
+		$data['lembagaData'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/sarprasInput', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	function sarpAddInput()
+	{
+		$kode = $this->input->post('kode_pengajuan', true);
+		$data = [
+			'id_detail' => $this->uuid->v4(),
+			'kode_pengajuan' => $kode,
+			'lembaga' => $this->input->post('lembaga', true),
+			'uraian' => $this->input->post('uraian', true),
+			'qty' => $this->input->post('qty', true),
+			'satuan' => $this->input->post('satuan', true),
+			'harga_satuan' => rmRp($this->input->post('harga_satuan', true)),
+			'tahun' => $this->tahun,
+			'at' => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('sarpras_detail', $data);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Item baru berhasil dibuat');
+			redirect('lembaga/sarprasDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Item baru tidak bisa');
+			redirect('lembaga/sarprasDetail/' . $kode);
+		}
+	}
+
+	function delItemSarpras($id)
+	{
+		$kode = $this->model->getBy('sarpras_detail', 'id_detail', $id)->row('kode_pengajuan');
+
+		$this->model->delete('sarpras_detail', 'id_detail', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Item baru berhasil dibuat');
+			redirect('lembaga/sarprasDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Item baru tidak bisa');
+			redirect('lembaga/sarprasDetail/' . $kode);
+		}
+	}
+
+	function ajukanSarpras($kode)
+	{
+		$data = [
+			'status' => 'proses'
+		];
+
+		$dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM sarpras_detail WHERE kode_pengajuan = '$kode' ")->row();
+		$dtSarpras = $this->model->getBy('sarpras', 'kode_pengajuan', $kode)->row();
+
+		$psn = '*INFORMASI PENGAJUAN SARPRAS* 
+
+Pengajuan Sarpras Pesantren  :
+    
+Kode Pengajuan : ' . $kode . '
+Nominal : ' . rupiah($dataSum->jml) . '
+Bulan : ' . $this->bulan[$dtSarpras->bulan] . '
+Pada : ' .  date('Y-m-d H:i') . '
+
+*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+Terimakasih';
+
+		$this->model->update('sarpras', $data, 'kode_pengajuan', $kode);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Pengajuan sudah diteruskan');
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, '082302301003', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
+			redirect('lembaga/sarprasDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan sudah diteruskan');
+			redirect('lembaga/sarprasDetail/' . $kode);
+		}
 	}
 }

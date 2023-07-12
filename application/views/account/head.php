@@ -166,6 +166,13 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     </a>
                 </li>
                 <li>
+                    <a href="<?= base_url('account/sarpras'); ?>">
+                        <div class="parent-icon"><i class='bx bx-cog'></i>
+                        </div>
+                        <div class="menu-title">Sarpras</div>
+                    </a>
+                </li>
+                <li>
                     <a href="<?= base_url('account/rab24'); ?>">
                         <div class="parent-icon"><i class='bx bx-data'></i>
                         </div>
