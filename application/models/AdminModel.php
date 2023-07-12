@@ -355,4 +355,14 @@ class AdminModel extends CI_Model
         $this->db->group_by('kode_pak');
         return $this->db->get();
     }
+
+    function getBySum3($table, $where1, $dtwhere1, $where2, $dtwhere2, $where3, $dtwhere3, $sum)
+    {
+        // $this->db->select('*');
+        $this->db->select_sum($sum, 'jml3');
+        $this->db->where($where1, $dtwhere1);
+        $this->db->where($where2, $dtwhere2);
+        $this->db->where($where3, $dtwhere3);
+        return $this->db->get($table);
+    }
 }

@@ -52,39 +52,26 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>A. Belanja Barang</td>
-                                            <td><?= rupiah($sumA->total); ?></td>
-                                            <td><?= rupiah($pakaiA->nominal); ?></td>
-                                            <td><?= rupiah($sumA->total - $pakaiA->nominal); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td>B. Langganan & Jasa</td>
-                                            <td><?= rupiah($sumB->total); ?></td>
-                                            <td><?= rupiah($pakaiB->nominal); ?></td>
-                                            <td><?= rupiah($sumB->total - $pakaiB->nominal); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td>C. Belanja Kegiatan</td>
-                                            <td><?= rupiah($sumC->total); ?></td>
-                                            <td><?= rupiah($pakaiC->nominal); ?></td>
-                                            <td><?= rupiah($sumC->total - $pakaiC->nominal); ?></td>
-                                        </tr>
-                                        <tr>
-                                            <td>D. Umum</td>
-                                            <td><?= rupiah($sumD->total); ?></td>
-                                            <td><?= rupiah($pakaiD->nominal); ?></td>
-                                            <td><?= rupiah($sumD->total - $pakaiD->nominal); ?></td>
-                                        </tr>
+                                        <?php foreach ($jenis as $dtJenis) :
+                                            $sisa = $rabJml[$dtJenis->kode_jns]->jml3 - $pakaiJml[$dtJenis->kode_jns]->nominal;
+                                        ?>
+                                            <tr>
+                                                <td> <?= $dtJenis->kode_jns . '. ' . $dtJenis->nama ?></td>
+                                                <td><?= rupiah($rabJml[$dtJenis->kode_jns]->jml3); ?></td>
+                                                <td><?= rupiah($pakaiJml[$dtJenis->kode_jns]->nominal); ?></td>
+                                                <td><?= rupiah($sisa) ?></td>
+                                            </tr>
+                                        <?php endforeach ?>
+
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <th>TOTAL</th>
-                                            <th><?= rupiah($sumA->total + $sumB->total + $sumC->total + $sumD->total); ?>
+                                            <th><?= rupiah($totalRab->jml); ?>
                                             </th>
-                                            <th><?= rupiah(($pakaiA->nominal + $pakaiB->nominal + $pakaiC->nominal + $pakaiD->nominal)); ?>
+                                            <th><?= rupiah(($totalReal->jml)); ?>
                                             </th>
-                                            <th><?= rupiah(($sumA->total + $sumB->total + $sumC->total + $sumD->total) - ($pakaiA->nominal + $pakaiB->nominal + $pakaiC->nominal + $pakaiD->nominal)); ?>
+                                            <th><?= rupiah($totalRab->jml - $totalReal->jml); ?>
                                             </th>
                                         </tr>
                                     </tfoot>
@@ -133,25 +120,22 @@
                                             $bg = 'bg-danger';
                                         }
                                     ?>
-                                    <tr>
-                                        <td><?= $no++; ?></td>
-                                        <td><a
-                                                href="<?= base_url('account/cekRealis/' . $r1->kode) ?>"><?= $r1->kode ?></a>
-                                        </td>
-                                        <td><?= $r1->nama ?></td>
-                                        <td><?= $r1->jenis ?></td>
-                                        <td><?= rupiah($r1->total) ?></td>
-                                        <td><?= rupiah($rs->nom) ?></td>
-                                        <td><?= rupiah($sisa) ?></td>
-                                        <td>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>"
-                                                    role="progressbar" style="width: <?= $prc ?>%"
-                                                    aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100">
-                                                    <?= $prc ?>%</div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><a href="<?= base_url('account/cekRealis/' . $r1->kode) ?>"><?= $r1->kode ?></a>
+                                            </td>
+                                            <td><?= $r1->nama ?></td>
+                                            <td><?= $r1->jenis ?></td>
+                                            <td><?= rupiah($r1->total) ?></td>
+                                            <td><?= rupiah($rs->nom) ?></td>
+                                            <td><?= rupiah($sisa) ?></td>
+                                            <td>
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>" role="progressbar" style="width: <?= $prc ?>%" aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100">
+                                                        <?= $prc ?>%</div>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     <?php } ?>
                                 </tbody>
                             </table>

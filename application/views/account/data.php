@@ -16,32 +16,37 @@
         </div>
         <!--end breadcrumb-->
         <div class="row row-cols-1 row-cols-md-3 row-cols-lg-12 row-cols-xl-12">
-            <?php foreach ($data as $ar) : ?>
-            <div class="col">
-                <div class="card border-success border-bottom border-3 border-0">
-                    <div class="card-body">
-                        <h5 class="card-title text-success"><?= $ar->nama; ?></h5>
-                        <ul class="list-group list-group-flush">
-                            <?php
-                                $lembaga = $ar->kode;
-                                $df2 = $this->db->query("SELECT jenis, IF(jenis = 'A', 'Belanja Barang', IF(jenis = 'B', 'Langganan Daya dan Jasa', IF(jenis = 'C', 'Belanja Kegiatan','Umum'))) as nm_jenis, COUNT(jenis) as jml, SUM(total) as tot FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' GROUP BY jenis ORDER BY jenis ASC")->result();
-                                $tt = $this->db->query("SELECT SUM(total) as tt FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' ")->row();
-                                foreach ($df2 as $r2) { ?>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <?= $r2->jenis . '. ' . $r2->nm_jenis ?> <span class="badge bg-primary rounded-pill">
-                                    <?= $r2->jml . ' item' ?></span>
-                            </li>
-                            <?php } ?>
-                        </ul>
-                        <hr>
-                        <div class="d-flex align-items-center gap-2">
-                            <a href="<?= base_url('account/realisDetail/' . $lembaga); ?>"
-                                class="btn btn-success btn-sm text-end"><i class='bx bx-search'></i>Detail</a>
-                            <span class="fw-bold"><?= rupiah($tt->tt); ?></span>
+            <?php foreach ($data as $ar) :
+                $lembaga = $ar->kode;
+                $tt = $this->db->query("SELECT SUM(total) as tt FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' ")->row();
+            ?>
+                <div class="col">
+                    <div class="card border-success border-bottom border-3 border-0">
+                        <div class="card-body">
+                            <h5 class="card-title text-success"><?= $ar->nama; ?></h5>
+                            <ul class="list-group list-group-flush">
+                                <?php
+
+                                $jenis = $this->db->query("SELECT * FROM jenis WHERE tahun = '$tahun_ajaran' ")->result();
+                                foreach ($jenis as $r2) {
+
+                                    $df2 = $this->db->query("SELECT  COUNT(jenis) as jml FROM rab WHERE lembaga = '$lembaga' AND tahun = '$tahun_ajaran' AND jenis = '$r2->kode_jns' ")->row();
+
+                                ?>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <?= $r2->kode_jns . '. ' . $r2->nama ?> <span class="badge bg-primary rounded-pill">
+                                            <?= $df2->jml . ' item' ?></span>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                            <hr>
+                            <div class="d-flex align-items-center gap-2">
+                                <a href="<?= base_url('account/realisDetail/' . $lembaga); ?>" class="btn btn-success btn-sm text-end"><i class='bx bx-search'></i>Detail</a>
+                                <span class="fw-bold"><?= rupiah($tt->tt); ?></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
             <?php endforeach; ?>
         </div>
         <!--end row-->

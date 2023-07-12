@@ -43,22 +43,12 @@
                             </div>
                             <div class="col-md-6">
                                 <ul class="list-group">
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">A.
-                                        Belanja
-                                        Barang <span"><?= rupiah($sumA->total); ?></span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">B.
-                                        Langganan &
-                                        Jasa <span"><?= rupiah($sumB->total); ?></span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">C.
-                                        Belanja
-                                        Kegiatan <span"><?= rupiah($sumC->total); ?></span></li>
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">D.
-                                        Umum
-                                        <span><?= rupiah($sumD->total); ?></span>
-                                    </li>
-                                    <li class=" list-group-item d-flex justify-content-between align-items-center active"
-                                        aria-current="true">TOTAL RAB <span">
-                                            <?= rupiah($sumA->total + $sumB->total + $sumC->total + $sumD->total); ?></span>
+                                    <?php foreach ($jenis as $dtJenis) : ?>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <?= $dtJenis->kode_jns . '. ' . $dtJenis->nama ?> <span><?= rupiah($rabJml[$dtJenis->kode_jns]->jml3); ?></span></li>
+                                    <?php endforeach; ?>
+                                    <li class=" list-group-item d-flex justify-content-between align-items-center active" aria-current="true">TOTAL RAB <span">
+                                            <?= rupiah($totalRab->jml); ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -86,23 +76,20 @@
                                     <?php
                                     $no = 1;
                                     foreach ($data as $a) : ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a->kode ?></td>
-                                        <td><?= $a->nama ?></td>
-                                        <td><?= $a->rencana ?></td>
-                                        <td><?= $a->qty . ' ' . $a->satuan ?></td>
-                                        <td><?= rupiah($a->harga_satuan) ?></td>
-                                        <td><?= rupiah($a->total) ?></td>
-                                        <!-- <td><?= round($rls->vol / $a->qty * 100, 1); ?>%</td> -->
-                                        <td>
-                                            <a class="tombol-hapus"
-                                                href="<?= base_url('account/rabDel/') . $a->id_rab; ?>"><i
-                                                    class="bx bx-trash text-danger"> </i></a>
-                                            <a href="<?= base_url('account/rabEdit/') . $a->id_rab; ?>"><i
-                                                    class="bx bx-edit text-warning"> </i></a>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a->kode ?></td>
+                                            <td><?= $a->nama ?></td>
+                                            <td><?= $a->rencana ?></td>
+                                            <td><?= $a->qty . ' ' . $a->satuan ?></td>
+                                            <td><?= rupiah($a->harga_satuan) ?></td>
+                                            <td><?= rupiah($a->total) ?></td>
+                                            <!-- <td><?= round($rls->vol / $a->qty * 100, 1); ?>%</td> -->
+                                            <td>
+                                                <a class="tombol-hapus" href="<?= base_url('account/rabDel/') . $a->id_rab; ?>"><i class="bx bx-trash text-danger"> </i></a>
+                                                <a href="<?= base_url('account/rabEdit/') . $a->id_rab; ?>"><i class="bx bx-edit text-warning"> </i></a>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                                 <tfoot>

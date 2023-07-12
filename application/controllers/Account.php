@@ -294,10 +294,23 @@ class Account extends CI_Controller
 	{
 		$data['data'] = $this->model->getBy2('rab', 'lembaga', $kode, 'tahun', $this->tahun)->result();
 		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $kode)->row();
-		$data['sumA'] = $this->model->getTotalRabJenis('A', $kode, $this->tahun)->row();
-		$data['sumB'] = $this->model->getTotalRabJenis('B', $kode, $this->tahun)->row();
-		$data['sumC'] = $this->model->getTotalRabJenis('C', $kode, $this->tahun)->row();
-		$data['sumD'] = $this->model->getTotalRabJenis('D', $kode, $this->tahun)->row();
+
+		// $data['sumA'] = $this->model->getTotalRabJenis('A', $kode, $this->tahun)->row();
+		// $data['sumB'] = $this->model->getTotalRabJenis('B', $kode, $this->tahun)->row();
+		// $data['sumC'] = $this->model->getTotalRabJenis('C', $kode, $this->tahun)->row();
+		// $data['sumD'] = $this->model->getTotalRabJenis('D', $kode, $this->tahun)->row();
+
+
+		$data['totalRab'] = $this->model->getBySum2('rab', 'lembaga', $kode, 'tahun', $this->tahun, 'total')->row();
+		$data['totalReal'] = $this->model->getBySum2('realis', 'lembaga', $kode, 'tahun', $this->tahun, 'nominal')->row();
+
+
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
+		foreach ($data['jenis'] as $jns) {
+			$kodeJenis = $jns->kode_jns;
+			$data['rabJml'][$kodeJenis] = $this->model->getBySum3('rab', 'lembaga', $kode, 'tahun', $this->tahun, 'jenis', $kodeJenis, 'total')->row();
+		}
+
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
@@ -546,6 +559,7 @@ Terimakasih';
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 		$data['tahun'] = $this->tahun;
+
 		$this->load->view('account/head', $data);
 		$this->load->view('account/data', $data);
 		$this->load->view('account/foot');
@@ -557,21 +571,35 @@ Terimakasih';
 		$data['tahun_ajaran'] = $this->tahun;
 		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $lembaga)->row();
 
-		$data['sumA'] = $this->model->getTotalRabJenis('A', $lembaga, $this->tahun)->row();
-		$data['sumB'] = $this->model->getTotalRabJenis('B', $lembaga, $this->tahun)->row();
-		$data['sumC'] = $this->model->getTotalRabJenis('C', $lembaga, $this->tahun)->row();
-		$data['sumD'] = $this->model->getTotalRabJenis('D', $lembaga, $this->tahun)->row();
+		$data['totalRab'] = $this->model->getBySum2('rab', 'lembaga', $lembaga, 'tahun', $this->tahun, 'total')->row();
+		$data['totalReal'] = $this->model->getBySum2('realis', 'lembaga', $lembaga, 'tahun', $this->tahun, 'nominal')->row();
 
-		$data['pakaiA'] = $this->model->getTotalRealJenis('A', $lembaga, $this->tahun)->row();
-		$data['pakaiB'] = $this->model->getTotalRealJenis('B', $lembaga, $this->tahun)->row();
-		$data['pakaiC'] = $this->model->getTotalRealJenis('C', $lembaga, $this->tahun)->row();
-		$data['pakaiD'] = $this->model->getTotalRealJenis('D', $lembaga, $this->tahun)->row();
+
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
+		foreach ($data['jenis'] as $jns) {
+			$kodeJenis = $jns->kode_jns;
+
+			$data['rabJml'][$kodeJenis] = $this->model->getBySum3('rab', 'lembaga', $lembaga, 'tahun', $this->tahun, 'jenis', $kodeJenis, 'total')->row();
+
+			$data['pakaiJml'][$kodeJenis] = $this->model->getTotalRealJenis($kodeJenis, $lembaga, $this->tahun)->row();
+		}
+
+		// $data['sumA'] = $this->model->getTotalRabJenis('A', $lembaga, $this->tahun)->row();
+		// $data['sumB'] = $this->model->getTotalRabJenis('B', $lembaga, $this->tahun)->row();
+		// $data['sumC'] = $this->model->getTotalRabJenis('C', $lembaga, $this->tahun)->row();
+		// $data['sumD'] = $this->model->getTotalRabJenis('D', $lembaga, $this->tahun)->row();
+
+		// $data['pakaiA'] = $this->model->getTotalRealJenis('A', $lembaga, $this->tahun)->row();
+		// $data['pakaiB'] = $this->model->getTotalRealJenis('B', $lembaga, $this->tahun)->row();
+		// $data['pakaiC'] = $this->model->getTotalRealJenis('C', $lembaga, $this->tahun)->row();
+		// $data['pakaiD'] = $this->model->getTotalRealJenis('D', $lembaga, $this->tahun)->row();
 
 		$data['rabA'] = $this->model->getBy2('rab', 'lembaga', $lembaga, 'tahun', $this->tahun)->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 		$data['tahun'] = $this->tahun;
+
 		$this->load->view('account/head', $data);
 		$this->load->view('account/realDetail', $data);
 		$this->load->view('account/foot');
@@ -614,7 +642,7 @@ Terimakasih';
 		$data['bulan'] = $this->bulan;
 		$data['tahun'] = $this->tahun;
 		$lembaga = $sql->row('lembaga');
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $lembaga)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $lembaga, 'tahun', $this->tahun)->row();
 
 		if ($data['rinci']->cair == 1) {
 			$data['data'] = $this->model->getBy('realis', 'kode_pengajuan', $kode)->result();
@@ -628,29 +656,28 @@ Terimakasih';
 
 		$data['honor'] = $this->model->getBy('honor_file', 'kode_pengajuan', $kode);
 
-		$sumA = $this->model->getTotalRabJenis('A', $lembaga, $this->tahun)->row();
-		$sumB = $this->model->getTotalRabJenis('B', $lembaga, $this->tahun)->row();
-		$sumC = $this->model->getTotalRabJenis('C', $lembaga, $this->tahun)->row();
-		$sumD = $this->model->getTotalRabJenis('D', $lembaga, $this->tahun)->row();
+		$data['totalRab'] = $this->model->getBySum2('rab', 'lembaga', $lembaga, 'tahun', $this->tahun, 'total')->row();
+		$data['totalReal'] = $this->model->getBySum2('realis', 'lembaga', $lembaga, 'tahun', $this->tahun, 'nominal')->row();
+		$data['totalAjukan'] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'tahun', $this->tahun, 'nominal')->row();
 
-		$pakaiA = $this->model->getTotalRealJenis('A', $lembaga, $this->tahun)->row();
-		$pakaiB = $this->model->getTotalRealJenis('B', $lembaga, $this->tahun)->row();
-		$pakaiC = $this->model->getTotalRealJenis('C', $lembaga, $this->tahun)->row();
-		$pakaiD = $this->model->getTotalRealJenis('D', $lembaga, $this->tahun)->row();
 
-		$data['sisaA'] = $sumA->total - $pakaiA->nominal;
-		$data['sisaB'] = $sumB->total - $pakaiB->nominal;
-		$data['sisaC'] = $sumC->total - $pakaiC->nominal;
-		$data['sisaD'] = $sumD->total - $pakaiD->nominal;
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
+		foreach ($data['jenis'] as $jns) {
+			$kodeJenis = $jns->kode_jns;
 
-		$data['nomA'] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'jenis', 'A', 'nominal')->row();
-		$data['nomB'] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'jenis', 'B', 'nominal')->row();
-		$data['nomC'] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'jenis', 'C', 'nominal')->row();
-		$data['nomD'] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'jenis', 'D', 'nominal')->row();
+			$data['rabJml'][$kodeJenis] = $this->model->getBySum3('rab', 'lembaga', $lembaga, 'tahun', $this->tahun, 'jenis', $kodeJenis, 'total')->row();
+
+			$data['pakaiJml'][$kodeJenis] = $this->model->getTotalRealJenis($kodeJenis, $lembaga, $this->tahun)->row();
+
+			$data['nomJml'][$kodeJenis] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'jenis', $kodeJenis, 'nominal')->row();
+		}
+
+
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
-		$data['tahun'] = $this->tahun;
+		// $data['tahun'] = $this->tahun;
+
 		$this->load->view('account/head', $data);
 		$this->load->view('account/pengajuanDetail', $data);
 		$this->load->view('account/foot');
