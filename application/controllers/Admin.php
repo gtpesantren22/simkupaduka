@@ -16,7 +16,7 @@ class Admin extends CI_Controller
 		$user = $this->Auth_model->current_user();
 		$this->tahun = $this->session->userdata('tahun');
 		// $this->jenis = ['A. Belanja Barang', 'B. Langganan & Jasa', 'Belanja Kegiatan', 'D. Umum'];
-		$this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juli', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+		$this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
 		$api = $this->model->apiKey()->row();
 		$this->apiKey = $api->nama_key;

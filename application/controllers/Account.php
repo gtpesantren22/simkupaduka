@@ -17,7 +17,7 @@ class Account extends CI_Controller
 		$user = $this->Auth_model->current_user();
 		$this->tahun = $this->session->userdata('tahun');
 		// $this->jenis = ['A. Belanja Barang', 'B. Langganan & Jasa', 'Belanja Kegiatan', 'D. Umum'];
-		$this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juli', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+		$this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
 		$api = $this->model->apiKey()->row();
 		$this->apiKey = $api->nama_key;
@@ -315,6 +315,8 @@ class Account extends CI_Controller
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
 		$this->load->view('account/head', $data);
 		$this->load->view('account/rabDetail', $data);
 		$this->load->view('account/foot');

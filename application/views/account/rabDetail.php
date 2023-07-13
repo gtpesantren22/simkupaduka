@@ -64,7 +64,7 @@
                                         <th>No</th>
                                         <th>Kode</th>
                                         <th>Nama Barang</th>
-                                        <th>Rencana Waktu</th>
+                                        <th>Rencana</th>
                                         <th>QTY</th>
                                         <th>Harga Satuan</th>
                                         <th>Jumlah</th>
@@ -80,7 +80,7 @@
                                             <td><?= $no++ ?></td>
                                             <td><?= $a->kode ?></td>
                                             <td><?= $a->nama ?></td>
-                                            <td><?= $a->rencana ?></td>
+                                            <td><?= $bulan[$a->rencana] ?></td>
                                             <td><?= $a->qty . ' ' . $a->satuan ?></td>
                                             <td><?= rupiah($a->harga_satuan) ?></td>
                                             <td><?= rupiah($a->total) ?></td>

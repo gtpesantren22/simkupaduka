@@ -24,7 +24,8 @@
                                 <li class="nav-item" role="presentation">
                                     <a class="nav-link " data-bs-toggle="tab" href="#dangerhome<?= $dt->rencana ?>" role="tab" aria-selected="true">
                                         <div class="d-flex align-items-center">
-                                            <div class="tab-icon"><i class='bx bx-home font-18 me-1'></i>
+                                            <div class="tab-icon">
+                                                <!-- <i class='bx bx-home font-18 me-1'></i> -->
                                             </div>
                                             <div class="tab-title"><?= $bulan[$dt->rencana] ?></div>
                                         </div>
