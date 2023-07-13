@@ -49,20 +49,21 @@
                                             <tbody>
                                                 <?php
                                                 $no = 1;
-                                                $lmb = $this->db->query("SELECT nama FROM lembaga WHERE tahun = '$dt->tahun' AND kode = '$dt->lembaga' ")->row();
-                                                $totlaRencana = $this->db->query("SELECT SUM(total) as total FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$dt->lembaga' AND rencana = '$dt->rencana' ")->row();
-                                                $totlItem = $this->db->query("SELECT COUNT(*) as jml FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$dt->lembaga' AND rencana = '$dt->rencana' ")->row();
-
+                                                $lmb = $this->db->query("SELECT * FROM lembaga WHERE tahun = '$dt->tahun' ")->result();
                                                 $totalAll = $this->db->query("SELECT SUM(total) as total FROM rab WHERE tahun = '$dt->tahun' AND rencana = '$dt->rencana' ")->row();
                                                 $jmlItem = $this->db->query("SELECT COUNT(*) as jml FROM rab WHERE tahun = '$dt->tahun' AND rencana = '$dt->rencana' ")->row();
+                                                foreach ($lmb as $lmb) :
+                                                    $totlaRencana = $this->db->query("SELECT SUM(total) as total FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$lmb->kode' AND rencana = '$dt->rencana' ")->row();
+                                                    $totlItem = $this->db->query("SELECT COUNT(*) as jml FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$lmb->kode' AND rencana = '$dt->rencana' ")->row();
+
                                                 ?>
-                                                <tr>
-                                                    <td><?= $no++ ?></td>
-                                                    <td><?= $lmb->nama ?></td>
-                                                    <td><?= rupiah($totlaRencana->total) ?></td>
-                                                    <td><?= $totlItem->jml ?></td>
-                                                </tr>
-                                                <?php  ?>
+                                                    <tr>
+                                                        <td><?= $no++ ?></td>
+                                                        <td><?= $lmb->nama ?></td>
+                                                        <td><?= rupiah($totlaRencana->total) ?></td>
+                                                        <td><?= $totlItem->jml ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
                                             </tbody>
                                             <tfoot>
                                                 <tr>
