@@ -108,7 +108,7 @@ class Kasir extends CI_Controller
         $data['mitraHasil'] = $this->model->getByGroup('order_mitra', 'kode_pengajuan', $kode, 'id_mitra')->result();
         foreach ($data['mitraHasil'] as $key) {
             $id_mitra = $key->id_mitra;
-            $data['isiMitra'][$id_mitra] = $this->model->getBy('order_mitra', 'id_mitra', $id_mitra)->num_rows();
+            $data['isiMitra'][$id_mitra] = $this->model->getBy2('order_mitra', 'id_mitra', $id_mitra, 'kode_pengajuan', $kode)->num_rows();
             $data['infoMitra'][$id_mitra] = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
         }
 

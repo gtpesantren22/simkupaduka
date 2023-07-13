@@ -238,6 +238,7 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                                         <!-- <span class="badge bg-secondary"><i class="bx bx-send"></i></span> -->
                                                         <div class="btn-group" role="group" aria-label="Basic example">
                                                             <button type="button" class="btn btn-warning btn-sm"><?= $isiMitra[$row->id_mitra] ?></button>
+
                                                             <a href="<?= base_url('kasir/notaMitra/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" target="_blank" class="btn btn-outline-dark btn-sm"><i class="bx bx-printer"></i>
                                                             </a>
                                                             <!-- <a href="<?= base_url('kasir/sendNota/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" type="button" class="btn btn-outline-dark btn-sm tbl-confirm" value="Nota akan dikirimkan kepada Mitra terkait"><i class="bx bx-send"></i></a> -->
