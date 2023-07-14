@@ -157,7 +157,7 @@ class Kasir extends CI_Controller
         $data = [
             'id_cair' => $id,
             'kode_pengajuan' => $kd_pnj,
-            'lembaga' => $lembaga,
+            'lembaga' => $dataPj->lembaga,
             'nominal' => $jml->nom_cair,
             'nominal_cair' => $jml->nom_serap,
             'tgl_cair' => $tgl_cair,
@@ -911,11 +911,14 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
         $id_mitra = $this->uri->segment(4);
         $kode_lj = $this->uri->segment(3);
 
+        $sttsPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_lj)->row();
+        $sttsPj->cair == 1 ? $tblSelect = 'realis' : $tblSelect = 'real_sm';
+
         $data['mitra'] = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
         // $data['order_mitra'] = $this->model->getBy('order_mitra', 'kode_pengajuan', $data['kode_pj']);
         // $data['order_mitra'] = $this->model->getByJoin2('order_mitra', 'real_sm', 'kode', 'kode', 'order_mitra.kode_pengajuan', $data['kode_pj'], 'order_mitra.id_mitra', $id_mitra);
 
-        $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, real_sm.*, rab.nama, rab.satuan FROM order_mitra JOIN real_sm ON order_mitra.kode=real_sm.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
+        $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, $tblSelect.*, rab.nama, rab.satuan FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
 
         $data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $data['order_mitra']->row('lembaga'));
         $data['kasir'] = $this->user;

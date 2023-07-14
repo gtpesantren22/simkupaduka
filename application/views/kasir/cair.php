@@ -143,15 +143,15 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
 
                                             </td>
                                             <td><?= $ls_jns->kode; ?></td>
-                                            <!-- <td><?= $ls_jns->pj; ?></td> -->
                                             <td><?= $ls_jns->ket; ?></td>
                                             <td>
                                                 <?php if ($ls_jns->pjnDataMitra) { ?>
                                                     <span class="badge bg-secondary"><?= $ls_jns->pjnDataMitra->nama ?></span>
-
-                                                    <a href="#" class="delOrderMitra" data-id_order="<?= $ls_jns->pjnDataMitra->id_order ?>">
-                                                        <span class="badge bg-danger">X</span>
-                                                    </a>
+                                                    <?php if ($pjn->cair == 0) : ?>
+                                                        <a href="#" class="delOrderMitra" data-id_order="<?= $ls_jns->pjnDataMitra->id_order ?>">
+                                                            <span class="badge bg-danger">X</span>
+                                                        </a>
+                                                    <?php endif ?>
                                                 <?php } else { ?>
                                                     <?php foreach ($mitra as $mtr) : ?>
 
@@ -190,9 +190,10 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                 </tfoot>
                             </table>
                         </div>
-                        <?php if ($pjn->cair == 0) : ?>
-                            <hr>
-                            <div class="row">
+                        <hr>
+                        <div class="row">
+                            <?php if ($pjn->cair == 0) : ?>
+
                                 <div class="col-md-7">
                                     <?= form_open('kasir/cairkan'); ?>
                                     <input type="hidden" name="kode_pengajuan" value="<?= $pjn->kode_pengajuan ?>">
@@ -225,33 +226,36 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                     </div>
                                     <?= form_close(); ?>
                                 </div>
-                                <div class="col-md-5">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            List Pencairan Mitra <br>
-                                            <ul class="list-group">
-                                                <?php foreach ($mitraHasil as $row) : ?>
-                                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                        <?= $infoMitra[$row->id_mitra]->nama ?>
-                                                        <!-- <span class="badge bg-primary rounded-pill"><?= $isiMitra[$row->id_mitra] ?></span> -->
-                                                        <!-- <span class="badge bg-danger"><i class="bx bx-printer"></i></span> -->
-                                                        <!-- <span class="badge bg-secondary"><i class="bx bx-send"></i></span> -->
-                                                        <div class="btn-group" role="group" aria-label="Basic example">
-                                                            <button type="button" class="btn btn-warning btn-sm"><?= $isiMitra[$row->id_mitra] ?></button>
+                            <?php endif; ?>
 
-                                                            <a href="<?= base_url('kasir/notaMitra/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" target="_blank" class="btn btn-outline-dark btn-sm"><i class="bx bx-printer"></i>
-                                                            </a>
-                                                            <!-- <a href="<?= base_url('kasir/sendNota/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" type="button" class="btn btn-outline-dark btn-sm tbl-confirm" value="Nota akan dikirimkan kepada Mitra terkait"><i class="bx bx-send"></i></a> -->
-                                                        </div>
-                                                    </li>
-                                                <?php endforeach; ?>
-                                            </ul>
-                                            <a target="_blank" href="<?= base_url('kasir/notaKPA/' . $pjn->kode_pengajuan) ?>" class="btn btn-sm btn-primary mt-3">Cetak Nota KPA</a>
-                                        </div>
+                            <div class="col-md-5">
+                                <div class="card">
+                                    <div class="card-body">
+                                        List Pencairan Mitra <br>
+                                        <ul class="list-group">
+                                            <?php foreach ($mitraHasil as $row) : ?>
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    <?= $infoMitra[$row->id_mitra]->nama ?>
+                                                    <!-- <span class="badge bg-primary rounded-pill"><?= $isiMitra[$row->id_mitra] ?></span> -->
+                                                    <!-- <span class="badge bg-danger"><i class="bx bx-printer"></i></span> -->
+                                                    <!-- <span class="badge bg-secondary"><i class="bx bx-send"></i></span> -->
+                                                    <div class="btn-group" role="group" aria-label="Basic example">
+
+                                                        <button type="button" class="btn btn-warning btn-sm"><?= $isiMitra[$row->id_mitra] ?></button>
+
+                                                        <a href="<?= base_url('kasir/notaMitra/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" target="_blank" class="btn btn-outline-dark btn-sm"><i class="bx bx-printer"></i>
+                                                        </a>
+
+                                                        <!-- <a href="<?= base_url('kasir/sendNota/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" type="button" class="btn btn-outline-dark btn-sm tbl-confirm" value="Nota akan dikirimkan kepada Mitra terkait"><i class="bx bx-send"></i></a> -->
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                        <a target="_blank" href="<?= base_url('kasir/notaKPA/' . $pjn->kode_pengajuan) ?>" class="btn btn-sm btn-primary mt-3">Cetak Nota KPA</a>
                                     </div>
                                 </div>
                             </div>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </div>
             </div>
