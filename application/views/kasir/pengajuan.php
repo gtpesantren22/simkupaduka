@@ -49,26 +49,25 @@
                                         }
 
                                     ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $kd_pj ?></td>
-                                        <td><?= $a->nama . ' ' . $rt ?></td>
-                                        <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
-                                        <td>
-                                            <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
-                                            <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
-                                            <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
-                                            
-                                        </td>
-                                        <td><?= rupiah($kfe) ?></td>
-                                        <td>
-                                            <?php if($a->apr == 1 AND $a->cair == 0){ ?>
-                                            <a href="<?= base_url('kasir/cairProses/' . $a->kode_pengajuan) ?>"><button
-                                                    class="btn btn-primary btn-sm"><i class="bx bx-search"></i> Cek &
-                                                    Cairkan</button></a>
-                                                </td>
-                                                <?php } ?>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $kd_pj ?></td>
+                                            <td><?= $a->nama . ' ' . $rt ?></td>
+                                            <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
+                                            <td>
+                                                <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                                <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                                <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+
+                                            </td>
+                                            <td><?= rupiah($kfe) ?></td>
+                                            <td>
+                                                <!-- <?php if ($a->apr == 1 and $a->cair == 0) { ?> -->
+                                                <a href="<?= base_url('kasir/cairProses/' . $a->kode_pengajuan) ?>"><button class="btn btn-primary btn-sm"><i class="bx bx-search"></i> Cek &
+                                                        Cairkan</button></a>
+                                                <!-- <?php } ?> -->
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>

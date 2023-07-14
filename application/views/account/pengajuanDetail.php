@@ -177,7 +177,7 @@
                                                                         <div class="form-group mb-2 mb-2">
                                                                             <label for="">Ket. Pencairan</label><br>
                                                                             <input type="radio" name="stas" value="tunai" <?= $a->stas === 'tunai' ? 'checked' : ''; ?> required> Cair Tunai
-                                                                            <input type="radio" name="stas" value="barang" <?= $a->stas === 'barang' ? 'checked' : ''; ?> required> Cair Barang
+                                                                            <input type="radio" name="stas" value="non tunai" <?= $a->stas === 'non tunai' ? 'checked' : ''; ?> required> Cair Barang
                                                                         </div>
                                                                     </div>
                                                                     <div class="modal-footer">
