@@ -864,8 +864,10 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
         $kode = $this->input->post('kode', true);
         $kode_pengajuan = $this->input->post('kode_pengajuan', true);
 
-        // $mitraData = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
-        $pjnData = $this->model->getBy2('real_sm', 'kode', $kode, 'kode_pengajuan', $kode_pengajuan)->row();
+        $cekPjn = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
+        $cekPjn->cair == 1 ? $tblSelect = 'realis' : $tblSelect = 'real_sm';
+
+        $pjnData = $this->model->getBy2($tblSelect, 'kode', $kode, 'kode_pengajuan', $kode_pengajuan)->row();
 
         $data = [
             'id_mitra' => $id_mitra,
