@@ -412,6 +412,7 @@ class Lembaga extends CI_Controller
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
 		$lm = $this->model->getBy2('lembaga', 'kode', $dt->lembaga, 'tahun', $this->tahun)->row();
 		$jml = $this->model->getBySum('real_sm', 'kode_pengajuan', $dt->kode_pengajuan, 'nominal')->row();
+		$cekPj = $this->model->getBy('real_sm', 'kode_pengajuan', $dt->kode_pengajuan)->row();
 
 		$perod = $bulan[$dt->bulan] . ' ' . $dt->tahun;
 		// $ww = date('d-M-Y H:i:s');
@@ -435,20 +436,25 @@ Nominal : ' . rupiah($jml->jml) . '
 *_dimohon kepada KPA terkait untuk segera melakukan pencairan di Sekretariat Kantor Bendahara Pesantren_*
 Terimakasih';
 
-		$this->model->update('pengajuan', $data, 'kode_pengajuan', $kode);
-		if ($this->db->affected_rows() > 0) {
-
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, '082302301003', $psn);
-			kirim_person($this->apiKey, '082264061060', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
-
-			$this->session->set_flashdata('ok', 'Pengajuan berhasil diajukan kepada Bendahara');
+		if ($cekPj->pj == '' || $cekPj->tgl == '') {
+			$this->session->set_flashdata('error', 'Maaf. Nama PJ dan Tanggal belum diisi. Silahkan klik tombol - Edit PJ - Berwarna Kuning');
 			redirect('lembaga/pengajuanDetail/' . $kode);
 		} else {
-			$this->session->set_flashdata('error', 'Pengajuan gagal diajukan kepada Bendahara');
-			redirect('lembaga/pengajuanDetail/' . $kode);
+			$this->model->update('pengajuan', $data, 'kode_pengajuan', $kode);
+			if ($this->db->affected_rows() > 0) {
+
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_person($this->apiKey, '082302301003', $psn);
+				kirim_person($this->apiKey, '082264061060', $psn);
+				// kirim_person($this->apiKey, '085236924510', $psn);
+
+				$this->session->set_flashdata('ok', 'Pengajuan berhasil diajukan kepada Bendahara');
+				redirect('lembaga/pengajuanDetail/' . $kode);
+			} else {
+				$this->session->set_flashdata('error', 'Pengajuan gagal diajukan kepada Bendahara');
+				redirect('lembaga/pengajuanDetail/' . $kode);
+			}
 		}
 	}
 
