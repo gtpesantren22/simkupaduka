@@ -1488,4 +1488,100 @@ Terimakasih';
 			redirect('lembaga/sarprasDetail/' . $kode);
 		}
 	}
+
+	public function uploadSpjSarpras()
+	{
+		$id = $this->uuid->v4();
+		$kode  = $this->input->post('kode', true);
+
+		$date = date('Y-m-d');
+		$at = date('Y-m-d H:i:s');
+
+		$file = $this->model->getBy('sarpras', 'kode_pengajuan', $kode)->row();
+		$spj = $this->model->getBy('spj', 'kode_pengajuan', $kode)->row();
+
+		if (preg_match("/DISP./i", $kode)) {
+			$rt = "*(DISPOSISI)*";
+		} else {
+			$rt = '';
+		}
+
+		$psn = '
+*INFORMASI VERIFIKASI SPJ (SARPRAS)* ' . $rt . '
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : Biro Umum (SARPRAS)
+Kode Pengajuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+Terimakasih';
+
+		$file_name = 'SRPS-' . rand(0, 99999999);
+		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+		$config['allowed_types']        = 'pdf';
+		$config['file_name']            = $file_name;
+		$config['overwrite']            = true;
+		$config['max_size']             = 5120; // 5MB
+		$config['max_width']            = 1080;
+		$config['max_height']           = 1080;
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('file')) {
+			// $data['error'] = $this->upload->display_errors();
+			$this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
+			redirect('lembaga/sarpras');
+		} else {
+			$uploaded_data = $this->upload->data();
+
+			$data = [
+				'stts' => 1,
+				'file_spj' => $uploaded_data['file_name'],
+				'tgl_upload' => $date,
+			];
+			$data2 = [
+				'spj' => 1,
+			];
+			$data3 = [
+				'id_spj' => $id,
+				'kode_pengajuan' => $kode,
+				'lembaga' => $this->lembaga,
+				'bulan' => $file->bulan,
+				'tahun' => $file->tahun,
+				'stts' => 1,
+				'file_spj' => $uploaded_data['file_name'],
+				'tgl_upload' => $date
+			];
+
+			if ($spj) {
+				if ($spj->file_spj != '') {
+					unlink('./vertical/assets/uploads/' . $spj->file_spj);
+					$this->model->update('spj', $data, 'kode_pengajuan', $kode);
+				} else {
+					$this->model->update('spj', $data, 'kode_pengajuan', $kode);
+					$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
+				}
+			} else {
+				$this->model->input('spj', $data3);
+			}
+
+
+
+
+			if ($this->db->affected_rows() > 0) {
+
+				// kirim_group($$this->apiKey, '120363040973404347@g.us', $psn);
+				// kirim_group($$this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_person($this->apiKey, '085236924510', $psn);
+
+				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
+				redirect('lembaga/sarpras');
+			} else {
+				$this->session->set_flashdata('error', 'Bukti SPJ gagal diupload');
+				redirect('lembaga/sarpras');
+			}
+		}
+	}
 }

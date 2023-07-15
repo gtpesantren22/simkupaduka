@@ -37,6 +37,7 @@
                                         <th>Bulan</th>
                                         <th>Tahun</th>
                                         <th>Status</th>
+                                        <th>SPJ</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -58,6 +59,8 @@
                                                     echo "<span class='badge bg-danger'><i class='bx bx-x'></i> Ditolak</span>";
                                                 } elseif ($ls_jns->status == 'disetujui') {
                                                     echo "<span class='badge bg-success'><i class='bx bx-check'></i> Disetujui</span>";
+                                                } elseif ($ls_jns->status == 'dicairkan') {
+                                                    echo "<span class='badge bg-success'><i class='bx bx-check'></i> Dicairkan</span>";
                                                 } elseif ($ls_jns->status == 'selesai') {
                                                     echo "<span class='badge bg-info'><i class='bx bx-check'></i> Selesai</span>";
                                                 } elseif ($ls_jns->status == 'belum') {
@@ -65,8 +68,34 @@
                                                 }
                                                 ?>
                                             </td>
-                                            <td><a href="<?= base_url('lembaga/sarprasDetail/' . $ls_jns->kode_pengajuan) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i>
-                                                        cek</button></a></td>
+                                            <td>
+                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload SPJ</button>
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Form Upload SPJ Sarpras</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <?= form_open_multipart('lembaga/uploadSpjSarpras') ?>
+                                                            <input type="hidden" name="kode" value="<?= $ls_jns->kode_pengajuan ?>">
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <label for="">Pilih File</label>
+                                                                    <input type="file" name="file" class="form-control" required>
+                                                                    <small style="color: red;">* File upload harus PDF dan Max File 5 MB</small>
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Upload File</button>
+                                                            </div>
+                                                            <?= form_close() ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td><a href="<?= base_url('lembaga/sarprasDetail/' . $ls_jns->kode_pengajuan) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i>cek</button></a></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

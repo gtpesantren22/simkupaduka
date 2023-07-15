@@ -920,7 +920,10 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
         // $data['order_mitra'] = $this->model->getBy('order_mitra', 'kode_pengajuan', $data['kode_pj']);
         // $data['order_mitra'] = $this->model->getByJoin2('order_mitra', 'real_sm', 'kode', 'kode', 'order_mitra.kode_pengajuan', $data['kode_pj'], 'order_mitra.id_mitra', $id_mitra);
 
-        $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, $tblSelect.*, rab.nama, rab.satuan FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
+        $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, $tblSelect.*, rab.nama, rab.satuan, rab.harga_satuan FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
+
+        $data['order_mitraTotal'] = $this->db->query("SELECT SUM($tblSelect.nominal) AS total FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ")->row();
+
 
         $data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $data['order_mitra']->row('lembaga'));
         $data['kasir'] = $this->user;

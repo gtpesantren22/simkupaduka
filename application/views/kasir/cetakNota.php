@@ -221,7 +221,8 @@
                             <th class="text-center" colspan="3">Nama Item</th>
                             <th class="text-center">Quantity</th>
                             <th class="text-center">Satuan</th>
-                            <th class="text-center">Tanggal</th>
+                            <th class="text-center">Harga</th>
+                            <th class="text-center">Total</th>
                         </tr>
                         <tbody>
                             <?php
@@ -232,20 +233,17 @@
                                     <td colspan="3"><?= $dtm->nama ?></td>
                                     <td class="text-center"><?= $dtm->vol ?></td>
                                     <td><?= $dtm->satuan ?></td>
-                                    <td><?= $dtm->tgl_order ?></td>
+                                    <td><?= rupiah($dtm->harga_satuan) ?></td>
+                                    <td><?= rupiah($dtm->vol * $dtm->harga_satuan) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
-                        <!-- <tfoot>
+                        <tfoot>
                             <tr style="background: rgba(217, 225, 242, 1)">
-                                <td>Tax</td>
-                                <td>7%</td>
-                                <td>Discount</td>
-                                <td>5%</td>
-                                <td colspan="2">Total Amount</td>
-                                <td colspan="1">5741</td>
+                                <td colspan="7">TOTAL</td>
+                                <td><?= rupiah($order_mitraTotal->total) ?></td>
                             </tr>
-                        </tfoot> -->
+                        </tfoot>
                     </table>
                     <br />
                     <table width="94%" border="0" cellspacing="0" cellpadding="0">
