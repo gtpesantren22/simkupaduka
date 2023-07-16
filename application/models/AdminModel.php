@@ -188,11 +188,11 @@ class AdminModel extends CI_Model
         $this->db->where('aktif', 'Y');
         return $this->db->get('tb_santri');
     }
-    public function dataBp()
+    public function dataBp($tahun)
     {
         $this->db->from('tangg');
         $this->db->join('tb_santri', 'ON tangg.nis=tb_santri.nis');
-        // $this->db->where('berkas_file.nis', $nis);
+        $this->db->where('tangg.tahun', $tahun);
         return $this->db->get();
     }
 

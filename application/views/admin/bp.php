@@ -18,8 +18,7 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"><i class="bx bx-upload"></i> Upload BP</button>
+                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i> Upload BP</button>
                 </div>
             </div>
         </div>
@@ -44,48 +43,41 @@
                                     <?php
                                     $no = 1;
                                     foreach ($bp as $a) : ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a->nama ?></td>
-                                        <td><?= $a->briva ?></td>
-                                        <td>Rp. <?= number_format($a->total, 0, '.', '.') ?></td>
-                                        <td><?= $a->tahun ?></td>
-                                        <td>
-                                            <!-- <a data-toggle="modal" data-target="#modal_edit<?= $a->id_tangg; ?>" href="#"><i class="fa fa-cog"></i> Edit</a> | -->
-                                            <a href="<?= base_url('admin/bpDetail/') . $a->id_tangg; ?>"><i
-                                                    class='bx bx-message-square-edit mr-1'></i></a> |
-                                            <a data-bs-toggle="modal" data-bs-target="#modal_del<?= $a->id_tangg; ?>"
-                                                href="#"><i class='bx bx-trash mr-1'></i></a>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a->nama ?></td>
+                                            <td><?= $a->briva ?></td>
+                                            <td>Rp. <?= number_format($a->total, 0, '.', '.') ?></td>
+                                            <td><?= $a->tahun ?></td>
+                                            <td>
+                                                <!-- <a data-toggle="modal" data-target="#modal_edit<?= $a->id_tangg; ?>" href="#"><i class="fa fa-cog"></i> Edit</a> | -->
+                                                <a href="<?= base_url('admin/bpDetail/') . $a->id_tangg; ?>"><i class='bx bx-message-square-edit mr-1'></i></a> |
+                                                <a data-bs-toggle="modal" data-bs-target="#modal_del<?= $a->id_tangg; ?>" href="#"><i class='bx bx-trash mr-1'></i></a>
 
-                                            <div class="modal fade" id="modal_del<?= $a->id_tangg; ?>" tabindex="-1"
-                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Hapus
-                                                                DataSyahriah</h5>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <div class="modal fade" id="modal_del<?= $a->id_tangg; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Hapus
+                                                                    DataSyahriah</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="<?= base_url('admin/delBp/'); ?>" method="post">
+                                                                <input type="hidden" name="id_tangg" value="<?= $a->id_tangg; ?>">
+                                                                <div class="modal-body">
+                                                                    <h5>Yajin akan menghapus data ini ?</h5>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                                                    <button type="submit" name="delete" class="btn btn-danger">Ya.! Hapus Pon</button>
+                                                                </div>
+                                                            </form>
                                                         </div>
-                                                        <form action="<?= base_url('admin/delBp/'); ?>" method="post">
-                                                            <input type="hidden" name="id_tangg"
-                                                                value="<?= $a->id_tangg; ?>">
-                                                            <div class="modal-body">
-                                                                <h5>Yajin akan menghapus data ini ?</h5>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-dismiss="modal">No</button>
-                                                                <button type="submit" name="delete"
-                                                                    class="btn btn-danger">Ya.! Hapus Pon</button>
-                                                            </div>
-                                                        </form>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                    </tr>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
@@ -106,7 +98,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Upload Biaya Pendidikan Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open_multipart('admin/uploadBp'); ?>
+            <?= form_open_multipart('admin/process_upload'); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Pilih Berkas</label>
