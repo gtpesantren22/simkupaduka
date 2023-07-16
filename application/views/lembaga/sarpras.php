@@ -22,8 +22,8 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
+                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
                         <?php if (!$pj) { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
                         <?php } else if ($pj->status == 'selesai') { ?>
                             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
                         <?php } ?>
