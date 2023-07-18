@@ -107,8 +107,6 @@
                                     <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                         <th>No</th>
                                         <th>Kode RAB</th>
-                                        <th>Periode</th>
-                                        <th>PJ</th>
                                         <th>Keterangan</th>
                                         <th>Nominal</th>
                                         <th>Cair</th>
@@ -126,9 +124,7 @@
                                         <tr>
                                             <td><?= $no++ ?></td>
                                             <td><?= $a->kode ?></td>
-                                            <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
-                                            <td><?= $a->pj ?></td>
-                                            <td>
+                                            <td><b>(<?= $bulan[$a->rencana] ?>) <?= $a->kegiatan ?></b><br>
                                                 <?= $a->ket ?>
                                                 <?php
                                                 if (preg_match("/honor/i", $a->ket)) {
