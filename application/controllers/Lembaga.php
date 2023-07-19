@@ -189,6 +189,7 @@ class Lembaga extends CI_Controller
 		$data['pj'] = $this->model->getPjn('pengajuan', $this->lembaga, $this->tahun)->row();
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 
 		$data['dppk'] = $this->model->getBy2('dppk', 'tahun', $this->tahun, 'lembaga', $this->lembaga)->result();
 
@@ -598,21 +599,18 @@ Terimakasih';
 		$ket = $nm_rab . ' - @ ' . $qty . ' ' . $satuan . ' x ' . number_format($harga, 0, ',', '.');
 		// $sisa_jml = $this->input->post('sisa_jml', true);
 
-		if ($jenis === 'A') {
-			$stas = 'barang';
-		} else {
-			$stas = 'tunai';
-		}
+		$jenis = $this->model->getBy2('jenis', 'tahun', $this->tahun, 'kode_jns', $jenis)->row();
 
 		$jml = $this->db->query("SELECT SUM(nom_cair) AS jml FROM real_sm WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun' ")->row();
 		$jml2 = $this->db->query("SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan LIKE 'DISP.%' AND tahun = '$tahun' ")->row();
-		$kfe = 50000000 - ($jml->jml + $jml2->jml);
+		$limitDisp = $this->model->getBy2('pagu', 'nama', 'DISPOSISI', 'tahun', $this->tahun)->row();
+		$kfe = $limitDisp->nominal - ($jml->jml + $jml2->jml);
 
 		$data = [
 			'id_realis' => $id,
 			'lembaga' => $lembaga,
 			'bidang' => $bidang,
-			'jenis' => $jenis,
+			'jenis' => $jenis->kode_jns,
 			'kode' => 'Disposisi',
 			'vol' => $qty,
 			'nominal' => $nominal,
@@ -624,9 +622,10 @@ Terimakasih';
 			'kode_pengajuan' => $kd_pjn,
 			'nom_cair' => $nominal,
 			'nom_serap' => $nominal,
-			'stas' => $stas
+			'stas' => $jenis->stas
 		];
 
+		// var_dump($data);
 
 		if ($kfe >= $nominal) {
 			$this->model->input('real_sm', $data);
