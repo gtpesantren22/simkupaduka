@@ -1358,6 +1358,8 @@ https://simkupaduka.ppdwk.com/';
 
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
+		$data['dispLimit'] = $this->model->getBy2('pagu', 'tahun', $this->tahun, 'nama', 'DISPOSISI')->row();
+
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/disp', $data);
 		$this->load->view('admin/foot');

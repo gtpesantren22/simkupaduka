@@ -44,7 +44,7 @@ if ($prsn <= 20) {
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-white">Limit Disposisi</p>
-                                <h4 class="my-1 text-white"><?= rupiah(50000000); ?></h4>
+                                <h4 class="my-1 text-white"><?= rupiah($dispLimit->nominal); ?></h4>
                             </div>
                             <div class="text-white ms-auto font-35"><i class='bx bx-cart-alt'></i>
                             </div>
@@ -72,7 +72,7 @@ if ($prsn <= 20) {
                         <div class="d-flex align-items-center">
                             <div>
                                 <p class="mb-0 text-white">Sisa Dana</p>
-                                <h4 class="my-1 text-white"><?= rupiah(50000000 - $pakai->total); ?></h4>
+                                <h4 class="my-1 text-white"><?= rupiah($dispLimit->nominal - $pakai->total); ?></h4>
                             </div>
                             <div class="text-white ms-auto font-35"><i class='bx bx-comment-detail'></i>
                             </div>
@@ -83,8 +83,7 @@ if ($prsn <= 20) {
         </div>
         <div class="col-md-12 mb-3">
             <div class="progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg; ?>" role="progressbar"
-                    style="width: <?= $prsn; ?>%" aria-valuenow="<?= $prsn; ?>" aria-valuemin="0" aria-valuemax="100">
+                <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg; ?>" role="progressbar" style="width: <?= $prsn; ?>%" aria-valuenow="<?= $prsn; ?>" aria-valuemin="0" aria-valuemax="100">
                     <?= $prsn; ?>%</div>
             </div>
         </div>
@@ -116,33 +115,32 @@ if ($prsn <= 20) {
                                         $jml2 = $this->db->query("SELECT SUM(nom_cair) AS jml FROM realis WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun' ")->row();
                                         $kfe = $jml->jml + $jml2->jml;
                                     ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a->kode_pengajuan ?></td>
-                                        <td><?= $a->nama ?></td>
-                                        <td><?= $a->at ?></td>
-                                        <td><?= rupiah($kfe) ?></td>
-                                        <td>
-                                            <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i>sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i>belum</span>"; ?>
-                                            <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i>sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i>belum</span>"; ?>
-                                            <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i>sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i>belum</span>"; ?>
-                                            <?php if ($a->spj == 0) { ?>
-                                            <span class="badge bg-danger"><i class="bx bx-times"></i>belum
-                                                upload</span>
-                                            <?php } else if ($a->spj == 1) { ?>
-                                            <span class="badge bg-warning btn-xs"><i
-                                                    class="bx bx-spinner fa-refresh-animate"></i>
-                                                proses verifikasi</span>
-                                            <?php } else { ?>
-                                            <span class="badge bg-success"><i class="bx bx-check"></i>sudah
-                                                selesai</span>
-                                            <?php } ?>
-                                        </td>
-                                        <!-- <td>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a->kode_pengajuan ?></td>
+                                            <td><?= $a->nama ?></td>
+                                            <td><?= $a->at ?></td>
+                                            <td><?= rupiah($kfe) ?></td>
+                                            <td>
+                                                <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i>sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i>belum</span>"; ?>
+                                                <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i>sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i>belum</span>"; ?>
+                                                <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i>sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i>belum</span>"; ?>
+                                                <?php if ($a->spj == 0) { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i>belum
+                                                        upload</span>
+                                                <?php } else if ($a->spj == 1) { ?>
+                                                    <span class="badge bg-warning btn-xs"><i class="bx bx-spinner fa-refresh-animate"></i>
+                                                        proses verifikasi</span>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-success"><i class="bx bx-check"></i>sudah
+                                                        selesai</span>
+                                                <?php } ?>
+                                            </td>
+                                            <!-- <td>
                                                     <a href="<?= 'edit_disp.php?id=' . $a->id_disp ?>"><button class="btn btn-warning btn-sm"><i class="bx bx-edit"></i>Edit</button></a>
                                                     <a onclick="return confirm('Yakin akan dihapus ?')" href="<?= 'hapus.php?kd=dsp&id=' . $a->id_disp ?>"><button class="btn btn-danger btn-sm"><i class="bx bx-trash"></i>Del</button></a>
                                                 </td> -->
-                                    </tr>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
