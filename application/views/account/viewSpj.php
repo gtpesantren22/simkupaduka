@@ -28,7 +28,7 @@
                         <button class="btn btn-warning btn-sm" onclick="window.location='<?= base_url('account/spj') ?>'">Kembali</button>
                     </div>
                     <div class="card-body">
-                        <iframe src="<?= 'https://simkupaduka.ppdwk.com/institution/spj_file/' . $spj->file_spj ?>" style="width: 100%; height: 500px;"></iframe>
+                        <iframe src="<?= base_url('vertical/assets/uploads/' . $spj->file_spj) ?>" style="width: 100%; height: 700px;"></iframe>
                         <!-- <iframe src="<?= base_url('../simkupaduka-ok/institution/spj_file/05.0909.3.2022.pdf') ?>" style="width: 100%; height: 500px;"></iframe> -->
                     </div>
                 </div>

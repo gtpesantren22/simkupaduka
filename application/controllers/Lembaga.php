@@ -538,8 +538,8 @@ Terimakasih';
 
 
 			if ($spj->file_spj != '') {
-				$this->model->update('spj', $data, 'kode_pengajuan', $kode);
 				unlink('./vertical/assets/uploads/' . $spj->file_spj);
+				$this->model->update('spj', $data, 'kode_pengajuan', $kode);
 			} else {
 				$this->model->update('spj', $data, 'kode_pengajuan', $kode);
 				$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
