@@ -513,7 +513,7 @@ Terimakasih';
 
 		$file_name = 'SPJ-' . rand(0, 99999999);
 		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
-		$config['allowed_types']        = 'doc|docx|xls|xlsx|pdf';
+		$config['allowed_types']        = 'pdf';
 		$config['file_name']            = $file_name;
 		$config['overwrite']            = true;
 		$config['max_size']             = 5120; // 1MB

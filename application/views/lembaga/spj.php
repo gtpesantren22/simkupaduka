@@ -115,10 +115,7 @@
                                                                             file lama akan terhapus</i>
                                                                     </span>
                                                                 </li>
-                                                                <li> <span style="color: red;"><i>File yang doperbolehkan :
-                                                                            WORD,
-                                                                            EXCEL,
-                                                                            dan PDF (doc,docx,xls,xlsx,pdf). Max file 5
+                                                                <li> <span style="color: red;"><i>File yang doperbolehkan hanya PDF (.pdf). Max file 5
                                                                             Mb</i>
                                                                     </span>
                                                                 </li>
