@@ -434,7 +434,7 @@ Periode : ' . $perod . '
 Pada : ' . $dt->at . '
 Nominal : ' . rupiah($jml->jml) . '
 
-*_dimohon kepada KPA terkait untuk segera melakukan pencairan di Sekretariat Kantor Bendahara Pesantren_*
+*_dimohon kepada Bendahara untuk segera mengecek pengjuan tersebut di https://simkupaduka.ppdwk.com_*
 Terimakasih';
 
 		if ($cekPj->pj == '' || $cekPj->tgl == '') {
