@@ -28,58 +28,20 @@
                                         <th>Alamat</th>
                                         <th>Kelas Formal</th>
                                         <th>Kelas Madin</th>
-                                        <th>Stts</th>
+                                        <!-- <th>Stts</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
                                     foreach ($santri as $a) : ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a->nama ?></td>
-                                        <td><?= $a->desa . '-' . $a->kec . '-' . $a->kab ?></td>
-                                        <td><?= $a->k_formal . ' ' . $a->t_formal ?></td>
-                                        <td><?= $a->k_madin . ' ' . $a->r_madin ?></td>
-                                        <td><?php $st = $a->stts;
-                                                $ps = explode("-", $st);
-                                                if ($ps[0] == 1) {
-                                                    echo "<span class='badge bg-violet'>Ust/Usdz</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[1] == 2) {
-                                                    echo "<span class='badge bg-primary'>Mhs/i</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[2] == 3) {
-                                                    echo "<span class='badge bg-success'>Sdr/i</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[3] == 4) {
-                                                    echo "<span class='badge bg-info'>Kls 6</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[4] == 5) {
-                                                    echo "<span class='badge bg-warning'>Baru</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[5] == 6) {
-                                                    echo "<span class='badge bg-danger'>Lama</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[6] == 7) {
-                                                    echo "<span class='badge bg-primary'>Peng. Wilyah</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[7] == 8) {
-                                                    echo "<span class='badge bg-dark'>Putra</span>";
-                                                    echo " ";
-                                                }
-                                                if ($ps[8] == 9) {
-                                                    echo "<span class='badge bg-info'>Putri</span>";
-                                                }
-                                                ?></td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a->nama ?></td>
+                                            <td><?= $a->desa . '-' . $a->kec . '-' . $a->kab ?></td>
+                                            <td><?= $a->k_formal . ' ' . $a->t_formal ?></td>
+                                            <td><?= $a->k_madin . ' ' . $a->r_madin ?></td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
