@@ -113,6 +113,7 @@
                                         <th>PJ</th>
                                         <th>Nominal</th>
                                         <th>Ket</th>
+                                        <th>Rencana</th>
                                         <th>Cair</th>
                                         <th>#</th>
                                     </tr>
@@ -121,10 +122,10 @@
                                     <?php
                                     $no = 1;
                                     if ($pj->cair ==  1) {
-                                        $rls = $this->db->query("SELECT * FROM realis WHERE kode_pengajuan = '$pj->kode_pengajuan' AND tahun = '$tahun' ")->result();
+                                        $rls = $this->db->query("SELECT realis.*, rab.rencana FROM realis JOIN rab ON realis.kode=rab.kode WHERE realis.kode_pengajuan = '$pj->kode_pengajuan' AND realis.tahun = '$tahun' AND rab.tahun = '$tahun' ")->result();
                                         $nm = $this->db->query("SELECT SUM(nominal) AS jml FROM realis WHERE kode_pengajuan = '$pj->kode_pengajuan' AND tahun = '$tahun' ")->row();
                                     } else {
-                                        $rls = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$pj->kode_pengajuan' AND tahun = '$tahun' ")->result();
+                                        $rls = $this->db->query("SELECT real_sm.*, rab.rencana FROM real_sm JOIN rab ON real_sm.kode=rab.kode WHERE real_sm.kode_pengajuan = '$pj->kode_pengajuan' AND real_sm.tahun = '$tahun' AND rab.tahun = '$tahun' ")->result();
                                         $nm = $this->db->query("SELECT SUM(nominal) AS jml FROM real_sm WHERE kode_pengajuan = '$pj->kode_pengajuan' AND tahun = '$tahun' ")->row();
                                     }
 
@@ -171,6 +172,7 @@
                                                     </form>
                                                 <?php } ?>
                                             </td>
+                                            <td><?= $dataBulan[$ls_jns->rencana]; ?></td>
                                             <td><?= $ls_jns->stas; ?></td>
                                             <td>
                                                 <?php if ($pj->verval == 0 && $pj->stts == 'no') { ?>

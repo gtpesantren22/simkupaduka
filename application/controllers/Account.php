@@ -662,6 +662,7 @@ Terimakasih';
 		$data['totalReal'] = $this->model->getBySum2('realis', 'lembaga', $lembaga, 'tahun', $this->tahun, 'nominal')->row();
 		$data['totalAjukan'] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'tahun', $this->tahun, 'nominal')->row();
 
+		$data['bulanData'] = $this->bulan;
 
 		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 		foreach ($data['jenis'] as $jns) {

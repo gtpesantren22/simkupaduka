@@ -11,6 +11,7 @@
                 <th scope="col">No</th>
                 <!-- <th scope="col">Kode</th> -->
                 <th scope="col" style="max-width: 300px; overflow-wrap: break-word;">Nama Item/Kegiatan</th>
+                <th scope="col">Rencana</th>
                 <th scope="col">Harga</th>
                 <th scope="col">QTY</th>
                 <th scope="col">Ajukan Sisa</th>
@@ -38,6 +39,7 @@
                         <b><?= $rab->nama ?></b><br>
                         <?= $rab->kegiatan ?>
                     </td>
+                    <td><?= $dataBulan[$rab->rencana]  ?></td>
                     <td class="price"><?= rupiah($rab->harga_satuan) ?></td>
                     <td><?= $rab->qty  ?></td>
                     <td>

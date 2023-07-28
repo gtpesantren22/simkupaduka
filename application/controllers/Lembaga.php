@@ -191,6 +191,8 @@ class Lembaga extends CI_Controller
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
 		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 
+		$data['dataBulan'] = $this->bulan;
+
 		$data['dppk'] = $this->model->getBy2('dppk', 'tahun', $this->tahun, 'lembaga', $this->lembaga)->result();
 
 		$this->load->view('lembaga/head', $data);
@@ -216,6 +218,7 @@ class Lembaga extends CI_Controller
 			$real = $this->db->query("SELECT SUM(realis.vol) as jml FROM realis JOIN rab ON realis.kode = rab.kode WHERE realis.tahun = '$this->tahun' AND realis.kode = '$kode_rab' ")->row();
 			$data['real'][$kode_rab] = $real ? $real->jml : 0;
 		}
+		$data['dataBulan'] = $this->bulan;
 		$view = $this->load->view('lembaga/dataRabDppk', $data, true);
 		echo $view;
 	}
