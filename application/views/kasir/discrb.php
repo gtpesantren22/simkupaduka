@@ -56,6 +56,10 @@
                                             <th>Tempat Kos</th>
                                             <th>: <?= $tmpKos[$sn->t_kos] ?></th>
                                         </tr>
+                                        <tr>
+                                            <th>Keterangan</th>
+                                            <th>: <?= $kter[$sn->ket] ?></th>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
