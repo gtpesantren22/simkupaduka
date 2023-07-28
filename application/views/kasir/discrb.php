@@ -52,6 +52,10 @@
                                             <th>Komplek</th>
                                             <th>: <?= $sn->komplek ?></th>
                                         </tr>
+                                        <tr>
+                                            <th>Tempat Kos</th>
+                                            <th>: <?= $tmpKos[$sn->t_kos] ?></th>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
