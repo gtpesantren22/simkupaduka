@@ -124,7 +124,10 @@
                                         <tr>
                                             <td><?= $no++ ?></td>
                                             <td><?= $a->kode ?></td>
-                                            <td><b>(<?= $bulan[$a->rencana] ?>) <?= $a->kegiatan ?></b><br>
+                                            <td>
+                                                <b>Program : <?= $a->program ?></b><br>
+                                                <b>Kegiatan : <?= $a->kegiatan ?></b><br>
+                                                <b>Rencana : <?= $bulan[$a->rencana] ?></b><br>
                                                 <?= $a->ket ?>
                                                 <?php
                                                 if (preg_match("/honor/i", $a->ket)) {
