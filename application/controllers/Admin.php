@@ -91,14 +91,14 @@ class Admin extends CI_Controller
 	}
 	public function bpEdit()
 	{
-		$where = ['id_tangg' => $this->input->post('id', true)];
+		$where =  $this->input->post('id', true);
 		$data = [
 			'ju_ap' => rmRp($this->input->post('ju_ap', true)),
 			'me_ju' => rmRp($this->input->post('me_ju', true)),
 			'total' => rmRp($this->input->post('me_ju', true)) + rmRp($this->input->post('ju_ap', true))
 		];
 
-		$this->model->update('tangg', $where, $data);
+		$this->model->update('tangg', $data, 'id_tangg', $where);
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Tanggungan berhasil diedit');
 			redirect('admin/bp');

@@ -22,32 +22,23 @@
                         <div class="row">
                             <div class="col-6">
                                 <label for="" class="form-label">* NIS Santri</label>
-                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..."
-                                    aria-label="readonly input example1" name="nis" value="<?= $bp->nis; ?>" readonly>
+                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..." aria-label="readonly input example1" name="nis" value="<?= $bp->nis; ?>" readonly>
                                 <label for="" class="form-label">* Nama</label>
-                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..."
-                                    aria-label="readonly input example2" name="nama" value="<?= $bp->nama; ?>" readonly>
+                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..." aria-label="readonly input example2" name="nama" value="<?= $bp->nama; ?>" readonly>
                                 <label for="" class="form-label">* No. Briva</label>
-                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..."
-                                    aria-label="readonly input example3" name="briva" value="<?= $bp->briva; ?>"
-                                    readonly>
+                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..." aria-label="readonly input example3" name="briva" value="<?= $bp->briva; ?>" readonly>
                             </div>
                             <div class="col-6">
                                 <?= form_open('admin/bpEdit') ?>
                                 <input type="hidden" name="id" value="<?= $bp->id_tangg; ?>">
                                 <label for="" class="form-label">* Juli - April</label>
-                                <input class="form-control mb-3 uang" type="text" placeholder="Default input"
-                                    aria-label="default input example" name="ju_ap" value="<?= $bp->ju_ap; ?>" required>
+                                <input class="form-control mb-3 uang" type="text" placeholder="Default input" aria-label="default input example" name="ju_ap" value="<?= $bp->ju_ap; ?>" required>
                                 <label for="" class="form-label">* Mei - Juni</label>
-                                <input class="form-control mb-3 uang" type="text" placeholder="Default input"
-                                    aria-label="default input example" name="me_ju" value="<?= $bp->me_ju; ?>" required>
+                                <input class="form-control mb-3 uang" type="text" placeholder="Default input" aria-label="default input example" name="me_ju" value="<?= $bp->me_ju; ?>" required>
                                 <label for="" class="form-label">* Total</label>
-                                <input class="form-control mb-3" type="text" placeholder="Default input"
-                                    aria-label="default input example" name="total"
-                                    value="<?= rupiah($bp->ju_ap + $bp->me_ju); ?>" readonly>
+                                <input class="form-control mb-3" type="text" placeholder="Default input" aria-label="default input example" name="total" value="<?= rupiah($bp->ju_ap * 10 + $bp->me_ju * 2); ?>" readonly>
                                 <button class="btn btn-success"><i class="bx bx-check-circle"></i>SIMPAN</button>
-                                <a href="<?= base_url('admin/bp'); ?>" class="btn btn-warning"><i
-                                        class="bx bx-left-arrow-circle"></i>KEMBALI</a>
+                                <a href="<?= base_url('admin/bp'); ?>" class="btn btn-warning"><i class="bx bx-left-arrow-circle"></i>KEMBALI</a>
                                 <?= form_close() ?>
                             </div>
                         </div>
