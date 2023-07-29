@@ -292,7 +292,9 @@ class Account extends CI_Controller
 
 	public function rabDetail($kode)
 	{
-		$data['data'] = $this->model->getBy2('rab', 'lembaga', $kode, 'tahun', $this->tahun)->result();
+		// $data['data'] = $this->model->getBy2('rab', 'lembaga', $kode, 'tahun', $this->tahun)->result();
+		$data['data'] = $this->db->query("SELECT rab.*, rab_sm24.kegiatan, dppk.program FROM rab JOIN rab_sm24 ON rab.kode=rab_sm24.kode JOIN dppk ON rab_sm24.kode_pak=dppk.id_dppk WHERE rab.lembaga = '$kode' AND rab.tahun = '$this->tahun' ")->result();
+
 		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $kode)->row();
 
 		// $data['sumA'] = $this->model->getTotalRabJenis('A', $kode, $this->tahun)->row();

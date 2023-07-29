@@ -79,7 +79,13 @@
                                         <tr>
                                             <td><?= $no++ ?></td>
                                             <td><?= $a->kode ?></td>
-                                            <td><?= $a->nama ?></td>
+                                            <td>
+                                                <b><?= $a->nama ?></b>
+                                                <br>
+                                                Program : <?= $a->program ?><br>
+                                                Kegiatan : <?= $a->kegiatan ?><br>
+                                                Rencana : <?= $bulan[$a->rencana] ?><br>
+                                            </td>
                                             <td><?= $bulan[$a->rencana] ?></td>
                                             <td><?= $a->qty . ' ' . $a->satuan ?></td>
                                             <td><?= rupiah($a->harga_satuan) ?></td>
