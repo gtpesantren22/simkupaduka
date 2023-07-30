@@ -302,8 +302,8 @@ Terimakasih';
         $by = $nominal + $this->input->post('masuk', true);
         $ttl = $this->input->post('ttl', true);
         $alm = $dp->desa . '-' . $dp->kec . '-' . $dp->kab;
-        // $hpNo = $dp->hp;
-        $hpNo = '085236924510';
+        $hpNo = $dp->hp;
+        $hpNo2 = '085236924510';
 
         $data = [
             'nis' => $nis,
@@ -357,6 +357,7 @@ Terimakasih';
 
                     if ($this->db->affected_rows() > 0) {
                         kirim_person($this->apiKey, $hpNo, $pesan);
+                        kirim_person($this->apiKey, $hpNo2, $pesan);
                         $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                         redirect('kasir/discrb/' . $nis);
                     } else {
@@ -368,6 +369,7 @@ Terimakasih';
 
                     if ($this->db->affected_rows() > 0) {
                         kirim_person($this->apiKey, $hpNo, $pesan);
+                        kirim_person($this->apiKey, $hpNo2, $pesan);
                         $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                         redirect('kasir/discrb/' . $nis);
                     } else {
