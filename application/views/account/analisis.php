@@ -43,7 +43,8 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Lembaga</th>
-                                                    <th>Total Rencana Belanja</th>
+                                                    <th>Total RAB</th>
+                                                    <th>Realisasi</th>
                                                     <th>Total Item</th>
                                                 </tr>
                                             </thead>
@@ -56,12 +57,16 @@
                                                 foreach ($lmb as $lmb) :
                                                     $totlaRencana = $this->db->query("SELECT SUM(total) as total FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$lmb->kode' AND rencana = '$dt->rencana' ")->row();
                                                     $totlItem = $this->db->query("SELECT COUNT(*) as jml FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$lmb->kode' AND rencana = '$dt->rencana' ")->row();
+                                                    $totalPakai = $this->db->query("SELECT SUM(realis.nominal) AS pakai FROM realis JOIN rab ON realis.kode=rab.kode WHERE realis.tahun = '$dt->tahun' AND rab.tahun = '$dt->tahun' AND realis.lembaga = '$lmb->kode' AND rab.rencana = '$dt->rencana' ")->row();
+
+                                                    $prsn = $totalPakai->pakai == 0 ? 0 : ($totalPakai->pakai / $totlaRencana->total) * 100;
 
                                                 ?>
                                                     <tr>
                                                         <td><?= $no++ ?></td>
                                                         <td><?= $lmb->nama ?></td>
                                                         <td><?= rupiah($totlaRencana->total) ?></td>
+                                                        <td><?= rupiah($totalPakai->pakai) ?> <b>(<?= round($prsn, 2) ?>%)</b></td>
                                                         <td><?= $totlItem->jml ?></td>
                                                     </tr>
                                                 <?php endforeach; ?>

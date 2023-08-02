@@ -1659,6 +1659,7 @@ FROM rab
 WHERE tahun = '2023/2024'
 GROUP BY rencana
 ORDER BY CAST(rencana AS UNSIGNED) ASC ")->result();
+
 		$data['bulan'] = $this->bulan;
 
 		$this->load->view('account/head', $data);
