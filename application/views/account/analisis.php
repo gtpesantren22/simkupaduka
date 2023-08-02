@@ -44,7 +44,7 @@
                                                     <th>No</th>
                                                     <th>Lembaga</th>
                                                     <th>Total RAB</th>
-                                                    <th>Realisasi</th>
+                                                    <th colspan="2">Realisasi</th>
                                                     <th>Total Item</th>
                                                 </tr>
                                             </thead>
@@ -66,7 +66,8 @@
                                                         <td><?= $no++ ?></td>
                                                         <td><?= $lmb->nama ?></td>
                                                         <td><?= rupiah($totlaRencana->total) ?></td>
-                                                        <td><?= rupiah($totalPakai->pakai) ?> <b>(<?= round($prsn, 2) ?>%)</b></td>
+                                                        <td><?= rupiah($totalPakai->pakai) ?></td>
+                                                        <td><b>(<?= round($prsn, 2) ?>%)</b></td>
                                                         <td><?= $totlItem->jml ?></td>
                                                     </tr>
                                                 <?php endforeach; ?>
