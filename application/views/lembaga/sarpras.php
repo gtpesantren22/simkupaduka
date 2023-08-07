@@ -45,7 +45,7 @@
                                     <?php
                                     $no = 1;
                                     foreach ($data as $ls_jns) :
-                                        $kdpj = $ls_jns->$kode_pengajuan;
+                                        $kdpj = $ls_jns->kode_pengajuan;
                                         $spj = $this->db->query("SELECT * FROM spj WHERE kode_pengajuan = '$kdpj' ")->row();
                                         $sttsSpj = $spj ? $spj->stts : 0;
                                     ?>
