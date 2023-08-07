@@ -69,7 +69,7 @@
                                                 ?>
                                             </td>
                                             <td>
-                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload SPJ</button>
+                                                <!-- <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload SPJ</button> -->
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
@@ -94,6 +94,23 @@
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <?php if ($ls_jns->stts == 0) { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
+                                                        upload</span>
+                                                    <?php if ($ls_jns->b_cair == 1) { ?>
+                                                        | <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i>
+                                                            Upload berkas SPJ</button>
+                                                    <?php } ?>
+                                                <?php } else if ($ls_jns->stts == 1) { ?>
+                                                    <span class="badge bg-warning"><i class="bx bx-recycle"></i>
+                                                        proses verifikasi</span>
+                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i>
+                                                        Upload ulang berkas SPJ</button>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-success"><i class="bx bx-check"></i> sudah
+                                                        selesai</span>
+                                                <?php } ?>
                                             </td>
                                             <td><a href="<?= base_url('lembaga/sarprasDetail/' . $ls_jns->kode_pengajuan) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i>cek</button></a></td>
                                         </tr>
