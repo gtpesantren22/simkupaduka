@@ -47,6 +47,7 @@
                                     foreach ($data as $ls_jns) :
                                         $kdpj = $ls_jns->$kode_pengajuan;
                                         $spj = $this->db->query("SELECT * FROM spj WHERE kode_pengajuan = '$kdpj' ")->row();
+                                        $sttsSpj = $spj ? $spj->stts : 0;
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
@@ -97,14 +98,11 @@
                                                     </div>
                                                 </div>
 
-                                                <?php if ($spj->stts == 0) { ?>
+                                                <?php if ($sttsSpj == 0) { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
                                                         upload</span>
-                                                    <?php if ($ls_jns->cair == 1) { ?>
-                                                        | <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i>
-                                                            Upload berkas SPJ</button>
-                                                    <?php } ?>
-                                                <?php } else if ($spj->stts == 1) { ?>
+                                                    | <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i> Upload berkas SPJ</button>
+                                                <?php } else if ($sttsSpj == 1) { ?>
                                                     <span class="badge bg-warning"><i class="bx bx-recycle"></i>
                                                         proses verifikasi</span>
                                                     <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i>
