@@ -1351,8 +1351,8 @@ Terimakasih';
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 
-		// $data['data'] = $this->model->getBy('sarpras', 'tahun', $this->tahun)->result();
-		$data['data'] = $this->db->query("SELECT * FROM sarpras JOIN spj ON sarpras.kode_pengajuan=spj.kode_pengajuan WHERE sarpras.tahun = '$this->tahun' ORDER BY sarpras.tanggal DESC")->result();
+		$data['data'] = $this->model->getBy('sarpras', 'tahun', $this->tahun)->result();
+		// $data['data'] = $this->db->query("SELECT * FROM sarpras JOIN spj ON sarpras.kode_pengajuan=spj.kode_pengajuan WHERE sarpras.tahun = '$this->tahun' ORDER BY sarpras.tanggal DESC")->result();
 		$data['bulan'] = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 		$data['pj'] = $this->db->query("SELECT * FROM sarpras WHERE tahun = '$this->tahun' ORDER BY tanggal DESC LIMIT 1")->row();
 
