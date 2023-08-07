@@ -842,6 +842,7 @@ Terimakasih';
 	public function spj()
 	{
 		$data['data'] = $this->model->getSPJ($this->tahun)->result();
+		$data['dataSr'] = $this->db->query("SELECT * FROM spj JOIN lembaga ON spj.lembaga=lembaga.kode JOIN sarpras ON sarpras.kode_pengajuan=spj.kode_pengajuan WHERE spj.kode_pengajuan LIKE '%.SRPS.%' AND spj.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND file_spj != '' ")->result();
 		$data['bulan'] = $this->bulan;
 		$data['tahun'] = $this->tahun;
 		$data['user'] = $this->Auth_model->current_user();

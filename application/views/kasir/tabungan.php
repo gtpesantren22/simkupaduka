@@ -23,7 +23,7 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-10">
+                            <div class="col-md-5">
                                 <div class="card radius-10 bg-danger bg-gradient">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
@@ -37,50 +37,73 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-md-7">
                                 <div class="card radius-10 bg-success bg-gradient">
                                     <div class="card-body">
-                                        <div class="d-flex align-items-center">
-                                            <div class="text-white ms-auto font-35">
-                                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPes"><i class="bx bx-plus-circle"></i>
-                                                    Tambah</button>
+                                        <?= form_open('kasir/saveTabungan'); ?>
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="form-group mb-2">
+                                                    <label for="">Santri</label>
+                                                    <select name="nis" class="form-select single-select" required>
+                                                        <option value=""> pilih santri</option>
+                                                        <?php foreach ($santri as $santri) : ?>
+                                                            <option value="<?= $santri->nis ?>"><?= $santri->nama ?></option>
+                                                        <?php endforeach ?>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="">Tanggal</label>
+                                                    <input type="text" name="tanggal" id="date" class="form-control" required>
+                                                </div>
+                                                <div class="form-group mb-2">
+                                                    <label for="">Nominal</label>
+                                                    <input type="text" name="jumlah" class="form-control uang" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button type="submit" class="btn btn-primary btn-sm mt-4"><i class="bx bx-save"></i> Simpan Data</button><br>
+                                                <button type="reset" class="btn btn-secondary  btn-sm mt-1"><i class="bx bx-refresh"></i> Reset</button>
                                             </div>
                                         </div>
                                     </div>
+                                    <?= form_close(); ?>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Nama Santri</th>
+                                                <th>Jumlah</th>
+                                                <th>Tanggal</th>
+                                                <th>Kasir</th>
+                                                <th>Act</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $no = 1;
+                                            foreach ($data as $a) : ?>
+                                                <tr>
+                                                    <td><?= $no++ ?></td>
+                                                    <td><span class="badge bg-primary"><?= $a->nmSantri ?></td>
+                                                    <td><?= rupiah($a->jumlah) ?></td>
+                                                    <td><?= $a->tanggal ?></td>
+                                                    <td><?= $a->kasir ?></td>
+                                                    <td>
+                                                        <a href="<?= 'delTabungan/' . $a->id_tabungan; ?>" class="btn btn-danger btn-sm tombol-hapus">Del</a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Lembaga</th>
-                                        <th>Jumlah</th>
-                                        <th>Tanggal</th>
-                                        <th>Kasir</th>
-                                        <th>Act</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $no = 1;
-                                    foreach ($data as $a) : ?>
-                                        <tr>
-                                            <td><?= $no++ ?></td>
-                                            <td><span class="badge bg-primary"><?= $a->nmLembaga ?></td>
-                                            <td><?= rupiah($a->jumlah) ?></td>
-                                            <td><?= $a->tanggal ?></td>
-                                            <td><?= $a->kasir ?></td>
-                                            <td>
-                                                <a href="<?= 'delTabungan/' . $a->id_tabungan; ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -89,39 +112,3 @@
     </div>
 </div>
 <!--end page wrapper -->
-
-<div class="modal fade" id="addPes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Lembaga</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <?= form_open('kasir/saveTabungan'); ?>
-            <div class="modal-body">
-                <div class="form-group mb-2">
-                    <label for="">Lembaga</label>
-                    <select name="lembaga" class="form-select" required>
-                        <option value=""> pilih lembaga</option>
-                        <?php foreach ($lembaga as $lembaga) : ?>
-                            <option value="<?= $lembaga->kode ?>"><?= $lembaga->nama ?></option>
-                        <?php endforeach ?>
-                    </select>
-                </div>
-                <div class="form-group mb-2">
-                    <label for="">Tanggal</label>
-                    <input type="text" name="tanggal" id="date" class="form-control" required>
-                </div>
-                <div class="form-group mb-2">
-                    <label for="">Nominal</label>
-                    <input type="text" name="jumlah" class="form-control uang" required>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Data</button>
-            </div>
-            <?= form_close(); ?>
-        </div>
-    </div>
-</div>

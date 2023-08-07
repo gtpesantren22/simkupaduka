@@ -1350,7 +1350,7 @@ Bendahara PPDWK
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
 
-        $data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga=lembaga.kode JOIN bidang ON pengeluaran_rutin.lembaga=bidang.kode WHERE pengeluaran_rutin.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ")->result();
+        $data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga=lembaga.kode JOIN bidang ON pengeluaran_rutin.lembaga=bidang.kode WHERE pengeluaran_rutin.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ORDER BY pengeluaran_rutin.tanggal DESC ")->result();
 
         $data['sumData'] = $this->model->getBySum('pengeluaran_rutin', 'tahun', $data['tahun'], 'nominal')->row();
 
@@ -1370,7 +1370,7 @@ Bendahara PPDWK
             "langganan" => $this->input->post('langganan', true),
             "lembaga" => $this->input->post('lembaga', true),
             "bidang" => $this->input->post('bidang', true),
-            "pelanggan" => $this->input->post('pelanggan', true),
+            "ket" => $this->input->post('ket', true),
             "nominal" => rmRp($this->input->post('nominal', true)),
             "tanggal" => $this->input->post('tanggal', true),
             "kasir" => $this->user,
@@ -1599,11 +1599,11 @@ Terimakasih';
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
 
-        $data['data'] = $this->db->query("SELECT rekap_tabungan.*, lembaga.nama AS nmLembaga FROM lembaga JOIN rekap_tabungan ON rekap_tabungan.lembaga=lembaga.kode WHERE rekap_tabungan.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' ")->result();
+        $data['data'] = $this->db->query("SELECT rekap_tabungan.*, tb_santri.nama AS nmSantri FROM tb_santri JOIN rekap_tabungan ON rekap_tabungan.nis=tb_santri.nis WHERE rekap_tabungan.tahun = '$this->tahun' AND tb_santri.aktif = 'Y' ORDER BY rekap_tabungan.at DESC  ")->result();
 
         $data['sumData'] = $this->model->getBySum('rekap_tabungan', 'tahun', $data['tahun'], 'jumlah')->row();
 
-        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
+        $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
 
 
         $this->load->view('kasir/head', $data);
@@ -1615,7 +1615,7 @@ Terimakasih';
     {
         $data = [
             "id_tabungan" => $this->uuid->v4(),
-            "lembaga" => $this->input->post('lembaga', true),
+            "nis" => $this->input->post('nis', true),
             "jumlah" => rmRp($this->input->post('jumlah', true)),
             "tanggal" => $this->input->post('tanggal', true),
             "kasir" => $this->user,

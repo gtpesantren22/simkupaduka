@@ -6,7 +6,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Pengeluaran Rutin Non Honor</div>
+            <div class="breadcrumb-title pe-3">Pengeluaran Rutin</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
@@ -28,7 +28,7 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <p class="mb-0 text-white">TOTAL PENGELURAN RUTIN NON HONOR</p>
+                                                <p class="mb-0 text-white">TOTAL PENGELURAN RUTIN</p>
                                                 <h4 class="my-1 text-white"><?= rupiah($sumData->jml); ?></h4>
                                             </div>
                                             <div class="text-white ms-auto font-35"><i class='bx bx-money'></i>
@@ -60,7 +60,7 @@
                                         <th>Lembaga | Bidang</th>
                                         <th>Tanggal</th>
                                         <th>Nominal</th>
-                                        <th>Pelangggan</th>
+                                        <th>Ket</th>
                                         <th>Act</th>
                                     </tr>
                                 </thead>
@@ -74,7 +74,7 @@
                                             <td><span class="badge bg-primary"><?= $a->nmLembaga ?></span><span class="badge bg-info"><?= $a->nmBidang ?></span></td>
                                             <td><?= $a->tanggal ?></td>
                                             <td><?= rupiah($a->nominal) ?></td>
-                                            <td><?= $a->pelanggan ?></td>
+                                            <td><?= $a->ket ?></td>
                                             <td>
                                                 <a href="<?= 'delOutRutin/' . $a->id_pengeluaran_rutin; ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
                                             </td>
@@ -125,6 +125,7 @@
                         <option value=""> pilih lembaga</option>
                         <option value="LISTRIK"> LISTRIK</option>
                         <option value="INTERNET"> INTERNET/WIFI</option>
+                        <option value="HONOR"> HONOR</option>
                     </select>
                 </div>
                 <div class="form-group mb-2">
@@ -136,8 +137,8 @@
                     <input type="text" name="nominal" class="form-control uang" required>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="">Pelanggan</label>
-                    <input type="text" name="pelanggan" class="form-control" required>
+                    <label for="">Ket</label>
+                    <input type="text" name="ket" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
