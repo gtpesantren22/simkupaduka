@@ -24,7 +24,7 @@ class Account extends CI_Controller
 		$this->user = $user->nama;
 		$this->lembaga = $user->lembaga;
 
-		if (!$this->Auth_model->current_user() || $user->level != 'account') {
+		if (!$this->Auth_model->current_user() || $user->level != 'account' || $user->level != 'admin') {
 			redirect('login/logout');
 		}
 	}

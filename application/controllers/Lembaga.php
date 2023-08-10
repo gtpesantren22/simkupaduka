@@ -23,7 +23,7 @@ class Lembaga extends CI_Controller
 		$this->apiKey = $api->nama_key;
 		$this->lembaga = $user->lembaga;
 
-		if (!$this->Auth_model->current_user() || $user->level != 'lembaga') {
+		if (!$this->Auth_model->current_user() || $user->level != 'lembaga' || $user->level != 'admin') {
 			redirect('login/logout');
 		}
 	}

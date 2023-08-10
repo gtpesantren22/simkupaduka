@@ -23,7 +23,7 @@ class Kasir extends CI_Controller
         $this->lembaga = $user->lembaga;
         $this->user = $user->nama;
 
-        if (!$this->Auth_model->current_user() || $user->level != 'kasir') {
+        if (!$this->Auth_model->current_user() || $user->level != 'kasir' || $user->level != 'admin') {
             redirect('login/logout');
         }
     }
