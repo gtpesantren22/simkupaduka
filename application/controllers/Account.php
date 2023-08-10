@@ -24,7 +24,7 @@ class Account extends CI_Controller
 		$this->user = $user->nama;
 		$this->lembaga = $user->lembaga;
 
-		if (!$this->Auth_model->current_user() || $user->level != 'account' || $user->level != 'admin') {
+		if ((!$this->Auth_model->current_user() || $user->level != 'account') || (!$this->Auth_model->current_user() || $user->level != 'admin')) {
 			redirect('login/logout');
 		}
 	}
@@ -57,6 +57,14 @@ class Account extends CI_Controller
 
 		$data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
 		$data['cash'] = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $data['tahun']);
+
+		// if (!$this->Auth_model->current_user() || $this->Auth_model->current_user()->level != 'account' && $this->Auth_model->current_user()->level != 'admin') {
+		// 	$data['status'] = 'true ' . 'Ditolak';
+		// } else {
+		// 	$data['status'] = 'flase ' . 'Bisa masuk';
+		// }
+
+		// $data['status'] = (true && false) || (true && true);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/index', $data);
