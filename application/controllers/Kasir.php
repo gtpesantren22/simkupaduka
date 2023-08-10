@@ -1644,4 +1644,55 @@ Terimakasih';
             redirect('kasir/rekapTabungan');
         }
     }
+
+    public function pajak()
+    {
+
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $data['data'] = $this->model->getBy('pajak', 'tahun', $this->tahun)->result();
+
+        $data['sumData'] = $this->model->getBySum('pajak', 'tahun', $data['tahun'], 'nominal')->row();
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/pajak', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    function savePajak()
+    {
+        $data = [
+            'id_pajak' => $this->uuid->v4(),
+            'jenis' => $this->input->post('jenis', true),
+            "ket" => $this->input->post('ket', true),
+            "nominal" => rmRp($this->input->post('nominal', true)),
+            "tanggal" => $this->input->post('tanggal', true),
+            "kasir" => $this->user,
+            "tahun" => $this->tahun,
+            "at" => date('Y-m-d H:i:s')
+        ];
+
+        $this->model->input('pajak', $data);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Input data sukses');
+            redirect('kasir/pajak');
+        } else {
+            $this->session->set_flashdata('error', 'Input data gagal');
+            redirect('kasir/pajak');
+        }
+    }
+
+    public function delPajak($id)
+    {
+        $this->model->delete('pajak', 'id_pajak', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Hapus data sukses');
+            redirect('kasir/pajak');
+        } else {
+            $this->session->set_flashdata('error', 'Hapus data gagal');
+            redirect('kasir/pajak');
+        }
+    }
 }

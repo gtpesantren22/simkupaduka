@@ -54,6 +54,8 @@
                                                 $lmb = $this->db->query("SELECT * FROM lembaga WHERE tahun = '$dt->tahun' ")->result();
                                                 $totalAll = $this->db->query("SELECT SUM(total) as total FROM rab WHERE tahun = '$dt->tahun' AND rencana = '$dt->rencana' ")->row();
                                                 $jmlItem = $this->db->query("SELECT COUNT(*) as jml FROM rab WHERE tahun = '$dt->tahun' AND rencana = '$dt->rencana' ")->row();
+                                                $totalAllPakai = $this->db->query("SELECT SUM(realis.nominal) AS pakai FROM realis JOIN rab ON realis.kode=rab.kode WHERE realis.tahun = '$dt->tahun' AND rab.tahun = '$dt->tahun' AND rab.rencana = '$dt->rencana'  ")->row();
+
                                                 foreach ($lmb as $lmb) :
                                                     $totlaRencana = $this->db->query("SELECT SUM(total) as total FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$lmb->kode' AND rencana = '$dt->rencana' ")->row();
                                                     $totlItem = $this->db->query("SELECT COUNT(*) as jml FROM rab WHERE tahun = '$dt->tahun' AND lembaga = '$lmb->kode' AND rencana = '$dt->rencana' ")->row();
@@ -76,7 +78,7 @@
                                                 <tr>
                                                     <th colspan="2">TOTAL</th>
                                                     <th><?= rupiah($totalAll->total) ?></th>
-                                                    <th><?= $jmlItem->jml ?></th>
+                                                    <th><?= rupiah($totalAllPakai->pakai) ?></th>
                                                 </tr>
                                             </tfoot>
                                         </table>

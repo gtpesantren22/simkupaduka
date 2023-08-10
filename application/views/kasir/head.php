@@ -146,6 +146,7 @@
                         <li> <a href="<?= base_url('kasir/outHarian'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Harian</a></li>
                         <li> <a href="<?= base_url('kasir/inHarian'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan Harian</a></li>
                         <li> <a href="<?= base_url('kasir/rekapTabungan'); ?>"><i class="bx bx-right-arrow-alt"></i>Tabungan Santri</a></li>
+                        <li> <a href="<?= base_url('kasir/pajak'); ?>"><i class="bx bx-right-arrow-alt"></i>Pajak</a></li>
                     </ul>
                 </li>
 
