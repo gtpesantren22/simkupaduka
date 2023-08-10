@@ -24,7 +24,7 @@ class Account extends CI_Controller
 		$this->user = $user->nama;
 		$this->lembaga = $user->lembaga;
 
-		if ((!$this->Auth_model->current_user() || $user->level != 'account') || (!$this->Auth_model->current_user() || $user->level != 'admin')) {
+		if ((!$this->Auth_model->current_user() && $user->level != 'account') || (!$this->Auth_model->current_user() && $user->level != 'admin')) {
 			redirect('login/logout');
 		}
 	}
@@ -64,7 +64,7 @@ class Account extends CI_Controller
 		// 	$data['status'] = 'flase ' . 'Bisa masuk';
 		// }
 
-		// $data['status'] = (true && false) || (true && true);
+		$data['status'] = (true && false) || (true && true);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/index', $data);
