@@ -1695,4 +1695,25 @@ Terimakasih';
             redirect('kasir/pajak');
         }
     }
+
+    public function changeAkses()
+    {
+        $id = $this->input->post('id', true);
+        $lembaga = $this->input->post('lembaga', true);
+        $level = $this->input->post('level', true);
+
+        $cek = $this->model->getBy('user', 'id_user', $id)->row();
+        if ($cek->level != 'admin') {
+            redirect('login/logout');
+        } else {
+            if ($level === 'lembaga') {
+                $this->model->update('user', ['lembaga' => $lembaga], 'id_user', $id);
+                if ($this->db->affected_rows() > 0) {
+                    redirect('lembaga');
+                }
+            } else {
+                redirect($level);
+            }
+        }
+    }
 }

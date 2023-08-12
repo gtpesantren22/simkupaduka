@@ -191,6 +191,12 @@
                                 </a>
                             </li>
 
+                            <?php if ($user->level === 'admin') : ?>
+                                <li class="nav-item">
+                                    <button class="btn btn-sm button-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-desktop"></i>Pindah Akun</button>
+                                </li>
+                            <?php endif ?>
+
                             <li class="nav-item dropdown dropdown-large">
                                 <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> <span class="alert-count">7</span>
                                     <i class='bx bx-bell'></i>
@@ -358,6 +364,58 @@
                 </nav>
             </div>
         </header>
+
+        <?php if ($user->level === 'admin') : ?>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Changes</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <?= form_open('admin/changeAkses');  ?>
+                        <div class="modal-body">
+                            <?php
+                            $data = $this->db->query("SELECT * FROM lembaga WHERE tahun = '$tahun' ")->result();
+                            $currData = $this->db->query("SELECT * FROM user WHERE id_user = '$user->id_user' ")->row();
+                            ?>
+                            <input type="hidden" name="id" value="<?= $currData->id_user ?>">
+                            <div class="form-group">
+                                <label for="">Pilih Lembaga</label>
+                                <select name="lembaga" id="" class="form-select" required>
+                                    <?php foreach ($data as $lm) : ?>
+                                        <option <?= $currData->lembaga == $lm->kode ? 'selected' : '' ?> value="<?= $lm->kode ?>"><?= $lm->nama ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="">Tujuan Akun</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="level" value="admin" id="admin" required>
+                                    <label class="form-check-label" for="admin">Admin</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="level" value="account" id="account" required>
+                                    <label class="form-check-label" for="account">Accounting</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="level" value="kasir" id="kasir" required>
+                                    <label class="form-check-label" for="kasir">Kasir</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="level" value="lembaga" id="lembaga" required>
+                                    <label class="form-check-label" for="lembaga">KPA Lembaga</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Pindah</button>
+                        </div>
+                        <?= form_close() ?>
+                    </div>
+                </div>
+            </div>
+        <?php endif ?>
         <!--end header -->
         <div class="flash-data" data-flashdata="<?= $this->session->flashdata('ok') ?>"></div>
         <div class="flash-data-error" data-flashdata="<?= $this->session->flashdata('error') ?>"></div>

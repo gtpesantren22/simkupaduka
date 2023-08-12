@@ -64,7 +64,7 @@ class Account extends CI_Controller
 		// 	$data['status'] = 'flase ' . 'Bisa masuk';
 		// }
 
-		$data['status'] = (true && false) || (true && true);
+		// $data['status'] = (true && false) || (true && true);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/index', $data);
@@ -1782,6 +1782,27 @@ Terimakasih';
 		} else {
 			$this->session->set_flashdata('error', 'Pengajuan RAB tidak bisa ditolak');
 			redirect('account/sarpras');
+		}
+	}
+
+	public function changeAkses()
+	{
+		$id = $this->input->post('id', true);
+		$lembaga = $this->input->post('lembaga', true);
+		$level = $this->input->post('level', true);
+
+		$cek = $this->model->getBy('user', 'id_user', $id)->row();
+		if ($cek->level != 'admin') {
+			redirect('login/logout');
+		} else {
+			if ($level === 'lembaga') {
+				$this->model->update('user', ['lembaga' => $lembaga], 'id_user', $id);
+				if ($this->db->affected_rows() > 0) {
+					redirect('lembaga');
+				}
+			} else {
+				redirect($level);
+			}
 		}
 	}
 }

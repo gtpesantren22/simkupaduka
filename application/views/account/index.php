@@ -4,7 +4,7 @@
 <!--start page wrapper -->
 <div class="page-wrapper">
     <div class="page-content">
-        <h1><?= $status ?></h1>
+        <!-- <h1><?= $status ?></h1> -->
         <div class="row ">
             <div class="col">
                 <div class="card radius-10 border-start border-0 border-3 border-info">

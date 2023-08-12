@@ -80,6 +80,7 @@
                                                                 <h5 class="modal-title" id="exampleModalLabel">Form Upload SPJ Sarpras</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
+                                                            <h4>Kode Pengajuan : <?= $ls_jns->kode_pengajuan ?></h4>
                                                             <?= form_open_multipart('lembaga/uploadSpjSarpras') ?>
                                                             <input type="hidden" name="kode" value="<?= $ls_jns->kode_pengajuan ?>">
                                                             <div class="modal-body">
