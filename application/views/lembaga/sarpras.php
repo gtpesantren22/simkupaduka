@@ -73,17 +73,32 @@
                                             </td>
                                             <td>
                                                 <!-- <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Upload SPJ</button> -->
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                                                <?php if ($sttsSpj == 0) { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
+                                                        upload</span>
+                                                    | <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<?= $ls_jns->id_sarpras ?>"><i class="bx bx-upload"></i> Upload berkas SPJ</button>
+                                                <?php } else if ($sttsSpj == 1) { ?>
+                                                    <span class="badge bg-warning"><i class="bx bx-recycle"></i>
+                                                        proses verifikasi</span>
+                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal<?= $ls_jns->id_sarpras ?>"><i class="bx bx-upload"></i>
+                                                        Upload ulang berkas SPJ</button>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-success"><i class="bx bx-check"></i> sudah
+                                                        selesai</span>
+                                                <?php } ?>
+
+                                                <div class="modal fade" id="exampleModal<?= $ls_jns->id_sarpras ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
                                                                 <h5 class="modal-title" id="exampleModalLabel">Form Upload SPJ Sarpras</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
-                                                            <h4>Kode Pengajuan : <?= $ls_jns->kode_pengajuan ?></h4>
                                                             <?= form_open_multipart('lembaga/uploadSpjSarpras') ?>
                                                             <input type="hidden" name="kode" value="<?= $ls_jns->kode_pengajuan ?>">
                                                             <div class="modal-body">
+                                                                <h6>Kode Pengajuan : <?= $ls_jns->kode_pengajuan ?></h6>
                                                                 <div class="form-group">
                                                                     <label for="">Pilih File</label>
                                                                     <input type="file" name="file" class="form-control" required>
@@ -99,19 +114,6 @@
                                                     </div>
                                                 </div>
 
-                                                <?php if ($sttsSpj == 0) { ?>
-                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
-                                                        upload</span>
-                                                    | <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i> Upload berkas SPJ</button>
-                                                <?php } else if ($sttsSpj == 1) { ?>
-                                                    <span class="badge bg-warning"><i class="bx bx-recycle"></i>
-                                                        proses verifikasi</span>
-                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-upload"></i>
-                                                        Upload ulang berkas SPJ</button>
-                                                <?php } else { ?>
-                                                    <span class="badge bg-success"><i class="bx bx-check"></i> sudah
-                                                        selesai</span>
-                                                <?php } ?>
                                             </td>
                                             <td><a href="<?= base_url('lembaga/sarprasDetail/' . $ls_jns->kode_pengajuan) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i>cek</button></a></td>
                                         </tr>
