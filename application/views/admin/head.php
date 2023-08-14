@@ -172,6 +172,17 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-book-content'></i>
+                        </div>
+                        <div class="menu-title">Buku Kas</div>
+                    </a>
+                    <ul>
+                        <li> <a href="<?= base_url('admin/analistOut'); ?>"><i class="bx bx-right-arrow-alt"></i>Buku Kas Besar</a></li>
+                        <li> <a href="<?= base_url('admin/kasHarian'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Harian</a></li>
+                    </ul>
+                </li>
                 <li class="menu-label">AddOn</li>
                 <li>
                     <a href="javascript:;" class="has-arrow">
@@ -249,17 +260,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     </ul>
                 </li>
 
-                <li>
-                    <a href="javascript:;" class="has-arrow">
-                        <div class="parent-icon"><i class='bx bx-line-chart-down'></i>
-                        </div>
-                        <div class="menu-title">Analisis Data</div>
-                    </a>
-                    <ul>
-                        <li> <a href="<?= base_url('admin/analistOut'); ?>"><i class="bx bx-right-arrow-alt"></i>Rencana Pengeluaran</a>
-                        </li>
-                    </ul>
-                </li>
+
 
             </ul>
             <!--end navigation-->
@@ -286,9 +287,49 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                             </li>
                             <?php if ($user->level === 'admin') : ?>
                                 <li class="nav-item">
-                                    <button class="btn btn-sm button-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-desktop"></i>Pindah Akun</button>
+                                    <button class="btn btn-sm button-primary" data-bs-toggle="modal" data-bs-target="#mdPindah"><i class="bx bx-desktop"></i>Pindah Akun</button>
                                 </li>
                             <?php endif ?>
+
+                            <li class="nav-item dropdown dropdown-large">
+                                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class='bx bx-bell'></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="javascript:;">
+                                        <div class="msg-header">
+                                            <p class="msg-header-title">Notifications</p>
+                                            <p class="msg-header-clear ms-auto">Marks all as read</p>
+                                        </div>
+                                    </a>
+                                    <div class="header-notifications-list">
+
+                                    </div>
+                                    <a href="javascript:;">
+                                        <div class="text-center msg-footer">View All Notifications</div>
+                                    </a>
+                                </div>
+                            </li>
+
+                            <li class="nav-item dropdown dropdown-large">
+                                <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class='bx bx-comment'></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="javascript:;">
+                                        <div class="msg-header">
+                                            <p class="msg-header-title">Messages</p>
+                                            <p class="msg-header-clear ms-auto">Marks all as read</p>
+                                        </div>
+                                    </a>
+                                    <div class="header-message-list">
+
+                                    </div>
+                                    <a href="javascript:;">
+                                        <div class="text-center msg-footer">View All Messages</div>
+                                    </a>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                     <div class="user-box dropdown">
@@ -323,7 +364,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
         </header>
 
         <?php if ($user->level === 'admin') : ?>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="mdPindah" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

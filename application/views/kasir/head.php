@@ -193,7 +193,7 @@
 
                             <?php if ($user->level === 'admin') : ?>
                                 <li class="nav-item">
-                                    <button class="btn btn-sm button-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-desktop"></i>Pindah Akun</button>
+                                    <button class="btn btn-sm button-primary" data-bs-toggle="modal" data-bs-target="#mdPindah"><i class="bx bx-desktop"></i>Pindah Akun</button>
                                 </li>
                             <?php endif ?>
 
@@ -366,7 +366,7 @@
         </header>
 
         <?php if ($user->level === 'admin') : ?>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="mdPindah" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">

@@ -2335,4 +2335,20 @@ Terimakasih';
 			}
 		}
 	}
+
+	public function kasHarian()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['kas'] = $this->db->query("SELECT tgl_bayar AS tanggal, 'pesantren' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
+UNION
+SELECT tgl AS tanggal, 'realisasi' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM realis WHERE tahun = '$this->tahun' GROUP BY tgl 
+ORDER BY tanggal DESC")->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/kasHarian', $data);
+		$this->load->view('admin/foot');
+	}
 }
