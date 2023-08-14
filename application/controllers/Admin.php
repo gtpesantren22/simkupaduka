@@ -2345,10 +2345,28 @@ Terimakasih';
 		$data['kas'] = $this->db->query("SELECT tgl_bayar AS tanggal, 'pesantren' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
 UNION
 SELECT tgl AS tanggal, 'realisasi' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM realis WHERE tahun = '$this->tahun' GROUP BY tgl 
+UNION
+SELECT tanggal AS tanggal, 'pengeluaran' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM keluar WHERE tahun = '$this->tahun' GROUP BY tanggal
 ORDER BY tanggal DESC")->result();
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/kasHarian', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function kasBank()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['kas'] = $this->db->query("SELECT tgl_setor AS tanggal, 'BOS/BPOPP' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bos WHERE tahun = '$this->tahun' GROUP BY tgl_setor 
+UNION
+SELECT tgl AS tanggal, 'BP' AS jenis, SUM(nominal) AS debit, 0 AS kredit FROM pembayaran WHERE tahun = '$this->tahun' GROUP BY tgl 
+ORDER BY tanggal DESC")->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/kasBank', $data);
 		$this->load->view('admin/foot');
 	}
 }

@@ -181,6 +181,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     <ul>
                         <li> <a href="<?= base_url('admin/analistOut'); ?>"><i class="bx bx-right-arrow-alt"></i>Buku Kas Besar</a></li>
                         <li> <a href="<?= base_url('admin/kasHarian'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Harian</a></li>
+                        <li> <a href="<?= base_url('admin/kasBank'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Bank</a></li>
                     </ul>
                 </li>
                 <li class="menu-label">AddOn</li>
