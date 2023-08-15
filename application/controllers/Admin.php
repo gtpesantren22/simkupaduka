@@ -10,6 +10,7 @@ class Admin extends CI_Controller
 	function __construct()
 	{
 		parent::__construct();
+		$this->db5 = $this->load->database('nikmus', true);
 		$this->load->model('AdminModel', 'model');
 		$this->load->model('Auth_model');
 
@@ -2342,12 +2343,16 @@ Terimakasih';
 		$data['tahun'] = $this->tahun;
 		$data['bulan'] = $this->bulan;
 
-		$data['kas'] = $this->db->query("SELECT tgl_bayar AS tanggal, 'PESANTREN' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
+		$kas1 = $this->db->query("SELECT tgl_bayar AS tanggal, 'PESANTREN' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
 UNION
 SELECT tgl AS tanggal, 'REALISASI' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM realis WHERE tahun = '$this->tahun' GROUP BY tgl 
 UNION
 SELECT tanggal AS tanggal, 'PENGELUARAN LAIN' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM keluar WHERE tahun = '$this->tahun' GROUP BY tanggal
 ORDER BY tanggal DESC")->result();
+
+		$kas2 = $this->db5->query("SELECT tgl_jalan AS tanggal, 'NIKMUS' AS jenis , 0 as debit, SUM(nom_kriteria + transport + sopir) AS kredit FROM pengajuan WHERE tahun = '$this->tahun' GROUP BY tgl_jalan ORDER BY tgl_jalan ")->result();
+
+		$data['kas'] = array_merge($kas1, $kas2);
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/kasHarian', $data);
