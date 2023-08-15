@@ -2342,11 +2342,11 @@ Terimakasih';
 		$data['tahun'] = $this->tahun;
 		$data['bulan'] = $this->bulan;
 
-		$data['kas'] = $this->db->query("SELECT tgl_bayar AS tanggal, 'pesantren' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
+		$data['kas'] = $this->db->query("SELECT tgl_bayar AS tanggal, 'PESANTREN' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
 UNION
-SELECT tgl AS tanggal, 'realisasi' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM realis WHERE tahun = '$this->tahun' GROUP BY tgl 
+SELECT tgl AS tanggal, 'REALISASI' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM realis WHERE tahun = '$this->tahun' GROUP BY tgl 
 UNION
-SELECT tanggal AS tanggal, 'pengeluaran' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM keluar WHERE tahun = '$this->tahun' GROUP BY tanggal
+SELECT tanggal AS tanggal, 'PENGELUARAN LAIN' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM keluar WHERE tahun = '$this->tahun' GROUP BY tanggal
 ORDER BY tanggal DESC")->result();
 
 		$this->load->view('admin/head', $data);
@@ -2367,6 +2367,52 @@ ORDER BY tanggal DESC")->result();
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/kasBank', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function kasPajak()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['kas'] = $this->db->query("SELECT tanggal AS tanggal, 'PAJAK' AS jenis , 0 as debit, SUM(nominal) AS kredit FROM pajak WHERE tahun = '$this->tahun' GROUP BY tanggal ORDER BY tanggal DESC")->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/kasPajak', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function kasPanjar()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['kas'] = $this->db->query("SELECT sarpras.tanggal AS tanggal, 'SARPRAS' AS jenis , 0 as debit, SUM(sarpras_detail.qty * sarpras_detail.harga_satuan) AS kredit FROM sarpras JOIN sarpras_detail ON sarpras.kode_pengajuan = sarpras_detail.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.tahun = '$this->tahun' GROUP BY sarpras.tanggal ORDER BY sarpras.tanggal DESC")->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/kasPanjar', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function kasHutang()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['kas'] = $this->db->query("SELECT tanggal AS tanggal, 'LISTRIK/WIFI/HONOR' AS jenis , 0 as debit, SUM(nominal)  AS kredit FROM pengeluaran_rutin WHERE tahun = '$this->tahun' GROUP BY tanggal 
+UNION
+SELECT tgl_pinjam AS tanggal, 'PEMINJAMAN/BON' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM peminjaman WHERE tahun = '$this->tahun' GROUP BY tgl_pinjam 
+
+UNION
+SELECT tgl_setor AS tanggal, 'CICILAN PEMINJAMAN' AS jenis, SUM(nominal) AS debit, 0 AS kredit FROM cicilan WHERE tahun = '$this->tahun' GROUP BY tgl_setor 
+
+ORDER BY tanggal DESC")->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/kasHutang', $data);
 		$this->load->view('admin/foot');
 	}
 }

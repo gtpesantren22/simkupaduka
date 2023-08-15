@@ -1805,4 +1805,60 @@ Terimakasih';
 			}
 		}
 	}
+	public function outRutin()
+	{
+
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga=lembaga.kode JOIN bidang ON pengeluaran_rutin.lembaga=bidang.kode WHERE pengeluaran_rutin.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ORDER BY pengeluaran_rutin.tanggal DESC ")->result();
+
+		$data['sumData'] = $this->model->getBySum('pengeluaran_rutin', 'tahun', $data['tahun'], 'nominal')->row();
+
+		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
+		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $data['tahun'])->result();
+
+
+		$this->load->view('kasir/head', $data);
+		$this->load->view('kasir/outRutin', $data);
+		$this->load->view('kasir/foot');
+	}
+
+	public function saveOutRutin()
+	{
+		$data = [
+			"id_pengeluaran_rutin" => $this->uuid->v4(),
+			"langganan" => $this->input->post('langganan', true),
+			"lembaga" => $this->input->post('lembaga', true),
+			"bidang" => $this->input->post('bidang', true),
+			"ket" => $this->input->post('ket', true),
+			"nominal" => rmRp($this->input->post('nominal', true)),
+			"tanggal" => $this->input->post('tanggal', true),
+			"kasir" => $this->user,
+			"tahun" => $this->tahun,
+			"at" => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('pengeluaran_rutin', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Input data sukses');
+			redirect('kasir/outRutin');
+		} else {
+			$this->session->set_flashdata('error', 'Input data gagal');
+			redirect('kasir/outRutin');
+		}
+	}
+
+	public function delOutRutin($id)
+	{
+		$this->model->delete('pengeluaran_rutin', 'id_pengeluaran_rutin', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus data sukses');
+			redirect('kasir/outRutin');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus data gagal');
+			redirect('kasir/outRutin');
+		}
+	}
 }
