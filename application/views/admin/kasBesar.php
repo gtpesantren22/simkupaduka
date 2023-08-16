@@ -44,7 +44,7 @@
                                             <tr>
                                                 <th>No</th>
                                                 <th>Tanggal</th>
-                                                <th>Jenis</th>
+                                                <th>Kas Asal</th>
                                                 <th>Debit</th>
                                                 <th>Kredit</th>
                                                 <th>Saldo</th>
