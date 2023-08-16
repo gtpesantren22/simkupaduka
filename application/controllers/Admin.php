@@ -2448,7 +2448,7 @@ ORDER BY tanggal DESC")->result();
 		$data['bulan'] = $this->bulan;
 
 		// KAS HARIAN
-		$kas1 = $this->db->query("SELECT tgl_bayar AS tanggal, 'PESANTREN' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
+		$kas1 = $this->db->query("SELECT tgl_bayar AS tanggal, 'KAS HARIAN' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM `pesantren` WHERE tahun = '$this->tahun' GROUP BY tgl_bayar 
 UNION
 SELECT tgl AS tanggal, 'KAS HARIAN' AS jenis, 0 AS debit, SUM(nominal) AS kredit FROM realis WHERE tahun = '$this->tahun' GROUP BY tgl 
 

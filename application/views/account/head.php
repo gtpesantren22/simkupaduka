@@ -68,6 +68,23 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
 
                 <li>
                     <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-book-content'></i>
+                        </div>
+                        <div class="menu-title">Buku Kas</div>
+                    </a>
+                    <ul>
+                        <li> <a href="<?= base_url('account/kasAll'); ?>"><i class="bx bx-right-arrow-alt"></i>Buku Kas Besar</a></li>
+                        <li> <a href="<?= base_url('account/kasHutang'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Hutang</a></li>
+                        <li> <a href="<?= base_url('account/kasHarian'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Harian</a></li>
+                        <li> <a href="<?= base_url('account/kasPajak'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Pajak</a></li>
+                        <li> <a href="<?= base_url('account/kasBank'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Bank</a></li>
+                        <li> <a href="<?= base_url('account/kasPanjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Panjar</a></li>
+                        <li> <a href="<?= base_url('account/kasDekosan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Dekosan</a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript:;" class="has-arrow">
                         <div class="parent-icon"><i class='bx bx-money'></i>
                         </div>
                         <div class="menu-title">Pemasukan</div>
@@ -314,7 +331,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                             <h5 class="modal-title" id="exampleModalLabel">Changes</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <?= form_open('admin/changeAkses');  ?>
+                        <?= form_open('account/changeAkses');  ?>
                         <div class="modal-body">
                             <?php
                             $data = $this->db->query("SELECT * FROM lembaga WHERE tahun = '$tahun' ")->result();
