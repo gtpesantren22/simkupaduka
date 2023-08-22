@@ -662,7 +662,7 @@ Terimakasih';
 		if ($data['rinci']->cair == 1) {
 
 			if (preg_match("/DISP./i", $kode)) {
-				$data['data'] = $this->db->query("SELECT realis.*, 'DISPOSISI' as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM realis JOIN rab ON realis.kode=rab.kode WHERE realis.kode_pengajuan = '$kode' ")->result();
+				$data['data'] = $this->db->query("SELECT realis.*, 'DISPOSISI' as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM realis WHERE realis.kode_pengajuan = '$kode' ")->result();
 			} else {
 				$data['data'] = $this->db->query("SELECT realis.*, rab.rencana, rab_sm24.kegiatan, dppk.program FROM realis JOIN rab ON realis.kode=rab.kode JOIN rab_sm24 ON realis.kode=rab_sm24.kode JOIN dppk ON rab_sm24.kode_pak=dppk.id_dppk WHERE realis.kode_pengajuan = '$kode' ")->result();
 			}
@@ -671,7 +671,7 @@ Terimakasih';
 			$data['nomCair'] = $this->model->getBySum('realis', 'kode_pengajuan', $kode, 'nom_cair')->row();
 		} else {
 			if (preg_match("/DISP./i", $kode)) {
-				$data['data'] = $this->db->query("SELECT real_sm.*, 'DISPOSISI' as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM real_sm JOIN rab ON real_sm.kode=rab.kode WHERE real_sm.kode_pengajuan = '$kode' ")->result();
+				$data['data'] = $this->db->query("SELECT real_sm.*, 'DISPOSISI' as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM real_sm WHERE real_sm.kode_pengajuan = '$kode' ")->result();
 			} else {
 				$data['data'] = $this->db->query("SELECT real_sm.*, rab.rencana, rab_sm24.kegiatan, dppk.program FROM real_sm JOIN rab ON real_sm.kode=rab.kode JOIN rab_sm24 ON real_sm.kode=rab_sm24.kode JOIN dppk ON rab_sm24.kode_pak=dppk.id_dppk WHERE real_sm.kode_pengajuan = '$kode' ")->result();
 			}
