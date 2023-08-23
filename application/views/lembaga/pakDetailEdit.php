@@ -15,8 +15,7 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <a href="<?= base_url('lembaga/pakDetail/' . $pak->kode_pak); ?>" class="btn btn-light btn-sm"><i
-                            class="bx bx-subdirectory-left"></i>
+                    <a href="<?= base_url('lembaga/pakDetail/' . $pak->kode_pak); ?>" class="btn btn-light btn-sm"><i class="bx bx-subdirectory-left"></i>
                         Kembali</a>
                 </div>
             </div>
@@ -72,15 +71,13 @@
                                 <?= form_open('lembaga/addEditPak'); ?>
                                 <label for="">QTY yang akan diajukan</label>
                                 <input type="number" class="form-control" name="jml" required>
-                                <input type="hidden" class="form-control" name="sisa"
-                                    value="<?= $rab->qty - $relJml->jml; ?>">
+                                <input type="hidden" class="form-control" name="sisa" value="<?= $rab->qty - $relJml->jml; ?>">
                                 <input type="hidden" class="form-control" name="kd_rab" value="<?= $rab->kode ?>">
                                 <input type="hidden" class="form-control" name="kd_pak" value="<?= $pak->kode_pak ?>">
                                 <small class="text-danger">* QTY ini tidak boleh melebihi dari
                                     QTY yang
                                     tersisa</small><br><br>
-                                <button type="submit" class="btn btn-sm btn-success pull-right"><i
-                                        class="fa fa-check"></i> Simpan</button>
+                                <button type="submit" class="btn btn-sm btn-success pull-right"><i class="fa fa-check"></i> Simpan</button>
                                 <?= form_close(); ?>
                             </div>
                         </div>

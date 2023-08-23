@@ -784,6 +784,7 @@ class Admin extends CI_Controller
 		$this->load->view('admin/pak', $data);
 		$this->load->view('admin/foot');
 	}
+
 	public function pakDetail($kode)
 	{
 		$data['data'] = $this->model->getBy('pak', 'kode_pak', $kode)->row();
@@ -808,6 +809,7 @@ class Admin extends CI_Controller
 
 			$this->model->update('pak_detail', $up, 'kode_rab', $r->kode_rab);
 			$this->model->delete('rab', 'kode', $kdrab);
+			$this->model->delete('rab_sm24', 'kode', $kdrab);
 		}
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'RAB PAK berhasil dihapus');
@@ -834,6 +836,7 @@ class Admin extends CI_Controller
 
 			$this->model->update('pak_detail', $up, 'kode_rab', $r->kode_rab);
 			$this->model->update('rab', $data1, 'kode', $kdrab);
+			$this->model->update('rab_sm24', $data1, 'kode', $kdrab);
 		}
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'RAB PAK berhasil disinkron');

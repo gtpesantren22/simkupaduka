@@ -556,7 +556,7 @@ Terimakasih';
 			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
 			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '085235583647', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil disetujui');
 			redirect('account/pakDetail/' . $kode);

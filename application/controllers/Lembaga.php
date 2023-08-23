@@ -699,6 +699,8 @@ Terimakasih';
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
 		$data['tgl'] = $this->model->getBy('akses', 'lembaga', 'umum')->row();
+		$data['dppk'] = $this->model->getBy2('dppk', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->result();
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 		// $data['hak_aks'] = $this->model->getBy2('akses', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->row();
 
 		$this->load->view('lembaga/head', $data);
@@ -796,7 +798,7 @@ Terimakasih';
 
 		$satuan = $rab->satuan;
 		$harga_satuan = $rab->harga_satuan;
-		$total = $rab->harga_satuan * $rab->qty;
+		$total = $rab->harga_satuan * $qty;
 		$ket = 'edit';
 		$tahun = $rab->tahun;
 
@@ -840,12 +842,21 @@ Terimakasih';
 		$dt_pak = $this->db->query("SELECT SUM(total) AS tt FROM pak_detail WHERE kode_pak = '$kode_pak' AND tahun = '$this->tahun' ")->row();
 		$total = $this->input->post('qty') * rmRp($this->input->post('harga_satuan', true));
 
+		$program = $this->input->post('program', true);
+		$dataKode = $this->db->query("SELECT max(substring(kode, -3)) as maxKode FROM rab_sm24 WHERE kode_pak = '$program' ")->row();
+		$kodeBarang = $dataKode->maxKode;
+		$noUrut = (int) substr($kodeBarang, 0, 3);
+		$noUrut++;
+
+		$kodeBarang = sprintf("%03s", $noUrut);
+		$nis = htmlspecialchars($kodeBarang);
+
 		$data = [
 			'id_rab' => $this->uuid->v4(),
 			'lembaga' => $this->lembaga,
 			'jenis' => $this->input->post('jenis', true),
 			'bidang' => $this->input->post('bidang', true),
-			'kode' => $this->lembaga . '.' . $this->input->post('bidang', true) .  '.' . $this->input->post('jenis', true) . '.' . rand(),
+			'kode' => $this->lembaga . '.' . $this->input->post('bidang', true) .  '.' . $this->input->post('jenis', true) . '.' . $program . '-' . $nis,
 			'nama' => $this->input->post('nama', true),
 			'rencana' => $this->input->post('rencana', true),
 			'qty' => $this->input->post('qty', true),
@@ -858,12 +869,32 @@ Terimakasih';
 			'kode_pak' => $kode_pak,
 		];
 
+		$data24 = [
+			'id_rab' => $this->uuid->v4(),
+			'lembaga' => $this->lembaga,
+			'jenis' => $this->input->post('jenis', true),
+			'bidang' => $this->input->post('bidang', true),
+			'kode' => $this->lembaga . '.' . $this->input->post('bidang', true) .  '.' . $this->input->post('jenis', true) . '.' . $program . '-' . $nis,
+			'nama' => $this->input->post('nama', true),
+			'rencana' => $this->input->post('rencana', true),
+			'qty' => $this->input->post('qty', true),
+			'satuan' => $this->input->post('satuan', true),
+			'total' => $total,
+			'harga_satuan' => rmRp($this->input->post('harga_satuan', true)),
+			'tahun' => $this->input->post('tahun', true),
+			'at' => date('Y-m-d H:i'),
+			'snc' => 'belum',
+			'kode_pak' => $this->input->post('program', true),
+			'kegiatan' => $this->input->post('kegiatan', true),
+		];
+
 		$pak = $dt_pak->tt;
 		$rb = $dt_rab->tt;
 		$ttl = $rb + $total;
 
 		if ($pak >= $ttl) {
 			$this->model->input('rab_sm', $data);
+			$this->model->input('rab_sm24', $data24);
 			if ($this->db->affected_rows() > 0) {
 				$this->session->set_flashdata('ok', 'Item berhasil ditambahkan');
 				redirect('lembaga/pakDetail/' . $kode_pak);
@@ -883,6 +914,7 @@ Terimakasih';
 		$kd_rab = $this->uri->segment(4);
 
 		$this->model->delete('rab_sm', 'kode', $kd_rab);
+		$this->model->delete('rab_sm24', 'kode', $kd_rab);
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Item berhasil dihapus');
 			redirect('lembaga/pakDetail/' . $kd_pak);
@@ -908,7 +940,7 @@ Ada pengajuan baru dari :
 Lembaga : ' . $lm->nama . '
 Kode PAK : ' . $kode . '
 
-*_dimohon kepada SEKRETARIAT untuk segera mengecek nya di https://sekretaris.ppdwk.com/_*
+*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://sekretaris.ppdwk.com/_*
 Terimakasih';
 		$this->model->update('pak', $data, 'kode_pak', $kode);
 		if ($this->db->affected_rows() > 0) {
@@ -916,12 +948,12 @@ Terimakasih';
 			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
 			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '082302301003', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 
-			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil dilanjutkan ke Sekretariat');
+			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil dilanjutkan ke Bendahara');
 			redirect('lembaga/pakDetail/' . $kode);
 		} else {
-			$this->session->set_flashdata('error', 'Pengajuan PAK gagal dilanjutkan ke Sekretariat');
+			$this->session->set_flashdata('error', 'Pengajuan PAK gagal dilanjutkan ke Bendahara');
 			redirect('lembaga/pakDetail/' . $kode);
 		}
 	}

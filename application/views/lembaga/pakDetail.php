@@ -288,6 +288,25 @@ if ($pesern >= 0 && $pesern <= 25) {
                         </div>
                     </div>
                     <div class="row form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Program <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <select name="program" class="form-control" id="" required>
+                                <option value=""> -pilih program- </option>
+                                <?php
+                                foreach ($dppk as $a2) { ?>
+                                    <option value="<?= $a2->id_dppk ?>"><?= $a2->id_dppk ?>. <?= $a2->program ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align">Nama Kegiatan <span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <input type="text" id="first-name" name="kegiatan" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row form-group">
                         <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Bidang/bagian <span class="required">*</span>
                         </label>
                         <div class="col-md-6 col-sm-6 ">
@@ -306,10 +325,10 @@ if ($pesern >= 0 && $pesern <= 25) {
                         <div class="col-md-6 col-sm-6 ">
                             <select name="jenis" id="" required class="form-control">
                                 <option value=""> -- pilih jenis -- </option>
-                                <option value="A"> A. Belanja Barang </option>
-                                <option value="B"> B. Langganan Daya dan Jasa </option>
-                                <option value="C"> C. Belanja Kegiatan </option>
-                                <option value="D"> D. Umum </option>
+                                <?php
+                                foreach ($jenis as $a2) { ?>
+                                    <option value="<?= $a2->kode_jns ?>"><?= $a2->kode_jns ?>. <?= $a2->nama ?></option>
+                                <?php } ?>
                             </select>
                         </div>
                     </div>
@@ -326,10 +345,10 @@ if ($pesern >= 0 && $pesern <= 25) {
                         </label>
                         <div class="col-md-6 col-sm-6 ">
                             <select name="rencana" id="" required class="form-control">
-                                <option value=""> -- pilih waktu -- </option>
-                                <option value="Semester 1"> Semester 1 </option>
-                                <option value="Semester 2"> Semester 2 </option>
-                                <option value="Semester 1&2"> Semester 1&2 </option>
+                                <option value=""> -- pilih rencana -- </option>
+                                <?php for ($i = 1; $i <= 12; $i++) : ?>
+                                    <option value="<?= $i ?>"><?= $bulan[$i] ?></option>
+                                <?php endfor ?>
                             </select>
                         </div>
                     </div>
