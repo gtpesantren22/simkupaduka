@@ -1716,4 +1716,56 @@ Terimakasih';
             }
         }
     }
+
+
+    public function cekTanggungan()
+    {
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['bulan'] = $this->bulan;
+
+        $data['lmbFr'] = $this->model->getLembagaFr()->result();
+        $data['tahunData'] = $this->model->getAll('tahun')->result();
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/cekTgn', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    function getKelas()
+    {
+        $t_formal = $this->input->post('t_formal', true);
+
+        echo "<option value=''>Pilih Kelas</option>";
+
+        $kls = $this->model->getByDb4('kl_formal', 'lembaga', $t_formal)->result();
+
+        foreach ($kls as $row) {
+            echo "<option value='" . $row->nm_kelas . "'>" . $row->nm_kelas . "</option>";
+        }
+    }
+
+    function cekKelas()
+    {
+        $k_formal = $this->input->post('k_formal', true);
+        $tahun = $this->input->post('tahun', true);
+
+        $data['tahun'] = $tahun;
+
+        $kls_pch = explode('-', $k_formal);
+        $kls = $kls_pch[0];
+        $jur = $kls_pch[1];
+        $rmb = $kls_pch[2];
+        $tingkat = $kls_pch[3];
+
+        $data['dt1'] = $this->db->query("SELECT * FROM pembayaran a JOIN tb_santri b ON a.nis=b.nis WHERE b.k_formal = '$kls' AND b.t_formal = '$tingkat' AND b.r_formal = '$rmb' AND b.jurusan = '$jur' AND a.tahun = '$tahun' AND b.aktif = 'Y' GROUP BY a.nis ORDER BY b.nama")->result();
+
+        $data['dt_null'] = $this->db->query("SELECT * FROM tb_santri WHERE k_formal = '$kls' AND t_formal = '$tingkat' AND r_formal = '$rmb' AND jurusan = '$jur' AND aktif = 'Y'  AND  NOT EXISTS (SELECT * FROM pembayaran WHERE tb_santri.nis = pembayaran.nis AND tahun = '$tahun') ")->result();
+
+        $this->load->view('kasir/hasilCekKelas', $data);
+
+        // var_dump($data['dt1']);
+        // var_dump($jur);
+    }
 }

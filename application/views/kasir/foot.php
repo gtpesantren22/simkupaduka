@@ -195,6 +195,25 @@
 
     });
 </script>
+
+<script>
+    $(document).ready(function() {
+        $("#t_formal").change(function() {
+            var t_formal = $("#t_formal").val();
+            $.ajax({
+                type: 'POST',
+                url: "<?= base_url('kasir/getKelas') ?>",
+                data: {
+                    t_formal: t_formal
+                },
+                cache: false,
+                success: function(msg) {
+                    $("#k_formal").html(msg);
+                }
+            });
+        });
+    });
+</script>
 <!--app JS-->
 <script src="<?= base_url('vertical/'); ?>assets/js/app.js"></script>
 

@@ -124,6 +124,7 @@
                         </li>
                         <li> <a href="<?= base_url('kasir/rekap'); ?>"><i class="bx bx-right-arrow-alt"></i>Rekap Tanggungan</a></li>
                         <li> <a href="<?= base_url('kasir/dispen'); ?>"><i class="bx bx-right-arrow-alt"></i>Dispensasi</a></li>
+                        <li> <a href="<?= base_url('kasir/cekTanggungan'); ?>"><i class="bx bx-right-arrow-alt"></i>Cek Tanggungan</a></li>
                     </ul>
                 </li>
 
