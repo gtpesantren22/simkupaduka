@@ -1748,21 +1748,28 @@ Terimakasih';
 
     function cekKelas()
     {
+        $t_formal = $this->input->post('t_formal', true);
         $k_formal = $this->input->post('k_formal', true);
         $tahun = $this->input->post('tahun', true);
 
         $data['tahun'] = $tahun;
 
-        $kls_pch = explode('-', $k_formal);
-        $kls = $kls_pch[0];
-        $jur = $kls_pch[1];
-        $rmb = $kls_pch[2];
-        $tingkat = $kls_pch[3];
+        if ($k_formal != '') {
 
-        $data['dt1'] = $this->db->query("SELECT * FROM pembayaran a JOIN tb_santri b ON a.nis=b.nis WHERE b.k_formal = '$kls' AND b.t_formal = '$tingkat' AND b.r_formal = '$rmb' AND b.jurusan = '$jur' AND a.tahun = '$tahun' AND b.aktif = 'Y' GROUP BY a.nis ORDER BY b.nama")->result();
+            $kls_pch = explode('-', $k_formal);
+            $kls = $kls_pch[0];
+            $jur = $kls_pch[1];
+            $rmb = $kls_pch[2];
+            $tingkat = $kls_pch[3];
 
-        $data['dt_null'] = $this->db->query("SELECT * FROM tb_santri WHERE k_formal = '$kls' AND t_formal = '$tingkat' AND r_formal = '$rmb' AND jurusan = '$jur' AND aktif = 'Y'  AND  NOT EXISTS (SELECT * FROM pembayaran WHERE tb_santri.nis = pembayaran.nis AND tahun = '$tahun') ")->result();
+            $data['dt1'] = $this->db->query("SELECT * FROM pembayaran a JOIN tb_santri b ON a.nis=b.nis WHERE b.k_formal = '$kls' AND b.t_formal = '$tingkat' AND b.r_formal = '$rmb' AND b.jurusan = '$jur' AND a.tahun = '$tahun' AND b.aktif = 'Y' GROUP BY a.nis ORDER BY b.nama")->result();
 
+            $data['dt_null'] = $this->db->query("SELECT * FROM tb_santri WHERE k_formal = '$kls' AND t_formal = '$tingkat' AND r_formal = '$rmb' AND jurusan = '$jur' AND aktif = 'Y'  AND  NOT EXISTS (SELECT * FROM pembayaran WHERE tb_santri.nis = pembayaran.nis AND tahun = '$tahun') ")->result();
+        } else {
+            $data['dt1'] = $this->db->query("SELECT * FROM pembayaran a JOIN tb_santri b ON a.nis=b.nis WHERE b.t_formal = '$t_formal' AND a.tahun = '$tahun' AND b.aktif = 'Y' GROUP BY a.nis ORDER BY b.nama")->result();
+
+            $data['dt_null'] = $this->db->query("SELECT * FROM tb_santri WHERE t_formal = '$t_formal' AND aktif = 'Y' AND  NOT EXISTS (SELECT * FROM pembayaran WHERE tb_santri.nis = pembayaran.nis AND tahun = '$tahun') ")->result();
+        }
         $this->load->view('kasir/hasilCekKelas', $data);
 
         // var_dump($data['dt1']);

@@ -67,9 +67,7 @@
                                         <label for="">Jenjang</label>
                                         <select name="t_formal" id="t_formal" class="form-control" required>
                                             <option value="">Pilih Lembaga</option>
-                                            <?php
-                                            foreach ($lmbFr as $kl) {
-                                            ?>
+                                            <?php foreach ($lmbFr as $kl) { ?>
                                                 <option value="<?= $kl->lembaga ?>"><?= $kl->lembaga ?>
                                                 </option>
                                             <?php } ?>
@@ -79,7 +77,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="">Kelas</label>
-                                        <select name="k_formal" id="k_formal" class="form-control" required>
+                                        <select name="k_formal" id="k_formal" class="form-control">
                                             <option value="">- pilih kelas -</option>
                                         </select>
                                     </div><!-- /.input group -->
@@ -90,13 +88,9 @@
                                         <label for="">Tahun</label>
                                         <select name="tahun" id="tahun" class="form-control" required>
                                             <option value=""> --pilih tahun-- </option>
-                                            <?php
-                                            foreach ($tahunData as $thn) {
-                                            ?>
+                                            <?php foreach ($tahunData as $thn) { ?>
                                                 <option value="<?= $thn->nama_tahun ?>"><?= $thn->nama_tahun ?></option>
-                                            <?php
-                                            }
-                                            ?>
+                                            <?php } ?>
                                         </select>
                                     </div><!-- /.input group -->
                                 </div>
@@ -135,12 +129,14 @@
             e.preventDefault();
             showLoadingIndicator();
             var k_formal = $('#k_formal').val();
+            var t_formal = $('#t_formal').val();
             var tahun = $('#tahun').val();
 
             $.ajax({
                 url: "<?= base_url('kasir/cekKelas'); ?>",
                 type: "POST",
                 data: {
+                    t_formal: t_formal,
                     k_formal: k_formal,
                     tahun: tahun
                 },
