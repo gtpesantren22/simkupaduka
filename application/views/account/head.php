@@ -153,6 +153,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li>
                             <a href="<?= base_url('account/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a>
                         </li>
+                        <li>
+                            <a href="<?= base_url('account/panjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Panjar</a>
+                        </li>
                     </ul>
                 </li>
                 <li>

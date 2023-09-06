@@ -34,7 +34,7 @@
                                         <th>Nominal</th>
                                         <th>Cair</th>
                                         <th>Serap</th>
-                                        <th>Berkas</th>
+                                        <th>File</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -65,21 +65,17 @@
                                             <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
                                             <td>
                                                 <?php if ($a->stts == 0) { ?>
-                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> belum
-                                                        upload</span>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> belum upload</span>
                                                 <?php } else if ($a->stts == 1) { ?>
-                                                    <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses
-                                                        verifikasi</span>
+                                                    <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses verifikasi</span>
                                                 <?php } else { ?>
-                                                    <span class="badge bg-success"><i class="bx bx-check"></i> sudah
-                                                        selesai</span>
+                                                    <span class="badge bg-success"><i class="bx bx-check"></i> selesai</span>
                                                 <?php } ?>
                                             </td>
                                             <td><?= rupiah($jml->jml) ?></td>
                                             <td><?= rupiah($jml->jml_cair) ?></td>
                                             <td><?= rupiah($jml->jml_serap) ?></td>
                                             <td>
-                                                <a href="<?= '../institution/spj_file/' . $a->file_spj ?>"><i class="bx bx-download"></i>Unduh</a> |
                                                 <a href="<?= base_url('account/viewSpj/') . $a->kode_pengajuan ?>"><i class="bx bx-show-alt"></i>Lihat</a>
                                             </td>
                                             <td>
@@ -120,6 +116,13 @@
                                                                             </label>
                                                                             <div class="col-md-6 col-sm-6 ">
                                                                                 <input type="text" id="first-name" name="cair" required="required" value="<?= rupiah($jml->jml_cair) ?>" class="form-control" readonly>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item form-group">
+                                                                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Dana Terserap <span class="required">*</span>
+                                                                            </label>
+                                                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                                                <input type="text" class="form-control has-feedback-left uang" id="" name="serap" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="item form-group">
@@ -217,11 +220,10 @@
                                                         </div>
                                                     </div>
                                                 <?php } elseif ($a->stts == 2) { ?>
-                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploads<?= $a->id_spj ?>"><i class="bx bx-money"></i>
-                                                        Upload Sisa</button>
+                                                    <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploads<?= $a->id_spj ?>"><i class="bx bx-money"></i> Upload Sisa</button> -->
 
                                                     <!-- Modal Upload BOS-->
-                                                    <div class="modal fade" id="uploads<?= $a->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <!-- <div class="modal fade" id="uploads<?= $a->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
 
@@ -256,11 +258,11 @@
                                                                                 <input type="text" id="first-name" name="cair" required="required" value="<?= rupiah($jml->jml_cair) ?>" class="form-control" readonly>
                                                                             </div>
                                                                         </div>
-                                                                        <div class='item form-group'>
-                                                                            <label class='col-form-label col-md-3 col-sm-3 label-align' for='first-name'>Dana Terserap <span class='required'>*</span>
+                                                                        <div class="item form-group">
+                                                                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Dana Terserap <span class="required">*</span>
                                                                             </label>
-                                                                            <div class='col-md-6 col-sm-6  form-group has-feedback'>
-                                                                                <input type='text' class='form-control has-feedback-left uang' id='' name='serap' required>
+                                                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                                                <input type="text" class="form-control has-feedback-left uang" id="" name="serap" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="item form-group">
@@ -287,7 +289,7 @@
 
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                 <?php } ?>
                                             </td>
                                         </tr>
@@ -328,16 +330,15 @@
                                             <td><?= rupiah($jml->jml_cair) ?></td>
                                             <td><?= rupiah($jml->jml_serap) ?></td>
                                             <td>
-                                                <a href="<?= '../institution/spj_file/' . $a2->file_spj ?>"><i class="bx bx-download"></i>Unduh</a> |
                                                 <a href="<?= base_url('account/viewSpj/') . $a2->kode_pengajuan ?>"><i class="bx bx-show-alt"></i>Lihat</a>
                                             </td>
                                             <td>
                                                 <?php if ($a2->stts == 1) { ?>
-                                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambah_bos<?= $a2->id_spj ?>"><i class="bx bx-check"></i>Setujui</button>
-                                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolak_bos<?= $a2->id_spj ?>"><i class="bx bx-no-entry"></i>Tolak</button>
+                                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#setujuiSpjSarpras<?= $a2->id_spj ?>"><i class="bx bx-check"></i>Setujui</button>
+                                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolakSpjSarpras<?= $a2->id_spj ?>"><i class="bx bx-no-entry"></i>Tolak</button>
 
                                                     <!-- Modal Setujui BOS-->
-                                                    <div class="modal fade" id="tambah_bos<?= $a2->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal fade" id="setujuiSpjSarpras<?= $a2->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
                                                                 <div class="modal-header">
@@ -372,6 +373,13 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="item form-group">
+                                                                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Dana Terserap <span class="required">*</span>
+                                                                            </label>
+                                                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                                                <input type="text" class="form-control has-feedback-left uang" id="" name="serap" required>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="item form-group">
                                                                             <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Tanggal disetujui <span class="required">*</span>
                                                                             </label>
                                                                             <div class="col-md-6 col-sm-6 ">
@@ -398,7 +406,7 @@
                                                     </div>
 
                                                     <!-- Modal Tolak BOS-->
-                                                    <div class="modal fade" id="tolak_bos<?= $a2->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal fade" id="tolakSpjSarpras<?= $a2->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
 
@@ -466,11 +474,11 @@
                                                         </div>
                                                     </div>
                                                 <?php } elseif ($a2->stts == 2) { ?>
-                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploads<?= $a2->id_spj ?>"><i class="bx bx-money"></i>
-                                                        Upload Sisa</button>
+                                                    <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploads<?= $a2->id_spj ?>"><i class="bx bx-money"></i> -->
+                                                    Upload Sisa</button>
 
                                                     <!-- Modal Upload BOS-->
-                                                    <div class="modal fade" id="uploads<?= $a2->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <!-- <div class="modal fade" id="uploads<?= $a2->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
 
@@ -505,11 +513,11 @@
                                                                                 <input type="text" id="first-name" name="cair" required="required" value="<?= rupiah($jml->jml_cair) ?>" class="form-control" readonly>
                                                                             </div>
                                                                         </div>
-                                                                        <div class='item form-group'>
-                                                                            <label class='col-form-label col-md-3 col-sm-3 label-align' for='first-name'>Dana Terserap <span class='required'>*</span>
+                                                                        <div class="item form-group">
+                                                                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Dana Terserap <span class="required">*</span>
                                                                             </label>
-                                                                            <div class='col-md-6 col-sm-6  form-group has-feedback'>
-                                                                                <input type='text' class='form-control has-feedback-left uang' id='' name='serap' required>
+                                                                            <div class="col-md-6 col-sm-6  form-group has-feedback">
+                                                                                <input type="text" class="form-control has-feedback-left uang" id="" name="serap" required>
                                                                             </div>
                                                                         </div>
                                                                         <div class="item form-group">
@@ -536,7 +544,7 @@
 
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> -->
                                                 <?php } ?>
                                             </td>
                                         </tr>

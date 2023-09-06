@@ -39,18 +39,20 @@ class Kasir extends CI_Controller
         $kebijakan = $this->model->getBySum('kebijakan', 'tahun', $this->tahun, 'nominal')->row();
         $realis = $this->model->getBySum('realis', 'tahun', $this->tahun, 'nom_serap')->row();
         $keluar = $this->model->getBySum('keluar', 'tahun', $this->tahun, 'nominal')->row();
-        $dekos = $this->model->getDekosSum($this->tahun)->row();
-        $nikmus = $this->model->getNikmusSum($this->tahun)->row();
+        $data['dekos'] = $this->model->getDekosSum($this->tahun)->row();
+        $data['nikmus'] = $this->model->getNikmusSum($this->tahun)->row();
 
         $sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
         $sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
 
-        $data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml;
-        $data['keluar'] = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluar->jml + $sumPinjam->jml;
+        $realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
+        $data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml;
+        $data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml;
 
         $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
-        $data['saldo'] = $this->model->getBy('saldo', 'name', 'bank');
-        $data['cash'] = $this->model->getBy('saldo', 'name', 'cash');
+
+        $data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
+        $data['cash'] = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $data['tahun']);
 
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/index', $data);
@@ -1774,5 +1776,76 @@ Terimakasih';
 
         // var_dump($data['dt1']);
         // var_dump($jur);
+    }
+
+    public function sisa()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $data['data'] = $this->model->getBy('real_sisasm', 'tahun', $this->tahun)->result();
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/sisaReal', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function tarikSisa($id)
+    {
+        $sisa = $this->model->getBy('real_sisasm', 'id_sisa', $id)->row();
+        $data = [
+            'id_sisa' => $sisa->id_sisa,
+            'kode_pengajuan' => $sisa->kode_pengajuan,
+            'dana_cair' => $sisa->dana_cair,
+            'dana_serap' => $sisa->dana_serap,
+            'sisa' => $sisa->sisa,
+            'tgl_setor' => date('Y-m-d'),
+            'kasir' => $sisa->kasir,
+            'tahun' => $sisa->tahun,
+        ];
+
+        $kode = $sisa->kode_pengajuan;
+        $lmb = $this->db->query("SELECT pengajuan.*, lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode'")->row();
+
+        if (preg_match("/DISP./i", $kode)) {
+            $rt = "*(DISPOSISI)*";
+        } else {
+            $rt = '';
+        }
+
+        $psn = '
+*INFORMASI VERIFIKASI BERKAS SPJ* ' . $rt . '
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : ' . $lmb->nama . '
+Kode Pengajuan : ' . $kode . '
+Pada : ' . date('d-m-Y H:i:s') . '
+
+*_Hard copy SPJ dan sisa belanja anggaran telah disetor kepada KASIR. Untuk pengajuan berikutnya sudah bisa dilakukan._*
+
+Terimakasih
+https://simkupaduka.ppdwk.com/';
+
+        $data1 = ['stts' => '3'];
+        $data2 = ['spj' => '3'];
+
+        $this->model->input('real_sisa', $data);
+
+        if ($this->db->affected_rows() > 0) {
+            $this->model->delete('real_sisasm', 'id_sisa', $id);
+            $this->model->update('spj', $data1, 'kode_pengajuan', $kode);
+            $this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
+
+            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            // kirim_person($this->apiKey, $hp, $psn);
+            kirim_person($this->apiKey, '085236924510', $psn);
+            $this->session->set_flashdata('ok', 'Update data sukses');
+            redirect('kasir/sisa');
+        } else {
+            $this->session->set_flashdata('error', 'Update data gagal');
+            redirect('kasir/sisa');
+        }
     }
 }

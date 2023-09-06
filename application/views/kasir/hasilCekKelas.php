@@ -1,5 +1,5 @@
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped" id="">
+                                <table class="table table-bordered table-striped" id="example2">
                                     <thead>
                                         <tr style="background-color: purple; color: white; font-weight: bold;">
                                             <th>No</th>
@@ -204,25 +204,13 @@
                                 <h3><span class="label label-danger">Data Dak Bayar Sama Sekali</span></h3>
                             </center>
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped" id="example3_bst">
+                                <table class="table table-bordered table-striped" id="example">
                                     <thead>
                                         <tr>
                                             <th>No</th>
                                             <th>Nama</th>
                                             <th>Kelas</th>
-                                            <th>Jul</th>
-                                            <th>Ags</th>
-                                            <th>Sep</th>
-                                            <th>Okt</th>
-                                            <th>Nov</th>
-                                            <th>Des</th>
-                                            <th>Jan</th>
-                                            <th>Feb</th>
-                                            <th>Mar</th>
-                                            <th>Apr</th>
-                                            <th>Mei</th>
-                                            <th>Jun</th>
-                                            <th>Total</th>
+
                                     </thead>
                                     <tbody>
                                         <?php
@@ -233,13 +221,26 @@
                                                 <td><?= $i; ?></td>
                                                 <td><?= $r->nama; ?></td>
                                                 <td><?= $r->k_formal; ?>-<?= $r->jurusan; ?>-<?= $r->t_formal; ?></td>
-                                                <td colspan="13" style="font-weight: bold; color: red; text-align: center;">
-                                                    <span class="fa fa-close"></span> Tak
-                                                    Bayar Sama Sekali
-                                                </td>
+
                                             </tr>
                                             <?php $i++; ?>
                                         <?php endforeach; ?>
                                     </tbody>
                                 </table>
                             </div>
+
+                            <script>
+                                $(document).ready(function() {
+                                    $('#example').DataTable();
+                                    $('#example3').DataTable();
+
+                                    var table = $('#example2').DataTable({
+                                        // lengthChange: false,
+                                        buttons: ['copy', 'excel', 'pdf', 'print']
+                                    });
+
+                                    table.buttons().container()
+                                        .appendTo('#example2_wrapper .col-md-6:eq(0)');
+
+                                });
+                            </script>

@@ -930,7 +930,22 @@ Terimakasih';
 		$kode = $this->input->post('kode', true);
 		$nm_lm = $this->input->post('nm_lm', true);
 		$hp = $this->input->post('hp', true);
-		// $isi =  $this->input->post('isi', true);
+
+		$cair = rmRp($this->input->post('cair', true));
+		$serap = rmRp($this->input->post('serap', true));
+		$sisa = $cair - $serap;
+
+		$data3 = [
+			'id_sisa' => $id,
+			'kode_pengajuan' => $kode,
+			'dana_cair' => $cair,
+			'dana_serap' => $serap,
+			'sisa' => $sisa,
+			'tgl_setor' => '-',
+			'kasir' => $this->user,
+			'tahun' => $this->tahun,
+		];
+
 		$at = date('d-m-Y H:i');
 
 		if (preg_match("/DISP./i", $kode)) {
@@ -948,7 +963,7 @@ Lembaga : ' . $nm_lm . '
 Kode Pengajuan : ' . $kode . '
 Pada : ' . $at . '
 
-*_SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran  kepada SUB BAGIAN ACCOUNTING. Untuk bisa melakukan pengajuan berikutnya._*
+*_SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran kepada KASIR. Untuk bisa melakukan pengajuan berikutnya._*
 
 Terimakasih';
 
@@ -957,12 +972,13 @@ Terimakasih';
 
 		$this->model->update('spj', $data1, 'id_spj', $id);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
+		$this->model->input('real_sisasm', $data3);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, $hp, $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, $hp, $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'SPJ berhasil disetujui');
 			redirect('account/spj');
@@ -993,7 +1009,6 @@ Terimakasih';
 		$nm_lm = $this->input->post('nm_lm', true);
 		$hp = $this->input->post('hp', true);
 		$at = date('d-m-Y H:i');
-		$idrls = rand(0, 999999999);
 		$cair = rmRp($this->input->post('cair', true));
 		$serap = rmRp($this->input->post('serap', true));
 		$sisa = $cair - $serap;
@@ -1822,9 +1837,11 @@ Terimakasih';
 	public function outRutin()
 	{
 
-		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
 		$data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga=lembaga.kode JOIN bidang ON pengeluaran_rutin.lembaga=bidang.kode WHERE pengeluaran_rutin.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ORDER BY pengeluaran_rutin.tanggal DESC ")->result();
 
@@ -1834,9 +1851,9 @@ Terimakasih';
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $data['tahun'])->result();
 
 
-		$this->load->view('kasir/head', $data);
-		$this->load->view('kasir/outRutin', $data);
-		$this->load->view('kasir/foot');
+		$this->load->view('account/head', $data);
+		$this->load->view('account/outRutin', $data);
+		$this->load->view('account/foot');
 	}
 
 	public function saveOutRutin()
@@ -1857,10 +1874,10 @@ Terimakasih';
 		$this->model->input('pengeluaran_rutin', $data);
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Input data sukses');
-			redirect('kasir/outRutin');
+			redirect('account/outRutin');
 		} else {
 			$this->session->set_flashdata('error', 'Input data gagal');
-			redirect('kasir/outRutin');
+			redirect('account/outRutin');
 		}
 	}
 
@@ -1869,10 +1886,10 @@ Terimakasih';
 		$this->model->delete('pengeluaran_rutin', 'id_pengeluaran_rutin', $id);
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Hapus data sukses');
-			redirect('kasir/outRutin');
+			redirect('account/outRutin');
 		} else {
 			$this->session->set_flashdata('error', 'Hapus data gagal');
-			redirect('kasir/outRutin');
+			redirect('account/outRutin');
 		}
 	}
 
@@ -2045,6 +2062,21 @@ ORDER BY tanggal DESC")->result();
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/kasBesar', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function panjar()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['panjar'] = $this->model->getBy('panjar', 'tahun', $this->tahun)->result();
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/panjar', $data);
 		$this->load->view('account/foot');
 	}
 }
