@@ -975,8 +975,8 @@ Terimakasih';
 		$this->model->input('real_sisasm', $data3);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			// kirim_person($this->apiKey, $hp, $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 
