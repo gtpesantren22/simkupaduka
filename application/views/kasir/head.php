@@ -167,6 +167,13 @@
                         <div class="menu-title">Pengaturan</div>
                     </a>
                 </li>
+                <li>
+                    <a href="<?= base_url('kasir/rekom'); ?>">
+                        <div class="parent-icon"><i class='bx bx-note'></i>
+                        </div>
+                        <div class="menu-title">Rekom Liburan</div>
+                    </a>
+                </li>
 
             </ul>
             <!--end navigation-->

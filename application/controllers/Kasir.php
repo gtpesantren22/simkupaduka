@@ -1848,4 +1848,18 @@ https://simkupaduka.ppdwk.com/';
             redirect('kasir/sisa');
         }
     }
+
+    public function rekom()
+    {
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $data['data'] = $this->model->getBy2('sarpras', 'tahun', $this->tahun, 'status', 'disetujui')->result();
+        $data['bulan'] = $this->bulan;
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/rekom', $data);
+        $this->load->view('kasir/foot');
+    }
 }
