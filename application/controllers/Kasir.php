@@ -1,4 +1,7 @@
 <?php
+
+use SebastianBergmann\Environment\Console;
+
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class Kasir extends CI_Controller
@@ -44,10 +47,12 @@ class Kasir extends CI_Controller
 
         $sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
         $sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
-
         $realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-        $data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml;
-        $data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml;
+        $cadangan = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
+        $panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
+
+        $data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml;
+        $data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml;
 
         $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 
@@ -1854,12 +1859,50 @@ https://simkupaduka.ppdwk.com/';
         $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
-
-        $data['data'] = $this->model->getBy2('sarpras', 'tahun', $this->tahun, 'status', 'disetujui')->result();
         $data['bulan'] = $this->bulan;
 
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/rekom', $data);
         $this->load->view('kasir/foot');
+    }
+
+    public function loadSantri()
+    {
+        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $this->load->view('kasir/loadSantri', $data);
+    }
+    public function loadRekom()
+    {
+        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $this->load->view('kasir/loadRekom', $data);
+    }
+
+    public function addRekom()
+    {
+        $data = array(
+            'nis' => $this->input->post('nis'),
+            'ket' => 'maulid',
+            'tahun' => $this->tahun,
+        );
+
+        $result = $this->model->input('rekom', $data);
+
+        if ($result) {
+            echo "Data berhasil ditambahkan.";
+        } else {
+            echo "Terjadi kesalahan saat menambahkan data.";
+        }
+    }
+    public function delRekom()
+    {
+        $nis = $this->input->post('nis');
+
+        $result = $this->model->delete('rekom', 'nis', $nis);
+
+        if ($result) {
+            echo "Data berhasil dihapus.";
+        } else {
+            echo "Terjadi kesalahan saat menghapus data.";
+        }
     }
 }

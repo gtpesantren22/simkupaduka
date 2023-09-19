@@ -22,60 +22,16 @@
             <div class="col-6 col-lg-6">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama</th>
-                                        <th>Kelas</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $no = 1;
-                                    foreach ($data as $a) : ?>
-                                        <tr>
-                                            <td><?= $no++ ?></td>
-                                            <td><?= $a->judul ?></td>
-                                            <td><?= $a->tgl ?></td>
-                                            <td><?= $a->isi ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                        <!-- <form id="tambah_siswa"> -->
+                        <div id="loadSantri"></div>
+                        <!-- </form> -->
                     </div>
                 </div>
             </div>
             <div class="col-6 col-lg-6">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="example3" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama</th>
-                                        <th>Kelas</th>
-                                        <th>#</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    $no = 1;
-                                    foreach ($data as $a) : ?>
-                                        <tr>
-                                            <td><?= $no++ ?></td>
-                                            <td><?= $a->judul ?></td>
-                                            <td><?= $a->tgl ?></td>
-                                            <td><?= $a->isi ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
+                        <div id="loadRekom"></div>
                     </div>
                 </div>
             </div>
@@ -85,3 +41,67 @@
 </div>
 <!--end page wrapper -->
 <!--end page wrapper -->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("body").on("click", ".tambah_siswa", function() {
+            var nis = $(this).data('id');
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('kasir/addRekom'); ?>",
+                data: {
+                    nis: nis
+                },
+                success: function(response) {
+                    loadSantriData();
+                    loadRekomData();
+                }
+            });
+        });
+
+        $("body").on("click", ".del_siswa", function() {
+            var nis = $(this).data('id');
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('kasir/delRekom'); ?>",
+                data: {
+                    nis: nis
+                },
+                success: function(response) {
+                    loadSantriData();
+                    loadRekomData();
+                }
+            });
+        });
+
+        // Fungsi untuk mereload tabel data siswa
+        function loadSantriData() {
+            $.ajax({
+                type: "GET",
+                url: "<?= base_url('kasir/loadSantri'); ?>", // Gantilah dengan URL yang sesuai
+                success: function(response) {
+                    // Update tabel HTML dengan data siswa yang baru
+                    $("#loadSantri").html(response);
+                    // console.log('Muat data berhasil')
+                }
+            });
+        }
+
+        function loadRekomData() {
+            $.ajax({
+                type: "GET",
+                url: "<?= base_url('kasir/loadRekom'); ?>", // Gantilah dengan URL yang sesuai
+                success: function(response) {
+                    // Update tabel HTML dengan data siswa yang baru
+                    $("#loadRekom").html(response);
+                    // console.log('Muat data berhasil')
+                }
+            });
+        }
+
+        // Panggil fungsi untuk mereload data siswa saat halaman pertama kali dimuat
+        loadSantriData();
+        loadRekomData();
+    });
+</script>

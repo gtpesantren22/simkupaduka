@@ -80,6 +80,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li> <a href="<?= base_url('account/kasBank'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Bank</a></li>
                         <li> <a href="<?= base_url('account/kasPanjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Panjar</a></li>
                         <li> <a href="<?= base_url('account/kasDekosan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Dekosan</a></li>
+                        <li> <a href="<?= base_url('account/kasCadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pembantu Kas Cadangan</a></li>
                     </ul>
                 </li>
 
@@ -102,8 +103,10 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                                 Realisasi</a>
                         </li>
                         <li>
-                            <a href="<?= base_url('account/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya
-                                Pendidikan</a>
+                            <a href="<?= base_url('account/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya Pendidikan</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('account/cadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Cadangan</a>
                         </li>
                     </ul>
                 </li>

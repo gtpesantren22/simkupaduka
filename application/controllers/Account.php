@@ -48,10 +48,12 @@ class Account extends CI_Controller
 
 		$sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
 		$sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
-
 		$realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml;
-		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml;
+		$cadangan = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
+		$panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
+
+		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml;
+		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml;
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
@@ -232,6 +234,7 @@ class Account extends CI_Controller
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 		$data['tahun'] = $this->tahun;
+
 		$this->load->view('account/head', $data);
 		$this->load->view('account/editBos', $data);
 		$this->load->view('account/foot');
@@ -2065,6 +2068,21 @@ ORDER BY tanggal DESC")->result();
 		$this->load->view('account/foot');
 	}
 
+	public function kasCadangan()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['kas'] = $this->db->query("SELECT tanggal AS tanggal, 'CADANGAN' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM cadangan WHERE tahun = '$this->tahun' GROUP BY tanggal ORDER BY tanggal DESC")->result();
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/kasCadangan', $data);
+		$this->load->view('account/foot');
+	}
+
 	public function panjar()
 	{
 		$data['user'] = $this->Auth_model->current_user();
@@ -2126,6 +2144,68 @@ ORDER BY tanggal DESC")->result();
 			} else {
 				$this->session->set_flashdata('error', 'Input data baru gagal');
 				redirect('account/panjar');
+			}
+		}
+	}
+
+	public function cadangan()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['cadangan'] = $this->model->getBy('cadangan', 'tahun', $this->tahun)->result();
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/cadangan', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function saveCadangan()
+	{
+		$id = $this->uuid->v4();
+		$ket = $this->input->post('ket', true);
+		$tanggal = $this->input->post('tanggal', true);
+		$nominal = rmRp($this->input->post('nominal', true));
+
+		$file_name = 'cadangan-' . rand(0, 99999999);
+		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+		$config['allowed_types']        = 'pdf';
+		$config['file_name']            = $file_name;
+		$config['overwrite']            = true;
+		$config['max_size']             = 10240; // 10MB
+		$config['max_width']            = 1080;
+		$config['max_height']           = 1080;
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('berkas')) {
+			// $data['error'] = $this->upload->display_errors();
+			$this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
+			redirect('account/cadangan');
+		} else {
+			$uploaded_data = $this->upload->data();
+
+			$data3 = [
+				'id_cadangan' => $id,
+				'tanggal' => $tanggal,
+				'nominal' => $nominal,
+				'ket' => $ket,
+				'berkas' => $uploaded_data['file_name'],
+				'kasir' => $this->user,
+				'tahun' => $this->tahun,
+			];
+
+			$this->model->input('cadangan', $data3);
+
+			if ($this->db->affected_rows() > 0) {
+				$this->session->set_flashdata('ok', 'Input data baru berhasil');
+				redirect('account/cadangan');
+			} else {
+				$this->session->set_flashdata('error', 'Input data baru gagal');
+				redirect('account/cadangan');
 			}
 		}
 	}
