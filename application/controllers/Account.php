@@ -49,10 +49,10 @@ class Account extends CI_Controller
 		$sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
 		$sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
 		$realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-		$cadangan = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
+		$data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
 		$panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
 
-		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml;
+		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml;
 		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml;
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
@@ -62,14 +62,6 @@ class Account extends CI_Controller
 
 		$data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
 		$data['cash'] = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $data['tahun']);
-
-		// if (!$this->Auth_model->current_user() || $this->Auth_model->current_user()->level != 'account' && $this->Auth_model->current_user()->level != 'admin') {
-		// 	$data['status'] = 'true ' . 'Ditolak';
-		// } else {
-		// 	$data['status'] = 'flase ' . 'Bisa masuk';
-		// }
-
-		// $data['status'] = (true && false) || (true && true);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/index', $data);

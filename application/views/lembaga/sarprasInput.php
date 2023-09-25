@@ -93,7 +93,7 @@
                         <div class="row">
                             <!-- table data -->
                             <div class="col-md-3">
-                                <?php if ($pj->status == 'belum' | $pj->status == 'ditolak') { ?>
+                                <?php if ($pj->status == 'belum' || $pj->status == 'ditolak') { ?>
                                     <a href="<?= base_url('lembaga/ajukanSarpras/' . $pj->kode_pengajuan) ?>" class="btn btn-sm btn-warning tbl-confirm" value="Pengajuan akan di lanjutkan kepada bendahara"><i class="bx bx-upload"></i>Ajukan ke Bendahara</a>
                                 <?php } ?>
                             </div>
