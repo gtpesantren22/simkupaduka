@@ -212,3 +212,31 @@ $db['nikmus'] = array(
 	'failover' => array(),
 	'save_queries' => TRUE
 );
+
+$db['psb24'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+
+	'username' => 'root',
+	'password' => '',
+	'database' => 'psb24',
+
+	// 'username' => 'u9048253_dwk',
+	// 'password' => 'PesantrenDWKIT2021',
+	// 'database' => 'u9048253_psb24',
+
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);

@@ -11,6 +11,7 @@ class AdminModel extends CI_Model
 
         $this->db2 = $this->load->database('dekos', true);
         $this->db5 = $this->load->database('nikmus', true);
+        $this->db6 = $this->load->database('psb24', true);
     }
 
     public function add($data)
@@ -364,5 +365,17 @@ class AdminModel extends CI_Model
         $this->db->where($where2, $dtwhere2);
         $this->db->where($where3, $dtwhere3);
         return $this->db->get($table);
+    }
+    function getBySumPsb($table, $where, $dtwhere, $sum)
+    {
+        $this->db6->select('*');
+        $this->db6->select_sum($sum, 'jml');
+        $this->db6->where($where, $dtwhere);
+        return $this->db6->get($table);
+    }
+
+    function pengajuanPsb()
+    {
+        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan_detail");
     }
 }

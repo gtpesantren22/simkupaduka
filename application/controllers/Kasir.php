@@ -48,11 +48,14 @@ class Kasir extends CI_Controller
         $sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
         $sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
         $realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-        $cadangan = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
+        $data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
         $panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
+        $daftar = $this->model->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
+        $regist = $this->model->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
+        $pengajuanPsb = $this->model->pengajuanPsb()->row();
 
-        $data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml;
-        $data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml;
+        $data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml;
+        $data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml;
 
         $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 

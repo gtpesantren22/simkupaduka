@@ -57,7 +57,7 @@
         <!--end row-->
 
         <div class="row">
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
                         <div>
@@ -93,7 +93,22 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <h5 class="card-title">Dana Cadangan</h5>
+                        </div>
+                        <div class="col">
+                            <div class="p-0 border border-3 border-warning text-center text-danger rounded bg-light">
+                                <h2><?= rupiah($cadangan->jml) ?></h2>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div>
@@ -113,21 +128,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div>
-                            <h5 class="card-title">Dana Cadangan</h5>
-                        </div>
-                        <div class="col">
-                            <div class="p-0 border border-3 border-warning text-center text-danger rounded bg-light">
-                                <h2><?= rupiah($cadangan->jml) ?></h2>
-                            </div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-3">
                 <div class="card">
                     <div class="card-body">

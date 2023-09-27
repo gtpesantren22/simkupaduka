@@ -11,6 +11,7 @@ class KasirModel extends CI_Model
         $this->db3 = $this->load->database('sekretaris', true);
         $this->db4 = $this->load->database('santri', true);
         $this->db5 = $this->load->database('nikmus', true);
+        $this->db6 = $this->load->database('psb24', true);
     }
     function apikey()
     {
@@ -255,5 +256,18 @@ class KasirModel extends CI_Model
     {
         $this->db4->where($where, $dtwhere);
         return $this->db4->get($tbl);
+    }
+
+    function getBySumPsb($table, $where, $dtwhere, $sum)
+    {
+        $this->db6->select('*');
+        $this->db6->select_sum($sum, 'jml');
+        $this->db6->where($where, $dtwhere);
+        return $this->db6->get($table);
+    }
+
+    function pengajuanPsb()
+    {
+        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan_detail");
     }
 }
