@@ -108,6 +108,9 @@
                             <a href="<?= base_url('kasir/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya
                                 Pendidikan</a>
                         </li>
+                        <li>
+                            <a href="<?= base_url('kasir/cadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Cadangan</a>
+                        </li>
                     </ul>
                 </li>
 
