@@ -56,7 +56,7 @@ class Admin extends CI_Controller
 		$regist = $this->model->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
 		$pengajuanPsb = $this->model->pengajuanPsb()->row();
 
-		$outRutin = $this->model->getBySum('pengeluran_rutin', 'tahun', $this->tahun, 'nominal')->row();
+		$outRutin = $this->model->getBySum('pengeluaran_rutin', 'tahun', $this->tahun, 'nominal')->row();
 		$sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan' ")->row();
 
 		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml;
