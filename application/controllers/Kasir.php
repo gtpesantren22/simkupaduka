@@ -1908,4 +1908,66 @@ https://simkupaduka.ppdwk.com/';
             echo "Terjadi kesalahan saat menghapus data.";
         }
     }
+
+    public function cadangan()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+        $data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+        $data['cadangan'] = $this->model->getBy('cadangan', 'tahun', $this->tahun)->result();
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/cadangan', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function saveCadangan()
+    {
+        $id = $this->uuid->v4();
+        $ket = $this->input->post('ket', true);
+        $tanggal = $this->input->post('tanggal', true);
+        $nominal = rmRp($this->input->post('nominal', true));
+
+        $file_name = 'cadangan-' . rand(0, 99999999);
+        $config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+        $config['allowed_types']        = 'pdf';
+        $config['file_name']            = $file_name;
+        $config['overwrite']            = true;
+        $config['max_size']             = 10240; // 10MB
+        $config['max_width']            = 1080;
+        $config['max_height']           = 1080;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('berkas')) {
+            // $data['error'] = $this->upload->display_errors();
+            $this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
+            redirect('kasir/cadangan');
+        } else {
+            $uploaded_data = $this->upload->data();
+
+            $data3 = [
+                'id_cadangan' => $id,
+                'tanggal' => $tanggal,
+                'nominal' => $nominal,
+                'ket' => $ket,
+                'berkas' => $uploaded_data['file_name'],
+                'kasir' => $this->user,
+                'tahun' => $this->tahun,
+            ];
+
+            $this->model->input('cadangan', $data3);
+
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('ok', 'Input data baru berhasil');
+                redirect('kasir/cadangan');
+            } else {
+                $this->session->set_flashdata('error', 'Input data baru gagal');
+                redirect('kasir/cadangan');
+            }
+        }
+    }
 }
