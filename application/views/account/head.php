@@ -91,23 +91,12 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <div class="menu-title">Pemasukan</div>
                     </a>
                     <ul>
-                        <li> <a href="<?= base_url('account/pesantren'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan
-                                Pesantren</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('account/bos'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan
-                                BOS</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('account/sisa'); ?>"><i class="bx bx-right-arrow-alt"></i>Saldo
-                                Realisasi</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('account/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya Pendidikan</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('account/cadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Cadangan</a>
-                        </li>
+                        <li> <a href="<?= base_url('account/pesantren'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan Lainnya</a></li>
+                        <li><a href="<?= base_url('account/bos'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan BOS</a></li>
+                        <li><a href="<?= base_url('account/sisa'); ?>"><i class="bx bx-right-arrow-alt"></i>Saldo Realisasi</a></li>
+                        <li><a href="<?= base_url('account/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya Pendidikan</a></li>
+                        <li><a href="<?= base_url('account/talangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Talangan</a></li>
+                        <li><a href="<?= base_url('account/cadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Cadangan</a></li>
                     </ul>
                 </li>
                 <li>
@@ -119,10 +108,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     <ul>
                         <li> <a href="<?= base_url('account/rab'); ?>"><i class="bx bx-right-arrow-alt"></i>RAB
                                 Lembaga</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('account/rab_kbj'); ?>"><i class="bx bx-right-arrow-alt"></i>RAB
-                                Kebijakan</a>
                         </li>
                         <li>
                             <a href="<?= base_url('account/pak'); ?>"><i class="bx bx-right-arrow-alt"></i>PAK</a>
@@ -158,6 +143,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         </li>
                         <li>
                             <a href="<?= base_url('account/panjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Panjar</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('account/rab_kbj'); ?>"><i class="bx bx-right-arrow-alt"></i>Kebijakan Kepala</a>
                         </li>
                     </ul>
                 </li>

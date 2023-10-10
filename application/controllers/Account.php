@@ -2208,4 +2208,57 @@ ORDER BY tanggal DESC")->result();
 			}
 		}
 	}
+
+	public function talangan()
+	{
+		$data['pes'] = $this->model->getBy('talangan', 'tahun', $this->tahun)->result();
+		$data['sumPes'] = $this->model->selectSum('talangan', 'nominal', 'tahun', $this->tahun)->row();
+		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+		$data['tahunData'] = $this->model->getAll('tahun')->result();
+		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+		$data['tahun'] = $this->tahun;
+		$this->load->view('account/head', $data);
+		$this->load->view('account/masukTalangan', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function talanganAdd()
+	{
+		$data = [
+			'id_pes' => $this->uuid->v4(),
+			'lembaga' => $this->input->post('lembaga', true),
+			'bidang' => $this->input->post('bidang', true),
+			'kode' => $this->input->post('lembaga', true) . '.' . $this->input->post('bidang', true),
+			'uraian' => $this->input->post('uraian', true),
+			'periode' => $this->input->post('periode', true),
+			'nominal' => rmRp($this->input->post('nominal', true)),
+			'tgl_bayar' => $this->input->post('tgl_bayar', true),
+			'tahun' => $this->input->post('tahun', true),
+			'at' => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('talangan', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Input Pemasukan talangan Berhasil');
+			redirect('account/talangan');
+		} else {
+			$this->session->set_flashdata('error', 'Input Pemasukan talangan Gagal');
+			redirect('account/talangan');
+		}
+	}
+
+	public function delTalangan($id)
+	{
+		$this->model->delete('talangan', 'id_pes', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus Pemasukan talangan Berhasil');
+			redirect('account/talangan');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus Pemasukan talangan Gagal');
+			redirect('account/talangan');
+		}
+	}
 }
