@@ -56,8 +56,12 @@ class Admin extends CI_Controller
 		$regist = $this->model->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
 		$pengajuanPsb = $this->model->pengajuanPsb()->row();
 
+		$outRutin = $this->model->getBySum('pengeluran_rutin', 'tahun', $this->tahun, 'nominal')->row();
+		$sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan' ")->row();
+
 		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml;
-		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml;
+
+		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml;
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 
