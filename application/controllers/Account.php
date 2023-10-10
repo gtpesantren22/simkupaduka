@@ -39,7 +39,7 @@ class Account extends CI_Controller
 
 		$bos = $this->model->getBySum('bos', 'tahun', $this->tahun, 'nominal')->row();
 		$pembayaran = $this->model->getBySum('pembayaran', 'tahun', $this->tahun, 'nominal')->row();
-		$pesantren = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
+		$data['pesantren'] = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
 		$talangan = $this->model->getBySum('talangan', 'tahun', $this->tahun, 'nominal')->row();
 		$kebijakan = $this->model->getBySum('kebijakan', 'tahun', $this->tahun, 'nominal')->row();
 		$realis = $this->model->getBySum('realis', 'tahun', $this->tahun, 'nom_serap')->row();
@@ -49,7 +49,7 @@ class Account extends CI_Controller
 
 		$sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
 		$sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
-		$realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
+		$data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
 		$data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
 		$panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
 		$daftar = $this->model->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
@@ -59,7 +59,7 @@ class Account extends CI_Controller
 		$outRutin = $this->model->getBySum('pengeluaran_rutin', 'tahun', $this->tahun, 'nominal')->row();
 		$sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan' ")->row();
 
-		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml + $talangan->jml;
+		$data['masuk'] = $bos->jml + $pembayaran->jml + $data['pesantren']->jml + $sumCicil->jml + $data['realSisa']->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml + $talangan->jml;
 
 		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml;
 

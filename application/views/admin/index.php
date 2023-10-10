@@ -110,7 +110,7 @@
                         </div>
                         <div class="col">
                             <div class="p-0 border border-3 border-warning text-center text-danger rounded bg-light">
-                                <h2><?= rupiah($cadangan->jml) ?></h2>
+                                <h2><?= rupiah($cadangan->jml + $pesantren->jml + $realSisa->jml) ?></h2>
                             </div>
 
                         </div>
@@ -125,13 +125,13 @@
                         </div>
                         <div class="col">
                             <center>
-                                <strong style="color: #FC6A83;">(Saldo Bank + Saldo Tunai + Saldo Cadangan) <?= rupiah($saldo->row('nominal') + $cash->row('nominal') + $cadangan->jml) ?></strong>
+                                <strong style="color: #FC6A83;">(Saldo Bank + Saldo Tunai + Saldo Cadangan) <?= rupiah($saldo->row('nominal') + $cash->row('nominal') + ($cadangan->jml + $pesantren->jml + $realSisa->jml)) ?></strong>
                             </center>
                             <div class="p-1 border border-1 text-center border-success rounded bg-light mb-1 mt-1">
                                 <strong>Selisih = (Saldo Bank + Saldo Tunai + Saldo cadangan) - Saldo Sistem </strong><br>
                             </div>
                             <center>
-                                <h4><strong><?= rupiah(($saldo->row('nominal') + $cash->row('nominal') + $cadangan->jml) - ($masuk - $keluar)) ?></strong></h4>
+                                <h4><strong><?= rupiah(($saldo->row('nominal') + $cash->row('nominal') + ($cadangan->jml + $pesantren->jml + $realSisa->jml)) - ($masuk - $keluar)) ?></strong></h4>
                             </center>
                         </div>
                     </div>
