@@ -40,6 +40,7 @@ class Account extends CI_Controller
 		$bos = $this->model->getBySum('bos', 'tahun', $this->tahun, 'nominal')->row();
 		$pembayaran = $this->model->getBySum('pembayaran', 'tahun', $this->tahun, 'nominal')->row();
 		$pesantren = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
+		$talangan = $this->model->getBySum('talangan', 'tahun', $this->tahun, 'nominal')->row();
 		$kebijakan = $this->model->getBySum('kebijakan', 'tahun', $this->tahun, 'nominal')->row();
 		$realis = $this->model->getBySum('realis', 'tahun', $this->tahun, 'nom_serap')->row();
 		$keluar = $this->model->getBySum('keluar', 'tahun', $this->tahun, 'nominal')->row();
@@ -58,7 +59,7 @@ class Account extends CI_Controller
 		$outRutin = $this->model->getBySum('pengeluaran_rutin', 'tahun', $this->tahun, 'nominal')->row();
 		$sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan' ")->row();
 
-		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml;
+		$data['masuk'] = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml + $talangan->jml;
 
 		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml;
 
