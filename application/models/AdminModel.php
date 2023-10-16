@@ -376,6 +376,26 @@ class AdminModel extends CI_Model
 
     function pengajuanPsb()
     {
-        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan_detail");
+        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai'");
+    }
+
+    function pemsukanPsb()
+    {
+        $daftar = $this->db6->query("SELECT SUM(nominal) as jml FROM bp_daftar")->row();
+        $regist = $this->db6->query("SELECT SUM(nominal) as jml FROM regist")->row();
+
+        return $daftar->jml + $regist->jml;
+    }
+
+    function pengeluaranPsb()
+    {
+        $daftar = $this->db6->query("SELECT SUM(qty*harga_satuan) as jml FROM pengajuan_detail JOIN pengajuan ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai' ")->row();
+
+        return $daftar->jml;
+    }
+
+    function dataPengeluaranPsb()
+    {
+        return $this->db6->query("SELECT *, SUM(harga_satuan*qty) as total, jabatan.nama as nmbidang FROM pengajuan JOIN pengajuan_detail  ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan JOIN jabatan ON pengajuan.bidang=jabatan.kode GROUP BY pengajuan.kode_pengajuan");
     }
 }

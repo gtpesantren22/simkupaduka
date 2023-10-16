@@ -16,6 +16,7 @@ class Account extends CI_Controller
 
 		$this->db5 = $this->load->database('nikmus', true);
 		$this->db2 = $this->load->database('dekos', true);
+		$this->db6 = $this->load->database('psb24', true);
 
 		$user = $this->Auth_model->current_user();
 		$this->tahun = $this->session->userdata('tahun');
@@ -1933,10 +1934,22 @@ ORDER BY tanggal DESC")->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['kas'] = $this->db->query("SELECT tgl_setor AS tanggal, 'BOS/BPOPP' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bos WHERE tahun = '$this->tahun' GROUP BY tgl_setor 
-UNION
-SELECT tgl AS tanggal, 'BP' AS jenis, SUM(nominal) AS debit, 0 AS kredit FROM pembayaran WHERE tahun = '$this->tahun' GROUP BY tgl 
-ORDER BY tanggal DESC")->result();
+		$kas1 = $this->db->query("SELECT tgl_setor AS tanggal, 'BOS/BPOPP' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bos WHERE tahun = '$this->tahun' GROUP BY tgl_setor 
+
+		UNION
+		SELECT tanggal AS tanggal, 'HONOR' AS jenis , 0 as debit, SUM(nominal)  AS kredit FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'HONOR' GROUP BY tanggal
+		
+		UNION
+		SELECT tgl AS tanggal, 'BP' AS jenis, SUM(nominal) AS debit, 0 AS kredit FROM pembayaran WHERE tahun = '$this->tahun' GROUP BY tgl 
+
+		ORDER BY tanggal DESC")->result();
+
+		$kas2 = $this->db6->query("SELECT tgl_bayar AS tanggal, 'PSB' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bp_daftar GROUP BY tgl_bayar 
+		UNION 
+		SELECT tgl_bayar AS tanggal, 'PSB' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM regist GROUP BY tgl_bayar 
+		ORDER BY tanggal DESC ")->result();
+
+		$data['kas'] = array_merge($kas1, $kas2);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/kasBank', $data);
@@ -1966,7 +1979,11 @@ ORDER BY tanggal DESC")->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['kas'] = $this->db->query("SELECT sarpras.tanggal AS tanggal, 'SARPRAS' AS jenis , 0 as debit, SUM(sarpras_detail.qty * sarpras_detail.harga_satuan) AS kredit FROM sarpras JOIN sarpras_detail ON sarpras.kode_pengajuan = sarpras_detail.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.tahun = '$this->tahun' GROUP BY sarpras.tanggal ORDER BY sarpras.tanggal DESC")->result();
+		$kas1 = $this->db->query("SELECT sarpras.tanggal AS tanggal, 'SARPRAS' AS jenis , 0 as debit, SUM(sarpras_detail.qty * sarpras_detail.harga_satuan) AS kredit FROM sarpras JOIN sarpras_detail ON sarpras.kode_pengajuan = sarpras_detail.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.tahun = '$this->tahun' GROUP BY sarpras.tanggal ORDER BY sarpras.tanggal DESC")->result();
+
+		$kas2 = $this->db6->query("SELECT tanggal AS tanggal, 'PSB' AS jenis , 0 as debit, SUM(qty * harga_satuan) AS kredit FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai' GROUP BY tanggal ORDER BY tanggal ")->result();
+
+		$data['kas'] = array_merge($kas1, $kas2);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/kasPanjar', $data);
@@ -2261,5 +2278,25 @@ ORDER BY tanggal DESC")->result();
 			$this->session->set_flashdata('error', 'Hapus Pemasukan talangan Gagal');
 			redirect('account/talangan');
 		}
+	}
+
+	public function ppdb()
+	{
+		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+		$data['tahunData'] = $this->model->getAll('tahun')->result();
+		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+		$data['tahun'] = $this->tahun;
+
+		$data['masuk'] = $this->model->pemsukanPsb();
+		$data['keluar'] = $this->model->pengeluaranPsb();
+
+		$data['data'] = $this->model->dataPengeluaranPsb()->result();
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/ppdb', $data);
+		$this->load->view('account/foot');
 	}
 }

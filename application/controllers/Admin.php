@@ -2390,7 +2390,7 @@ ORDER BY tanggal DESC")->result();
 		$data['tahun'] = $this->tahun;
 		$data['bulan'] = $this->bulan;
 
-		$data['kas'] = $this->db->query("SELECT tgl_setor AS tanggal, 'BOS/BPOPP' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bos WHERE tahun = '$this->tahun' GROUP BY tgl_setor 
+		$kas1 = $this->db->query("SELECT tgl_setor AS tanggal, 'BOS/BPOPP' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bos WHERE tahun = '$this->tahun' GROUP BY tgl_setor 
 
 		UNION
 		SELECT tanggal AS tanggal, 'HONOR' AS jenis , 0 as debit, SUM(nominal)  AS kredit FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'HONOR' GROUP BY tanggal
@@ -2399,6 +2399,13 @@ ORDER BY tanggal DESC")->result();
 		SELECT tgl AS tanggal, 'BP' AS jenis, SUM(nominal) AS debit, 0 AS kredit FROM pembayaran WHERE tahun = '$this->tahun' GROUP BY tgl 
 
 		ORDER BY tanggal DESC")->result();
+
+		$kas2 = $this->db6->query("SELECT tgl_bayar AS tanggal, 'PSB' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM bp_daftar GROUP BY tgl_bayar 
+		UNION 
+		SELECT tgl_bayar AS tanggal, 'PSB' AS jenis , SUM(nominal) as debit, 0 AS kredit FROM regist GROUP BY tgl_bayar 
+		ORDER BY tanggal DESC ")->result();
+
+		$data['kas'] = array_merge($kas1, $kas2);
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/kasBank', $data);
@@ -2424,7 +2431,11 @@ ORDER BY tanggal DESC")->result();
 		$data['tahun'] = $this->tahun;
 		$data['bulan'] = $this->bulan;
 
-		$data['kas'] = $this->db->query("SELECT sarpras.tanggal AS tanggal, 'SARPRAS' AS jenis , 0 as debit, SUM(sarpras_detail.qty * sarpras_detail.harga_satuan) AS kredit FROM sarpras JOIN sarpras_detail ON sarpras.kode_pengajuan = sarpras_detail.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.tahun = '$this->tahun' GROUP BY sarpras.tanggal ORDER BY sarpras.tanggal DESC")->result();
+		$kas1 = $this->db->query("SELECT sarpras.tanggal AS tanggal, 'SARPRAS' AS jenis , 0 as debit, SUM(sarpras_detail.qty * sarpras_detail.harga_satuan) AS kredit FROM sarpras JOIN sarpras_detail ON sarpras.kode_pengajuan = sarpras_detail.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.tahun = '$this->tahun' GROUP BY sarpras.tanggal ORDER BY sarpras.tanggal DESC")->result();
+
+		$kas2 = $this->db6->query("SELECT tanggal AS tanggal, 'PSB' AS jenis , 0 as debit, SUM(qty * harga_satuan) AS kredit FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai' GROUP BY tanggal ORDER BY tanggal ")->result();
+
+		$data['kas'] = array_merge($kas1, $kas2);
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/kasPanjar', $data);

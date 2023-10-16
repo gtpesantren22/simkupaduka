@@ -268,6 +268,6 @@ class KasirModel extends CI_Model
 
     function pengajuanPsb()
     {
-        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan_detail");
+        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai'");
     }
 }

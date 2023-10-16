@@ -145,6 +145,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                             <a href="<?= base_url('account/panjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Panjar</a>
                         </li>
                         <li>
+                            <a href="<?= base_url('account/ppdb'); ?>"><i class="bx bx-right-arrow-alt"></i>PPDB</a>
+                        </li>
+                        <li>
                             <a href="<?= base_url('account/rab_kbj'); ?>"><i class="bx bx-right-arrow-alt"></i>Kebijakan Kepala</a>
                         </li>
                     </ul>
