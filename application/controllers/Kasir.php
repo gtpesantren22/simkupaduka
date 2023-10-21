@@ -355,8 +355,7 @@ Penerima: *' . $kasir . '*
 
 Bukti Penerimaan ini *DISIMPAN* oleh wali santri sebagai bukti pembayaran Biaya Pendidikan PP Darul Lughah Wal Karomah Tahun Pelajaran ' . $tahun . '.
 *Hal – hal yang berkaitan dengan Teknis keuangan dapat menghubungi Contact Person Bendahara berikut :*
-*https://wa.me/6287757777273*
-*https://wa.me/6285235583647*
+*https://wa.me/6282329641926*
 
 Terimakasih';
 
