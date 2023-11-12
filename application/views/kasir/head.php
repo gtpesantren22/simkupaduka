@@ -72,16 +72,11 @@
                         <div class="menu-title">Pengeluaran</div>
                     </a>
                     <ul>
-                        <li> <a href="<?= base_url('kasir/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Pengajuan</a>
-                        </li>
-                        <li> <a href="<?= base_url('kasir/sarpras'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Sarpras</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('kasir/pengajuanDisp'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan Disposisi</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('kasir/lain'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Lainnya</a>
-                        </li>
+                        <li><a href="<?= base_url('kasir/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Pengajuan</a></li>
+                        <li><a href="<?= base_url('kasir/sarpras'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Sarpras</a></li>
+                        <li><a href="<?= base_url('kasir/haflah'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Haflah</a></li>
+                        <li><a href="<?= base_url('kasir/pengajuanDisp'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan Disposisi</a></li>
+                        <li><a href="<?= base_url('kasir/lain'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Lainnya</a></li>
 
                     </ul>
                 </li>

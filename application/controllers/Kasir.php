@@ -1974,4 +1974,81 @@ https://simkupaduka.ppdwk.com/';
             }
         }
     }
+
+    public function haflah()
+    {
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $data['data'] = $this->model->getBy2('haflah', 'tahun', $this->tahun, 'status', 'disetujui')->result();
+
+        $data['bulan'] = $this->bulan;
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/haflah', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    function haflahDetail($kode)
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+        $data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+        $data['data'] = $this->db->query("SELECT haflah_detail.*, lembaga.nama FROM haflah_detail JOIN lembaga ON haflah_detail.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+
+        $data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
+
+        $data['pj'] = $this->db->query("SELECT * FROM haflah WHERE kode_pengajuan = '$kode'")->row();
+
+        $data['lembagaData'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/haflahInput', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    function cairHaflah()
+    {
+        $kd_pnj = $this->input->post('kode_pengajuan', true);
+        $penerima = $this->input->post('penerima', true);
+        $tgl_cair = $this->input->post('tgl_cair', true);
+        $total = $this->input->post('total', true);
+        $dataPj = $this->model->getBy('haflah', 'kode_pengajuan', $kd_pnj)->row();
+        $dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kd_pnj' ")->row();
+
+        $psn = '*INFORMASI PENCAIRAN PENGAJUAN HAFLAH*
+
+pengajuan dari :
+    
+Lembaga : Haflah Pesantren
+Kode Pengajuan : ' . $kd_pnj . '
+Nominal : _*' . rupiah($dataSum->jml) . '*_
+Penerima : ' . $penerima . '
+*telah dicairkan pada ' . $tgl_cair . '*
+
+*_dimohon kepada KPA untuk menyelesaikan SPJ untuk melakukan pengajuan berikutnya_*
+
+Terimakasih';
+
+        $data = ['status' => 'dicairkan'];
+
+        $this->model->update('haflah', $data, 'kode_pengajuan', $kd_pnj);
+
+        if ($this->db->affected_rows() > 0) {
+            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            // kirim_person($this->apiKey, '085235583647', $psn);
+            kirim_person($this->apiKey, '085236924510', $psn);
+
+            $this->session->set_flashdata('ok', 'Pencairan Pengajuan berhasil');
+            redirect('kasir/haflah');
+        } else {
+            $this->session->set_flashdata('error', 'Pencairan Pengajuan tidak bisa');
+            redirect('kasir/haflah');
+        }
+    }
 }

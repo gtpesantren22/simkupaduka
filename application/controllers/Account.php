@@ -2299,4 +2299,113 @@ ORDER BY tanggal DESC")->result();
 		$this->load->view('account/ppdb', $data);
 		$this->load->view('account/foot');
 	}
+
+	function haflah()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['data'] = $this->model->getBy2('haflah', 'tahun', $this->tahun, 'status', 'proses')->result();
+
+		$data['bulan'] = $this->bulan;
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/haflah', $data);
+		$this->load->view('account/foot');
+	}
+
+	function haflahDetail($kode)
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['data'] = $this->db->query("SELECT haflah_detail.*, lembaga.nama FROM haflah_detail JOIN lembaga ON haflah_detail.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+
+		$data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
+
+		$data['pj'] = $this->db->query("SELECT * FROM haflah WHERE kode_pengajuan = '$kode'")->row();
+
+		$data['lembagaData'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/haflahInput', $data);
+		$this->load->view('account/foot');
+	}
+
+	function tolakHaflah()
+	{
+		$data = ['status' => 'ditolak'];
+		$kode = $this->input->post('kode', true);
+		$tgl = $this->input->post('tgl', true);
+		$pesan = $this->input->post('pesan', true);
+
+		$this->model->update('haflah', $data, 'kode_pengajuan', $kode);
+
+		$psn = '*INFORMASI PENGAJUAN HAFLAH*
+
+pengajuan dari :
+    
+Lembaga : Haflah Pesantren
+Kode Pengajuan : ' . $kode . '
+*DITOLAK Oleh Sub Bagian Accounting pada ' . $tgl . '*
+dengan catatan : _*' . $pesan . '*_
+
+*_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada di https://simkupaduka.ppdwk.com/_*
+
+Terimakasih';
+
+		if ($this->db->affected_rows() > 0) {
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, '085235583647', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
+
+			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');
+			redirect('account/haflah');
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan RAB tidak bisa ditolak');
+			redirect('account/haflah');
+		}
+	}
+
+	function vervalHaflah($kode)
+	{
+		$data = ['status' => 'disetujui'];
+
+		$this->model->update('haflah', $data, 'kode_pengajuan', $kode);
+		$tgl = date('d-m-Y H:i');
+		$dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
+
+		$psn = '*INFORMASI PENGAJUAN HAFLAH*
+
+pengajuan dari :
+    
+Lembaga : Haflah Pesantren
+Kode Pengajuan : ' . $kode . '
+Nominal : _*' . rupiah($dataSum->jml) . '*_
+*DISETUJUI Oleh Sub Bagian Accounting pada ' . $tgl . '*
+
+*_dimohon kepada KPA lembaga terkait untuk segera melakukan Pencairan kepada Kasir di Sekretariat kantor bendahara_*
+
+Terimakasih';
+
+		if ($this->db->affected_rows() > 0) {
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, '085235583647', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
+
+			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');
+			redirect('account/haflah');
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan RAB tidak bisa ditolak');
+			redirect('account/haflah');
+		}
+	}
 }

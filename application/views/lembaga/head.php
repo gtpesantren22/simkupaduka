@@ -119,6 +119,15 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         </a>
                     </li>
                 <?php endif;  ?>
+                <?php if ($user->lembaga === '20') : ?>
+                    <li>
+                        <a href="<?= base_url('lembaga/haflah'); ?>">
+                            <div class="parent-icon"><i class='bx bx-data'></i>
+                            </div>
+                            <div class="menu-title">Haflah <span class="badge bg-danger">KHUSUS</span></div>
+                        </a>
+                    </li>
+                <?php endif;  ?>
                 <li class="menu-label">AddOn</li>
                 <li>
                     <a href="<?= base_url('lembaga/info'); ?>">

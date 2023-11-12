@@ -1602,9 +1602,6 @@ Terimakasih';
 				$this->model->input('spj', $data3);
 			}
 
-
-
-
 			if ($this->db->affected_rows() > 0) {
 
 				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
@@ -1617,6 +1614,152 @@ Terimakasih';
 				$this->session->set_flashdata('error', 'Bukti SPJ gagal diupload');
 				redirect('lembaga/sarpras');
 			}
+		}
+	}
+
+	function haflah()
+	{
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$data['data'] = $this->model->getBy('haflah', 'tahun', $this->tahun)->result();
+		$data['bulan'] = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+		$data['pj'] = $this->db->query("SELECT * FROM haflah WHERE tahun = '$this->tahun' ORDER BY tanggal DESC LIMIT 1")->row();
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/haflah', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	function haflahAdd()
+	{
+		$pj = $this->db->query("SELECT COUNT(*) as jml FROM haflah WHERE tahun = '$this->tahun'")->row();
+		$urut = $pj->jml + 1;
+
+		$tahunInput = $this->input->post('tahun', true);
+		$bulan = $this->input->post('bulan', true);
+		$tanggal = $this->input->post('tanggal', true);
+
+		// $dataKode = $this->db->query("SELECT COUNT(*) as jml FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' ")->row();
+		// $kodeBarang = $dataKode->jml + 1;
+		$noUrut = (int) substr($urut, 0, 3);
+		$kodePj = sprintf("%03s", $noUrut) . '.HFL.' . date('dd') . '.' . date('m') . '.' . date('Y');
+
+		$data = [
+			'id_haflah' => $this->uuid->v4(),
+			'kode_pengajuan' => $kodePj,
+			'tanggal' => $tanggal,
+			'bulan' => $bulan,
+			'status' => 'belum',
+			'tahun' => $this->tahun,
+			'at' => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('haflah', $data);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Pengajuan baru berhasil dibuat');
+			redirect('lembaga/haflah');
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan baru tidak bisa');
+			redirect('lembaga/haflah');
+		}
+	}
+
+	function haflahDetail($kode)
+	{
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$data['data'] = $this->db->query("SELECT haflah_detail.*, lembaga.nama FROM haflah_detail JOIN lembaga ON haflah_detail.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+
+		$data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
+
+		$data['bulan'] = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+		$data['pj'] = $this->db->query("SELECT * FROM haflah WHERE kode_pengajuan = '$kode'")->row();
+
+		$data['lembagaData'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', '20')->result();
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/haflahInput', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	function haflahAddInput()
+	{
+		$kode = $this->input->post('kode_pengajuan', true);
+		$data = [
+			'id_detail' => $this->uuid->v4(),
+			'kode_pengajuan' => $kode,
+			'lembaga' => $this->input->post('lembaga', true),
+			'uraian' => $this->input->post('uraian', true),
+			'qty' => $this->input->post('qty', true),
+			'satuan' => $this->input->post('satuan', true),
+			'harga_satuan' => rmRp($this->input->post('harga_satuan', true)),
+			'tahun' => $this->tahun,
+			'at' => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('haflah_detail', $data);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Item baru berhasil dibuat');
+			redirect('lembaga/haflahDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Item baru tidak bisa');
+			redirect('lembaga/haflahDetail/' . $kode);
+		}
+	}
+
+	function delItemHaflah($id)
+	{
+		$kode = $this->model->getBy('haflah_detail', 'id_detail', $id)->row('kode_pengajuan');
+
+		$this->model->delete('haflah_detail', 'id_detail', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Item baru berhasil dihapus');
+			redirect('lembaga/haflahDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Item baru tidak bisa dihapus');
+			redirect('lembaga/haflahDetail/' . $kode);
+		}
+	}
+
+	function ajukanHaflah($kode)
+	{
+		$data = [
+			'status' => 'proses'
+		];
+
+		$dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
+		$dtHaflah = $this->model->getBy('haflah', 'kode_pengajuan', $kode)->row();
+
+		$psn = '*INFORMASI PENGAJUAN HAFLAH* 
+
+Pengajuan Haflah Pesantren  :
+    
+Kode Pengajuan : ' . $kode . '
+Nominal : ' . rupiah($dataSum->jml) . '
+Bulan : ' . $this->bulan[$dtHaflah->bulan] . '
+Pada : ' .  date('Y-m-d H:i') . '
+
+*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+Terimakasih';
+
+		$this->model->update('haflah', $data, 'kode_pengajuan', $kode);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Pengajuan sudah diteruskan');
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, '082302301003', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
+			redirect('lembaga/haflahDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan sudah diteruskan');
+			redirect('lembaga/haflahDetail/' . $kode);
 		}
 	}
 
@@ -1637,6 +1780,99 @@ Terimakasih';
 				}
 			} else {
 				redirect($level);
+			}
+		}
+	}
+
+	public function uploadSpjHaflah()
+	{
+		$id = $this->uuid->v4();
+		$kode  = $this->input->post('kode', true);
+
+		$date = date('Y-m-d');
+		$at = date('Y-m-d H:i:s');
+
+		$file = $this->model->getBy('haflah', 'kode_pengajuan', $kode)->row();
+		$spj = $this->model->getBy('spj', 'kode_pengajuan', $kode)->row();
+
+		if (preg_match("/DISP./i", $kode)) {
+			$rt = "*(DISPOSISI)*";
+		} else {
+			$rt = '';
+		}
+
+		$psn = '
+*INFORMASI VERIFIKASI SPJ (HAFLAH)* ' . $rt . '
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : Biro Umum (HAFLAH)
+Kode Pengajuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
+Terimakasih';
+
+		$file_name = 'SRPS-' . rand(0, 99999999);
+		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+		$config['allowed_types']        = 'pdf';
+		$config['file_name']            = $file_name;
+		$config['overwrite']            = true;
+		$config['max_size']             = 5120; // 5MB
+		$config['max_width']            = 1080;
+		$config['max_height']           = 1080;
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('file')) {
+			// $data['error'] = $this->upload->display_errors();
+			$this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
+			redirect('lembaga/haflah');
+		} else {
+			$uploaded_data = $this->upload->data();
+
+			$data = [
+				'stts' => 1,
+				'file_spj' => $uploaded_data['file_name'],
+				'tgl_upload' => $date,
+			];
+			$data2 = [
+				'spj' => 1,
+			];
+			$data3 = [
+				'id_spj' => $id,
+				'kode_pengajuan' => $kode,
+				'lembaga' => $this->lembaga,
+				'bulan' => $file->bulan,
+				'tahun' => $file->tahun,
+				'stts' => 1,
+				'file_spj' => $uploaded_data['file_name'],
+				'tgl_upload' => $date
+			];
+
+			if ($spj) {
+				if ($spj->file_spj != '') {
+					unlink('./vertical/assets/uploads/' . $spj->file_spj);
+					$this->model->update('spj', $data, 'kode_pengajuan', $kode);
+				} else {
+					$this->model->update('spj', $data, 'kode_pengajuan', $kode);
+					$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
+				}
+			} else {
+				$this->model->input('spj', $data3);
+			}
+
+			if ($this->db->affected_rows() > 0) {
+
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_person($this->apiKey, '085236924510', $psn);
+
+				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
+				redirect('lembaga/haflah');
+			} else {
+				$this->session->set_flashdata('error', 'Bukti SPJ gagal diupload');
+				redirect('lembaga/haflah');
 			}
 		}
 	}
