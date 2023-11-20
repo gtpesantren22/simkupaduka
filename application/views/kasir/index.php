@@ -67,7 +67,7 @@
                             <div class="p-0 border border-3 border-success text-center text-danger rounded bg-light">
                                 <?php foreach ($saldo->result() as $data) : ?>
                                     <h2><?= rupiah($data->nominal) ?></h2>
-                                    Last Update : <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
+                                    Update : <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
                                 <?php endforeach; ?>
                             </div>
 

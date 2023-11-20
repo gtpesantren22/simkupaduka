@@ -66,7 +66,7 @@
                             <div class="p-0 border border-3 border-success text-center text-danger rounded bg-light">
                                 <?php foreach ($saldo->result() as $data) : ?>
                                     <h2><?= rupiah($data->nominal) ?></h2>
-                                    Last Update : <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
+                                    Update : <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
                                 <?php endforeach; ?>
                             </div>
                             <?= form_open('admin/editSaldo') ?>
@@ -182,6 +182,19 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div>
+                            <h5 class="card-title">Kirim Laporan</h5>
+                        </div>
+                        <div class="col">
+                            <a class="btn btn-block btn-primary tbl-confirm mb-1" value="Mengirim informasi laporan keuangan" href="<?= base_url('admin/kirimApp') ?>"><i class="bx bx-send"></i>Kirim Info App</a>
+                            <a class="btn btn-block btn-info tbl-confirm" value="Mengirim informasi laporan keuangan" href="<?= base_url('admin/kirimSaldo') ?>"><i class="bx bx-send"></i>Kirim Info Cash</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row">
@@ -215,27 +228,6 @@
                             <canvas id="chart1"></canvas>
                         </div>
                     </div>
-                    <!-- <div class="row row-cols-1 row-cols-md-3 row-cols-xl-3 g-0 row-group text-center border-top">
-                        <div class="col">
-                            <div class="p-3">
-                                <h5 class="mb-0">24.15M</h5>
-                                <small class="mb-0">Overall Visitor <span> <i class="bx bx-up-arrow-alt align-middle"></i> 2.43%</span></small>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="p-3">
-                                <h5 class="mb-0">12:38</h5>
-                                <small class="mb-0">Visitor Duration <span> <i class="bx bx-up-arrow-alt align-middle"></i> 12.65%</span></small>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="p-3">
-                                <h5 class="mb-0">639.82</h5>
-                                <small class="mb-0">Pages/Visit <span> <i class="bx bx-up-arrow-alt align-middle"></i>
-                                        5.62%</span></small>
-                            </div>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>

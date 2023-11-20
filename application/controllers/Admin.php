@@ -15,6 +15,7 @@ class Admin extends CI_Controller
 
 		$this->load->model('AdminModel', 'model');
 		$this->load->model('Auth_model');
+		$this->load->model('AppModel', 'modelAll');
 
 		$user = $this->Auth_model->current_user();
 		$this->tahun = $this->session->userdata('tahun');
@@ -36,36 +37,17 @@ class Admin extends CI_Controller
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 
-		$bos = $this->model->getBySum('bos', 'tahun', $this->tahun, 'nominal')->row();
-		$pembayaran = $this->model->getBySum('pembayaran', 'tahun', $this->tahun, 'nominal')->row();
-		$data['pesantren'] = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
-		$talangan = $this->model->getBySum('talangan', 'tahun', $this->tahun, 'nominal')->row();
-		$kebijakan = $this->model->getBySum('kebijakan', 'tahun', $this->tahun, 'nominal')->row();
-		$realis = $this->model->getBySum('realis', 'tahun', $this->tahun, 'nom_serap')->row();
-		$keluar = $this->model->getBySum('keluar', 'tahun', $this->tahun, 'nominal')->row();
-
 		$data['dekos'] = $this->model->getDekosSum($this->tahun)->row();
 		$data['nikmus'] = $this->model->getNikmusSum($this->tahun)->row();
 
-
-		$sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
-		$sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
+		$data['pesantren'] = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
 		$data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
 		$data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
-		$panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
-		$daftar = $this->model->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
-		$regist = $this->model->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
-		$pengajuanPsb = $this->model->pengajuanPsb()->row();
 
-		$outRutin = $this->model->getBySum('pengeluaran_rutin', 'tahun', $this->tahun, 'nominal')->row();
-		$sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan' ")->row();
-
-		$data['masuk'] = $bos->jml + $pembayaran->jml + $data['pesantren']->jml + $sumCicil->jml + $data['realSisa']->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml + $talangan->jml;
-
-		$data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml;
+		$data['masuk'] = $this->modelAll->masuk($this->tahun);
+		$data['keluar'] = $this->modelAll->keluar($this->tahun);
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
-
 		$data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
 		$data['cash'] = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $data['tahun']);
 
@@ -2533,5 +2515,55 @@ ORDER BY tanggal DESC")->result();
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/kasBesar', $data);
 		$this->load->view('admin/foot');
+	}
+
+	public function kirimApp()
+	{
+
+		$masuk = $this->modelAll->masuk($this->tahun);
+		$keluar = $this->modelAll->keluar($this->tahun);
+
+		$pesan = '*LAPORAN KEUANGAN*
+		
+Laporan keadaan Keuangan saat ini pada Aplikasi SIMKUPADUKA
+
+*Pemasukan : ' . rupiah($masuk) . '*
+*Pengeluaran : ' . rupiah($keluar) . '*
+*Saldo : ' . rupiah($masuk - $keluar) . '*
+
+Update data pertanggal
+*' . date('d-M-Y H:i') . '* ';
+
+		kirim_person($this->apiKey, '085236924510', $pesan);
+		redirect('admin');
+	}
+
+	public function kirimSaldo()
+	{
+
+		$bank = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $this->tahun)->row();
+		$cash = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $this->tahun)->row();
+		$cadangan = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
+		$masuk = $this->modelAll->masuk($this->tahun);
+		$keluar = $this->modelAll->keluar($this->tahun);
+		$pesantren = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
+		$realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
+
+		$selisih = ($bank->nominal + $cash->nominal + ($cadangan->jml + $pesantren->jml + $realSisa->jml)) - ($masuk - $keluar);
+
+		$pesan = '*LAPORAN KEUANGAN RIIL*
+		
+Laporan keadaan Keuangan Riil Pesantren
+
+*Saldo Bank : ' . rupiah($bank->nominal) . '*
+*Saldo Cash di Kasir : ' . rupiah($cash->nominal) . '*
+*Dana Cadangan : ' . rupiah($cadangan->jml) . '*
+*Selisih : ' . rupiah($selisih) . '*
+
+Update data pertanggal
+*' . date('d-M-Y H:i') . '* ';
+
+		kirim_person($this->apiKey, '085236924510', $pesan);
+		redirect('admin');
 	}
 }

@@ -11,6 +11,7 @@ class Kasir extends CI_Controller
         parent::__construct();
         $this->load->model('KasirModel', 'model');
         $this->load->model('Auth_model');
+        $this->load->model('AppModel', 'modelAll');
 
         $this->db2 = $this->load->database('dekos', true);
         $this->db3 = $this->load->database('sekretaris', true);
@@ -36,32 +37,15 @@ class Kasir extends CI_Controller
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
 
-        $bos = $this->model->getBySum('bos', 'tahun', $this->tahun, 'nominal')->row();
-        $pembayaran = $this->model->getBySum('pembayaran', 'tahun', $this->tahun, 'nominal')->row();
         $data['pesantren'] = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
-        $talangan = $this->model->getBySum('talangan', 'tahun', $this->tahun, 'nominal')->row();
-        $kebijakan = $this->model->getBySum('kebijakan', 'tahun', $this->tahun, 'nominal')->row();
-        $realis = $this->model->getBySum('realis', 'tahun', $this->tahun, 'nom_serap')->row();
-        $keluar = $this->model->getBySum('keluar', 'tahun', $this->tahun, 'nominal')->row();
         $data['dekos'] = $this->model->getDekosSum($this->tahun)->row();
         $data['nikmus'] = $this->model->getNikmusSum($this->tahun)->row();
 
-        $sumPinjam = $this->model->getBySum('peminjaman', 'tahun', $this->tahun, 'nominal')->row();
-        $sumCicil = $this->model->getBySum('cicilan', 'tahun', $this->tahun, 'nominal')->row();
         $data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
         $data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
-        $panjar = $this->model->getBySum('panjar', 'tahun', $this->tahun, 'nominal')->row();
-        $daftar = $this->model->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
-        $regist = $this->model->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
-        $pengajuanPsb = $this->model->pengajuanPsb()->row();
 
-        $outRutin = $this->model->getBySum('pengeluaran_rutin', 'tahun', $this->tahun, 'nominal')->row();
-        $sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan' ")->row();
-
-        $data['masuk'] = $bos->jml + $pembayaran->jml + $data['pesantren']->jml + $sumCicil->jml + $data['realSisa']->jml + $data['cadangan']->jml + $daftar->jml + $regist->jml + $talangan->jml;
-
-        $data['keluar'] = $kebijakan->jml + $realis->jml + $data['dekos']->nominal + $data['nikmus']->nom_kriteria + $data['nikmus']->transport + $data['nikmus']->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml;
-
+        $data['masuk'] = $this->modelAll->masuk($this->tahun);
+        $data['keluar'] = $this->modelAll->keluar($this->tahun);
         $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 
         $data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);
