@@ -167,6 +167,20 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="<?= base_url('account/sarpras'); ?>">
+                        <div class="parent-icon"><i class='bx bx-cog'></i>
+                        </div>
+                        <div class="menu-title">Sarpras</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url('account/haflah'); ?>">
+                        <div class="parent-icon"><i class='bx bx-cog'></i>
+                        </div>
+                        <div class="menu-title">Haflah</div>
+                    </a>
+                </li>
                 <li class="menu-label">AddOn</li>
                 <li>
                     <a href="<?= base_url('account/info'); ?>">
@@ -180,20 +194,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <div class="parent-icon"><i class='bx bx-history'></i>
                         </div>
                         <div class="menu-title">History Pengajuan</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('account/sarpras'); ?>">
-                        <div class="parent-icon"><i class='bx bx-cog'></i>
-                        </div>
-                        <div class="menu-title">Sarpras</div>
-                    </a>
-                </li>
-                <li>
-                    <a href="<?= base_url('account/haflah'); ?>">
-                        <div class="parent-icon"><i class='bx bx-cog'></i>
-                        </div>
-                        <div class="menu-title">Haflah</div>
                     </a>
                 </li>
                 <li>

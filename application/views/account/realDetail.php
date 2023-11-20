@@ -109,7 +109,7 @@
                                         $kd = $r1->kode;
                                         $rs = $this->db->query("SELECT IFNULL(SUM(nominal),0) as nom FROM realis WHERE kode = '$kd' ")->row();
                                         $sisa = $r1->total - $rs->nom;
-                                        $prc = round(($rs->nom / $r1->total) * 100, 0);
+                                        $prc = $r1->total != 0 ? round(($rs->nom / $r1->total) * 100, 0) : 0;
                                         if ($prc >= 0 && $prc <= 25) {
                                             $bg = 'bg-success';
                                         } elseif ($prc >= 26 && $prc <= 50) {
