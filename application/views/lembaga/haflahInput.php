@@ -33,12 +33,12 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group mb-3">
-                                            <label for="inputEmail3" class="col-sm-2 control-label">Lembaga *</label>
+                                            <label for="inputEmail3" class="col-sm-2 control-label">Bidang *</label>
                                             <div class="col-sm-10">
-                                                <select name="lembaga" class="form-control" required>
-                                                    <option value=""> -- pilih lembaga -- </option>
-                                                    <?php foreach ($lembagaData as $lembagaData) : ?>
-                                                        <option value="<?= $lembagaData->kode ?>"><?= $lembagaData->nama ?></option>
+                                                <select name="bidang" class="form-control" required>
+                                                    <option value=""> -- pilih bidang -- </option>
+                                                    <?php foreach ($bidang as $lembagaData) : ?>
+                                                        <option value="<?= $lembagaData->kode_bidang ?>"><?= $lembagaData->nama ?></option>
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div>

@@ -1674,6 +1674,7 @@ Terimakasih';
 		$data['tahun'] = $this->tahun;
 
 		$data['data'] = $this->db->query("SELECT haflah_detail.*, lembaga.nama FROM haflah_detail JOIN lembaga ON haflah_detail.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+		$data['bidang'] = $this->model->getBy('haflah_bidang', 'tahun', $this->tahun)->result();
 
 		$data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
 
@@ -1690,10 +1691,20 @@ Terimakasih';
 	function haflahAddInput()
 	{
 		$kode = $this->input->post('kode_pengajuan', true);
+		$bidang = $this->input->post('bidang', true);
+		$jml = $this->model->getBy2('haflah_detail', 'bidang', $bidang, 'tahun', $this->tahun)->num_rows();
+		$kodeItem = $bidang . '.' . $jml + 1;
+
+		$totalPakai = $this->model->getBySum('haflah_detail', 'bidang', $bidang, 'qty * harga_satuan')->row();
+		$bidangdata = $this->model->getBy('bidang', 'kode_bidang', $bidang)->row();
+		$jmlPakai = $totalPakai->jml + ($this->input->post('qty', true) * rmRp($this->input->post('harga_satuan', true)));
+
 		$data = [
 			'id_detail' => $this->uuid->v4(),
 			'kode_pengajuan' => $kode,
-			'lembaga' => $this->input->post('lembaga', true),
+			'kode' => $kodeItem,
+			'lembaga' => '20',
+			'bidang' => $this->input->post('bidang', true),
 			'uraian' => $this->input->post('uraian', true),
 			'qty' => $this->input->post('qty', true),
 			'satuan' => $this->input->post('satuan', true),
@@ -1701,15 +1712,19 @@ Terimakasih';
 			'tahun' => $this->tahun,
 			'at' => date('Y-m-d H:i:s')
 		];
-
-		$this->model->input('haflah_detail', $data);
-
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Item baru berhasil dibuat');
+		if ($jmlPakai > $bidangdata->pagu) {
+			$this->session->set_flashdata('error', 'Pagu untuk kegiatan ini tidak cukup');
 			redirect('lembaga/haflahDetail/' . $kode);
 		} else {
-			$this->session->set_flashdata('error', 'Item baru tidak bisa');
-			redirect('lembaga/haflahDetail/' . $kode);
+			$this->model->input('haflah_detail', $data);
+
+			if ($this->db->affected_rows() > 0) {
+				$this->session->set_flashdata('ok', 'Item baru berhasil dibuat');
+				redirect('lembaga/haflahDetail/' . $kode);
+			} else {
+				$this->session->set_flashdata('error', 'Item baru tidak bisa');
+				redirect('lembaga/haflahDetail/' . $kode);
+			}
 		}
 	}
 
