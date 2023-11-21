@@ -2535,6 +2535,7 @@ Update data pertanggal
 *' . date('d-M-Y H:i') . '* ';
 
 		kirim_person($this->apiKey, '085236924510', $pesan);
+		kirim_person($this->apiKey, '085235583647', $pesan);
 		kirim_person($this->apiKey, '085258222376', $pesan);
 		redirect('admin');
 	}
@@ -2566,6 +2567,8 @@ Update data pertanggal
 
 		kirim_person($this->apiKey, '085236924510', $pesan);
 		kirim_person($this->apiKey, '085258222376', $pesan);
+		kirim_person($this->apiKey, '085235583647', $pesan);
+		kirim_person($this->apiKey, '082264061060', $pesan);
 		redirect('admin');
 	}
 }
