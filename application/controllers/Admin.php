@@ -2546,12 +2546,11 @@ Update data pertanggal
 		$bank = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $this->tahun)->row();
 		$cash = $this->model->getBy2('saldo', 'name', 'cash', 'tahun', $this->tahun)->row();
 		$cadangan = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
-		$masuk = $this->modelAll->masuk($this->tahun);
-		$keluar = $this->modelAll->keluar($this->tahun);
+
 		$pesantren = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
 		$realSisa = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
 
-		$selisih = ($bank->nominal + $cash->nominal + ($cadangan->jml + $pesantren->jml + $realSisa->jml)) - ($masuk - $keluar);
+		$jumlah = ($bank->nominal + $cash->nominal + ($cadangan->jml + $pesantren->jml + $realSisa->jml));
 
 		$pesan = '*LAPORAN KEUANGAN RIIL*
 		
@@ -2560,7 +2559,7 @@ Laporan keadaan Keuangan Riil Pesantren
 *Saldo Bank : ' . rupiah($bank->nominal) . '*
 *Saldo Cash di Kasir : ' . rupiah($cash->nominal) . '*
 *Dana Cadangan : ' . rupiah($cadangan->jml) . '*
-*Selisih : ' . rupiah($selisih) . '*
+*Jumlah : ' . rupiah($jumlah) . '*
 
 Update data pertanggal
 *' . date('d-M-Y H:i') . '* ';
