@@ -281,6 +281,21 @@ class AdminModel extends CI_Model
         return $this->db->get();
     }
 
+    public function getSPJSarpras($tahun)
+    {
+        $this->db->select('spj.*, lembaga.nama, lembaga.hp, pengajuan.cair');
+        $this->db->from('spj');
+        $this->db->join('lembaga', 'ON spj.lembaga=lembaga.kode');
+        $this->db->join('pengajuan', 'ON spj.kode_pengajuan=pengajuan.kode_pengajuan');
+        $this->db->where('spj.file_spj !=', '');
+        $this->db->where('spj.tahun', $tahun);
+        $this->db->where('pengajuan.tahun', $tahun);
+        $this->db->where('lembaga.tahun', $tahun);
+        $this->db->where('spj.kode_pengajuan', 'LIKE %SRPS%');
+        $this->db->order_by('spj.tgl_upload', 'DESC');
+        return $this->db->get();
+    }
+
     public function getDispo($tahun)
     {
         $this->db->select('pengajuan.*, lembaga.nama');

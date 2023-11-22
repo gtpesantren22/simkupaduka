@@ -26,9 +26,11 @@
                         <div class="row">
                             <!-- table data -->
                             <div class="col-md-8">
-                                <a href="<?= base_url('account/vervalSarpras/' . $pj->kode_pengajuan); ?>" class="btn btn-success btn-sm tbl-confirm" value="Pengajuan akan disetujui dan selanjutnya akan dicairkan"><i class="bx bx-check-circle"></i>Verifikasi/Setujui</a>
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ex_tolak"><i class="bx bx-no-entry"></i>Tolak
-                                    pengajuan</button>
+                                <?php if ($pj->status == 'proses') : ?>
+                                    <a href="<?= base_url('account/vervalSarpras/' . $pj->kode_pengajuan); ?>" class="btn btn-success btn-sm tbl-confirm" value="Pengajuan akan disetujui dan selanjutnya akan dicairkan"><i class="bx bx-check-circle"></i>Verifikasi/Setujui</a>
+                                    <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ex_tolak"><i class="bx bx-no-entry"></i>Tolak
+                                        pengajuan</button>
+                                <?php endif ?>
                             </div>
                             <div class="table-responsive mt-3">
                                 <table id="example" class="table table-striped table-bordered" style="width:100%">

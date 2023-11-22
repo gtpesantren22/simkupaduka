@@ -1702,8 +1702,12 @@ ORDER BY CAST(rencana AS UNSIGNED) ASC ")->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['data'] = $this->model->getBy2('sarpras', 'tahun', $this->tahun, 'status', 'proses')->result();
+		$data['data'] = $this->model->getBy('sarpras', 'tahun', $this->tahun)->result();
+		$data['pakai'] = $this->db->query("SELECT SUM(qty*harga_satuan) AS jml FROM sarpras_detail WHERE tahun = '$this->tahun' ")->row();
+		$data['dataSpj'] = $this->model->getSPJSarpras($this->tahun)->result();
+		$data['dataSr'] = $this->db->query("SELECT * FROM spj JOIN lembaga ON spj.lembaga=lembaga.kode JOIN sarpras ON sarpras.kode_pengajuan=spj.kode_pengajuan WHERE spj.kode_pengajuan LIKE '%.SRPS.%' AND spj.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND file_spj != '' ")->result();
 
+		$data['pagu'] = 150000000;
 		$data['bulan'] = $this->bulan;
 
 		$this->load->view('account/head', $data);

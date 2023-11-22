@@ -22,7 +22,55 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addBaruPengajuan"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
+                        <div class="row ">
+                            <div class="col">
+                                <div class="card radius-10 border-start border-0 border-3 border-info">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Pagu</p>
+                                                <h4 class="my-1 text-info"><?= rupiah($pagu) ?></h4>
+                                                <p class="mb-0 font-13">Jumlah pagu untuk sarpras</p>
+                                            </div>
+                                            <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
+                                                <i class='bx bxs-cart'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card radius-10 border-start border-0 border-3 border-danger">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Terpakai</p>
+                                                <h4 class="my-1 text-danger"><?= rupiah($pakai->jml) ?></h4>
+                                                <p class="mb-0 font-13">Jumlah pemakaian anggaran</p>
+                                            </div>
+                                            <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto"><i class='bx bxs-wallet'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card radius-10 border-start border-0 border-3 border-success">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center">
+                                            <div>
+                                                <p class="mb-0 text-secondary">Sisa Pagu</p>
+                                                <h4 class="my-1 text-success"><?= rupiah($pagu - $pakai->jml) ?></h4>
+                                                <p class="mb-0 font-13">Sisa saldo pagu anggaran</p>
+                                            </div>
+                                            <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
+                                                <i class='bx bxs-bar-chart-alt-2'></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <?php if (!$pj) { ?>
                         <?php } else if ($pj->status == 'selesai') { ?>
                             <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addBaruPengajuan"><i class="bx bx-plus"></i>Tambah Pengajuan Baru</button>
