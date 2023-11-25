@@ -2558,7 +2558,7 @@ Laporan keadaan Keuangan Riil Pesantren
 
 *Saldo Bank : ' . rupiah($bank->nominal) . '*
 *Saldo Cash di Kasir : ' . rupiah($cash->nominal) . '*
-*Dana Cadangan : ' . rupiah($cadangan->jml) . '*
+*Dana Cadangan : ' . rupiah($cadangan->jml + $pesantren->jml + $realSisa->jml) . '*
 *Jumlah : ' . rupiah($jumlah) . '*
 
 Update data pertanggal
