@@ -92,7 +92,7 @@ class Admin extends CI_Controller
 		$data = [
 			'ju_ap' => rmRp($this->input->post('ju_ap', true)),
 			'me_ju' => rmRp($this->input->post('me_ju', true)),
-			'total' => rmRp($this->input->post('me_ju', true)) + rmRp($this->input->post('ju_ap', true))
+			'total' => (rmRp($this->input->post('me_ju', true)) * 2) + (rmRp($this->input->post('ju_ap', true)) * 10)
 		];
 
 		$this->model->update('tangg', $data, 'id_tangg', $where);

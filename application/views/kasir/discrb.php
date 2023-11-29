@@ -163,6 +163,7 @@
                                                     <td><span class="badge bg-success"><?= $r->kasir; ?></span>
                                                     </td>
                                                     <td>
+                                                        <a href="<?= base_url('kasir/editBayar/' . $r->id); ?>"><span class="btn btn-warning btn-sm">Edit</span></a>
                                                         <a href="<?= base_url('kasir/delBayar/' . $r->id); ?>" class="tbl-confirm" value="Data ini akan dihapus dan akan menghapus data dekosan nya juga"><span class="btn btn-danger btn-sm">Del</span></a>
                                                     </td>
                                                 </tr>

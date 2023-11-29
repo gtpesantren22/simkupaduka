@@ -401,6 +401,51 @@ Terimakasih';
         }
     }
 
+    public function editBayar($id)
+    {
+        $data['data'] = $this->model->getBy('pembayaran', 'id', $id)->row();
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['bulan'] = $this->bulan;
+        $nis = $data['data']->nis;
+
+        $data['sn'] = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+        $data['tmpKos'] = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum");
+        $data['kter'] = ["Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti"];
+
+        $data['tgn'] = $this->model->getBy2('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
+        $data['masuk'] = $this->db->query("SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$this->tahun' GROUP BY nis ")->row();
+        $data['bayar'] = $this->model->getBy2('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
+
+
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/editBayar', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function saveEditBayar()
+    {
+
+        $id = $this->input->post('id', true);
+        $nis = $this->input->post('nis', true);
+        $data = [
+            'nominal' => rmRp($this->input->post('nominal', true)),
+            'tgl' => $this->input->post('tgl', true),
+            'bulan' => $this->input->post('bulan', true),
+        ];
+
+        $this->model->update('pembayaran', $data, 'id', $id);
+        if ($this->db->affected_rows() > 0) {
+
+            $this->session->set_flashdata('ok', 'Pembayaran berhasil update');
+            redirect('kasir/discrb/' . $nis);
+        } else {
+            $this->session->set_flashdata('error', 'Pembayaran tidak berhasil update');
+            redirect('kasir/discrb/' . $nis);
+        }
+    }
+
     public function bayar()
     {
         $data['user'] = $this->Auth_model->current_user();
