@@ -1683,7 +1683,7 @@ Terimakasih';
 
 		$data['dtasal'] = $this->db->query("SELECT *
 FROM rab
-WHERE tahun = '2023/2024'
+WHERE tahun = '$this->tahun'
 GROUP BY rencana
 ORDER BY CAST(rencana AS UNSIGNED) ASC ")->result();
 
@@ -2406,21 +2406,21 @@ Terimakasih';
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['keluar'] = $this->db->query("SELECT lembaga.nama AS ket, SUM(rab.qty * rab.harga_satuan) AS total_rab, (SELECT SUM(nominal) FROM realis WHERE tahun = '2023/2024' AND lembaga = rab.lembaga) AS pakai FROM rab JOIN lembaga ON rab.lembaga=lembaga.kode WHERE rab.tahun = '2023/2024' AND lembaga.tahun = '2023/2024' GROUP BY rab.lembaga
+		$data['keluar'] = $this->db->query("SELECT lembaga.nama AS ket, SUM(rab.qty * rab.harga_satuan) AS total_rab, (SELECT SUM(nominal) FROM realis WHERE tahun = '$this->tahun' AND lembaga = rab.lembaga) AS pakai FROM rab JOIN lembaga ON rab.lembaga=lembaga.kode WHERE rab.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' GROUP BY rab.lembaga
 UNION 
-SELECT 'Kebijakan Kepala' AS ket, 50000000 AS total_rab, SUM(nominal) as pakai FROM kebijakan WHERE tahun = '2023/2024'
+SELECT 'Kebijakan Kepala' AS ket, 50000000 AS total_rab, SUM(nominal) as pakai FROM kebijakan WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'Pengeluaran' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM keluar WHERE tahun = '2023/2024'
+SELECT 'Pengeluaran' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM keluar WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'Peminjaman' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM peminjaman WHERE tahun = '2023/2024'
+SELECT 'Peminjaman' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM peminjaman WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'Panjar' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM panjar WHERE tahun = '2023/2024'
+SELECT 'Panjar' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM panjar WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'Pengeluaran Rutin' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '2023/2024'
+SELECT 'Pengeluaran Rutin' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'Sarpras' AS ket,150000000 AS total_rab, SUM(qty*harga_satuan) as pakai FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '2023/2024' AND sarpras.status = 'dicairkan'
+SELECT 'Sarpras' AS ket,150000000 AS total_rab, SUM(qty*harga_satuan) as pakai FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan'
 UNION 
-SELECT 'Haflah' AS ket,0 AS total_rab, SUM(qty*harga_satuan) as pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '2023/2024' AND haflah.status = 'dicairkan' ")->result();
+SELECT 'Haflah' AS ket,0 AS total_rab, SUM(qty*harga_satuan) as pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND haflah.status = 'dicairkan' ")->result();
 
 		$data['dekos'] = $this->model->getDekosSum($this->tahun)->result();
 		$data['nikmus'] = $this->model->getNikmusSum($this->tahun)->result();
