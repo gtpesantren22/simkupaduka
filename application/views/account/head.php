@@ -112,9 +112,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li>
                             <a href="<?= base_url('account/pak'); ?>"><i class="bx bx-right-arrow-alt"></i>PAK</a>
                         </li>
-                        <li>
-                            <a href="<?= base_url('account/analisis'); ?>"><i class="bx bx-right-arrow-alt"></i>Analisis Belanja</a>
-                        </li>
                     </ul>
                 </li>
                 <li>
@@ -180,6 +177,24 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         </div>
                         <div class="menu-title">Haflah</div>
                     </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-line-chart-down'></i>
+                        </div>
+                        <div class="menu-title">Analisis</div>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="<?= base_url('account/analisis'); ?>"><i class="bx bx-right-arrow-alt"></i>Analisis Bulanan</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('account/analisisMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Analisis Pemasukan</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('account/analisisKeluar'); ?>"><i class="bx bx-right-arrow-alt"></i>Analisis Pengeluaran</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="menu-label">AddOn</li>
                 <li>

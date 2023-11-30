@@ -83,8 +83,9 @@ class AppModel extends CI_Model
 
         $outRutin = $this->getBySum('pengeluaran_rutin', 'tahun', $tahun, 'nominal')->row();
         $sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
+        $haflah = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM haflah_detail JOIN sarpras ON haflah_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE haflah_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
 
-        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml;
+        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml + $haflah->jml;
 
         return $keluar;
     }

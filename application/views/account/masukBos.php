@@ -145,7 +145,7 @@
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Penerima</label>
-                    <input type="text" name="kasir" id="date" class="form-control" value="Saya" readonly>
+                    <input type="text" name="kasir" id="date" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
