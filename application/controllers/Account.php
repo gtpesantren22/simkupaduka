@@ -2416,7 +2416,11 @@ SELECT 'Peminjaman' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM peminjama
 UNION 
 SELECT 'Panjar' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM panjar WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'Pengeluaran Rutin' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun'
+SELECT 'HONOR (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'HONOR'
+UNION 
+SELECT 'LISTRIK (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'LISTRIK'
+UNION 
+SELECT 'INTERNET (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'INTERNET'
 UNION 
 SELECT 'Sarpras' AS ket,150000000 AS total_rab, SUM(qty*harga_satuan) as pakai FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan'
 UNION 

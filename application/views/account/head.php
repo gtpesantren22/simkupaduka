@@ -94,8 +94,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li><a href="<?= base_url('account/bos'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan BOS</a></li>
                         <li><a href="<?= base_url('account/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya Pendidikan</a></li>
                         <li><a href="<?= base_url('account/talangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Talangan</a></li>
-                        <li><a href="<?= base_url('account/cadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Cadangan</a></li>
-                        <li> <a href="<?= base_url('account/pesantren'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan Lainnya</a></li>
                         <li><a href="<?= base_url('account/sisa'); ?>"><i class="bx bx-right-arrow-alt"></i>Saldo Realisasi</a></li>
                     </ul>
                 </li>
@@ -194,6 +192,17 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li>
                             <a href="<?= base_url('account/analisisKeluar'); ?>"><i class="bx bx-right-arrow-alt"></i>Analisis Pengeluaran</a>
                         </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-save'></i>
+                        </div>
+                        <div class="menu-title">Cadangan</div>
+                    </a>
+                    <ul>
+                        <li><a href="<?= base_url('account/cadangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Cadangan</a></li>
+                        <li> <a href="<?= base_url('account/pesantren'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan Lainnya</a></li>
                     </ul>
                 </li>
                 <li class="menu-label">AddOn</li>
