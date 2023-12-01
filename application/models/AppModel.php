@@ -54,18 +54,19 @@ class AppModel extends CI_Model
 
     function masuk($tahun)
     {
-        $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
+        // $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
+        // $pesantren = $this->getBySum('pesantren', 'tahun', $tahun, 'nominal')->row();
+        // $cadangan = $this->getBySum('cadangan', 'tahun', $tahun, 'nominal')->row();
         $pembayaran = $this->getBySum('pembayaran', 'tahun', $tahun, 'nominal')->row();
         $bos = $this->getBySum('bos', 'tahun', $tahun, 'nominal')->row();
-        $pesantren = $this->getBySum('pesantren', 'tahun', $tahun, 'nominal')->row();
         $talangan = $this->getBySum('talangan', 'tahun', $tahun, 'nominal')->row();
-
         $sumCicil = $this->getBySum('cicilan', 'tahun', $tahun, 'nominal')->row();
-        $cadangan = $this->getBySum('cadangan', 'tahun', $tahun, 'nominal')->row();
+
         $daftar = $this->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
         $regist = $this->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
 
-        $masuk = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml + $daftar->jml + $regist->jml + $talangan->jml;
+        $masuk = $bos->jml + $pembayaran->jml +  $sumCicil->jml + $daftar->jml + $regist->jml + $talangan->jml;
+        // $masuk = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml + $daftar->jml + $regist->jml + $talangan->jml;
 
         return $masuk;
     }
