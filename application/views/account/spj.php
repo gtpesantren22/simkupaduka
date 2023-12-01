@@ -220,10 +220,10 @@
                                                         </div>
                                                     </div>
                                                 <?php } elseif ($a->stts == 2) { ?>
-                                                    <!-- <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploads<?= $a->id_spj ?>"><i class="bx bx-money"></i> Upload Sisa</button> -->
+                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#uploads<?= $a->id_spj ?>"><i class="bx bx-money"></i> Upload Sisa</button>
 
                                                     <!-- Modal Upload BOS-->
-                                                    <!-- <div class="modal fade" id="uploads<?= $a->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal fade" id="uploads<?= $a->id_spj ?>" tabindex="-1" role="dialog" aria-hidden="true">
                                                         <div class="modal-dialog modal-lg">
                                                             <div class="modal-content">
 
@@ -289,7 +289,7 @@
 
                                                             </div>
                                                         </div>
-                                                    </div> -->
+                                                    </div>
                                                 <?php } ?>
                                             </td>
                                         </tr>
