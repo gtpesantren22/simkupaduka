@@ -54,13 +54,13 @@ class AppModel extends CI_Model
 
     function masuk($tahun)
     {
-        $bos = $this->getBySum('bos', 'tahun', $tahun, 'nominal')->row();
+        $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
         $pembayaran = $this->getBySum('pembayaran', 'tahun', $tahun, 'nominal')->row();
+        $bos = $this->getBySum('bos', 'tahun', $tahun, 'nominal')->row();
         $pesantren = $this->getBySum('pesantren', 'tahun', $tahun, 'nominal')->row();
         $talangan = $this->getBySum('talangan', 'tahun', $tahun, 'nominal')->row();
 
         $sumCicil = $this->getBySum('cicilan', 'tahun', $tahun, 'nominal')->row();
-        $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
         $cadangan = $this->getBySum('cadangan', 'tahun', $tahun, 'nominal')->row();
         $daftar = $this->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
         $regist = $this->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
