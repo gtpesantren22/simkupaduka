@@ -44,7 +44,8 @@ class Account extends CI_Controller
 		$data['nikmus'] = $this->model->getNikmusSum($this->tahun)->row();
 
 		$data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-		$data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
+		$data['cadangan'] = $this->model->getBySum2('cadangan', 'tahun', $this->tahun, 'jenis', 'masuk', 'nominal')->row();
+		$data['cadanganKeluar'] = $this->model->getBySum2('cadangan', 'tahun', $this->tahun, 'jenis', 'keluar', 'nominal')->row();
 
 		$data['masuk'] = $this->modelAll->masuk($this->tahun);
 		$data['keluar'] = $this->modelAll->keluar($this->tahun);
