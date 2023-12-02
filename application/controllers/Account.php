@@ -2162,7 +2162,7 @@ ORDER BY tanggal DESC")->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['cadangan'] = $this->model->getBy('cadangan', 'tahun', $this->tahun)->result();
+		$data['cadangan'] = $this->model->getBy2('cadangan', 'tahun',  $this->tahun, 'jenis', 'masuk')->result();
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/cadangan', $data);
@@ -2175,31 +2175,59 @@ ORDER BY tanggal DESC")->result();
 		$ket = $this->input->post('ket', true);
 		$tanggal = $this->input->post('tanggal', true);
 		$nominal = rmRp($this->input->post('nominal', true));
+		$jenis = $this->input->post('jenis', true);
+		$berkas = $this->input->post('berkas', true);
 
-		$file_name = 'cadangan-' . rand(0, 99999999);
-		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
-		$config['allowed_types']        = 'pdf';
-		$config['file_name']            = $file_name;
-		$config['overwrite']            = true;
-		$config['max_size']             = 10240; // 10MB
-		$config['max_width']            = 1080;
-		$config['max_height']           = 1080;
+		$rdrc = $jenis == 'masuk' ? 'account/cadangan' : 'account/cadanganKeluar';
 
-		$this->load->library('upload', $config);
+		if ($berkas != '') {
+			$file_name = 'cadangan-' . rand(0, 99999999);
+			$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+			$config['allowed_types']        = 'pdf';
+			$config['file_name']            = $file_name;
+			$config['overwrite']            = true;
+			$config['max_size']             = 10240; // 10MB
+			$config['max_width']            = 1080;
+			$config['max_height']           = 1080;
 
-		if (!$this->upload->do_upload('berkas')) {
-			// $data['error'] = $this->upload->display_errors();
-			$this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
-			redirect('account/cadangan');
+			$this->load->library('upload', $config);
+
+			if (!$this->upload->do_upload('berkas')) {
+				// $data['error'] = $this->upload->display_errors();
+				$this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
+				redirect($rdrc);
+			} else {
+				$uploaded_data = $this->upload->data();
+
+				$data3 = [
+					'id_cadangan' => $id,
+					'tanggal' => $tanggal,
+					'nominal' => $nominal,
+					'ket' => $ket,
+					'berkas' => $uploaded_data['file_name'],
+					'jenis' => $jenis,
+					'kasir' => $this->user,
+					'tahun' => $this->tahun,
+				];
+
+				$this->model->input('cadangan', $data3);
+
+				if ($this->db->affected_rows() > 0) {
+					$this->session->set_flashdata('ok', 'Input data baru berhasil');
+					redirect($rdrc);
+				} else {
+					$this->session->set_flashdata('error', 'Input data baru gagal');
+					redirect($rdrc);
+				}
+			}
 		} else {
-			$uploaded_data = $this->upload->data();
-
 			$data3 = [
 				'id_cadangan' => $id,
 				'tanggal' => $tanggal,
 				'nominal' => $nominal,
 				'ket' => $ket,
-				'berkas' => $uploaded_data['file_name'],
+				'berkas' => '-',
+				'jenis' => $jenis,
 				'kasir' => $this->user,
 				'tahun' => $this->tahun,
 			];
@@ -2208,10 +2236,10 @@ ORDER BY tanggal DESC")->result();
 
 			if ($this->db->affected_rows() > 0) {
 				$this->session->set_flashdata('ok', 'Input data baru berhasil');
-				redirect('account/cadangan');
+				redirect($rdrc);
 			} else {
 				$this->session->set_flashdata('error', 'Input data baru gagal');
-				redirect('account/cadangan');
+				redirect($rdrc);
 			}
 		}
 	}
@@ -2443,7 +2471,7 @@ SELECT 'Haflah' AS ket,0 AS total_rab, SUM(qty*harga_satuan) as pakai FROM hafla
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['keluar'] = $this->db->query("SELECT 'Pemasukan BP' AS ket, SUM(nominal) AS nominal FROM kebijakan WHERE tahun = '$this->tahun'
+		$data['keluar'] = $this->db->query("SELECT 'Pemasukan BP' AS ket, SUM(nominal) AS nominal FROM pembayaran WHERE tahun = '$this->tahun'
 UNION 
 SELECT 'BOS/BPOPP' AS ket, SUM(nominal) AS nominal FROM bos WHERE tahun = '$this->tahun'
 UNION 
@@ -2457,5 +2485,36 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 		$this->load->view('account/head', $data);
 		$this->load->view('account/analisisMasuk', $data);
 		$this->load->view('account/foot');
+	}
+
+
+	public function cadanganKeluar()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['cadangan'] = $this->model->getBy2('cadangan', 'tahun',  $this->tahun, 'jenis', 'keluar')->result();
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/cadanganOut', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function delCadangan($id)
+	{
+		$data = $this->model->getBy('cadangan', 'id_cadangan', $id)->row();
+		$rdrc = $data->jenis == 'masuk' ? 'account/cadangan' : 'account/cadanganKeluar';
+
+		$this->model->delete('cadangan', 'id_cadangan', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Input data baru berhasil');
+			redirect($rdrc);
+		} else {
+			$this->session->set_flashdata('error', 'Input data baru gagal');
+			redirect($rdrc);
+		}
 	}
 }

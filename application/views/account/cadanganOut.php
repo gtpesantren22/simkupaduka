@@ -12,7 +12,7 @@
                     <ol class="breadcrumb mb-0 p-0">
                         <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-money"></i></a>
                         </li>
-                        <li class="breadcrumb-item active" aria-current="page">Pemasukan</li>
+                        <li class="breadcrumb-item active" aria-current="page">Pengeluaran</li>
                     </ol>
                 </nav>
             </div>
@@ -51,7 +51,7 @@
                                                     <td><?= $a->ket ?></td>
                                                     <td><?= rupiah($a->nominal) ?></td>
                                                     <td><?= $a->berkas ?></td>
-                                                    <td></td>
+                                                    <td><a href="<?= base_url('account/delCadangan/' . $a->id_cadangan) ?>" class="btn btn-danger btn-sm tombol-hapus">Del</a></td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>
@@ -82,8 +82,8 @@
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Data Dana Cadangan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open_multipart('kasir/saveCadangan'); ?>
-            <input type="hidden" name="jenis" value="masuk">
+            <?= form_open_multipart('account/saveCadangan'); ?>
+            <input type="hidden" name="jenis" value="keluar">
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Keterangan</label>
@@ -96,11 +96,6 @@
                 <div class="form-group mb-2">
                     <label for="">Nominal</label>
                     <input type="text" name="nominal" class="form-control uang" required>
-                </div>
-                <div class="form-group mb-2">
-                    <label for="">Berkas</label>
-                    <input type="file" name="berkas" class="form-control">
-                    <small class="text-danger">* File harus berupa PDF dan Max. 10 Mb</small>
                 </div>
             </div>
             <div class="modal-footer">

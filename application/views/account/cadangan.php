@@ -51,7 +51,7 @@
                                                     <td><?= $a->ket ?></td>
                                                     <td><?= rupiah($a->nominal) ?></td>
                                                     <td><?= $a->berkas ?></td>
-                                                    <td></td>
+                                                    <td><a href="<?= base_url('account/delCadangan/' . $a->id_cadangan) ?>" class="btn btn-danger btn-sm  tombol-hapus">Del</a></td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>
@@ -83,8 +83,8 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <?= form_open_multipart('account/saveCadangan'); ?>
+            <input type="hidden" name="jenis" value="masuk">
             <div class="modal-body">
-
                 <div class="form-group mb-2">
                     <label for="">Keterangan</label>
                     <textarea name="ket" class="form-control" required></textarea>
