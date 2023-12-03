@@ -15,9 +15,16 @@ class AppModel extends CI_Model
 
     function getBySum($table, $where, $dtwhere, $sum)
     {
-        $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where, $dtwhere);
+        return $this->db->get($table);
+    }
+
+    function getBySum2($table, $where, $dtwhere, $where1, $dtwhere1, $sum)
+    {
+        $this->db->select_sum($sum, 'jml');
+        $this->db->where($where, $dtwhere);
+        $this->db->where($where1, $dtwhere1);
         return $this->db->get($table);
     }
 
@@ -75,7 +82,7 @@ class AppModel extends CI_Model
     {
         $kebijakan = $this->getBySum('kebijakan', 'tahun', $tahun, 'nominal')->row();
         $realis = $this->getBySum('realis', 'tahun', $tahun, 'nom_serap')->row();
-        $keluar = $this->getBySum('keluar', 'tahun', $tahun, 'nominal')->row();
+        $keluarLain = $this->getBySum('keluar', 'tahun', $tahun, 'nominal')->row();
         $dekos = $this->getDekosSum($tahun)->row();
         $nikmus = $this->getNikmusSum($tahun)->row();
         $sumPinjam = $this->getBySum('peminjaman', 'tahun', $tahun, 'nominal')->row();
@@ -86,8 +93,18 @@ class AppModel extends CI_Model
         $sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
         $haflah = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM haflah_detail JOIN sarpras ON haflah_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE haflah_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
 
-        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluar->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml + $haflah->jml;
+        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluarLain->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml + $haflah->jml;
 
         return $keluar;
+    }
+
+    function  cadangan($tahun)
+    {
+        $cadangan = $this->getBySum2('cadangan', 'tahun', $tahun, 'jenis', 'masuk', 'nominal')->row();
+        $cadanganKeluar = $this->getBySum2('cadangan', 'tahun', $tahun, 'jenis', 'keluar', 'nominal')->row();
+        $pesantren = $this->getBySum('pesantren', 'tahun', $tahun, 'nominal')->row();
+        $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
+
+        return ($pesantren->jml + $realSisa->jml + $cadangan->jml) - $cadanganKeluar->jml;
     }
 }

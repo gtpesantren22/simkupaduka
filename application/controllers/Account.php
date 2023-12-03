@@ -39,13 +39,10 @@ class Account extends CI_Controller
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 
-		$data['pesantren'] = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
 		$data['dekos'] = $this->model->getDekosSum($this->tahun)->row();
 		$data['nikmus'] = $this->model->getNikmusSum($this->tahun)->row();
 
-		$data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-		$data['cadangan'] = $this->model->getBySum2('cadangan', 'tahun', $this->tahun, 'jenis', 'masuk', 'nominal')->row();
-		$data['cadanganKeluar'] = $this->model->getBySum2('cadangan', 'tahun', $this->tahun, 'jenis', 'keluar', 'nominal')->row();
+		$data['cadangan'] = $this->modelAll->cadangan($this->tahun);
 
 		$data['masuk'] = $this->modelAll->masuk($this->tahun);
 		$data['keluar'] = $this->modelAll->keluar($this->tahun);

@@ -126,6 +126,7 @@
                         <option value="LISTRIK"> LISTRIK</option>
                         <option value="INTERNET"> INTERNET/WIFI</option>
                         <option value="HONOR"> HONOR</option>
+                        <option value="BPJS"> Subsidi BPJS</option>
                     </select>
                 </div>
                 <div class="form-group mb-2">

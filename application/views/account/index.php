@@ -101,7 +101,7 @@
                         </div>
                         <div class="col">
                             <div class="p-0 border border-3 border-warning text-center text-danger rounded bg-light">
-                                <h2><?= rupiah(($pesantren->jml + $realSisa->jml + $cadangan->jml) - $cadanganKeluar->jml) ?></h2>
+                                <h2><?= rupiah($cadangan) ?></h2>
                             </div>
 
                         </div>
