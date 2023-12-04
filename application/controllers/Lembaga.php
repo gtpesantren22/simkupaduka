@@ -1675,7 +1675,8 @@ Terimakasih';
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 
-		$data['data'] = $this->db->query("SELECT haflah_detail.*, lembaga.nama FROM haflah_detail JOIN lembaga ON haflah_detail.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+		$data['data'] = $this->db->query("SELECT haflah_detail.*, haflah_bidang.nama FROM haflah_detail JOIN haflah_bidang ON haflah_detail.bidang=haflah_bidang.kode_bidang WHERE kode_pengajuan = '$kode' AND haflah_bidang.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+
 		$data['bidang'] = $this->model->getBy('haflah_bidang', 'tahun', $this->tahun)->result();
 
 		$data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
@@ -1697,8 +1698,8 @@ Terimakasih';
 		$jml = $this->model->getBy2('haflah_detail', 'bidang', $bidang, 'tahun', $this->tahun)->num_rows();
 		$kodeItem = $bidang . '.' . $jml + 1;
 
-		$totalPakai = $this->model->getBySum('haflah_detail', 'bidang', $bidang, 'qty * harga_satuan')->row();
-		$bidangdata = $this->model->getBy('bidang', 'kode_bidang', $bidang)->row();
+		$totalPakai = $this->db->query("SELECT SUM(qty*harga_satuan) FROM haflah_detail WHERE bidang = '$bidang' AND tahun = '$this->tahun' ")->row();
+		$bidangdata = $this->model->getBy('haflah_bidang', 'kode_bidang', $bidang)->row();
 		$jmlPakai = $totalPakai->jml + ($this->input->post('qty', true) * rmRp($this->input->post('harga_satuan', true)));
 
 		$data = [

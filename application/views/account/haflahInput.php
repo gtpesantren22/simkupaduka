@@ -35,7 +35,7 @@
                                     <thead>
                                         <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                             <th>No</th>
-                                            <th>Lembaga</th>
+                                            <th>Kegiatan</th>
                                             <th>Uraian</th>
                                             <th>QTY</th>
                                             <th>Harga</th>
