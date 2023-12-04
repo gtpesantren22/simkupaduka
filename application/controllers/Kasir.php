@@ -2080,4 +2080,69 @@ Terimakasih';
             redirect('kasir/haflah');
         }
     }
+
+    public function panjar()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+        $data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+        $data['panjar'] = $this->model->getBy('panjar', 'tahun', $this->tahun)->result();
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/panjar', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function savePanjar()
+    {
+        $id = $this->uuid->v4();
+        $jenis = $this->input->post('jenis', true);
+        $kegiatan = $this->input->post('kegiatan', true);
+        $tanggal = $this->input->post('tanggal', true);
+        $nominal = rmRp($this->input->post('nominal', true));
+        $pj = $this->input->post('pj', true);
+
+        $file_name = 'PANJAR-' . rand(0, 99999999);
+        $config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+        $config['allowed_types']        = 'pdf';
+        $config['file_name']            = $file_name;
+        $config['overwrite']            = true;
+        $config['max_size']             = 10240; // 10MB
+        $config['max_width']            = 1080;
+        $config['max_height']           = 1080;
+
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('berkas')) {
+            // $data['error'] = $this->upload->display_errors();
+            $this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
+            redirect('kasir/panjar');
+        } else {
+            $uploaded_data = $this->upload->data();
+
+            $data3 = [
+                'id_panjar' => $id,
+                'jenis' => $jenis,
+                'kegiatan' => $kegiatan,
+                'tanggal' => $tanggal,
+                'nominal' => $nominal,
+                'berkas' => $uploaded_data['file_name'],
+                'pj' => $pj,
+                'tahun' => $this->tahun,
+            ];
+
+            $this->model->input('panjar', $data3);
+
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('ok', 'Input data baru berhasil');
+                redirect('kasir/panjar');
+            } else {
+                $this->session->set_flashdata('error', 'Input data baru gagal');
+                redirect('kasir/panjar');
+            }
+        }
+    }
 }

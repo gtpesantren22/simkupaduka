@@ -77,7 +77,7 @@
                         <li><a href="<?= base_url('kasir/haflah'); ?>"><i class="bx bx-right-arrow-alt"></i>Pencairan Haflah</a></li>
                         <li><a href="<?= base_url('kasir/pengajuanDisp'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan Disposisi</a></li>
                         <li><a href="<?= base_url('kasir/lain'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Lainnya</a></li>
-
+                        <li><a href="<?= base_url('kasir/panjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Panjar</a></li>
                     </ul>
                 </li>
 
