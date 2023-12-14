@@ -40,6 +40,7 @@
                                             <th>QTY</th>
                                             <th>Harga</th>
                                             <th>Total</th>
+                                            <th>Jenis</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -55,6 +56,7 @@
                                                 <td><?= $ls_jns->qty . ' ' . $ls_jns->satuan; ?></td>
                                                 <td><?= rupiah($ls_jns->harga_satuan); ?></td>
                                                 <td><?= rupiah($ls_jns->qty * $ls_jns->harga_satuan); ?></td>
+                                                <td><?= $ls_jns->jenis . '. ' . $ls_jns->stas; ?></td>
                                                 <td>
                                                     <?php if ($pj->status == 'belum' | $pj->status == 'ditolak') { ?>
                                                         <a href="<?= base_url('account/delItemHaflah/' . $ls_jns->id_detail) ?>" class="btn btn-danger btn-sm tbl-confirm" value="Yakin akan menghapus item ini"><i class="bx bx-trash"></i></a>
@@ -65,7 +67,7 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="5">TOTAL</th>
+                                            <th colspan="5">TOTAL</th>tral
                                             <th colspan="2"><?= rupiah($dataSum->jml) ?></th>
                                         </tr>
                                     </tfoot>

@@ -1685,6 +1685,7 @@ Terimakasih';
 		$data['pj'] = $this->db->query("SELECT * FROM haflah WHERE kode_pengajuan = '$kode'")->row();
 
 		$data['lembagaData'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', '20')->result();
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 
 		$this->load->view('lembaga/head', $data);
 		$this->load->view('lembaga/haflahInput', $data);
@@ -1702,6 +1703,8 @@ Terimakasih';
 		$bidangdata = $this->model->getBy('haflah_bidang', 'kode_bidang', $bidang)->row();
 		$jmlPakai = $totalPakai->jml + ($this->input->post('qty', true) * rmRp($this->input->post('harga_satuan', true)));
 
+		$jenis = $this->model->getBy2('jenis', 'kode_jns', $this->input->post('jenis', true), 'tahun', $this->tahun)->row();
+
 		$data = [
 			'id_detail' => $this->uuid->v4(),
 			'kode_pengajuan' => $kode,
@@ -1712,6 +1715,8 @@ Terimakasih';
 			'qty' => $this->input->post('qty', true),
 			'satuan' => $this->input->post('satuan', true),
 			'harga_satuan' => rmRp($this->input->post('harga_satuan', true)),
+			'jenis' => $jenis->kode_jns,
+			'stas' => $jenis->stas,
 			'tahun' => $this->tahun,
 			'at' => date('Y-m-d H:i:s')
 		];

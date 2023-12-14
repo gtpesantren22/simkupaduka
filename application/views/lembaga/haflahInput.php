@@ -32,7 +32,7 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group mb-3">
+                                        <div class="form-group mb-1">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Kegiatan *</label>
                                             <div class="col-sm-10">
                                                 <select name="bidang" class="form-control" required>
@@ -43,14 +43,14 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="form-group mb-3">
+                                        <div class="form-group mb-1">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Uraian *</label>
                                             <div class="col-sm-10">
                                                 <textarea class="form-control" name="uraian" required></textarea>
                                             </div>
                                         </div>
 
-                                        <div class="form-group mb-3">
+                                        <div class="form-group mb-1">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="tahun" value="<?= $tahun ?>" readonly>
@@ -58,22 +58,33 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group mb-3">
+                                        <div class="form-group mb-1">
                                             <label for="inputEmail3" class="col-sm-2 control-label">QTY *</label>
                                             <div class="col-sm-10">
                                                 <input type="number" class="form-control" name="qty" required>
                                             </div>
                                         </div>
-                                        <div class="form-group mb-3">
+                                        <div class="form-group mb-1">
                                             <label for="inputEmail3" class="col-sm-2 control-label">Satuan *</label>
                                             <div class="col-sm-10">
                                                 <input type="text" class="form-control" name="satuan" required>
                                             </div>
                                         </div>
-                                        <div class="form-group mb-3">
-                                            <label for="inputEmail3" class="col-sm-2 control-label">Harga Satuan *</label>
-                                            <div class="col-sm-10">
+                                        <div class="form-group mb-1">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Harga Satuan *</label>
+                                            <div class="col-sm-9">
                                                 <input type="text" class="form-control uang" id="" name="harga_satuan" required>
+                                            </div>
+                                        </div>
+                                        <div class="form-group mb-1">
+                                            <label for="inputEmail3" class="col-sm-3 control-label">Jenis Belanja *</label>
+                                            <div class="col-sm-9">
+                                                <select name="jenis" class="form-control" required>
+                                                    <option value=""> -- pilih jenis -- </option>
+                                                    <?php foreach ($jenis as $jns) : ?>
+                                                        <option value="<?= $jns->kode_jns ?>"><?= $jns->kode_jns . ' - ' . $jns->nama ?></option>
+                                                    <?php endforeach; ?>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -107,6 +118,7 @@
                                             <th>QTY</th>
                                             <th>Harga</th>
                                             <th>Total</th>
+                                            <th>Jenis</th>
                                             <th>#</th>
                                         </tr>
                                     </thead>
@@ -122,6 +134,7 @@
                                                 <td><?= $ls_jns->qty . ' ' . $ls_jns->satuan; ?></td>
                                                 <td><?= rupiah($ls_jns->harga_satuan); ?></td>
                                                 <td><?= rupiah($ls_jns->qty * $ls_jns->harga_satuan); ?></td>
+                                                <td><?= $ls_jns->jenis . '. ' . $ls_jns->stas; ?></td>
                                                 <td>
                                                     <?php if ($pj->status == 'belum' | $pj->status == 'ditolak') { ?>
                                                         <a href="<?= base_url('lembaga/delItemHaflah/' . $ls_jns->id_detail) ?>" class="btn btn-danger btn-sm tbl-confirm" value="Yakin akan menghapus item ini"><i class="bx bx-trash"></i></a>
