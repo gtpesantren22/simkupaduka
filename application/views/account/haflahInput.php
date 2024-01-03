@@ -27,8 +27,7 @@
                             <!-- table data -->
                             <div class="col-md-8">
                                 <a href="<?= base_url('account/vervalHaflah/' . $pj->kode_pengajuan); ?>" class="btn btn-success btn-sm tbl-confirm" value="Pengajuan akan disetujui dan selanjutnya akan dicairkan"><i class="bx bx-check-circle"></i>Verifikasi/Setujui</a>
-                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ex_tolak"><i class="bx bx-no-entry"></i>Tolak
-                                    pengajuan</button>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ex_tolak"><i class="bx bx-no-entry"></i>Tolak pengajuan</button>
                             </div>
                             <div class="table-responsive mt-3">
                                 <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -58,9 +57,75 @@
                                                 <td><?= rupiah($ls_jns->qty * $ls_jns->harga_satuan); ?></td>
                                                 <td><?= $ls_jns->jenis . '. ' . $ls_jns->stas; ?></td>
                                                 <td>
-                                                    <?php if ($pj->status == 'belum' | $pj->status == 'ditolak') { ?>
-                                                        <a href="<?= base_url('account/delItemHaflah/' . $ls_jns->id_detail) ?>" class="btn btn-danger btn-sm tbl-confirm" value="Yakin akan menghapus item ini"><i class="bx bx-trash"></i></a>
-                                                    <?php } ?>
+                                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#edit<?= $ls_jns->id_detail ?>"><i class="bx bx-no-entry"></i>Edit</button>
+
+                                                    <div class="modal fade" id="edit<?= $ls_jns->id_detail ?>" tabindex="-1" aria-hidden="true">
+                                                        <div class="modal-dialog ">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">Tolak Pengajuan</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                </div>
+                                                                <?= form_open('account/haflahEditInput'); ?>
+                                                                <input type="hidden" name="id" value="<?= $ls_jns->id_detail ?>">
+                                                                <input type="hidden" name="kode" value="<?= $ls_jns->kode_pengajuan ?>">
+                                                                <div class="modal-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group mb-1">
+                                                                                <label for="" class="col-sm-2 control-label">Kegiatan *</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <b> <?= $ls_jns->nama ?></b>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group mb-1">
+                                                                                <label for="" class="col-sm-2 control-label">Uraian *</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <b><?= $ls_jns->uraian ?></b>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group mb-1">
+                                                                                <label for="" class="col-sm-2 control-label">QTY *</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="number" class="form-control" name="qty" value="<?= $ls_jns->qty ?>" required>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6">
+                                                                            <div class="form-group mb-1">
+                                                                                <label for="" class="col-sm-2 control-label">Satuan *</label>
+                                                                                <div class="col-sm-10">
+                                                                                    <input type="text" class="form-control" name="satuan" value="<?= $ls_jns->satuan ?>" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group mb-1">
+                                                                                <label for="" class="col-sm-3 control-label">Harga Satuan *</label>
+                                                                                <div class="col-sm-9">
+                                                                                    <input type="text" class="form-control uang" id="" name="harga_satuan" value="<?= $ls_jns->harga_satuan ?>" required>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="form-group mb-1">
+                                                                                <label for="" class="col-sm-3 control-label">Jenis Belanja *</label>
+                                                                                <div class="col-sm-9">
+                                                                                    <select name="jenis" class="form-control" required>
+                                                                                        <option value=""> -- pilih jenis -- </option>
+                                                                                        <?php foreach ($jenis as $jns) : ?>
+                                                                                            <option <?= $jns->kode_jns == $ls_jns->jenis ? 'selected' : '' ?> value="<?= $jns->kode_jns . '-' . $jns->stas ?>"><?= $jns->kode_jns . ' - ' . $jns->nama ?></option>
+                                                                                        <?php endforeach; ?>
+                                                                                    </select>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                                </div>
+                                                                <?= form_close(); ?>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         <?php endforeach; ?>

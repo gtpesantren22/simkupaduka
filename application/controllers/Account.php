@@ -2347,6 +2347,7 @@ ORDER BY tanggal DESC")->result();
 		$data['pj'] = $this->db->query("SELECT * FROM haflah WHERE kode_pengajuan = '$kode'")->row();
 
 		$data['lembagaData'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/haflahInput', $data);
@@ -2421,6 +2422,29 @@ Terimakasih';
 		} else {
 			$this->session->set_flashdata('error', 'Pengajuan RAB tidak bisa ditolak');
 			redirect('account/haflah');
+		}
+	}
+
+	public function haflahEditInput()
+	{
+		$id = $this->input->post('id', true);
+		$kode = $this->input->post('kode', true);
+		$jns = explode('-', $this->input->post('jenis', true));
+		$data = [
+			'qty' => $this->input->post('qty', true),
+			'satuan' => $this->input->post('satuan', true),
+			'harga_satuan' => rmRp($this->input->post('harga_satuan', true)),
+			'jenis' => $jns[0],
+			'stas' => $jns[1],
+		];
+
+		$this->model->update('haflah_detail', $data, 'id_detail', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Pengajuan Haflah berhasil diupdate');
+			redirect('account/haflahDetail/' . $kode);
+		} else {
+			$this->session->set_flashdata('error', 'Pengajuan Haflah tidak bisa diupdate');
+			redirect('account/haflahDetail/' . $kode);
 		}
 	}
 
