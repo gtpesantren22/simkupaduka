@@ -1658,14 +1658,21 @@ Terimakasih';
 			'at' => date('Y-m-d H:i:s')
 		];
 
-		$this->model->input('haflah', $data);
+		$cek = $this->db->query("SELECT * FROM haflah WHERE status != 'selesai' AND tahun = '$this->tahun' ")->num_rows();
 
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Pengajuan baru berhasil dibuat');
+		if ($cek > 0) {
+			$this->session->set_flashdata('error', 'Harap selesaikan pengajuan sebelumnya');
 			redirect('lembaga/haflah');
 		} else {
-			$this->session->set_flashdata('error', 'Pengajuan baru tidak bisa');
-			redirect('lembaga/haflah');
+			$this->model->input('haflah', $data);
+
+			if ($this->db->affected_rows() > 0) {
+				$this->session->set_flashdata('ok', 'Pengajuan baru berhasil dibuat');
+				redirect('lembaga/haflah');
+			} else {
+				$this->session->set_flashdata('error', 'Pengajuan baru tidak bisa');
+				redirect('lembaga/haflah');
+			}
 		}
 	}
 
