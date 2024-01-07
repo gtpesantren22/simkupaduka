@@ -140,7 +140,7 @@
                                     $no = 1;
                                     foreach ($dataSr as $a2) :
                                         $kd_pj = $a2->kode_pengajuan;
-                                        $jml = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml, SUM(qty * harga_satuan) AS jml_cair, SUM(qty * harga_satuan) AS jml_serap FROM sarpras_detail WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun' ")->row();
+                                        $jml = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml, SUM(qty * harga_satuan) AS jml_cair, SUM(qty * harga_satuan) AS jml_serap FROM haflah_detail WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun' ")->row();
 
                                         if (preg_match("/DISP./i", $kd_pj)) {
                                             $rt = "<span class='badge bg-danger'>DISPOSISI</span>";
