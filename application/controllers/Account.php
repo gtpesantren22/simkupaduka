@@ -2323,7 +2323,12 @@ ORDER BY tanggal DESC")->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['data'] = $this->model->getBy2('haflah', 'tahun', $this->tahun, 'status', 'proses')->result();
+		$data['data'] = $this->model->getBy('haflah', 'tahun', $this->tahun)->result();
+		$data['pagu'] = $this->model->getBySum('haflah_bidang', 'tahun', $this->tahun, 'pagu')->row();
+		$data['pakai'] = $this->db->query("SELECT SUM(harga_satuan*qty) AS jml FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND haflah.tahun = '$this->tahun' AND haflah.status = 'dicairkan' ")->row();
+
+		$data['dataSpj'] = $this->model->getSPJHaflah($this->tahun)->result();
+		$data['dataSr'] = $this->db->query("SELECT * FROM spj JOIN lembaga ON spj.lembaga=lembaga.kode JOIN haflah ON haflah.kode_pengajuan=spj.kode_pengajuan WHERE spj.kode_pengajuan LIKE '%.HFL.%' AND spj.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND file_spj != '' ")->result();
 
 		$data['bulan'] = $this->bulan;
 
