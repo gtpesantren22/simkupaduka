@@ -450,7 +450,7 @@ class Account extends CI_Controller
 
 	public function pak()
 	{
-		$data['data'] = $this->model->getBy('pak', 'tahun', $this->tahun)->result();
+		$data['data'] = $this->db->query("SELECT * FROM pak WHERE tahun = '$this->tahun' ORDER BY id_pak DESC ")->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");

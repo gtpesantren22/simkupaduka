@@ -43,7 +43,7 @@
                                             <td><?= $a->kode_pak; ?></td>
                                             <td><?= $lmb->nama; ?></td>
                                             <td><?= $a->tgl_pak; ?></td>
-                                            <td><?= $a->status == 'selesai' ? "<span class='badge badge-success'>selesai</span>" : $a->status; ?> </td>
+                                            <td><?= $a->status == 'selesai' ? "<span class='badge bg-success'>selesai</span>" : $a->status; ?> </td>
                                             <td><?= $a->tahun; ?></td>
                                             <td>
                                                 <a href="<?= base_url('account/pakDetail/' . $a->kode_pak) ?>"><button class="btn btn-primary btn-sm"><i class="bx bx-search"></i>
