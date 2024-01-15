@@ -206,8 +206,8 @@ if ($pesern >= 0 && $pesern <= 25) {
                                                 <div class="d-flex align-items-center">
                                                     <div>
                                                         <?php
-                                                        $dt1 = $this->db->query("SELECT * FROM rab_sm WHERE lembaga = '$lembaga->kode' AND tahun = '$tahun' ")->result();
-                                                        $dt_rab = $this->db->query("SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$lembaga->kode' AND tahun = '$tahun' ")->row();
+                                                        $dt1 = $this->db->query("SELECT * FROM rab_sm WHERE lembaga = '$lembaga->kode' AND tahun = '$tahun' AND kode_pak = '$data->kode_pak' ")->result();
+                                                        $dt_rab = $this->db->query("SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$lembaga->kode' AND tahun = '$tahun' AND kode_pak = '$data->kode_pak' ")->row();
                                                         ?>
                                                         <p class="mb-0 text-white">Total Nominal RAB Baru</p>
                                                         <h4 class="my-1 text-white"><?= rupiah($dt_rab->tt); ?></h4>
