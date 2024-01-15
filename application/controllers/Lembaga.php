@@ -838,7 +838,7 @@ Terimakasih';
 	{
 		$kode_pak = $this->input->post('kode_pak', true);
 
-		$dt_rab = $this->db->query("SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' ")->row();
+		$dt_rab = $this->db->query("SELECT SUM(total) AS tt FROM rab_sm WHERE lembaga = '$this->lembaga' AND kode_pak = '$kode_pak' AND tahun = '$this->tahun' ")->row();
 		$dt_pak = $this->db->query("SELECT SUM(total) AS tt FROM pak_detail WHERE kode_pak = '$kode_pak' AND tahun = '$this->tahun' ")->row();
 		$total = $this->input->post('qty') * rmRp($this->input->post('harga_satuan', true));
 
