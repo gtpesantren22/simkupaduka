@@ -25,6 +25,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Kode PAK</th>
+                                        <th>Lembaga</th>
                                         <th>Tanggal PAK</th>
                                         <th>Status</th>
                                         <th>Tahun</th>
@@ -34,19 +35,21 @@
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    foreach ($data as $a) : ?>
-                                    <tr>
-                                        <td><?= $no++; ?></td>
-                                        <td><?= $a->kode_pak; ?></td>
-                                        <td><?= $a->tgl_pak; ?></td>
-                                        <td><?= $a->status; ?></td>
-                                        <td><?= $a->tahun; ?></td>
-                                        <td>
-                                            <a href="<?= base_url('account/pakDetail/' . $a->kode_pak) ?>"><button
-                                                    class="btn btn-primary btn-sm"><i class="bx bx-search"></i>
-                                                    Cek PAK</button></a>
-                                        </td>
-                                    </tr>
+                                    foreach ($data as $a) :
+                                        $lmb = $this->db->query("SELECT * FROM lembaga WHERE kode = '$a->lembaga' AND tahun = '$a->tahun' ")->row();
+                                    ?>
+                                        <tr>
+                                            <td><?= $no++; ?></td>
+                                            <td><?= $a->kode_pak; ?></td>
+                                            <td><?= $lmb->nama; ?></td>
+                                            <td><?= $a->tgl_pak; ?></td>
+                                            <td><?= $a->status == 'selesai' ? "<span class='badge badge-success'>selesai</span>" : $a->status; ?> </td>
+                                            <td><?= $a->tahun; ?></td>
+                                            <td>
+                                                <a href="<?= base_url('account/pakDetail/' . $a->kode_pak) ?>"><button class="btn btn-primary btn-sm"><i class="bx bx-search"></i>
+                                                        Cek PAK</button></a>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>

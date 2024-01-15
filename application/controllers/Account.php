@@ -450,7 +450,7 @@ class Account extends CI_Controller
 
 	public function pak()
 	{
-		$data['data'] = $this->model->getBy2('pak', 'status', 'proses', 'tahun', $this->tahun)->result();
+		$data['data'] = $this->model->getBy('pak', 'tahun', $this->tahun)->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
@@ -464,7 +464,7 @@ class Account extends CI_Controller
 		$data['data'] = $this->model->getBy('pak', 'kode_pak', $kode)->row();
 		$data['ttl'] = $this->model->getTotalRab($data['data']->lembaga, $this->tahun)->row();
 		$data['rpak'] = $this->model->rabPak($kode)->result();
-		$data['rabnew'] = $this->model->getBy2('rab_sm', 'lembaga', $data['data']->lembaga, 'tahun', $this->tahun)->result();
+		$data['rabnew'] = $this->model->getBy3('rab_sm', 'lembaga', $data['data']->lembaga, 'tahun', $this->tahun, 'kode_pak', $kode)->result();
 		$data['rpakSum'] = $this->model->selectSum('pak_detail', 'total', 'kode_pak', $kode)->row();
 		$data['rabnewSum'] = $this->model->selectSum('rab_sm', 'total', 'kode_pak', $kode)->row();
 		$data['user'] = $this->Auth_model->current_user();
