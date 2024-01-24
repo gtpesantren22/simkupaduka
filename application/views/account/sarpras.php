@@ -77,6 +77,7 @@
                                     <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                         <th>No</th>
                                         <th>Kode</th>
+                                        <th>Nominal</th>
                                         <th>Bulan</th>
                                         <th>Tahun</th>
                                         <th>Status</th>
@@ -87,10 +88,14 @@
                                     <?php
                                     $no = 1;
                                     foreach ($data as $ls_jns) :
+                                        $kd_pj = $ls_jns->kode_pengajuan;
+                                        $jml = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM sarpras_detail WHERE kode_pengajuan = '$kd_pj' AND tahun = '$tahun' ")->row();
+
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td><?= $ls_jns->kode_pengajuan; ?></td>
+                                            <td><?= rupiah($jml->jml); ?></td>
                                             <td><?= $bulan[$ls_jns->bulan]; ?></td>
                                             <td><?= $ls_jns->tahun; ?></td>
                                             <td>
