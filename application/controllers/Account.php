@@ -2325,7 +2325,7 @@ ORDER BY tanggal DESC")->result();
 
 		$data['data'] = $this->model->getBy('haflah', 'tahun', $this->tahun)->result();
 		$data['pagu'] = $this->model->getBySum('haflah_bidang', 'tahun', $this->tahun, 'pagu')->row();
-		$data['pakai'] = $this->db->query("SELECT SUM(harga_satuan*qty) AS jml FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND haflah.tahun = '$this->tahun' AND haflah.status = 'dicairkan' ")->row();
+		$data['pakai'] = $this->db->query("SELECT SUM(harga_satuan*qty) AS jml FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND haflah.tahun = '$this->tahun' AND (haflah.status = 'dicairkan' OR haflah.status = 'selesai') ")->row();
 
 		$data['dataSpj'] = $this->model->getSPJHaflah($this->tahun)->result();
 		$data['dataSr'] = $this->db->query("SELECT * FROM spj JOIN lembaga ON spj.lembaga=lembaga.kode JOIN haflah ON haflah.kode_pengajuan=spj.kode_pengajuan WHERE spj.kode_pengajuan LIKE '%.HFL.%' AND spj.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND file_spj != '' ")->result();
@@ -2479,7 +2479,7 @@ SELECT 'INTERNET (PR)' AS ket, 62229000 AS total_rab, SUM(nominal) as pakai FROM
 UNION 
 SELECT 'Sarpras' AS ket,150000000 AS total_rab, SUM(qty*harga_satuan) as pakai FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan'
 UNION 
-SELECT 'Haflah' AS ket,0 AS total_rab, SUM(qty*harga_satuan) as pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND haflah.status = 'dicairkan' ")->result();
+SELECT 'Haflah' AS ket,0 AS total_rab, SUM(qty*harga_satuan) as pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND (haflah.status = 'dicairkan' OR haflah.status = 'selesai') ")->result();
 
 		$data['dekos'] = $this->model->getDekosSum($this->tahun)->result();
 		$data['nikmus'] = $this->model->getNikmusSum($this->tahun)->result();
