@@ -46,13 +46,13 @@
                                         <?php
                                         $no = 1;
                                         foreach ($program as $ls_jns) :
-                                            $progam = $this->db->query("SELECT nama, pagu FROM haflah_bidang WHERE kode_bidang = '$ls_jns->bidang' ")->row();
+                                            $progam = $this->db->query("SELECT kode_bidang, nama, pagu FROM haflah_bidang WHERE kode_bidang = '$ls_jns->bidang' ")->row();
                                             $pakai = $this->db->query("SELECT SUM(qty*harga_satuan) AS pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.bidang = '$ls_jns->bidang' AND (status = 'selesai' OR status = 'dicairkan') ")->row();
                                             $sisa = $progam->pagu - $pakai->pakai;
                                         ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
-                                                <td><?= $progam->nama; ?></td>
+                                                <td><?= $progam->kode_bidang . '. ' . $progam->nama; ?></td>
                                                 <td><?= $ls_jns->items; ?> item</td>
                                                 <td><?= rupiah($progam->pagu); ?></td>
                                                 <td><?= rupiah($pakai->pakai); ?></td>
