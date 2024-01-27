@@ -2345,9 +2345,12 @@ ORDER BY tanggal DESC")->result();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['data'] = $this->db->query("SELECT haflah_detail.*, haflah_bidang.nama FROM haflah_detail JOIN haflah_bidang ON haflah_detail.bidang=haflah_bidang.kode_bidang WHERE kode_pengajuan = '$kode' AND haflah_bidang.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+		$data['data'] = $this->db->query("SELECT haflah_detail.*, haflah_bidang.nama FROM haflah_detail JOIN haflah_bidang ON haflah_detail.bidang=haflah_bidang.kode_bidang WHERE kode_pengajuan = '$kode' AND haflah_bidang.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ORDER BY bidang ASC ")->result();
+
+		$data['program'] = $this->db->query("SELECT bidang, SUM(qty * harga_satuan) AS jumlah, COUNT(*) AS items FROM haflah_detail WHERE kode_pengajuan = '$kode' GROUP BY bidang ")->result();
 
 		$data['dataSum'] = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
+
 
 		$data['pj'] = $this->db->query("SELECT * FROM haflah WHERE kode_pengajuan = '$kode'")->row();
 

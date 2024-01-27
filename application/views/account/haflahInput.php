@@ -30,10 +30,56 @@
                                 <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#ex_tolak"><i class="bx bx-no-entry"></i>Tolak pengajuan</button>
                             </div>
                             <div class="table-responsive mt-3">
+                                <table id="" class="table table-striped table-bordered" style="width:100%">
+                                    <thead>
+                                        <tr style="background-color: #5ae8ff; font-weight: bold;">
+                                            <th>No</th>
+                                            <th colspan="2">Program</th>
+                                            <th>Estimasi</th>
+                                            <th>Terpakai</th>
+                                            <th>Sisa</th>
+                                            <th>Pengajuan</th>
+                                            <th>Ket</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $no = 1;
+                                        foreach ($program as $ls_jns) :
+                                            $progam = $this->db->query("SELECT nama, pagu FROM haflah_bidang WHERE kode_bidang = '$ls_jns->bidang' ")->row();
+                                            $pakai = $this->db->query("SELECT SUM(qty*harga_satuan) AS pakai FROM haflah_detail WHERE bidang = '$ls_jns->bidang' ")->row();
+                                            $sisa = $progam->pagu - $pakai->pakai;
+                                        ?>
+                                            <tr>
+                                                <td><?= $no++; ?></td>
+                                                <td><?= $progam->nama; ?></td>
+                                                <td><?= $ls_jns->items; ?> item</td>
+                                                <td><?= rupiah($progam->pagu); ?></td>
+                                                <td><?= rupiah($pakai->pakai); ?></td>
+                                                <td class="fw-bold text-success"><?= rupiah($sisa); ?></td>
+                                                <td class="fw-bold text-primary"><?= rupiah($ls_jns->jumlah); ?></td>
+                                                <td>
+                                                    <?php if ($sisa >= $ls_jns->jumlah) { ?>
+                                                        <span class="badge bg-success">cukup</span>
+                                                    <?php } else { ?>
+                                                        <span class="badge bg-danger">kurang</span>
+                                                    <?php } ?>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th colspan="6">TOTAL</th>
+                                            <th class="text-primary" colspan="2"><?= rupiah($dataSum->jml) ?></th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                                     <thead>
                                         <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                             <th>No</th>
+                                            <th>Prog</th>
                                             <th>Kegiatan</th>
                                             <th>Uraian</th>
                                             <th>QTY</th>
@@ -50,6 +96,7 @@
                                         ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
+                                                <td><?= $ls_jns->bidang; ?></td>
                                                 <td><?= $ls_jns->nama; ?></td>
                                                 <td><?= $ls_jns->uraian; ?></td>
                                                 <td><?= $ls_jns->qty . ' ' . $ls_jns->satuan; ?></td>
@@ -57,7 +104,7 @@
                                                 <td><?= rupiah($ls_jns->qty * $ls_jns->harga_satuan); ?></td>
                                                 <td><?= $ls_jns->jenis . '. ' . $ls_jns->stas; ?></td>
                                                 <td>
-                                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#edit<?= $ls_jns->id_detail ?>"><i class="bx bx-no-entry"></i>Edit</button>
+                                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#edit<?= $ls_jns->id_detail ?>">Edit</button>
 
                                                     <div class="modal fade" id="edit<?= $ls_jns->id_detail ?>" tabindex="-1" aria-hidden="true">
                                                         <div class="modal-dialog ">
@@ -132,8 +179,8 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th colspan="5">TOTAL</th>tral
-                                            <th colspan="2"><?= rupiah($dataSum->jml) ?></th>
+                                            <th colspan="6">TOTAL</th>
+                                            <th colspan="3"><?= rupiah($dataSum->jml) ?></th>
                                         </tr>
                                     </tfoot>
                                 </table>
