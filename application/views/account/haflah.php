@@ -16,6 +16,11 @@
                     </ol>
                 </nav>
             </div>
+            <div class="ms-auto">
+                <div class="btn-group">
+                    <a href="<?= base_url('account/haflahEs') ?>" class="btn btn-light btn-sm"><i class="bx bx-search"></i>Cek Estimasi Anggaran</a>
+                </div>
+            </div>
         </div>
         <!--end breadcrumb-->
         <div class="row">

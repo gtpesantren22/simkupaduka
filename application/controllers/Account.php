@@ -2456,6 +2456,22 @@ Terimakasih';
 		}
 	}
 
+	public function haflahEs()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['program'] = $this->model->getByOrd('haflah_bidang', 'tahun', $this->tahun, 'kode_bidang', 'ASC')->result();
+
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/haflahEs', $data);
+		$this->load->view('account/foot');
+	}
+
 	public function analisisKeluar()
 	{
 		$data['user'] = $this->Auth_model->current_user();

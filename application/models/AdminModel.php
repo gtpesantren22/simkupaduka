@@ -123,6 +123,12 @@ class AdminModel extends CI_Model
         $this->db->where($where, $dtwhere);
         return $this->db->get($table);
     }
+    function getByOrd($table, $where, $dtwhere, $ord, $urt)
+    {
+        $this->db->where($where, $dtwhere);
+        $this->db->order_by($ord, $urt);
+        return $this->db->get($table);
+    }
 
     function getBySum($table, $where, $dtwhere, $sum)
     {

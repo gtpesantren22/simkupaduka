@@ -1706,7 +1706,7 @@ Terimakasih';
 		$jml = $this->model->getBy2('haflah_detail', 'bidang', $bidang, 'tahun', $this->tahun)->num_rows();
 		$kodeItem = $bidang . '.' . $jml + 1;
 
-		$totalPakai = $this->db->query("SELECT SUM(qty*harga_satuan) FROM haflah_detail WHERE bidang = '$bidang' AND tahun = '$this->tahun' ")->row();
+		$totalPakai = $this->db->query("SELECT SUM(qty*harga_satuan) AS jml FROM haflah_detail WHERE bidang = '$bidang' AND tahun = '$this->tahun' ")->row();
 		$bidangdata = $this->model->getBy('haflah_bidang', 'kode_bidang', $bidang)->row();
 		$jmlPakai = $totalPakai->jml + ($this->input->post('qty', true) * rmRp($this->input->post('harga_satuan', true)));
 
