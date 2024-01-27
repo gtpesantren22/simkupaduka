@@ -47,7 +47,7 @@
                                         $no = 1;
                                         foreach ($program as $ls_jns) :
                                             $progam = $this->db->query("SELECT nama, pagu FROM haflah_bidang WHERE kode_bidang = '$ls_jns->bidang' ")->row();
-                                            $pakai = $this->db->query("SELECT SUM(qty*harga_satuan) AS pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.bidang = '$ls_jns->bidang' AND (status = 'selsai' OR status = 'dicairkan') ")->row();
+                                            $pakai = $this->db->query("SELECT SUM(qty*harga_satuan) AS pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.bidang = '$ls_jns->bidang' AND (status = 'selesai' OR status = 'dicairkan') ")->row();
                                             $sisa = $progam->pagu - $pakai->pakai;
                                         ?>
                                             <tr>
