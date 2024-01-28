@@ -109,7 +109,7 @@
                                 <?php } ?>
                             </div>
                             <div class="table-responsive mt-3">
-                                <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                <table id="example2" class="table table-striped table-bordered" style="width:100%">
                                     <thead>
                                         <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                             <th>No</th>
@@ -129,7 +129,7 @@
                                         ?>
                                             <tr>
                                                 <td><?= $no++; ?></td>
-                                                <td><?= $ls_jns->nama; ?></td>
+                                                <td><?= $ls_jns->kode_bidang . '. ' . $ls_jns->nama; ?></td>
                                                 <td><?= $ls_jns->uraian; ?></td>
                                                 <td><?= $ls_jns->qty . ' ' . $ls_jns->satuan; ?></td>
                                                 <td><?= rupiah($ls_jns->harga_satuan); ?></td>

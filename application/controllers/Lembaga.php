@@ -1682,7 +1682,7 @@ Terimakasih';
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 
-		$data['data'] = $this->db->query("SELECT haflah_detail.*, haflah_bidang.nama FROM haflah_detail JOIN haflah_bidang ON haflah_detail.bidang=haflah_bidang.kode_bidang WHERE kode_pengajuan = '$kode' AND haflah_bidang.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ")->result();
+		$data['data'] = $this->db->query("SELECT haflah_detail.*, haflah_bidang.nama FROM haflah_detail JOIN haflah_bidang ON haflah_detail.bidang=haflah_bidang.kode_bidang WHERE kode_pengajuan = '$kode' AND haflah_bidang.tahun = '$this->tahun' AND haflah_detail.tahun = '$this->tahun' ORDER BY bidang ASC ")->result();
 
 		$data['bidang'] = $this->model->getBy('haflah_bidang', 'tahun', $this->tahun)->result();
 
