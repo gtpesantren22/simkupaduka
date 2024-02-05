@@ -124,9 +124,10 @@ class Admin extends CI_Controller
 		force_download('vertical/assets/images/Template-Upload-Tanggungan.xls', NULL);
 		// redirect('berkas/detail/');
 	}
-	public function downloadSpj($kodeSpj)
+	public function downloadSpj($idSpj)
 	{
-		force_download('vertical/assets/uploads/' . $kodeSpj, NULL);
+		$data = $this->model->getBy('spj', 'id_spj', $idSpj)->row();
+		force_download('vertical/assets/uploads/' . $data->file_spj, NULL);
 	}
 
 	public function kode()

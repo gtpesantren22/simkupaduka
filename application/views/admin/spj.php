@@ -78,7 +78,7 @@
                                             <td><?= rupiah($jml->jml) ?></td>
                                             <td><?= rupiah($jml->jml_cair) ?></td>
                                             <td><?= rupiah($jml->jml_serap) ?></td>
-                                            <td><a href="<?= base_url('admin/downloadSpj/') . $a->file_spj ?>"><i class="bx bx-download"></i>Unduh Berkas</a></td>
+                                            <td><a href="<?= base_url('admin/downloadSpj/') . $a->id_spj ?>"><i class="bx bx-download"></i>Unduh Berkas</a></td>
                                             <td>
                                                 <?php if ($a->stts == 1) { ?>
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambah_bos<?= $a->id_spj ?>"><i class="bx bx-check"></i>Setujui</button>
