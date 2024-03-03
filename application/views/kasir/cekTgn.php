@@ -71,6 +71,7 @@
                                                 <option value="<?= $kl->lembaga ?>"><?= $kl->lembaga ?>
                                                 </option>
                                             <?php } ?>
+                                            <option value="Mahasiswa">Mahasiswa</option>
                                         </select>
                                     </div><!-- /.input group -->
                                 </div>
