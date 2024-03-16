@@ -1909,7 +1909,7 @@ https://simkupaduka.ppdwk.com/';
     }
     public function loadRekom()
     {
-        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'ramadhan' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
         $this->load->view('kasir/loadRekom', $data);
     }
 
@@ -1917,7 +1917,8 @@ https://simkupaduka.ppdwk.com/';
     {
         $data = array(
             'nis' => $this->input->post('nis'),
-            'ket' => 'maulid',
+            // 'ket' => 'maulid',
+            'ket' => 'ramadhan',
             'tahun' => $this->tahun,
         );
 
