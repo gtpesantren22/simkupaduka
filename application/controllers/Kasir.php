@@ -1904,7 +1904,7 @@ https://simkupaduka.ppdwk.com/';
 
     public function loadSantri()
     {
-        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND ket = 'ramadhan') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
         $this->load->view('kasir/loadSantri', $data);
     }
     public function loadRekom()
