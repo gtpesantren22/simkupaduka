@@ -2113,7 +2113,7 @@ ORDER BY tanggal DESC")->result();
 
 		$file_name = 'PANJAR-' . rand(0, 99999999);
 		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
-		$config['allowed_types']        = 'pdf';
+		$config['allowed_types']        = 'pdf|jpg|jpeg';
 		$config['file_name']            = $file_name;
 		$config['overwrite']            = true;
 		$config['max_size']             = 10240; // 10MB

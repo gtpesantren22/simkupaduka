@@ -18,7 +18,8 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#tambah"><i class="bx bx-plus-circle"></i>Tambah Data</button>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#tambah"><i class="bx bx-plus-circle"></i>Tambah Data (masuk)</button>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#tambahOut"><i class="bx bx-plus-circle"></i>Tambah Data (keluar)</button>
                 </div>
             </div>
         </div>
@@ -38,6 +39,7 @@
                                                 <th>Keterangan</th>
                                                 <th>Nominal</th>
                                                 <th>Berkas</th>
+                                                <th>Jenis</th>
                                                 <th>#</th>
                                             </tr>
                                         </thead>
@@ -51,6 +53,7 @@
                                                     <td><?= $a->ket ?></td>
                                                     <td><?= rupiah($a->nominal) ?></td>
                                                     <td><?= $a->berkas ?></td>
+                                                    <td><?= $a->jenis ?></td>
                                                     <td></td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -79,7 +82,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Dana Cadangan</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Dana Cadangan (Masuk)</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <?= form_open_multipart('kasir/saveCadangan'); ?>
@@ -101,6 +104,37 @@
                     <label for="">Berkas</label>
                     <input type="file" name="berkas" class="form-control">
                     <small class="text-danger">* File harus berupa PDF dan Max. 10 Mb</small>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Data</button>
+            </div>
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="tambahOut" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Dana Cadangan (Keluar)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <?= form_open_multipart('kasir/saveCadangan'); ?>
+            <input type="hidden" name="jenis" value="keluar">
+            <div class="modal-body">
+                <div class="form-group mb-2">
+                    <label for="">Keterangan</label>
+                    <textarea name="ket" class="form-control" required></textarea>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Tanggal</label>
+                    <input type="text" name="tanggal" id="date" class="form-control" required>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Nominal</label>
+                    <input type="text" name="nominal" class="form-control uang" required>
                 </div>
             </div>
             <div class="modal-footer">

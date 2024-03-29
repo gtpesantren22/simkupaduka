@@ -1964,31 +1964,57 @@ https://simkupaduka.ppdwk.com/';
         $ket = $this->input->post('ket', true);
         $tanggal = $this->input->post('tanggal', true);
         $nominal = rmRp($this->input->post('nominal', true));
+        $jenis = $this->input->post('jenis', true);
+        $berkas = $this->input->post('berkas', true);
 
-        $file_name = 'cadangan-' . rand(0, 99999999);
-        $config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
-        $config['allowed_types']        = 'pdf';
-        $config['file_name']            = $file_name;
-        $config['overwrite']            = true;
-        $config['max_size']             = 10240; // 10MB
-        $config['max_width']            = 1080;
-        $config['max_height']           = 1080;
+        if ($berkas != '') {
+            $file_name = 'cadangan-' . rand(0, 99999999);
+            $config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
+            $config['allowed_types']        = 'pdf';
+            $config['file_name']            = $file_name;
+            $config['overwrite']            = true;
+            $config['max_size']             = 10240; // 10MB
+            $config['max_width']            = 1080;
+            $config['max_height']           = 1080;
 
-        $this->load->library('upload', $config);
+            $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('berkas')) {
-            // $data['error'] = $this->upload->display_errors();
-            $this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 5 Mb');
-            redirect('kasir/cadangan');
+            if (!$this->upload->do_upload('berkas')) {
+                // $data['error'] = $this->upload->display_errors();
+                $this->session->set_flashdata('error', 'Gagal diupload. pastikan file berupa PDF dan tidak melebihi 10 Mb');
+                redirect('cadangan');
+            } else {
+                $uploaded_data = $this->upload->data();
+
+                $data3 = [
+                    'id_cadangan' => $id,
+                    'tanggal' => $tanggal,
+                    'nominal' => $nominal,
+                    'ket' => $ket,
+                    'berkas' => $uploaded_data['file_name'],
+                    'jenis' => $jenis,
+                    'kasir' => $this->user,
+                    'tahun' => $this->tahun,
+                ];
+
+                $this->model->input('cadangan', $data3);
+
+                if ($this->db->affected_rows() > 0) {
+                    $this->session->set_flashdata('ok', 'Input data baru berhasil');
+                    redirect('cadangan');
+                } else {
+                    $this->session->set_flashdata('error', 'Input data baru gagal');
+                    redirect('cadangan');
+                }
+            }
         } else {
-            $uploaded_data = $this->upload->data();
-
             $data3 = [
                 'id_cadangan' => $id,
                 'tanggal' => $tanggal,
                 'nominal' => $nominal,
                 'ket' => $ket,
-                'berkas' => $uploaded_data['file_name'],
+                'berkas' => '-',
+                'jenis' => $jenis,
                 'kasir' => $this->user,
                 'tahun' => $this->tahun,
             ];
@@ -1997,10 +2023,10 @@ https://simkupaduka.ppdwk.com/';
 
             if ($this->db->affected_rows() > 0) {
                 $this->session->set_flashdata('ok', 'Input data baru berhasil');
-                redirect('kasir/cadangan');
+                redirect('cadangan');
             } else {
                 $this->session->set_flashdata('error', 'Input data baru gagal');
-                redirect('kasir/cadangan');
+                redirect('cadangan');
             }
         }
     }

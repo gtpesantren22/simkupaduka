@@ -112,7 +112,7 @@
                 <div class="form-group mb-2">
                     <label for="">Berkas</label>
                     <input type="file" name="berkas" class="form-control">
-                    <small class="text-danger">* File harus berupa PDF dan Max. 10 Mb</small>
+                    <small class="text-danger">* File harus berupa PDF/Gambar dan Max. 10 Mb</small>
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Penanggungjawab/PJ</label>
