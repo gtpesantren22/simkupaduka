@@ -186,7 +186,7 @@ class Lembaga extends CI_Controller
 		$data['bulan'] = $this->bulan;
 
 		$data['data'] = $this->model->getPengajuan($this->lembaga, $this->tahun)->result();
-		$data['pj'] = $this->model->getPjn('pengajuan', $this->lembaga, $this->tahun)->row();
+		$data['pj'] = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
 		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
