@@ -791,7 +791,7 @@ class Admin extends CI_Controller
 		$data['rpak'] = $this->model->rabPak($kode)->result();
 		$data['rabnew'] = $this->model->getBy3('rab_sm', 'lembaga', $data['data']->lembaga, 'tahun', $this->tahun, 'kode_pak', $kode)->result();
 		$data['rpakSum'] = $this->model->selectSum('pak_detail', 'total', 'kode_pak', $kode)->row();
-		$data['rabnewSum'] = $this->model->selectSum('rab_sm', 'total', 'lembaga', $data['data']->lembaga)->row();
+		$data['rabnewSum'] = $this->model->selectSum('rab_sm', 'total', 'kode_pak', $kode)->row();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 		$this->load->view('admin/head', $data);
