@@ -270,4 +270,8 @@ class KasirModel extends CI_Model
     {
         return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai'");
     }
+    function nikmusData($tahun)
+    {
+        $this->db5->query("");
+    }
 }

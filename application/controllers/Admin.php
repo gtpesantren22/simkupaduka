@@ -42,10 +42,10 @@ class Admin extends CI_Controller
 
 		$data['pesantren'] = $this->model->getBySum('pesantren', 'tahun', $this->tahun, 'nominal')->row();
 		$data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-		$data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
 
 		$data['masuk'] = $this->modelAll->masuk($this->tahun);
 		$data['keluar'] = $this->modelAll->keluar($this->tahun);
+		$data['cadangan'] = $this->modelAll->cadangan($this->tahun);
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 		$data['saldo'] = $this->model->getBy2('saldo', 'name', 'bank', 'tahun', $data['tahun']);

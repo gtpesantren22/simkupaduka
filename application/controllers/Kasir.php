@@ -42,8 +42,8 @@ class Kasir extends CI_Controller
         $data['nikmus'] = $this->model->getNikmusSum($this->tahun)->row();
 
         $data['realSisa'] = $this->model->getBySum('real_sisa', 'tahun', $this->tahun, 'sisa')->row();
-        $data['cadangan'] = $this->model->getBySum('cadangan', 'tahun', $this->tahun, 'nominal')->row();
 
+        $data['cadangan'] = $this->modelAll->cadangan($this->tahun);
         $data['masuk'] = $this->modelAll->masuk($this->tahun);
         $data['keluar'] = $this->modelAll->keluar($this->tahun);
         $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
@@ -2172,4 +2172,19 @@ Terimakasih';
             }
         }
     }
+
+    // public function nikmus()
+    // {
+    //     $data['user'] = $this->Auth_model->current_user();
+    //     $data['tahun'] = $this->tahun;
+    //     $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+    //     $data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+    //     $data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+    //     $data['panjar'] = $this->model->getBy('panjar', 'tahun', $this->tahun)->result();
+
+    //     $this->load->view('kasir/head', $data);
+    //     $this->load->view('kasir/nikmus', $data);
+    //     $this->load->view('kasir/foot');
+    // }
 }
