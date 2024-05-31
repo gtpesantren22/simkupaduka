@@ -630,19 +630,19 @@ Terimakasih';
 
 		// var_dump($data);
 
-		if ($kfe >= $nominal) {
-			$this->model->input('real_sm', $data);
-			if ($this->db->affected_rows() > 0) {
-				$this->session->set_flashdata('ok', 'Item pengajuan berhasil ditambahkan');
-				redirect('lembaga/pengajuanDetail/' . $kd_pjn);
-			} else {
-				$this->session->set_flashdata('error', 'Item pengajuan tidak ditambahkan');
-				redirect('lembaga/pengajuanDetail/' . $kd_pjn);
-			}
+		$this->model->input('real_sm', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Item pengajuan berhasil ditambahkan');
+			redirect('lembaga/pengajuanDetail/' . $kd_pjn);
 		} else {
-			$this->session->set_flashdata('error', 'Maaf, Sisa dana disposisi tidak mencukupi');
+			$this->session->set_flashdata('error', 'Item pengajuan tidak ditambahkan');
 			redirect('lembaga/pengajuanDetail/' . $kd_pjn);
 		}
+		// if ($kfe >= $nominal) {
+		// } else {
+		// 	$this->session->set_flashdata('error', 'Maaf, Sisa dana disposisi tidak mencukupi');
+		// 	redirect('lembaga/pengajuanDetail/' . $kd_pjn);
+		// }
 	}
 
 	public function pak()
