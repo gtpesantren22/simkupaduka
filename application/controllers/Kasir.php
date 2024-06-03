@@ -2173,6 +2173,34 @@ Terimakasih';
         }
     }
 
+    public function editSaldoCash()
+    {
+        $saldo = [
+            'nominal' => rmRp($this->input->post('nominal', true)),
+            'last' => date('Y-m-d H:i:s')
+        ];
+
+        $psn = '*Update Saldo Cash Pesantren*
+
+Nominal : RP. ' . $this->input->post('nominal', true) . '
+Tgl Update : ' . date('Y-m-d H:i:s') . '
+Updater : ' . $this->user . '
+
+*Terimkasih*';
+
+        $this->model->update('saldo', $saldo, 'name', 'cash', 'tahun', $this->tahun);
+        if ($this->db->affected_rows() > 0) {
+            kirim_person($this->apiKey, '082264061060', $psn);
+            kirim_person($this->apiKey, '085258222376', $psn);
+            kirim_person($this->apiKey, '085236924510', $psn);
+            $this->session->set_flashdata('ok', 'Saldo sudah diperbarui');
+            redirect('kasir');
+        } else {
+            $this->session->set_flashdata('error', 'Hapus data gagal');
+            redirect('kasir');
+        }
+    }
+
     // public function nikmus()
     // {
     //     $data['user'] = $this->Auth_model->current_user();

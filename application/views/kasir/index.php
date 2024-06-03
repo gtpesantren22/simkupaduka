@@ -88,7 +88,12 @@
                                     <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
                                 <?php endforeach; ?>
                             </div>
-
+                            <?= form_open('kasir/editSaldoCash') ?>
+                            <div class="input-group mt-3">
+                                <input type="text" class="form-control uang" name="nominal" placeholder="Update nominal saldo cash" aria-label="Update nominal saldo" aria-describedby="button-addon2">
+                                <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Simpan</button>
+                            </div>
+                            <?= form_close() ?>
                         </div>
                     </div>
                 </div>
