@@ -280,7 +280,7 @@ class Admin extends CI_Controller
 		}
 	}
 
-	public function process_upload()
+	public function process_uploadDppk()
 	{
 		// Load library dan helper
 		$this->load->helper('file');
@@ -308,27 +308,33 @@ class Admin extends CI_Controller
 			// Mendapatkan data dari worksheet pertama
 			$worksheet = $objPHPExcel->getActiveSheet();
 			$highestRow = $worksheet->getHighestDataRow();
-			$highestColumn = $worksheet->getHighestColumn();
+			// $highestColumn = $worksheet->getHighestColumn();
 
 			// echo $highestRow;
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 2; $row <= $highestRow; $row++) {
-				$data = [
-					'nis' => $worksheet->getCell('A' . $row)->getValue(),
-					'id_cos' => $worksheet->getCell('B' . $row)->getValue(),
-					'briva' => $worksheet->getCell('C' . $row)->getValue(),
-					'ju_ap' => $worksheet->getCell('D' . $row)->getValue(),
-					'me_ju' => $worksheet->getCell('E' . $row)->getValue(),
-					'total' => ($worksheet->getCell('D' . $row)->getValue() * 10) + ($worksheet->getCell('E' . $row)->getValue() * 2),
-					'tahun' => $worksheet->getCell('F' . $row)->getValue(),
-				];
+				$lembaga = $worksheet->getCell('B' . $row)->getValue();
+				$kegiatan = $worksheet->getCell('C' . $row)->getValue();
+				$tahun = $worksheet->getCell('D' . $row)->getValue();
 
-				$this->model->input('tangg', $data);
+				$cek = $this->db->query("SELECT id_dppk FROM dppk WHERE lembaga = '$lembaga' AND kegiatan = '$kegiatan' AND tahun = '$tahun' ")->num_rows();
+				if ($cek < 1) {
+					// echo $lembaga . '-' . random_int(1000, 9999) . ' ' . $kegiatan . '<br>';
+					$data = [
+						'id_dppk' => $lembaga . '-' . random_int(1000, 9999),
+						'lembaga' => $lembaga,
+						'program' => $kegiatan,
+						'kegiatan' => $kegiatan,
+						'indikator' => $kegiatan,
+						'tahun' => $tahun,
+					];
+
+					$this->model->input('dppk', $data);
+				}
 			}
 
 			// Hapus file setelah selesai mengimpor
-
 			delete_files($file_path);
 
 			// Tampilkan pesan sukses atau lakukan redirect ke halaman lain
@@ -2574,5 +2580,71 @@ Update data pertanggal
 		kirim_person($this->apiKey, '085235583647', $pesan);
 		kirim_person($this->apiKey, '082264061060', $pesan);
 		redirect('admin');
+	}
+
+	public function process_upload()
+	{
+		// Load library dan helper
+		$this->load->helper('file');
+
+		// Konfigurasi upload file
+		$config['upload_path'] = 'vertical/assets/uploads/'; // Direktori penyimpanan file
+		$config['allowed_types'] = 'xls|xlsx'; // Jenis file yang diizinkan
+		$config['max_size'] = 10240; // Ukuran maksimum file (dalam kilobytes)
+
+		// Memuat library upload
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('uploadFile')) {
+			// Jika upload gagal, tampilkan pesan error
+			$error = $this->upload->display_errors();
+			echo $error;
+		} else {
+			// Jika upload berhasil, dapatkan informasi file
+			$data = $this->upload->data();
+			$file_path = $data['full_path'];
+			// Load file Excel menggunakan library PHPExcel
+			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+			$objPHPExcel = $reader->load($file_path);
+
+			// Mendapatkan data dari worksheet pertama
+			$worksheet = $objPHPExcel->getActiveSheet();
+			$highestRow = $worksheet->getHighestDataRow();
+			$highestColumn = $worksheet->getHighestColumn();
+
+			// echo $highestRow;
+
+			// Mulai dari baris kedua (untuk melewati header)
+			for ($row = 5; $row <= $highestRow; $row++) {
+				$data = [
+					'id_rab' => $this->uuid->v4(),
+					'lembaga' => $worksheet->getCell('B' . $row)->getValue(),
+					'bidang' => $worksheet->getCell('C' . $row)->getValue(),
+					'jenis' => $worksheet->getCell('D' . $row)->getValue(),
+					'kode' => '-',
+					'nama' => $worksheet->getCell('E' . $row)->getValue(),
+					'rencana' => $worksheet->getCell('F' . $row)->getValue(),
+					'qty' => $worksheet->getCell('G' . $row)->getValue(),
+					'satuan' => $worksheet->getCell('H' . $row)->getValue(),
+					'total' => $worksheet->getCell('G' . $row)->getValue() * $worksheet->getCell('I' . $row)->getValue(),
+					'harga_satuan' => $worksheet->getCell('I' . $row)->getValue(),
+					'tahun' => $worksheet->getCell('J' . $row)->getValue(),
+					'at' => date('Y-m-d H:i'),
+					'snc' => 'belum',
+					'kode_pak' => $worksheet->getCell('K' . $row)->getValue(),
+					'kegiatan' => $worksheet->getCell('L' . $row)->getValue(),
+				];
+
+				$this->model->input('rab_sm24', $data);
+			}
+
+			// Hapus file setelah selesai mengimpor
+
+			delete_files($file_path);
+
+			// Tampilkan pesan sukses atau lakukan redirect ke halaman lain
+			$this->session->set_flashdata('ok', 'Upload Selesai');
+			redirect('lembaga/rab24');
+		}
 	}
 }

@@ -13,6 +13,11 @@
                     </ol>
                 </nav>
             </div>
+            <div class="ms-auto">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus-circle"></i> Upload data baru</button>
+                </div>
+            </div>
         </div>
         <!--end breadcrumb-->
         <div class="row">
@@ -61,3 +66,28 @@
     </div>
 </div>
 <!--end page wrapper -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload Program Kerja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <?= form_open_multipart('admin/process_uploadDppk'); ?>
+            <div class="modal-body">
+
+                <div class="form-group mb-2">
+                    <label for="tahun" class="">Pilih file</label>
+                    <input type="file" name="uploadFile" class="form-control" required>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan</button>
+            </div>
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>
