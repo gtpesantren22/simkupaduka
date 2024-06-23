@@ -39,28 +39,30 @@ class Login extends CI_Controller
 
         if ($this->Auth_model->login($username, $password, $tahun)) {
             $user = $this->Auth_model->current_user();
-            if ($user->level === 'admin') {
-                $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
-                redirect('admin');
-            } elseif ($user->level === 'account') {
-                $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
-                redirect('account');
-            } elseif ($user->level === 'kasir') {
-                $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
-                redirect('kasir');
-            } elseif ($user->level === 'lembaga') {
-                $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
-                redirect('lembaga');
-            } elseif ($user->level === 'kepala') {
-                $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
-                redirect('kepala');
+            $akses = $this->db->query("SELECT login FROM akses WHERE tahun = '$tahun' AND lembaga = '$user->lembaga' ");
+            if ($user->level != 'lembaga' || ($akses->row('login') === 'Y' && $user->level === 'lembaga')) {
+                if ($user->level === 'admin') {
+                    $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
+                    redirect('admin');
+                } elseif ($user->level === 'account') {
+                    $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
+                    redirect('account');
+                } elseif ($user->level === 'kasir') {
+                    $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
+                    redirect('kasir');
+                } elseif ($user->level === 'lembaga') {
+                    $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
+                    redirect('lembaga');
+                } elseif ($user->level === 'kepala') {
+                    $this->session->set_flashdata('ok', 'Login Berhasil, Selamat Datang di Aplikasi SIMKUPADUKA!');
+                    redirect('kepala');
+                } else {
+                    $this->session->set_flashdata('error', 'Akses denied!');
+                    redirect('login');
+                }
             } else {
-                echo "
-            <script>
-                alert('Maaf tujuan anda salah');
-                window.location = '" . base_url('login') . "';
-            </script>
-            ";
+                $this->session->set_flashdata('error', 'Anda tidak diizinkan untuk mengakses tahun ajaran ini');
+                redirect('login');
             }
         } else {
             $this->session->set_flashdata('error', 'Login Gagal, pastikan username dan passwrod benar!');
