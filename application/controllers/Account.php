@@ -2096,6 +2096,7 @@ ORDER BY tanggal DESC")->result();
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
 		$data['panjar'] = $this->model->getBy('panjar', 'tahun', $this->tahun)->result();
+		$data['total'] = $this->db->query("SELECT SUM(nominal) AS total FROM panjar WHERE tahun = '$this->tahun' ")->row();
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/panjar', $data);

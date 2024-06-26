@@ -22,11 +22,13 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <?php if (!$pj) { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
-                        <?php } else if ($pj->spj == 3) { ?>
-                            <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
-                        <?php } ?>
+                        <?php if ($akses->pengajuan === 'Y') {
+                            if (!$pj) { ?>
+                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
+                            <?php } else if ($pj->spj == 3) { ?>
+                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
+                        <?php }
+                        } ?>
 
                         <div class="table-responsive mt-3">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
@@ -89,47 +91,48 @@
     </div>
 </div>
 <!--end page wrapper -->
-
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Buat Pengajuan Baru</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <?= form_open('lembaga/pengajuanAdd'); ?>
-            <input type="hidden" name="jenis" value="biasa">
-            <div class="modal-body">
-                <div class="form-group mb-3">
-                    <label for="inputEmail3" class="col-sm-2 control-label">Lembaga *</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" value="<?= $lembaga->nama ?>" readonly>
+<?php if ($akses->pengajuan === 'Y') : ?>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Buat Pengajuan Baru</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <?= form_open('lembaga/pengajuanAdd'); ?>
+                <input type="hidden" name="jenis" value="biasa">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Lembaga *</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" value="<?= $lembaga->nama ?>" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Bulan *</label>
+                        <div class="col-sm-10">
+                            <select name="bulan" class="form-control" required>
+                                <option value=""> -- pilih bulan -- </option>
+                                <?php
+                                for ($i = 1; $i < count($bulan); $i++) { ?>
+                                    <option <?= date('m') == $i ? 'selected' : '' ?> value="<?= $i ?>"><?= $bulan[$i] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" name="tahun" value="<?= date('Y') ?>" readonly>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="inputEmail3" class="col-sm-2 control-label">Bulan *</label>
-                    <div class="col-sm-10">
-                        <select name="bulan" class="form-control" required>
-                            <option value=""> -- pilih bulan -- </option>
-                            <?php
-                            for ($i = 1; $i < count($bulan); $i++) { ?>
-                                <option <?= date('m') == $i ? 'selected' : '' ?> value="<?= $i ?>"><?= $bulan[$i] ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Buat Pengajuan</button>
                 </div>
-                <div class="form-group mb-3">
-                    <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" name="tahun" value="<?= date('Y') ?>" readonly>
-                    </div>
-                </div>
+                <?= form_close(); ?>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Buat Pengajuan</button>
-            </div>
-            <?= form_close(); ?>
         </div>
     </div>
-</div>
+<?php endif; ?>

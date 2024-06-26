@@ -22,6 +22,7 @@ class Lembaga extends CI_Controller
 		$api = $this->model->apiKey()->row();
 		$this->apiKey = $api->nama_key;
 		$this->lembaga = $user->lembaga;
+		$this->akses = $this->model->getBy('akses', 'tahun', $this->session->userdata('tahun'), 'lembaga', $user->lembaga)->row();
 
 		if ((!$this->Auth_model->current_user() && $user->level != 'lembaga') || (!$this->Auth_model->current_user() && $user->level != 'admin')) {
 			redirect('login/logout');
@@ -112,6 +113,7 @@ class Lembaga extends CI_Controller
 		$data['data'] = $this->model->getPengajuan($this->lembaga, $this->tahun)->result();
 		$data['pj'] = $this->model->getPjn('pengajuan', $this->lembaga, $this->tahun)->row();
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['akses'] = $this->akses;
 
 		$this->load->view('lembaga/head', $data);
 		$this->load->view('lembaga/pengajuan', $data);
@@ -1221,29 +1223,33 @@ Terimakasih';
 			// Mendapatkan data dari worksheet pertama
 			$worksheet = $objPHPExcel->getActiveSheet();
 			$highestRow = $worksheet->getHighestDataRow();
-			$highestColumn = $worksheet->getHighestColumn();
+			// $highestColumn = $worksheet->getHighestColumn();
 
 			// echo $highestRow;
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 5; $row <= $highestRow; $row++) {
+				$lembaga = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('B' . $row)->getValue());
+				$tahun = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('J' . $row)->getValue());
+				$kegiatan = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('L' . $row)->getValue());
+				$kode = $this->db->query("SELECT id_dppk FROM dppk WHERE tahun = '$tahun' AND lembaga = '$lembaga' AND kegiatan = '$kegiatan' ");
 				$data = [
 					'id_rab' => $this->uuid->v4(),
-					'lembaga' => $worksheet->getCell('B' . $row)->getValue(),
-					'bidang' => $worksheet->getCell('C' . $row)->getValue(),
-					'jenis' => $worksheet->getCell('D' . $row)->getValue(),
+					'lembaga' => $lembaga,
+					'bidang' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('C' . $row)->getValue()),
+					'jenis' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('D' . $row)->getValue()),
 					'kode' => '-',
-					'nama' => $worksheet->getCell('E' . $row)->getValue(),
-					'rencana' => $worksheet->getCell('F' . $row)->getValue(),
-					'qty' => $worksheet->getCell('G' . $row)->getValue(),
-					'satuan' => $worksheet->getCell('H' . $row)->getValue(),
-					'total' => $worksheet->getCell('G' . $row)->getValue() * $worksheet->getCell('I' . $row)->getValue(),
-					'harga_satuan' => $worksheet->getCell('I' . $row)->getValue(),
-					'tahun' => $worksheet->getCell('J' . $row)->getValue(),
+					'nama' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('E' . $row)->getValue()),
+					'rencana' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('F' . $row)->getValue()),
+					'qty' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('G' . $row)->getValue()),
+					'satuan' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('H' . $row)->getValue()),
+					'total' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('G' . $row)->getValue()) * preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('I' . $row)->getValue()),
+					'harga_satuan' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('I' . $row)->getValue()),
+					'tahun' => $tahun,
 					'at' => date('Y-m-d H:i'),
 					'snc' => 'belum',
-					'kode_pak' => $worksheet->getCell('K' . $row)->getValue(),
-					'kegiatan' => $worksheet->getCell('L' . $row)->getValue(),
+					'kode_pak' => $kode->row('id_dppk'),
+					'kegiatan' => $kegiatan,
 				];
 
 				$this->model->input('rab_sm24', $data);

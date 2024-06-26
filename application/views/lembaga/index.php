@@ -106,13 +106,13 @@
                     <div class="row row-cols-1 row-cols-md-2 row-cols-xl-12 g-0 row-group text-center border-top">
                         <div class="col">
                             <div class="p-3">
-                                <h5 class="mb-0"><?= round($realis->jml / $rab->jml * 100, 1) ?> %</h5>
+                                <h5 class="mb-0"><?= $realis->jml != 0 || $rab->jml != 0 ? round($realis->jml / $rab->jml * 100, 1) : 0 ?> %</h5>
                                 <small class="mb-0">Porsentase Pemakaian RAB <span> <i class="bx bx-up-arrow-alt align-middle"></i> (%)</span></small>
                             </div>
                         </div>
                         <div class="col">
                             <div class="p-3">
-                                <h5 class="mb-0"><?= round(100 - ($realis->jml / $rab->jml * 100), 1) ?> %</h5>
+                                <h5 class="mb-0"><?= $realis->jml != 0 || $rab->jml != 0 ? round(100 - ($realis->jml / $rab->jml * 100), 1) : 0 ?> %</h5>
                                 <small class="mb-0">Porsentase Sisa RAB <span> <i class="bx bx-up-arrow-alt align-middle"></i> (%)</span></small>
                             </div>
                         </div>

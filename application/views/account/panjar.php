@@ -62,7 +62,7 @@
                                         <tfoot>
                                             <tr>
                                                 <th colspan="4">Total</th>
-                                                <th colspan="4"><?= rupiah(0) ?></th>
+                                                <th colspan="4"><?= rupiah($total->total) ?></th>
                                             </tr>
                                         </tfoot>
                                     </table>

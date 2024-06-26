@@ -2113,10 +2113,9 @@ Terimakasih';
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
         $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
-        $data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
-        $data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
         $data['panjar'] = $this->model->getBy('panjar', 'tahun', $this->tahun)->result();
+        $data['total'] = $this->db->query("SELECT SUM(nominal) AS total FROM panjar WHERE tahun = '$this->tahun' ")->row();
 
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/panjar', $data);
