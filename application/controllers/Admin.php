@@ -1594,7 +1594,8 @@ https://simkupaduka.ppdwk.com/';
 		$id =  $this->input->post('id_akses', true);
 		$data = [
 			'login' =>  $this->input->post('login'),
-			'disposisi' =>  $this->input->post('disp')
+			'disposisi' =>  $this->input->post('disp'),
+			'pengajuan' =>  $this->input->post('pengajuan')
 		];
 
 		$this->model->update('akses',  $data, 'id_akses', $id);
@@ -1613,6 +1614,7 @@ https://simkupaduka.ppdwk.com/';
 		$data = [
 			'login' =>  $this->input->post('login'),
 			'disposisi' =>  $this->input->post('disp'),
+			'pengajuan' =>  $this->input->post('pengajuan'),
 			'lembaga' =>  $this->input->post('lembaga'),
 			'tahun' =>  $this->input->post('tahun')
 		];
@@ -2645,6 +2647,60 @@ Update data pertanggal
 			// Tampilkan pesan sukses atau lakukan redirect ke halaman lain
 			$this->session->set_flashdata('ok', 'Upload Selesai');
 			redirect('lembaga/rab24');
+		}
+	}
+
+	public function buatAksesAll()
+	{
+		$login = $this->input->post('login', true);
+		$disp = $this->input->post('disp', true);
+		$pengajuan = $this->input->post('pengajuan', true);
+		$kpa = $this->model->getBy('lembaga', 'tahun', $this->tahun);
+
+		foreach ($kpa->result() as $kpa) {
+			$cek = $this->model->getBy2('akses', 'lembaga', $kpa->kode, 'tahun', $this->tahun)->num_rows();
+			if ($cek < 1) {
+				$data = [
+					'lembaga' => $kpa->kode,
+					'login' => $login,
+					'disposisi' => $disp,
+					'pengajuan' => $pengajuan,
+					'tahun' => $this->tahun,
+				];
+				$this->model->input('akses', $data);
+			}
+		}
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Generate akses berhasil');
+			redirect('admin/setting');
+		}
+	}
+	public function editAksesAll()
+	{
+		$login = $this->input->post('login', true);
+		$disp = $this->input->post('disp', true);
+		$pengajuan = $this->input->post('pengajuan', true);
+
+		$data = [
+			'login' => $login,
+			'disposisi' => $disp,
+			'pengajuan' => $pengajuan,
+		];
+		$this->model->update('akses', $data, 'tahun', $this->tahun);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Update akses berhasil');
+			redirect('admin/setting');
+		}
+	}
+
+	public function truncAkses()
+	{
+		$this->model->delete('akses', 'tahun', $this->tahun);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Delete akses berhasil');
+			redirect('admin/setting');
 		}
 	}
 }

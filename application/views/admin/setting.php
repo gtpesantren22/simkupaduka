@@ -19,7 +19,7 @@
         </div>
         <!--end breadcrumb-->
         <div class="row">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-8">
                 <div class="card radius-10">
                     <div class="card-body">
                         <div>
@@ -33,6 +33,7 @@
                                         <th>Lembaga</th>
                                         <th>Login</th>
                                         <th>Disp</th>
+                                        <th>Pengajuan</th>
                                         <th>Tahun</th>
                                         <th>Act</th>
                                     </tr>
@@ -41,107 +42,92 @@
                                     <?php
                                     $no = 1;
                                     foreach ($data as $a) : ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $a->nama ?></td>
-                                        <td><?= $a->login ?></td>
-                                        <td><?= $a->disposisi ?></td>
-                                        <td><?= $a->tahun ?></td>
-                                        <td>
-                                            <a href="<?= base_url('admin/delAkses/' . $a->id_akses); ?>"
-                                                class="tombol-hapus"><i class="bx bx-trash"></i></a> |
-                                            <a data-bs-toggle="modal" data-bs-target="#medit<?= $a->id_akses; ?>"
-                                                href="#"><i class="bx bx-edit"></i></a>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $a->nama ?></td>
+                                            <td><?= $a->login ?></td>
+                                            <td><?= $a->disposisi ?></td>
+                                            <td><?= $a->pengajuan ?></td>
+                                            <td><?= $a->tahun ?></td>
+                                            <td>
+                                                <a href="<?= base_url('admin/delAkses/' . $a->id_akses); ?>" class="tombol-hapus"><i class="bx bx-trash"></i></a> |
+                                                <a data-bs-toggle="modal" data-bs-target="#medit<?= $a->id_akses; ?>" href="#"><i class="bx bx-edit"></i></a>
 
-                                            <!-- Modal Edit Data-->
-                                            <div class="modal fade" id="medit<?= $a->id_akses; ?>" tabindex="-1"
-                                                role="dialog" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content">
+                                                <!-- Modal Edit Data-->
+                                                <div class="modal fade" id="medit<?= $a->id_akses; ?>" tabindex="-1" role="dialog" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg">
+                                                        <div class="modal-content">
 
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Edit Akses
-                                                                Lembaha</h5>
-                                                            <button type="button" class="btn-close"
-                                                                data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">Edit Akses
+                                                                    Lembaha</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <form action="<?= base_url('admin/saveEditAkses'); ?>" method="post">
+                                                                <input type="hidden" name="id_akses" value="<?= $a->id_akses; ?>">
+                                                                <div class="modal-body">
+                                                                    <div class="item form-group">
+                                                                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                                                            <span class="required">*</span></label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $a->nama; ?>">
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="item form-group">
+                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
+                                                                        </label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <p>
+                                                                                <input type="radio" class="flat" name="login" id="genderM" value="Y" <?= $a->login == 'Y' ? 'checked' : '' ?> />
+                                                                                Ya
+                                                                                <input type="radio" class="flat" name="login" id="genderF" value="T" <?= $a->login == 'T' ? 'checked' : '' ?> />
+                                                                                Tidak
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="item form-group">
+                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
+                                                                        </label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <p>
+                                                                                <input type="radio" class="flat" name="disp" id="genderM" value="Y" <?= $a->disposisi == 'Y' ? 'checked' : '' ?> />
+                                                                                Ya
+                                                                                <input type="radio" class="flat" name="disp" id="genderF" value="T" <?= $a->disposisi == 'T' ? 'checked' : '' ?> />
+                                                                                Tidak
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="item form-group">
+                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
+                                                                        </label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <p>
+                                                                                <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" <?= $a->disposisi == 'Y' ? 'checked' : '' ?> />
+                                                                                Ya
+                                                                                <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" <?= $a->disposisi == 'T' ? 'checked' : '' ?> />
+                                                                                Tidak
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="item form-group">
+                                                                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                                                                            <span class="required">*</span></label>
+                                                                        <div class="col-md-6 col-sm-6 ">
+                                                                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun; ?>">
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                    <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
+                                                                </div>
+                                                            </form>
+
                                                         </div>
-                                                        <form action="<?= base_url('admin/saveEditAkses'); ?>"
-                                                            method="post">
-                                                            <input type="hidden" name="id_akses"
-                                                                value="<?= $a->id_akses; ?>">
-                                                            <div class="modal-body">
-                                                                <div class="item form-group">
-                                                                    <label for="middle-name"
-                                                                        class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                                                                        <span class="required">*</span></label>
-                                                                    <div class="col-md-6 col-sm-6 ">
-                                                                        <input id="middle-name" class="form-control"
-                                                                            type="text" name="pj" readonly
-                                                                            value="<?= $a->nama; ?>">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="item form-group">
-                                                                    <label
-                                                                        class="col-form-label col-md-3 col-sm-3 label-align"
-                                                                        for="first-name">Akses Login <span
-                                                                            class="required">*</span>
-                                                                    </label>
-                                                                    <div class="col-md-6 col-sm-6 ">
-                                                                        <p>
-                                                                            <input type="radio" class="flat"
-                                                                                name="login" id="genderM" value="Y"
-                                                                                <?= $a->login == 'Y' ? 'checked' : '' ?> />
-                                                                            Ya
-                                                                            <input type="radio" class="flat"
-                                                                                name="login" id="genderF" value="T"
-                                                                                <?= $a->login == 'T' ? 'checked' : '' ?> />
-                                                                            Tidak
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="item form-group">
-                                                                    <label
-                                                                        class="col-form-label col-md-3 col-sm-3 label-align"
-                                                                        for="first-name">Disposisi <span
-                                                                            class="required">*</span>
-                                                                    </label>
-                                                                    <div class="col-md-6 col-sm-6 ">
-                                                                        <p>
-                                                                            <input type="radio" class="flat" name="disp"
-                                                                                id="genderM" value="Y"
-                                                                                <?= $a->disposisi == 'Y' ? 'checked' : '' ?> />
-                                                                            Ya
-                                                                            <input type="radio" class="flat" name="disp"
-                                                                                id="genderF" value="T"
-                                                                                <?= $a->disposisi == 'T' ? 'checked' : '' ?> />
-                                                                            Tidak
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="item form-group">
-                                                                    <label for="middle-name"
-                                                                        class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                                                                        <span class="required">*</span></label>
-                                                                    <div class="col-md-6 col-sm-6 ">
-                                                                        <input id="middle-name" class="form-control"
-                                                                            type="text" name="pj" readonly
-                                                                            value="<?= $tahun; ?>">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-dismiss="modal">Close</button>
-                                                                <button type="submit" name="edit"
-                                                                    class="btn btn-success">Simpan data</button>
-                                                            </div>
-                                                        </form>
-
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>
@@ -150,7 +136,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-4">
                 <div class="card radius-10">
                     <div class="card-body">
                         <div>
@@ -168,7 +154,7 @@
                                     $sal = $this->db->query("SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun') ")->result();
                                     foreach ($sal as $r) {
                                     ?>
-                                    <option value="<?= $r->kode; ?>"><?= $r->nama; ?></option>
+                                        <option value="<?= $r->kode; ?>"><?= $r->nama; ?></option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -186,8 +172,7 @@
                             </div>
                         </div>
                         <div class="item form-group">
-                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span
-                                    class="required">*</span>
+                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
                             </label>
                             <div class="col-md-12 col-sm-6 ">
                                 <p>
@@ -197,16 +182,28 @@
                             </div>
                         </div>
                         <div class="item form-group">
+                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
+                            </label>
+                            <div class="col-md-12 col-sm-6 ">
+                                <p>
+                                    <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" /> Ya
+                                    <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" /> Tidak
+                                </p>
+                            </div>
+                        </div>
+                        <div class="item form-group">
                             <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
                                 <span class="required">*</span></label>
                             <div class="col-md-12 col-sm-6 ">
-                                <input id="middle-name" class="form-control" type="text" name="tahun" readonly
-                                    value="<?= $tahun; ?>">
+                                <input id="middle-name" class="form-control" type="text" name="tahun" readonly value="<?= $tahun; ?>">
                             </div>
                         </div>
                         <div class="item form-group mt-2">
                             <div class="col-md-12 col-sm-6 ">
-                                <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+                                <button type="submit" class="btn btn-sm btn-success">Simpan</button><br><br>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#buatAksesAll" class="btn btn-sm btn-primary">Generate Akses All</button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#editAksesAll" class="btn btn-sm btn-primary">Edit Akses All</button>
+                                <a href="<?= base_url('admin/truncAkses') ?>" class="btn btn-sm btn-danger tbl-confirm" value="Data akses akan dikosongi keseluruhan">Del Akses All</a>
                             </div>
                         </div>
                         <?= form_close(); ?>
@@ -214,7 +211,7 @@
                 </div>
             </div>
 
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-4">
                 <div class="card radius-10">
                     <div class="card-body">
                         <div>
@@ -257,8 +254,7 @@
                                 <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
                                     <span class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6 ">
-                                    <input id="middle-name" class="form-control" type="text" name="tahun" readonly
-                                        value="<?= $tahun; ?>">
+                                    <input id="middle-name" class="form-control" type="text" name="tahun" readonly value="<?= $tahun; ?>">
                                 </div>
                             </div>
                         </div>
@@ -275,3 +271,132 @@
     </div>
 </div>
 <!--end page wrapper -->
+
+<div class="modal fade" id="buatAksesAll" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Generate Akses untuk semua lembaga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= base_url('admin/buatAksesAll'); ?>" method="post">
+                <div class="modal-body">
+                    <small class="text-danger">* Untuk KPA yang sudah memimiliki akses tidak akan digenerate ulang</small>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <p>
+                                <input type="radio" class="flat" name="login" id="genderM" value="Y" />
+                                Ya
+                                <input type="radio" class="flat" name="login" id="genderF" value="T" />
+                                Tidak
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <p>
+                                <input type="radio" class="flat" name="disp" id="genderM" value="Y" />
+                                Ya
+                                <input type="radio" class="flat" name="disp" id="genderF" value="T" />
+                                Tidak
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <p>
+                                <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" />
+                                Ya
+                                <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" />
+                                Tidak
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                            <span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun; ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editAksesAll" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Akses untuk semua lembaga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= base_url('admin/editAksesAll'); ?>" method="post">
+                <div class="modal-body">
+                    <small class="text-danger">* Fitur ini akan merubah akses untuk semua lembaga</small>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <p>
+                                <input type="radio" class="flat" name="login" id="genderM" value="Y" />
+                                Ya
+                                <input type="radio" class="flat" name="login" id="genderF" value="T" />
+                                Tidak
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <p>
+                                <input type="radio" class="flat" name="disp" id="genderM" value="Y" />
+                                Ya
+                                <input type="radio" class="flat" name="disp" id="genderF" value="T" />
+                                Tidak
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <p>
+                                <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" />
+                                Ya
+                                <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" />
+                                Tidak
+                            </p>
+                        </div>
+                    </div>
+                    <div class="item form-group">
+                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
+                            <span class="required">*</span></label>
+                        <div class="col-md-6 col-sm-6 ">
+                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun; ?>">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
