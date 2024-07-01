@@ -56,7 +56,9 @@ class AppModel extends CI_Model
 
     function pengajuanPsb()
     {
-        return $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai'");
+        $penajuan = $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai'")->row('jml');
+        $keluar = $this->db6->query("SELECT SUM(nominal as jml FROM keluar ")->row('jml');
+        return $penajuan + $keluar;
     }
 
     function masuk($tahun)
@@ -87,13 +89,13 @@ class AppModel extends CI_Model
         $nikmus = $this->getNikmusSum($tahun)->row();
         $sumPinjam = $this->getBySum('peminjaman', 'tahun', $tahun, 'nominal')->row();
         $panjar = $this->getBySum('panjar', 'tahun', $tahun, 'nominal')->row();
-        $pengajuanPsb = $this->pengajuanPsb()->row();
+        $pengajuanPsb = $this->pengajuanPsb();
 
         $outRutin = $this->getBySum('pengeluaran_rutin', 'tahun', $tahun, 'nominal')->row();
         $sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
         $haflah = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM haflah_detail JOIN sarpras ON haflah_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE haflah_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
 
-        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluarLain->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb->jml + $outRutin->jml + $sarpras->jml + $haflah->jml;
+        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluarLain->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb + $outRutin->jml + $sarpras->jml + $haflah->jml;
 
         return $keluar;
     }
