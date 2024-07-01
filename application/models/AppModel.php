@@ -57,7 +57,7 @@ class AppModel extends CI_Model
     function pengajuanPsb()
     {
         $penajuan = $this->db6->query("SELECT SUM(qty * harga_satuan) as jml FROM pengajuan JOIN pengajuan_detail ON pengajuan.kode_pengajuan=pengajuan_detail.kode_pengajuan WHERE status = 'dicairkan' OR status = 'selesai'")->row('jml');
-        $keluar = $this->db6->query("SELECT SUM(nominal as jml FROM keluar ")->row('jml');
+        $keluar = $this->db6->query("SELECT SUM(nominal) as jml FROM keluar ")->row('jml');
         return $penajuan + $keluar;
     }
 
