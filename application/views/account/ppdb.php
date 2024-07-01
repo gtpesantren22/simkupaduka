@@ -42,7 +42,7 @@
                                     <div class="card-body">
                                         <div class="d-flex align-items-center">
                                             <div>
-                                                <p class="mb-0 text-white">TOTAL PENGELUARAN DARI PESANTREN</p>
+                                                <p class="mb-0 text-white">TOTAL PENGELUARAN DARI PSB</p>
                                                 <h4 class="my-1 text-white"><?= rupiah($keluar); ?></h4>
                                             </div>
                                             <div class="text-white ms-auto font-35"><i class='bx bx-money'></i>
