@@ -2617,27 +2617,18 @@ Update data pertanggal
 			// echo $highestRow;
 
 			// Mulai dari baris kedua (untuk melewati header)
-			for ($row = 5; $row <= $highestRow; $row++) {
+			for ($row = 2; $row <= $highestRow; $row++) {
 				$data = [
-					'id_rab' => $this->uuid->v4(),
-					'lembaga' => $worksheet->getCell('B' . $row)->getValue(),
-					'bidang' => $worksheet->getCell('C' . $row)->getValue(),
-					'jenis' => $worksheet->getCell('D' . $row)->getValue(),
-					'kode' => '-',
-					'nama' => $worksheet->getCell('E' . $row)->getValue(),
-					'rencana' => $worksheet->getCell('F' . $row)->getValue(),
-					'qty' => $worksheet->getCell('G' . $row)->getValue(),
-					'satuan' => $worksheet->getCell('H' . $row)->getValue(),
-					'total' => $worksheet->getCell('G' . $row)->getValue() * $worksheet->getCell('I' . $row)->getValue(),
-					'harga_satuan' => $worksheet->getCell('I' . $row)->getValue(),
-					'tahun' => $worksheet->getCell('J' . $row)->getValue(),
-					'at' => date('Y-m-d H:i'),
-					'snc' => 'belum',
-					'kode_pak' => $worksheet->getCell('K' . $row)->getValue(),
-					'kegiatan' => $worksheet->getCell('L' . $row)->getValue(),
+					'nis' => $worksheet->getCell('A' . $row)->getValue(),
+					'id_cos' => $worksheet->getCell('B' . $row)->getValue(),
+					'briva' => $worksheet->getCell('C' . $row)->getValue(),
+					'ju_ap' => $worksheet->getCell('D' . $row)->getValue(),
+					'me_ju' => $worksheet->getCell('E' . $row)->getValue(),
+					'total' => ($worksheet->getCell('D' . $row)->getValue() * 10) + ($worksheet->getCell('E' . $row)->getValue() * 2),
+					'tahun' => $worksheet->getCell('F' . $row)->getValue(),
 				];
 
-				$this->model->input('rab_sm24', $data);
+				$this->model->input('tangg', $data);
 			}
 
 			// Hapus file setelah selesai mengimpor
@@ -2646,7 +2637,7 @@ Update data pertanggal
 
 			// Tampilkan pesan sukses atau lakukan redirect ke halaman lain
 			$this->session->set_flashdata('ok', 'Upload Selesai');
-			redirect('lembaga/rab24');
+			redirect('admin/bp');
 		}
 	}
 
