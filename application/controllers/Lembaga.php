@@ -1229,22 +1229,22 @@ Terimakasih';
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 5; $row <= $highestRow; $row++) {
-				$lembaga = preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('B' . $row)->getValue()));
-				$tahun = preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('J' . $row)->getValue()));
-				$kegiatan = preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('L' . $row)->getValue()));
+				$lembaga = mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('B' . $row)->getValue())), 'UTF-8', 'auto');
+				$tahun = mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('J' . $row)->getValue())), 'UTF-8', 'auto');
+				$kegiatan = mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('L' . $row)->getValue())), 'UTF-8', 'auto');
 				$kode = $this->db->query("SELECT id_dppk FROM dppk WHERE tahun = '$tahun' AND lembaga = '$lembaga' AND kegiatan = '$kegiatan' ");
 				$data = [
 					'id_rab' => $this->uuid->v4(),
 					'lembaga' => $lembaga,
-					'bidang' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('C' . $row)->getValue())),
-					'jenis' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('D' . $row)->getValue())),
+					'bidang' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('C' . $row)->getValue())), 'UTF-8', 'auto'),
+					'jenis' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('D' . $row)->getValue())), 'UTF-8', 'auto'),
 					'kode' => '-',
-					'nama' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('E' . $row)->getValue())),
-					'rencana' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('F' . $row)->getValue())),
-					'qty' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue())),
-					'satuan' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('H' . $row)->getValue())),
-					'total' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue())) * preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue())),
-					'harga_satuan' => preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue())),
+					'nama' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('E' . $row)->getValue())), 'UTF-8', 'auto'),
+					'rencana' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('F' . $row)->getValue())), 'UTF-8', 'auto'),
+					'qty' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue())), 'UTF-8', 'auto'),
+					'satuan' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('H' . $row)->getValue())), 'UTF-8', 'auto'),
+					'total' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue())), 'UTF-8', 'auto') * mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue())), 'UTF-8', 'auto'),
+					'harga_satuan' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue())), 'UTF-8', 'auto'),
 					'tahun' => $tahun,
 					'at' => date('Y-m-d H:i'),
 					'snc' => 'belum',
