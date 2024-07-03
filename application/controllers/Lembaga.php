@@ -1229,22 +1229,22 @@ Terimakasih';
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 5; $row <= $highestRow; $row++) {
-				$lembaga = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('B' . $row)->getValue()))), "'");
-				$tahun = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('J' . $row)->getValue()))), "'");
-				$kegiatan = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('L' . $row)->getValue()))), "'");
+				$lembaga =  addslashes($worksheet->getCell('B' . $row)->getValue());
+				$tahun =  addslashes($worksheet->getCell('J' . $row)->getValue());
+				$kegiatan =  addslashes($worksheet->getCell('L' . $row)->getValue());
 				$kode = $this->db->query("SELECT id_dppk FROM dppk WHERE tahun = '$tahun' AND lembaga = '$lembaga' AND kegiatan = '$kegiatan' ");
 				$data = [
 					'id_rab' => $this->uuid->v4(),
 					'lembaga' => $lembaga,
-					'bidang' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('C' . $row)->getValue()))), "'"),
-					'jenis' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('D' . $row)->getValue()))), "'"),
+					'bidang' =>  addslashes($worksheet->getCell('C' . $row)->getValue()),
+					'jenis' =>  addslashes($worksheet->getCell('D' . $row)->getValue()),
 					'kode' => '-',
-					'nama' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('E' . $row)->getValue()))), "'"),
-					'rencana' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('F' . $row)->getValue()))), "'"),
-					'qty' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue()))), "'"),
-					'satuan' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('H' . $row)->getValue()))), "'"),
-					'total' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue()))), "'") * trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue()))), "'"),
-					'harga_satuan' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue()))), "'"),
+					'nama' =>  addslashes($worksheet->getCell('E' . $row)->getValue()),
+					'rencana' =>  addslashes($worksheet->getCell('F' . $row)->getValue()),
+					'qty' =>  addslashes($worksheet->getCell('G' . $row)->getValue()),
+					'satuan' =>  addslashes($worksheet->getCell('H' . $row)->getValue()),
+					'total' =>  addslashes($worksheet->getCell('G' . $row)->getValue()) *  addslashes($worksheet->getCell('I' . $row)->getValue()),
+					'harga_satuan' =>  addslashes($worksheet->getCell('I' . $row)->getValue()),
 					'tahun' => $tahun,
 					'at' => date('Y-m-d H:i'),
 					'snc' => 'belum',
