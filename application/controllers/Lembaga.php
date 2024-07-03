@@ -1229,22 +1229,22 @@ Terimakasih';
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 5; $row <= $highestRow; $row++) {
-				$lembaga = mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('B' . $row)->getValue())), 'UTF-8', 'auto');
-				$tahun = mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('J' . $row)->getValue())), 'UTF-8', 'auto');
-				$kegiatan = mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('L' . $row)->getValue())), 'UTF-8', 'auto');
+				$lembaga = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('B' . $row)->getValue()))), "'");
+				$tahun = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('J' . $row)->getValue()))), "'");
+				$kegiatan = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('L' . $row)->getValue()))), "'");
 				$kode = $this->db->query("SELECT id_dppk FROM dppk WHERE tahun = '$tahun' AND lembaga = '$lembaga' AND kegiatan = '$kegiatan' ");
 				$data = [
 					'id_rab' => $this->uuid->v4(),
 					'lembaga' => $lembaga,
-					'bidang' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('C' . $row)->getValue())), 'UTF-8', 'auto'),
-					'jenis' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('D' . $row)->getValue())), 'UTF-8', 'auto'),
+					'bidang' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('C' . $row)->getValue()))), "'"),
+					'jenis' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('D' . $row)->getValue()))), "'"),
 					'kode' => '-',
-					'nama' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('E' . $row)->getValue())), 'UTF-8', 'auto'),
-					'rencana' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('F' . $row)->getValue())), 'UTF-8', 'auto'),
-					'qty' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue())), 'UTF-8', 'auto'),
-					'satuan' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('H' . $row)->getValue())), 'UTF-8', 'auto'),
-					'total' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue())), 'UTF-8', 'auto') * mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue())), 'UTF-8', 'auto'),
-					'harga_satuan' => mb_convert_encoding(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue())), 'UTF-8', 'auto'),
+					'nama' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('E' . $row)->getValue()))), "'"),
+					'rencana' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('F' . $row)->getValue()))), "'"),
+					'qty' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue()))), "'"),
+					'satuan' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('H' . $row)->getValue()))), "'"),
+					'total' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('G' . $row)->getValue()))), "'") * trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue()))), "'"),
+					'harga_satuan' => trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('I' . $row)->getValue()))), "'"),
 					'tahun' => $tahun,
 					'at' => date('Y-m-d H:i'),
 					'snc' => 'belum',
