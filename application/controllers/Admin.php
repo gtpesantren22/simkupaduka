@@ -314,9 +314,9 @@ class Admin extends CI_Controller
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 2; $row <= $highestRow; $row++) {
-				$lembaga = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('B' . $row)->getValue());
-				$kegiatan = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('C' . $row)->getValue());
-				$tahun = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('D' . $row)->getValue());
+				$lembaga = preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('B' . $row)->getValue()));
+				$kegiatan = preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('C' . $row)->getValue()));
+				$tahun = preg_replace('/[^\x20-\x7E]/', '', addslashes($worksheet->getCell('D' . $row)->getValue()));
 
 				$cek = $this->db->query("SELECT id_dppk FROM dppk WHERE lembaga = '$lembaga' AND kegiatan = '$kegiatan' AND tahun = '$tahun' ")->num_rows();
 				if ($cek < 1) {
