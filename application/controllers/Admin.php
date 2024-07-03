@@ -314,9 +314,9 @@ class Admin extends CI_Controller
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 2; $row <= $highestRow; $row++) {
-				$lembaga =  addslashes($worksheet->getCell('B' . $row)->getValue());
-				$kegiatan =  addslashes($worksheet->getCell('C' . $row)->getValue());
-				$tahun =  addslashes($worksheet->getCell('D' . $row)->getValue());
+				$lembaga = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('B' . $row)->getValue())), "'");
+				$kegiatan = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('C' . $row)->getValue())), "'");
+				$tahun = trim($this->db->escape(preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('D' . $row)->getValue())), "'");
 
 				$cek = $this->db->query("SELECT id_dppk FROM dppk WHERE lembaga = '$lembaga' AND kegiatan = '$kegiatan' AND tahun = '$tahun' ")->num_rows();
 				if ($cek < 1) {
@@ -340,7 +340,7 @@ class Admin extends CI_Controller
 			// Tampilkan pesan sukses atau lakukan redirect ke halaman lain
 			if ($this->db->affected_rows() > 0) {
 				$this->session->set_flashdata('ok', 'Upload Selesai');
-				redirect('admin/bp');
+				redirect('admin/dppk');
 			}
 		}
 	}
