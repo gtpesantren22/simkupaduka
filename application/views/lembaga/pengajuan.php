@@ -23,9 +23,9 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <?php if ($akses->pengajuan === 'Y') {
-                            if (!$cekSPJ) { ?>
+                            if ($cekSPJ < 1) { ?>
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
-                            <?php } else if (!$cekPjn) { ?>
+                            <?php } else if ($cekPjn < 1) { ?>
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
                         <?php }
                         } ?>

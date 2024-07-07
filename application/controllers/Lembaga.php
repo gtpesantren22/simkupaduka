@@ -111,8 +111,8 @@ class Lembaga extends CI_Controller
 		$data['bulan'] = $this->bulan;
 
 		$data['data'] = $this->model->getPengajuan($this->lembaga, $this->tahun)->result();
-		$data['cekSPJ'] = $this->db->query("SELECT * FROM spj WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND stts != 3 ")->row();
-		$data['cekPjn'] = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND spj != 3 ")->row();
+		$data['cekSPJ'] = $this->db->query("SELECT * FROM spj WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND stts != 3 ")->num_rows();
+		$data['cekPjn'] = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND spj != 3 ")->num_rows();
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['akses'] = $this->akses;
 
