@@ -29,11 +29,6 @@
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus"></i> Tambah Pengajuan Baru</button>
                         <?php }
                         } ?>
-                        <?php
-                        echo $akses->pengajuan . '<br>';
-                        echo $cekSPJ . '<br>';
-                        echo $cekPjn . '<br>';
-                        ?>
 
                         <div class="table-responsive mt-3">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
