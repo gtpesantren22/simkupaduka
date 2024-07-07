@@ -22,7 +22,6 @@ class Lembaga extends CI_Controller
 		$api = $this->model->apiKey()->row();
 		$this->apiKey = $api->nama_key;
 		$this->lembaga = $user->lembaga;
-		$this->akses = $this->model->getBy('akses', 'tahun', $this->session->userdata('tahun'), 'lembaga', $user->lembaga);
 
 		if ((!$this->Auth_model->current_user() && $user->level != 'lembaga') || (!$this->Auth_model->current_user() && $user->level != 'admin')) {
 			redirect('login/logout');
@@ -114,7 +113,8 @@ class Lembaga extends CI_Controller
 		$data['cekSPJ'] = $this->db->query("SELECT * FROM spj WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND stts != 3 ")->num_rows();
 		$data['cekPjn'] = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND spj != 3 ")->num_rows();
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
-		$data['akses'] = $this->akses->row('pengajuan');
+		$data['akses'] = $this->model->getBy('akses', 'tahun', $this->tahun, 'lembaga', $data['user']->lembaga)->row();
+
 
 		$this->load->view('lembaga/head', $data);
 		$this->load->view('lembaga/pengajuan', $data);
