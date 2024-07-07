@@ -111,7 +111,8 @@ class Lembaga extends CI_Controller
 		$data['bulan'] = $this->bulan;
 
 		$data['data'] = $this->model->getPengajuan($this->lembaga, $this->tahun)->result();
-		$data['pj'] = $this->model->getPjn('pengajuan', $this->lembaga, $this->tahun)->row();
+		$data['cekSPJ'] = $this->model->query("SELECT * FROM spj WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND stts != 3 ")->row();
+		$data['cekPjn'] = $this->model->query("SELECT * FROM pengajuan WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND spj != 3 ")->row();
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['akses'] = $this->akses;
 
@@ -1229,22 +1230,22 @@ Terimakasih';
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 5; $row <= $highestRow; $row++) {
-				$lembaga =  $worksheet->getCell('B' . $row)->getValue();
-				$tahun =  $worksheet->getCell('J' . $row)->getValue();
-				$kegiatan =  $worksheet->getCell('L' . $row)->getValue();
+				$lembaga = $this->db->escape($worksheet->getCell('B' . $row)->getValue());
+				$tahun = $this->db->escape($worksheet->getCell('J' . $row)->getValue());
+				$kegiatan = $this->db->escape($worksheet->getCell('L' . $row)->getValue());
 				$kode = $this->db->query("SELECT id_dppk FROM dppk WHERE tahun = '$tahun' AND lembaga = '$lembaga' AND kegiatan = '$kegiatan' ");
 				$data = [
 					'id_rab' => $this->uuid->v4(),
 					'lembaga' => $lembaga,
-					'bidang' =>  $worksheet->getCell('C' . $row)->getValue(),
-					'jenis' =>  $worksheet->getCell('D' . $row)->getValue(),
+					'bidang' => $this->db->escape($worksheet->getCell('C' . $row)->getValue()),
+					'jenis' => $this->db->escape($worksheet->getCell('D' . $row)->getValue()),
 					'kode' => '-',
-					'nama' =>  $worksheet->getCell('E' . $row)->getValue(),
-					'rencana' =>  $worksheet->getCell('F' . $row)->getValue(),
-					'qty' =>  $worksheet->getCell('G' . $row)->getValue(),
-					'satuan' =>  $worksheet->getCell('H' . $row)->getValue(),
-					'total' =>  $worksheet->getCell('G' . $row)->getValue() *  $worksheet->getCell('I' . $row)->getValue(),
-					'harga_satuan' =>  $worksheet->getCell('I' . $row)->getValue(),
+					'nama' => $this->db->escape($worksheet->getCell('E' . $row)->getValue()),
+					'rencana' => $this->db->escape($worksheet->getCell('F' . $row)->getValue()),
+					'qty' => $this->db->escape($worksheet->getCell('G' . $row)->getValue()),
+					'satuan' => $this->db->escape($worksheet->getCell('H' . $row)->getValue()),
+					'total' => $this->db->escape($worksheet->getCell('G' . $row)->getValue()) * $this->db->escape($worksheet->getCell('I' . $row)->getValue()),
+					'harga_satuan' => $this->db->escape($worksheet->getCell('I' . $row)->getValue()),
 					'tahun' => $tahun,
 					'at' => date('Y-m-d H:i'),
 					'snc' => 'belum',
