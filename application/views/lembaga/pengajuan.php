@@ -33,6 +33,8 @@
                         echo $akses->pengajuan . '<br>';
                         echo $cekSPJ . '<br>';
                         echo $cekPjn . '<br>';
+                        echo 'Tahun ' . $tahun . '<br>';
+                        echo 'Kode lembaga ' . $user->lembaga . '<br>';
                         ?>
 
                         <div class="table-responsive mt-3">
