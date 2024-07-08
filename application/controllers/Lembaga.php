@@ -1230,22 +1230,22 @@ Terimakasih';
 
 			// Mulai dari baris kedua (untuk melewati header)
 			for ($row = 5; $row <= $highestRow; $row++) {
-				$lembaga = $this->db->escape($worksheet->getCell('B' . $row)->getValue());
-				$tahun = $this->db->escape($worksheet->getCell('J' . $row)->getValue());
-				$kegiatan = $this->db->escape($worksheet->getCell('L' . $row)->getValue());
+				$lembaga = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('B' . $row)->getValue());
+				$tahun = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('J' . $row)->getValue());
+				$kegiatan = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('L' . $row)->getValue());
 				$kode = $this->db->query("SELECT id_dppk FROM dppk WHERE tahun = '$tahun' AND lembaga = '$lembaga' AND kegiatan = '$kegiatan' ");
 				$data = [
 					'id_rab' => $this->uuid->v4(),
 					'lembaga' => $lembaga,
-					'bidang' => $this->db->escape($worksheet->getCell('C' . $row)->getValue()),
-					'jenis' => $this->db->escape($worksheet->getCell('D' . $row)->getValue()),
+					'bidang' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('C' . $row)->getValue()),
+					'jenis' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('D' . $row)->getValue()),
 					'kode' => '-',
-					'nama' => $this->db->escape($worksheet->getCell('E' . $row)->getValue()),
-					'rencana' => $this->db->escape($worksheet->getCell('F' . $row)->getValue()),
-					'qty' => $this->db->escape($worksheet->getCell('G' . $row)->getValue()),
-					'satuan' => $this->db->escape($worksheet->getCell('H' . $row)->getValue()),
-					'total' => $this->db->escape($worksheet->getCell('G' . $row)->getValue()) * $this->db->escape($worksheet->getCell('I' . $row)->getValue()),
-					'harga_satuan' => $this->db->escape($worksheet->getCell('I' . $row)->getValue()),
+					'nama' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('E' . $row)->getValue()),
+					'rencana' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('F' . $row)->getValue()),
+					'qty' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('G' . $row)->getValue()),
+					'satuan' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('H' . $row)->getValue()),
+					'total' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('G' . $row)->getValue()) * preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('I' . $row)->getValue()),
+					'harga_satuan' => preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('I' . $row)->getValue()),
 					'tahun' => $tahun,
 					'at' => date('Y-m-d H:i'),
 					'snc' => 'belum',
