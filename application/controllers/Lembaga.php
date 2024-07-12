@@ -211,7 +211,7 @@ class Lembaga extends CI_Controller
 	public function getDataBydppk()
 	{
 		$dppk = $this->input->post('dppk', true);
-		$bulanini = date('m');
+		$bulanini = (int)date('m');
 		// $data['rab'] = $this->model->getByOrd('rab_sm24', 'kode_pak', $dppk, 'nama')->result();
 		$data['rab'] = $this->db->query("SELECT rab.*, rab_sm24.kegiatan FROM rab JOIN rab_sm24 ON rab.kode=rab_sm24.kode WHERE rab_sm24.kode_pak = '$dppk' AND rab.tahun = '$this->tahun' AND rab_sm24.tahun = '$this->tahun' AND rab.rencana = '$bulanini' ")->result();
 		foreach ($data['rab'] as $kye) {
