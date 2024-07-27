@@ -73,8 +73,9 @@ class AppModel extends CI_Model
 
         $daftar = $this->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
         $regist = $this->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
+        $pemasukanPSB = $this->getBySumPsb('masuk', 'nominal <>', '', 'nominal')->row();
 
-        $masuk = $bos->jml + $pembayaran->jml +  $sumCicil->jml + $daftar->jml + $regist->jml + $talangan->jml;
+        $masuk = $bos->jml + $pembayaran->jml +  $sumCicil->jml + $daftar->jml + $regist->jml + $talangan->jml + $pemasukanPSB->jml;
         // $masuk = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml + $daftar->jml + $regist->jml + $talangan->jml;
 
         return $masuk;
@@ -94,8 +95,9 @@ class AppModel extends CI_Model
         $outRutin = $this->getBySum('pengeluaran_rutin', 'tahun', $tahun, 'nominal')->row();
         $sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
         $haflah = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM haflah_detail JOIN sarpras ON haflah_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE haflah_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
+        $keluarPsb = $this->getBySumPsb('keluar', 'nominal <>', '', 'nominal')->row();
 
-        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluarLain->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb + $outRutin->jml + $sarpras->jml + $haflah->jml;
+        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluarLain->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb + $outRutin->jml + $sarpras->jml + $keluarPsb->jml;
 
         return $keluar;
     }
