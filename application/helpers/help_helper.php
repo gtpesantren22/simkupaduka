@@ -195,3 +195,13 @@ function random($panjang)
     }
     return $string;
 }
+
+function gabung2Kolom($kolom1, $kolom2, $lebarKolom1, $lebarKolom2)
+{
+    // Mengatur lebar setiap kolom (dalam satuan karakter)
+    $kolom1 = str_pad($kolom1, $lebarKolom1); // Menyusun teks kolom 1 dengan padding
+    $kolom2 = str_pad($kolom2, $lebarKolom2); // Menyusun teks kolom 2 dengan padding
+
+    // Menggabungkan kedua kolom menjadi satu baris
+    return $kolom1 . $kolom2;
+}

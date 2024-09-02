@@ -138,8 +138,12 @@
 <script src='https://cdn.jsdelivr.net/npm/flatpickr'></script>
 <script>
     $(document).ready(function() {
-        $('#example').DataTable();
-        $('#example3').DataTable();
+        $('#example').DataTable({
+            "processing": true,
+        });
+        $('#example3').DataTable({
+            "processing": true,
+        });
 
         $('.single-select').select2({
             theme: 'bootstrap4',

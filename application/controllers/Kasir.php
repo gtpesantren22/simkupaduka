@@ -1,6 +1,8 @@
 <?php
 
 use SebastianBergmann\Environment\Console;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
@@ -9,6 +11,9 @@ class Kasir extends CI_Controller
     function __construct()
     {
         parent::__construct();
+        $this->load->library('datatables');
+        $this->load->database();
+
         $this->load->model('KasirModel', 'model');
         $this->load->model('Auth_model');
         $this->load->model('AppModel', 'modelAll');
@@ -237,6 +242,91 @@ Terimakasih';
         $this->load->view('kasir/foot');
     }
 
+    public function tanggungan_new()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['bulan'] = $this->bulan;
+        $bulanIni = date('m');
+
+        $data['data'] = $this->model->getByJoin2('tanggungan', 'tb_santri', 'nis', 'nis', 'tanggungan.tahun', $this->tahun, 'tanggungan.bulan', date('m'))->result();
+        $data['jmltagihan'] = $this->db->query("SELECT COUNT(*) as total FROM tanggungan WHERE tahun = '$this->tahun' AND bulan = $bulanIni ")->row();
+        $data['jmlbayar'] = $this->db->query("SELECT COUNT(*) as total FROM pembayaran WHERE tahun = '$this->tahun' AND bulan = $bulanIni ")->row();
+
+        $tanggungan_bulan = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $tanggungan = $this->db->query("SELECT bulan, COUNT(*) AS jml FROM tanggungan WHERE tahun = '$this->tahun' AND bulan = $i")->row();
+            $pembayaran = $this->db->query("SELECT COUNT(*) AS jml FROM pembayaran WHERE tahun = '$this->tahun' AND bulan = $i")->row();
+            $tanggungan_bulan[] = array(
+                'bulan' => $i,
+                'jmltanggungan' => $tanggungan->jml,
+                'jmlbayar' => $pembayaran->jml
+            );
+        }
+        $data['tanggungan_bulan'] = $tanggungan_bulan;
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/tanggungan', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function tanggunganBulan($bulanIni)
+    {
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+        // $bulanIni = date('m');
+        $this->db->select('tanggungan.*, tb_santri.nama');
+        $this->db->from('tanggungan');
+        $this->db->join('tb_santri', 'tanggungan.nis=tb_santri.nis');
+        $this->db->where('tanggungan.bulan', $bulanIni);
+
+        // Filter search
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('tanggungan.nis', $search_value);
+            $this->db->or_like('tb_santri.nama', $search_value);
+            $this->db->or_like('tanggungan.nominal', $search_value);
+            $this->db->group_end();
+        }
+
+        $total_records = $this->db->count_all_results('', false); // Count total records without limit
+
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = [];
+        $row_number = $start + 1;
+
+        foreach ($query->result() as $row) {
+            $cekBayar = $this->model->getBy3('pembayaran', 'nis', $row->nis, 'bulan', $row->bulan, 'tahun', $row->tahun);
+            $data[] = [
+                $row_number++,
+                $row->id_tanggungan,
+                $row->nis,
+                $row->nama,
+                $row->nominal,
+                $row->bulan,
+                $row->tahun,
+                $cekBayar->num_rows()
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        // Set content-type header and return JSON data
+        header('Content-Type: application/json');
+        echo json_encode($output);
+        // var_dump($output);
+    }
     public function tanggungan()
     {
         $data['user'] = $this->Auth_model->current_user();
@@ -252,14 +342,35 @@ Terimakasih';
 
     public function delTanggungan($id)
     {
-        $this->model->delete('tangg', 'id_tangg', $id);
+        $this->model->delete('tanggungan', 'id_tanggungan', $id);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Tanggungan berhasil dihapus');
             redirect('kasir/tanggungan');
         } else {
-            $this->session->set_flashdata('error', 'Tanggungan berhasil dihapus');
+            $this->session->set_flashdata('error', 'Tanggungan gagal dihapus');
             redirect('kasir/tanggungan');
         }
+    }
+
+    public function discrb_new($nis)
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['bulan'] = $this->bulan;
+
+        $data['sn'] = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+        $data['tgn'] = $this->db->query("SELECT * FROM tanggungan WHERE nis = $nis AND tahun = '$this->tahun' ORDER BY bulan ASC")->result();
+        $data['masuk'] = $this->db->query("SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$this->tahun' GROUP BY nis ")->row();
+        $data['tanggungan'] = $this->db->query("SELECT SUM(nominal) AS jml FROM tanggungan WHERE nis = '$nis' AND tahun = '$this->tahun' GROUP BY nis ")->row();
+        $data['bayar'] = $this->model->getBy2('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
+
+        $data['tmpKos'] = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum");
+        $data['kter'] = ["Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti"];
+
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('kasir/discrb-new', $data);
+        $this->load->view('kasir/foot');
     }
 
     public function discrb($nis)
@@ -379,6 +490,100 @@ Terimakasih';
                 $this->session->set_flashdata('error', 'Maaf pembayaran ini bulan ini sudah ada');
                 redirect('kasir/discrb/' . $nis);
             }
+        }
+    }
+
+    public function addbayar_new()
+    {
+        $user = $this->Auth_model->current_user();
+
+        $nominal = rmRp($this->input->post('nominal', true));
+        $tgl = $this->input->post('tgl', true);
+        $kasir = $user->nama;
+        $nama = $this->input->post('nama', true);
+        $nis = $this->input->post('nis', true);
+        $tahun = $this->tahun;
+        $dekos = $this->input->post('dekos', true);
+        $bulan_bayar = $this->input->post('bulan', true);
+
+        $dp = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+        $dpBr = $this->model->getBy3('tanggungan', 'nis', $nis, 'tahun', $this->tahun, 'bulan', $bulan_bayar)->row();
+
+        $alm = $dp->desa . '-' . $dp->kec . '-' . $dp->kab;
+        $hpNo = '089682351413';
+        $hpNo2 = '085236924510';
+
+        $data = [
+            'nis' => $nis,
+            'nama' => $nama,
+            'tgl' => $tgl,
+            'nominal' => $nominal,
+            'bulan' => $bulan_bayar,
+            'tahun' => $tahun,
+            'kasir' => $kasir,
+        ];
+        $data2 = [
+            'nis' => $nis,
+            'nominal' => 300000,
+            'bulan' => $bulan_bayar,
+            'tahun' => $tahun,
+            'tgl' => $tgl,
+            'penerima' => $kasir,
+            'stts' => 1,
+            'waktu' => date('Y-m-d H:i'),
+        ];
+
+        $pesan = '
+*KWITANSI PEMBAYARAN ELEKTRONIK*
+*PP DARUL LUGHAH WAL KAROMAH*
+Bendahara Pondok Pesantren Darul Lughah Wal Karomah telah menerima pembayaran BP dari wali santri berikut :
+    
+No. BRIVA : *' . $dpBr->briva . '*
+Nama : *' . $nama . '*
+Alamat : *' . $alm . '* 
+Nominal Pembayaran: *' . rupiah($nominal) . '*
+Tanggal Bayar : *' . $tgl . '*
+Pembayaran Untuk: *BP (Biaya Pendidikan) bulan ' . $this->bulan[$bulan_bayar] . '*
+Penerima: *' . $kasir . '*
+
+Bukti Penerimaan ini *DISIMPAN* oleh wali santri sebagai bukti pembayaran Biaya Pendidikan PP Darul Lughah Wal Karomah Tahun Pelajaran ' . $tahun . '.
+*Hal – hal yang berkaitan dengan Teknis keuangan dapat menghubungi Contact Person Bendahara berikut :*
+*https://wa.me/6282329641926*
+
+Terimakasih';
+
+
+        $cek = $this->db->query("SELECT * FROM pembayaran WHERE nis = '$nis' AND bulan = '$bulan_bayar' AND tahun = '$tahun' ")->num_rows();
+        if ($cek < 1) {
+            if ($dekos == 'Y') {
+                $this->model->inputDb2('kos', $data2);
+                $this->model->input('pembayaran', $data);
+
+                if ($this->db->affected_rows() > 0) {
+                    kirim_person($this->apiKey, $hpNo, $pesan);
+                    kirim_person($this->apiKey, $hpNo2, $pesan);
+                    $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
+                    redirect('kasir/discrb/' . $nis);
+                } else {
+                    $this->session->set_flashdata('error', 'Tanggungan tidak berhasil diinput');
+                    redirect('kasir/discrb/' . $nis);
+                }
+            } else {
+                $this->model->input('pembayaran', $data);
+
+                if ($this->db->affected_rows() > 0) {
+                    kirim_person($this->apiKey, $hpNo, $pesan);
+                    kirim_person($this->apiKey, $hpNo2, $pesan);
+                    $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
+                    redirect('kasir/discrb/' . $nis);
+                } else {
+                    $this->session->set_flashdata('error', 'Tanggungan tidak berhasil diinput');
+                    redirect('kasir/discrb/' . $nis);
+                }
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Maaf pembayaran bulan ini sudah ada');
+            redirect('kasir/discrb/' . $nis);
         }
     }
 
@@ -1635,16 +1840,16 @@ Terimakasih';
         }
     }
 
-    public function rekapTabungan()
+    public function tabungan()
     {
 
         $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
 
-        $data['data'] = $this->db->query("SELECT rekap_tabungan.*, tb_santri.nama AS nmSantri FROM tb_santri JOIN rekap_tabungan ON rekap_tabungan.nis=tb_santri.nis WHERE rekap_tabungan.tahun = '$this->tahun' AND tb_santri.aktif = 'Y' ORDER BY rekap_tabungan.at DESC  ")->result();
 
-        $data['sumData'] = $this->model->getBySum('rekap_tabungan', 'tahun', $data['tahun'], 'jumlah')->row();
+        $data['sumData'] = $this->model->getBySum2('tabungan', 'tahun', $data['tahun'], 'jenis', 'masuk', 'nominal')->row();
+        $data['sumkeluar'] = $this->model->getBySum2('tabungan', 'tahun', $data['tahun'], 'jenis', 'keluar', 'nominal')->row();
 
         $data['santri'] = $this->model->getBy('tb_santri', 'aktif', 'Y')->result();
 
@@ -1654,37 +1859,292 @@ Terimakasih';
         $this->load->view('kasir/foot');
     }
 
+    public function tabunganData()
+    {
+
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+        // $bulanIni = date('m');
+        $this->db->select("id_tabungan, tabungan.nis, tb_santri.nama, SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS total, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS pakai ");
+        $this->db->from('tabungan');
+        $this->db->join('tb_santri', 'tabungan.nis=tb_santri.nis');
+        $this->db->where('tabungan.tahun', $this->tahun);
+        $this->db->where('tb_santri.aktif', 'Y');
+        $this->db->group_by('tabungan.nis');
+        $this->db->order_by('tb_santri.nama', 'ASC');
+
+        // Filter search
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('tabungan.nis', $search_value);
+            $this->db->or_like('tb_santri.nama', $search_value);
+            $this->db->group_end();
+        }
+
+        $total_records = $this->db->count_all_results('', false); // Count total records without limit
+
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = [];
+        $row_number = $start + 1;
+
+        foreach ($query->result() as $row) {
+            $data[] = [
+                $row_number++,
+                $row->id_tabungan,
+                $row->nis,
+                $row->nama,
+                $row->total,
+                $row->pakai,
+                $row->total - $row->pakai
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        // Set content-type header and return JSON data
+        header('Content-Type: application/json');
+        echo json_encode($output);
+        // var_dump($output);
+    }
+    public function rincianTabungan($nis)
+    {
+
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+        // $bulanIni = date('m');
+        $this->db->select("*");
+        $this->db->from('tabungan');
+        $this->db->where('nis', $nis);
+        $this->db->where('tahun', $this->tahun);
+        $this->db->order_by('tanggal', 'DESC');
+
+        // Filter search
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('tanggal', $search_value);
+            $this->db->or_like('nominal', $search_value);
+            $this->db->or_like('jenis', $search_value);
+            $this->db->or_like('ket', $search_value);
+            $this->db->group_end();
+        }
+
+        $total_records = $this->db->count_all_results('', false); // Count total records without limit
+
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = [];
+        $row_number = $start + 1;
+
+        foreach ($query->result() as $row) {
+            $data[] = [
+                $row_number++, // 0
+                $row->id_tabungan, // 1
+                $row->nis, // 2
+                $row->nominal, // 3
+                $row->tanggal, // 4
+                $row->ket, // 5
+                $row->jenis, // 6
+                $row->kasir // 7
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        // Set content-type header and return JSON data
+        header('Content-Type: application/json');
+        echo json_encode($output);
+        // var_dump($output);
+    }
+
     public function saveTabungan()
     {
         $data = [
             "id_tabungan" => $this->uuid->v4(),
             "nis" => $this->input->post('nis', true),
-            "jumlah" => rmRp($this->input->post('jumlah', true)),
+            "nominal" => rmRp($this->input->post('jumlah', true)),
             "tanggal" => $this->input->post('tanggal', true),
+            "ket" => $this->input->post('ket', true),
+            "jenis" => 'masuk',
             "kasir" => $this->user,
             "tahun" => $this->tahun,
-            "at" => date('Y-m-d H:i:s')
+            "created" => date('Y-m-d H:i:s')
         ];
 
-        $this->model->input('rekap_tabungan', $data);
+        $this->model->input('tabungan', $data);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Input data sukses');
-            redirect('kasir/rekapTabungan');
+            redirect('kasir/tabungan');
         } else {
             $this->session->set_flashdata('error', 'Input data gagal');
-            redirect('kasir/rekapTabungan');
+            redirect('kasir/tabungan');
         }
     }
 
     public function delTabungan($id)
     {
-        $this->model->delete('rekap_tabungan', 'id_tabungan', $id);
+        $this->model->delete('tabungan', 'id_tabungan', $id);
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Hapus data sukses');
-            redirect('kasir/rekapTabungan');
+            redirect('kasir/tabungan');
         } else {
             $this->session->set_flashdata('error', 'Hapus data gagal');
-            redirect('kasir/rekapTabungan');
+            redirect('kasir/tabungan');
+        }
+    }
+
+    public function outTabungan()
+    {
+        $user = $this->Auth_model->current_user();
+
+        $nominal = rmRp($this->input->post('nominal', true));
+        $tgl = $this->input->post('tgl', true);
+        $kasir = $user->nama;
+        $nama = $this->input->post('nama', true);
+        $nis = $this->input->post('nis', true);
+        $tahun = $this->tahun;
+        $dekos = $this->input->post('dekos', true);
+        $bulan_bayar = $this->input->post('bulan', true);
+        $ket = $this->input->post('ket', true);
+        $admin = $this->input->post('admin', true);
+
+        $dp = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+        $dpBr = $this->model->getBy3('tanggungan', 'nis', $nis, 'tahun', $this->tahun, 'bulan', $bulan_bayar)->row();
+
+        // $by = $nominal + $this->input->post('masuk', true);
+        // $ttl = $this->input->post('ttl', true);
+        $alm = $dp->desa . '-' . $dp->kec . '-' . $dp->kab;
+        // $hpNo = $dp->hp;
+        $hpNo = '089682351413';
+        $hpNo2 = '085236924510';
+
+        $data = [
+            'nis' => $nis,
+            'nama' => $nama,
+            'tgl' => $tgl,
+            'nominal' => $nominal,
+            'bulan' => $bulan_bayar,
+            'tahun' => $tahun,
+            'kasir' => $kasir,
+        ];
+        $data2 = [
+            'nis' => $nis,
+            'nominal' => 300000,
+            'bulan' => $bulan_bayar,
+            'tahun' => $tahun,
+            'tgl' => $tgl,
+            'penerima' => $kasir,
+            'stts' => 1,
+            'waktu' => date('Y-m-d H:i'),
+        ];
+        $dataTabungan = [
+            "id_tabungan" => $this->uuid->v4(),
+            "nis" => $nis,
+            "nominal" => $nominal,
+            "tanggal" => $tgl,
+            "ket" => $ket,
+            "jenis" => 'keluar',
+            "kasir" => $this->user,
+            "tahun" => $this->tahun,
+            "created" => date('Y-m-d H:i:s')
+        ];
+        $dataAdmin = [
+            "id_tabungan" => $this->uuid->v4(),
+            "nis" => $nis,
+            "nominal" => rmRp($admin),
+            "tanggal" => $tgl,
+            "ket" => 'Biaya admin',
+            "jenis" => 'keluar',
+            "kasir" => $this->user,
+            "tahun" => $this->tahun,
+            "created" => date('Y-m-d H:i:s')
+        ];
+
+        // No. BRIVA : *' . $dpBr->briva . '*
+        $pesan = '
+*KWITANSI PEMBAYARAN ELEKTRONIK*
+*PP DARUL LUGHAH WAL KAROMAH*
+Bendahara Pondok Pesantren Darul Lughah Wal Karomah telah menerima pembayaran BP dari wali santri berikut :
+    
+Nama : *' . $nama . '*
+Alamat : *' . $alm . '* 
+Nominal Pembayaran: *' . rupiah($nominal) . '*
+Tanggal Bayar : *' . $tgl . '*
+Pembayaran Untuk: *BP (Biaya Pendidikan) bulan ' . $this->bulan[$bulan_bayar] . '*
+Penerima: *' . $kasir . '*
+
+Bukti Penerimaan ini *DISIMPAN* oleh wali santri sebagai bukti pembayaran Biaya Pendidikan PP Darul Lughah Wal Karomah Tahun Pelajaran ' . $tahun . '.
+*Hal – hal yang berkaitan dengan Teknis keuangan dapat menghubungi Contact Person Bendahara berikut :*
+*https://wa.me/6282329641926*
+
+Terimakasih';
+
+        $cek = $this->db->query("SELECT * FROM pembayaran WHERE nis = '$nis' AND bulan = '$bulan_bayar' AND tahun = '$tahun' ")->num_rows();
+        $cekTabungan = $this->db->query("SELECT SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS total, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS pakai FROM tabungan WHERE nis = '$nis' AND tahun = '$tahun' ")->row();
+        $saldo = $cekTabungan->total - $cekTabungan->pakai;
+        if ($cek < 1) {
+            if ($saldo < $nominal) {
+                $this->session->set_flashdata('error', 'Saldo tidak cukup');
+                redirect('kasir/tabungan');
+            } else {
+                if ($dekos == 'Y') {
+                    $this->model->inputDb2('kos', $data2);
+                    $this->model->input('pembayaran', $data);
+                    $this->model->input('tabungan', $dataTabungan);
+                    if ($admin != 0 || $admin != '') {
+                        $this->model->input('tabungan', $dataAdmin);
+                    }
+
+                    if ($this->db->affected_rows() > 0) {
+                        kirim_person($this->apiKey, $hpNo, $pesan);
+                        kirim_person($this->apiKey, $hpNo2, $pesan);
+                        $this->session->set_flashdata('ok', 'Tabungan berhasil diinput');
+                        redirect('kasir/tabungan');
+                    } else {
+                        $this->session->set_flashdata('error', 'Tabungan tidak berhasil diinput');
+                        redirect('kasir/tabungan');
+                    }
+                } else {
+                    $this->model->input('pembayaran', $data);
+                    $this->model->input('tabungan', $dataTabungan);
+                    if ($admin != 0 || $admin != '') {
+                        $this->model->input('tabungan', $dataAdmin);
+                    }
+
+                    if ($this->db->affected_rows() > 0) {
+                        kirim_person($this->apiKey, $hpNo, $pesan);
+                        kirim_person($this->apiKey, $hpNo2, $pesan);
+                        $this->session->set_flashdata('ok', 'Tabungan berhasil diinput');
+                        redirect('kasir/tabungan');
+                    } else {
+                        $this->session->set_flashdata('error', 'Tabungan tidak berhasil diinput');
+                        redirect('kasir/tabungan');
+                    }
+                }
+            }
+        } else {
+            $this->session->set_flashdata('error', 'Maaf pembayaran bulan ini sudah ada');
+            redirect('kasir/tabungan');
         }
     }
 
@@ -2214,4 +2674,176 @@ Updater : ' . $this->user . '
     //     $this->load->view('kasir/nikmus', $data);
     //     $this->load->view('kasir/foot');
     // }
+
+    public function downloadFormatTagihan()
+    {
+        force_download('vertical/assets/templates/FORM_UPLOAD_TAGIHAN_SANTRI.xlsx', null);
+    }
+
+    public function uploadTagihan()
+    {
+        // Load library dan helper
+        $this->load->helper('file');
+
+        // Konfigurasi upload file
+        $config['upload_path'] = 'vertical/assets/uploads/'; // Direktori penyimpanan file
+        $config['allowed_types'] = 'xls|xlsx'; // Jenis file yang diizinkan
+        $config['max_size'] = 10240; // Ukuran maksimum file (dalam kilobytes)
+
+        // Memuat library upload
+        $this->load->library('upload', $config);
+
+        if (!$this->upload->do_upload('file')) {
+            // Jika upload gagal, tampilkan pesan error
+            $error = $this->upload->display_errors();
+            echo $error;
+        } else {
+            // Jika upload berhasil, dapatkan informasi file
+            $data = $this->upload->data();
+            $file_path = $data['full_path'];
+            // Load file Excel menggunakan library PHPExcel
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+            $objPHPExcel = $reader->load($file_path);
+
+            // Mendapatkan data dari worksheet pertama
+            $worksheet = $objPHPExcel->getActiveSheet();
+            $highestRow = $worksheet->getHighestDataRow();
+            // $highestColumn = $worksheet->getHighestColumn();
+
+            // echo $highestRow;
+
+            // Mulai dari baris kedua (untuk melewati header)
+            for ($row = 2; $row <= $highestRow; $row++) {
+                $nis = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('L' . $row)->getValue());
+                // $briva = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('D' . $row)->getValue());
+                $nominal = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('H' . $row)->getValue());
+                $bulan = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('M' . $row)->getValue());
+                // $tahun = preg_replace('/[^\x20-\x7E]/', '', $worksheet->getCell('G' . $row)->getValue());
+
+
+                // echo $lembaga . '-' . random_int(1000, 9999) . ' ' . $kegiatan . '<br>';
+                $data = [
+                    'id_tanggungan' => $this->uuid->v4(),
+                    'nis' => $nis,
+                    'briva' => '',
+                    'nominal' => $nominal,
+                    'bulan' => $bulan,
+                    'tahun' => $this->tahun,
+                    'tgl_upload' => date('Y-m-d'),
+                    'kasir' => $this->user,
+                ];
+
+                $this->model->input('tanggungan', $data);
+            }
+
+            // Hapus file setelah selesai mengimpor
+            delete_files($file_path);
+
+            // Tampilkan pesan sukses atau lakukan redirect ke halaman lain
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('ok', 'Upload Selesai');
+                redirect('kasir/tanggungan');
+            }
+        }
+    }
+
+    public function cetakNotaTabungan($id)
+    {
+        // Ambil data nota berdasarkan ID
+        $dataNota = $this->model->getBy('tabungan', 'id_tabungan', $id)->row(); // Model yang Anda gunakan untuk mengambil data nota
+        $dataSantri = $this->model->getBy('tb_santri', 'nis', $dataNota->nis)->row(); // Model yang Anda gunakan untuk mengambil data nota
+
+        try {
+            // Tentukan IP dan port printer POS
+            $connector = new NetworkPrintConnector("192.168.0.100", 9100);
+
+            // Inisialisasi printer
+            $printer = new Printer($connector);
+            $columnLeft = 10;
+            // Mulai mencetak
+            $printer->setFont(Printer::FONT_B);
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->setTextSize(2, 2);
+            $printer->text("KWITANSI PEMBAYARAN BP\n");
+            $printer->text("\n");
+            $printer->text("Ponpes Darul Lughah Wal Karomah\n");
+            $printer->feed();
+            $printer->setTextSize(1, 1);
+            $printer->text("Jl. Mayjend Pandjaitan No.12 Kel. Sidomukti - Kraksaan - Probolinggo - Jawa Timur\n");
+            $printer->text("───────────────────────────────────────────────────────────────\n");
+            // $printer->feed();
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+
+            $printer->setTextSize(1, 1);
+            $printer->text("Tanggal : " . date('d-m-Y H:i:s') . "\n");
+            $printer->text("Kasir : $this->user\n");
+            $printer->text("Ket : Tabungan Santri\n");
+            $printer->feed();
+
+            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+            $printer->text("Diterima dari:\n");
+            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+            $printer->setTextSize(1, 1);
+            $printer->text(gabung2Kolom('No. Briva', ' : 112009488820084', 10, 38) . "\n");
+            $printer->text(gabung2Kolom('Nama', " : $dataSantri->nama", 10, 38) . "\n");
+            $printer->text(gabung2Kolom('Alamat', " : $dataSantri->desa-$dataSantri->kec-$dataSantri->kab", 10, 38) . "\n");
+            $printer->text(gabung2Kolom('Kelas', " : $dataSantri->k_formal $dataSantri->jurusan $dataSantri->t_formal", 10, 38) . "\n");
+            $printer->feed();
+            $printer->selectPrintMode(Printer::MODE_UNDERLINE);
+            $printer->text("Rincian:\n");
+            $printer->selectPrintMode(Printer::MODE_EMPHASIZED);
+            $printer->setTextSize(1, 1);
+            $printer->text(gabung2Kolom('Tgl Bayar', " : $dataNota->tanggal", 10, 38) . "\n");
+            $printer->text(gabung2Kolom('Nominal', ' : ' . rupiah($dataNota->nominal), 10, 38) . "\n");
+            $printer->text(gabung2Kolom('Penerima', " : $dataNota->kasir", 10, 38) . "\n");
+            $printer->text(gabung2Kolom('Ket', " : $dataNota->ket", 10, 38) . "\n");
+            $printer->feed();
+            $printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH | Printer::MODE_DOUBLE_HEIGHT);
+            $printer->setTextSize(1, 1);
+            $printer->text("Catatan:\n");
+            $printer->text("Bukti pembayaran ini DISIMPAN oleh wali santri sebagai bukti pembayaran Biaya Pendidikan (BP) PonPesa Darul Lughah Wal Karomah tahun pelajaran $this->tahun\n");
+            $printer->feed();
+            $printer->text("Hal-hal yang berkaitan dengan teknis keuangan dapat menghubungi Contact Person berikut\n");
+            $printer->selectPrintMode(Printer::MODE_UNDERLINE | Printer::MODE_EMPHASIZED);
+            $printer->setTextSize(1, 1);
+            $printer->text("0823-2964-1926\n");
+            $printer->feed();
+            // $printer->selectPrintMode(Printer::JUSTIFY_RIGHT);
+            $printer->text("Kraksaan, " . date('d-m-Y') . "\n");
+            $printer->feed();
+            $printer->feed();
+            $printer->feed();
+            $printer->text("Benahara Pesantren\n");
+            $printer->feed();
+
+            // $printer->setTextSize(4, 4);
+            // $printer->text("$nomor_antrian\n");
+            // $printer->setTextSize(1, 1);
+            // $printer->text("$tanggal $waktu\n");
+            // $printer->text("Harap menunggu panggilan\n");
+            // $printer->text("TERIMAKASIH\n");
+
+            // Potong kertas
+            $printer->cut();
+
+            // Tutup koneksi ke printer
+            $printer->close();
+
+            // Berikan respon sukses ke client
+            echo json_encode(['status' => 'success', 'message' => 'Nota berhasil dicetak.']);
+        } catch (Exception $e) {
+            // Jika ada kesalahan
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function getDetailSantri()
+    {
+        $nis = $_POST['nis'];
+        $data = $this->model->getBy('tb_santri', 'nis', $nis)->row();
+        echo json_encode([
+            'nama' => $data->nama,
+        ]);
+    }
 }
