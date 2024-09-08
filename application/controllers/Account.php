@@ -2527,6 +2527,8 @@ SELECT 'Talangan' AS ket, SUM(nominal) AS nominal FROM talangan WHERE tahun = '$
 UNION 
 SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$this->tahun' ")->result();
 
+		$data['tabungan'] = $this->modelAll->tabuganSantri($this->tahun);
+
 		$data['daftar'] = $this->modelAll->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->result();
 		$data['regist'] = $this->modelAll->getBySumPsb('regist', 'nominal <>', '', 'nominal')->result();
 

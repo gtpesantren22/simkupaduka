@@ -3,7 +3,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Analisis Pengeluaran</div>
+            <div class="breadcrumb-title pe-3">Analisis Pemasukan</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
@@ -38,6 +38,16 @@
                                             <td class="amount"><?= rupiah($a->nominal); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
+                                    <tr>
+                                        <td></td>
+                                        <td>Saldo Tabungan</td>
+                                        <td><?= rupiah($tabungan->total - $tabungan->pakai) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>Saldo Biaya Admin</td>
+                                        <td><?= rupiah($tabungan->biaya_admin) ?></td>
+                                    </tr>
                                 <tfoot>
                                     <tr>
                                         <th colspan="2">TOTAL</th>

@@ -62,6 +62,12 @@ class AppModel extends CI_Model
         return $penajuan + $keluar;
     }
 
+    function tabuganSantri($tahun)
+    {
+        $tabungan = $this->kasir->query("SELECT SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS total, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS pakai, SUM(CASE WHEN ket = 'Biaya admin' THEN nominal ELSE 0 END) AS biaya_admin FROM tabungan WHERE tahun = '$tahun' ")->row();
+        return $tabungan;
+    }
+
     function masuk($tahun)
     {
         // $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
@@ -75,7 +81,8 @@ class AppModel extends CI_Model
         $daftar = $this->getBySumPsb('bp_daftar', 'nominal <>', '', 'nominal')->row();
         $regist = $this->getBySumPsb('regist', 'nominal <>', '', 'nominal')->row();
         $pemasukanPSB = $this->getBySumPsb('masuk', 'nominal <>', '', 'nominal')->row();
-        $tabungan = $this->kasir->query("SELECT SUM(CASE WHEN jenis = 'masuk' THEN nominal ELSE 0 END) AS total, SUM(CASE WHEN jenis = 'keluar' THEN nominal ELSE 0 END) AS pakai, SUM(CASE WHEN ket = 'Biaya admin' THEN nominal ELSE 0 END) AS biaya_admin FROM tabungan WHERE tahun = '$tahun' ")->row();
+        $tabungan = $this->tabuganSantri($tahun);
+
         $saldoTabungan = ($tabungan->total - $tabungan->pakai) + $tabungan->biaya_admin;
 
         $masuk = $bos->jml + $pembayaran->jml +  $sumCicil->jml + $daftar->jml + $regist->jml + $talangan->jml + $pemasukanPSB->jml + $saldoTabungan;
