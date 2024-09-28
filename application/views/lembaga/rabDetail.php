@@ -113,7 +113,7 @@ if ($pesern >= 0 && $pesern <= 25) {
                                             <td><?= $no++ ?></td>
                                             <td><?= $a->kode ?></td>
                                             <td><?= $a->nama ?></td>
-                                            <td><?= $a->rencana ?></td>
+                                            <td><?= bulan($a->rencana) ?></td>
                                             <td><?= $a->qty . ' ' . $a->satuan ?></td>
                                             <td><?= rupiah($a->harga_satuan) ?></td>
                                             <td><?= rupiah($a->total) ?></td>

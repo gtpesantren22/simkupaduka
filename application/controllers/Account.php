@@ -1706,7 +1706,7 @@ ORDER BY CAST(rencana AS UNSIGNED) ASC ")->result();
 		$data['dataSpj'] = $this->model->getSPJSarpras($this->tahun)->result();
 		$data['dataSr'] = $this->db->query("SELECT * FROM spj JOIN lembaga ON spj.lembaga=lembaga.kode JOIN sarpras ON sarpras.kode_pengajuan=spj.kode_pengajuan WHERE spj.kode_pengajuan LIKE '%.SRPS.%' AND spj.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND file_spj != '' ")->result();
 
-		$data['pagu'] = 150000000;
+		$data['pagu'] = 0;
 		$data['bulan'] = $this->bulan;
 
 		$this->load->view('account/head', $data);

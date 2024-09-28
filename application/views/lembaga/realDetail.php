@@ -104,6 +104,7 @@
                                         <th>No</th>
                                         <th>Kode</th>
                                         <th>Barang/Kegiatan</th>
+                                        <th>Rencana</th>
                                         <th>Jenis</th>
                                         <th>Anggaran RAB</th>
                                         <th>Realiasasi</th>
@@ -140,6 +141,7 @@
                                             <td><a href="<?= base_url('lembaga/cekRealis/' . $r1->kode) ?>"><?= $r1->kode ?></a>
                                             </td>
                                             <td><?= $r1->nama ?></td>
+                                            <td><?= bulan($r1->rencana) ?></td>
                                             <td><?= $r1->jenis ?></td>
                                             <td><?= rupiah($r1->total) ?></td>
                                             <td><?= rupiah($rs->nom) ?></td>

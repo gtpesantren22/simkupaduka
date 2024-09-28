@@ -80,6 +80,7 @@ if ($pesern >= 0 && $pesern <= 25) {
                                             <th>No</th>
                                             <th>Kode</th>
                                             <th>Barang/Kegiatan</th>
+                                            <th>Rencana</th>
                                             <th>QTY</th>
                                             <th>Harga Satuan</th>
                                             <th>Total</th>
@@ -103,6 +104,7 @@ if ($pesern >= 0 && $pesern <= 25) {
                                                 <td><?= $no++; ?></td>
                                                 <td><?= $r1->kode ?></td>
                                                 <td><?= $r1->nama ?></td>
+                                                <td><?= bulan($r1->rencana) ?></td>
                                                 <td><?= $r1->qty ?></td>
                                                 <td><?= rupiah($r1->harga_satuan) ?></td>
                                                 <td><?= rupiah($r1->total) ?></td>
@@ -228,8 +230,8 @@ if ($pesern >= 0 && $pesern <= 25) {
                                                     <!-- <th>No</th> -->
                                                     <th>Kode</th>
                                                     <th>Barang/Kegiatan</th>
+                                                    <th>Bln</th>
                                                     <th>QTY</th>
-                                                    <!-- <th>Harga Satuan</th> -->
                                                     <th>Total</th>
                                                     <td>#</td>
                                                 </tr>
@@ -241,6 +243,7 @@ if ($pesern >= 0 && $pesern <= 25) {
                                                         <!-- <td><?= $no++; ?></td> -->
                                                         <td><?= $r1->kode ?></td>
                                                         <td><?= $r1->nama ?></td>
+                                                        <td><?= $r1->rencana ?></td>
                                                         <td><?= $r1->qty . ' x ' . number_format($r1->harga_satuan) ?></td>
                                                         <!-- <td><?= rupiah($r1->harga_satuan) ?></td> -->
                                                         <td><?= number_format($r1->total) ?></td>

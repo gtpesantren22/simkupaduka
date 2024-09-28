@@ -1397,7 +1397,7 @@ Terimakasih';
 		$data['bulan'] = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 		$data['pj'] = $this->db->query("SELECT * FROM sarpras WHERE tahun = '$this->tahun' ORDER BY tanggal DESC LIMIT 1")->row();
 		$data['pakai'] = $this->db->query("SELECT SUM(qty*harga_satuan) AS jml FROM sarpras_detail WHERE tahun = '$this->tahun' ")->row();
-		$data['pagu'] = 150000000;
+		$data['pagu'] = 0;
 
 		$this->load->view('lembaga/head', $data);
 		$this->load->view('lembaga/sarpras', $data);
