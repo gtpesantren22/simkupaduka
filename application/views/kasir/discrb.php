@@ -122,7 +122,7 @@
                                         <?php
                                         for ($i = 1; $i <= 12; $i++) {
                                             $tnn = $tgn->ju_ap;
-                                            if ($i == 5 || $i == 6) {
+                                            if ($i == 6) {
                                                 $tnnOk = $tgn->me_ju;
                                             } else {
                                                 $tnnOk = $tnn;

@@ -691,7 +691,7 @@ Terimakasih';
         $data['mts'] = $this->model->getByDb3('mutasi', 'nis', $nis)->row();
         $data['rc_byar'] = $this->model->getBy2('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
 
-        if (date('m', strtotime($data['mts']->tgl_mutasi)) == 5 || date('m', strtotime($data['mts']->tgl_mutasi)) == 6) {
+        if (date('m', strtotime($data['mts']->tgl_mutasi)) == 6) {
             $data['tgbyr'] = $data['rc_byar']->me_ju;
             $data['dekos'] = 0;
         } else {
