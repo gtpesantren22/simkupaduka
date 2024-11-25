@@ -6,7 +6,8 @@ class LembagaModel extends CI_Model
 
     public function __construct()
     {
-        // $this->table = 'rab_sm24';
+        parent::__construct();
+        $this->flat = $this->load->database('flat', true);
     }
 
     function apikey()
@@ -187,5 +188,91 @@ class LembagaModel extends CI_Model
         $this->db->where($where1, $dtwhere1);
         $this->db->where($where2, $dtwhere2);
         return $this->db->get();
+    }
+
+    function flat_getBy($table, $where, $dtwhere)
+    {
+        $this->flat->where($where, $dtwhere);
+        return $this->flat->get($table);
+    }
+    function flat_getBy2($table, $where, $dtwhere, $where2, $dtwhere2)
+    {
+        $this->flat->where($where, $dtwhere);
+        $this->flat->where($where2, $dtwhere2);
+        return $this->flat->get($table);
+    }
+    function flat_getBy2Ord($table, $where, $dtwhere, $where2, $dtwhere2, $ord, $sort)
+    {
+        $this->flat->where($where, $dtwhere);
+        $this->flat->where($where2, $dtwhere2);
+        $this->flat->order_by($ord, $sort);
+        return $this->flat->get($table);
+    }
+    function flat_getData($table)
+    {
+        return $this->flat->get($table);
+    }
+    function getHonor()
+    {
+        $this->flat->from('honor');
+        $this->flat->group_by('honor_id');
+        $this->flat->order_by('tahun', 'DESC');
+        $this->flat->order_by('bulan', 'DESC');
+        return $this->flat->get();
+    }
+    function getPotongan()
+    {
+        $this->flat->from('potongan');
+        $this->flat->group_by('potongan_id');
+        $this->flat->order_by('tahun', 'DESC');
+        $this->flat->order_by('bulan', 'DESC');
+        return $this->flat->get();
+    }
+    function getHonorRinci($id, $lembaga)
+    {
+        $this->flat->select('honor.*, guru.nama, guru.santri');
+        $this->flat->from('honor');
+        $this->flat->join('guru', 'honor.guru_id=guru.guru_id');
+        $this->flat->where('guru.satminkal', $lembaga);
+        $this->flat->where('honor_id', $id);
+        $this->flat->order_by('guru.nama', 'ASC');
+        return $this->flat->get();
+    }
+    function getPotonganRinci($id, $lembaga)
+    {
+        $this->flat->select('potongan.*, guru.nama, SUM(nominal) as total');
+        $this->flat->from('potongan');
+        $this->flat->join('guru', 'potongan.guru_id=guru.guru_id');
+        $this->flat->where('guru.satminkal', $lembaga);
+        $this->flat->where('potongan_id', $id);
+        $this->flat->group_by('guru.guru_id', $id);
+        $this->flat->order_by('guru.nama', 'ASC');
+        return $this->flat->get();
+    }
+    public function flat_edit($table, $data, $where, $dtwhere)
+    {
+        $this->flat->where($where, $dtwhere);
+        $this->flat->update($table, $data);
+        return $this->flat->affected_rows();
+    }
+    function flat_input($tbl, $data)
+    {
+        $this->flat->insert($tbl, $data);
+        return $this->flat->affected_rows();
+    }
+    public function flat_delete($table, $where, $dtwhere)
+    {
+        $this->flat->where($where, $dtwhere);
+        $this->flat->delete($table);
+        return $this->flat->affected_rows();
+    }
+
+    public function flat_totoalPotongan($potonganID, $guruID)
+    {
+        $this->flat->select('SUM(nominal) as total');
+        $this->flat->where('potongan_id', $potonganID);
+        $this->flat->where('guru_id', $guruID);
+        $this->flat->from('potongan');
+        return $this->flat->get();
     }
 }

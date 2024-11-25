@@ -128,6 +128,20 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         </a>
                     </li>
                 <?php endif;  ?>
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-shopping-bag'></i>
+                        </div>
+                        <div class="menu-title">Gaji/Honor</div>
+                    </a>
+                    <ul>
+                        <li> <a href="<?= base_url('honor/jamkerja'); ?>"><i class="bx bx-right-arrow-alt"></i>Input Jam (PTTY)</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('honor/potongan'); ?>"><i class="bx bx-right-arrow-alt"></i>Input Potongan</a>
+                        </li>
+                    </ul>
+                </li>
                 <li class="menu-label">AddOn</li>
                 <li>
                     <a href="<?= base_url('lembaga/info'); ?>">
