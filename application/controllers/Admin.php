@@ -90,6 +90,7 @@ class Admin extends CI_Controller
 	{
 		$where =  $this->input->post('id', true);
 		$data = [
+			'briva' => $this->input->post('briva', true),
 			'ju_ap' => rmRp($this->input->post('ju_ap', true)),
 			'me_ju' => rmRp($this->input->post('me_ju', true)),
 			'total' => (rmRp($this->input->post('me_ju', true)) * 2) + (rmRp($this->input->post('ju_ap', true)) * 10)
@@ -2080,9 +2081,7 @@ Updater : ' . $this->user . '
 		}
 	}
 
-	public function mutasi()
-	{
-	}
+	public function mutasi() {}
 
 	public function honor()
 	{
