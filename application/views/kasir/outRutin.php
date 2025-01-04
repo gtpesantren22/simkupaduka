@@ -77,6 +77,7 @@
                                             <td><?= $a->ket ?></td>
                                             <td>
                                                 <a href="<?= 'delOutRutin/' . $a->id_pengeluaran_rutin; ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
+                                                <button data-id="<?= $a->id_pengeluaran_rutin ?>" data-lembaga="<?= $a->lembaga ?>" data-bidang="<?= $a->bidang ?>" data-langganan="<?= $a->langganan ?>" data-tanggal="<?= $a->tanggal ?>" data-nominal="<?= $a->nominal ?>" data-ket="<?= $a->ket ?>" class="btn btn-warning btn-sm btn-edit"><i class="bx bx-edit"></i></button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -105,8 +106,8 @@
                     <label for="">Lembaga</label>
                     <select name="lembaga" class="form-select" required>
                         <option value=""> pilih lembaga</option>
-                        <?php foreach ($lembaga as $lembaga) : ?>
-                            <option value="<?= $lembaga->kode ?>"><?= $lembaga->nama ?></option>
+                        <?php foreach ($lembaga as $lm) : ?>
+                            <option value="<?= $lm->kode ?>"><?= $lm->nama ?></option>
                         <?php endforeach ?>
                     </select>
                 </div>
@@ -114,8 +115,8 @@
                     <label for="">Bidang</label>
                     <select name="bidang" class="form-select" required>
                         <option value=""> pilih bidang</option>
-                        <?php foreach ($bidang as $bidang) : ?>
-                            <option value="<?= $bidang->kode ?>"><?= $bidang->nama ?></option>
+                        <?php foreach ($bidang as $bd) : ?>
+                            <option value="<?= $bd->kode ?>"><?= $bd->nama ?></option>
                         <?php endforeach ?>
                     </select>
                 </div>
@@ -149,3 +150,87 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Lembaga</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <?= form_open('kasir/editOutRutin'); ?>
+            <input type="hidden" id="id" name="id_out">
+            <div class="modal-body">
+                <div class="form-group mb-2">
+                    <label for="">Lembaga</label>
+                    <select name="lembaga" id="lembagas" class="form-select" required>
+                        <option value=""> pilih lembaga</option>
+                        <?php foreach ($lembaga2 as $lembaga) : ?>
+                            <option value="<?= $lembaga->kode ?>"><?= $lembaga->nama ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Bidang</label>
+                    <select name="bidang" id="bidang" class="form-select" required>
+                        <option value=""> pilih bidang</option>
+                        <?php foreach ($bidang as $bidang) : ?>
+                            <option value="<?= $bidang->kode ?>"><?= $bidang->nama ?></option>
+                        <?php endforeach ?>
+                    </select>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Langganan</label>
+                    <select name="langganan" id="langganan" class="form-select" required>
+                        <option value=""> pilih lembaga</option>
+                        <option value="LISTRIK"> LISTRIK</option>
+                        <option value="INTERNET"> INTERNET/WIFI</option>
+                        <option value="HONOR"> HONOR</option>
+                    </select>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Tanggal</label>
+                    <input type="text" name="tanggal" id="date" class="form-control tanggal-edit" required>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Nominal</label>
+                    <input type="text" name="nominal" id="nominal" class="form-control uang" required>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Ket</label>
+                    <input type="text" name="ket" id="ket" class="form-control" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Data</button>
+            </div>
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>
+
+<script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
+
+<script>
+    $('.btn-edit').on('click', function(e) {
+        var id = $(this).data('id');
+        var lembaga = $(this).data('lembaga');
+        var bidang = $(this).data('bidang');
+        var langganan = $(this).data('langganan');
+        var tanggal = $(this).data('tanggal');
+        var nominal = $(this).data('nominal');
+        var ket = $(this).data('ket');
+
+        $('#id').val(id);
+        $('#lembagas').val(lembaga).change();
+        $('#bidang').val(bidang).change();
+        $('#langganan').val(langganan).change();
+        $('.tanggal-edit').val(tanggal);
+        $('#nominal').val(nominal);
+        $('#ket').val(ket);
+
+        $('#modal-edit').modal('show')
+
+    })
+</script>

@@ -1603,6 +1603,7 @@ Bendahara PPDWK
         $data['sumData'] = $this->model->getBySum('pengeluaran_rutin', 'tahun', $data['tahun'], 'nominal')->row();
 
         $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
+        $data['lembaga2'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
         $data['bidang'] = $this->model->getBy('bidang', 'tahun', $data['tahun'])->result();
 
 
@@ -1632,6 +1633,28 @@ Bendahara PPDWK
             redirect('kasir/outRutin');
         } else {
             $this->session->set_flashdata('error', 'Input data gagal');
+            redirect('kasir/outRutin');
+        }
+    }
+
+    public function editOutRutin()
+    {
+        $id = $this->input->post('id_out', 'true');
+        $data = [
+            "langganan" => $this->input->post('langganan', true),
+            "lembaga" => $this->input->post('lembaga', true),
+            "bidang" => $this->input->post('bidang', true),
+            "ket" => $this->input->post('ket', true),
+            "nominal" => rmRp($this->input->post('nominal', true)),
+            "tanggal" => $this->input->post('tanggal', true),
+        ];
+
+        $this->model->update('pengeluaran_rutin', $data, 'id_pengeluaran_rutin', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Update data sukses');
+            redirect('kasir/outRutin');
+        } else {
+            $this->session->set_flashdata('error', 'Update data gagal');
             redirect('kasir/outRutin');
         }
     }
