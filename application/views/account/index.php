@@ -1,6 +1,16 @@
 <div class="flash-data" data-flashdata="<?= $this->session->flashdata('ok') ?>"></div>
 <div class="flash-data-error" data-flashdata="<?= $this->session->flashdata('error') ?>"></div>
 
+<style>
+    #content-hide {
+        display: none;
+    }
+
+    i {
+        cursor: pointer;
+    }
+</style>
+
 <!--start page wrapper -->
 <div class="page-wrapper">
     <div class="page-content">
@@ -47,7 +57,7 @@
                                 <p class="mb-0 font-13">Saldo bendahara tahun ini</p>
                             </div>
                             <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
-                                <i class='bx bxs-bar-chart-alt-2'></i>
+                                <i id="toggleIcon" class='bx bxs-bar-chart-alt-2'></i>
                             </div>
                         </div>
                     </div>
@@ -57,73 +67,75 @@
         <!--end row-->
 
         <div class="row">
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div>
-                            <h5 class="card-title">Saldo Bank</h5>
-                        </div>
-                        <div class="col">
-                            <div class="p-0 border border-3 border-success text-center text-danger rounded bg-light">
-                                <?php foreach ($saldo->result() as $data) : ?>
-                                    <h2><?= rupiah($data->nominal) ?></h2>
-                                    Update : <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
-                                <?php endforeach; ?>
+            <div id="content-hide">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                <h5 class="card-title">Saldo Bank</h5>
                             </div>
+                            <div class="col">
+                                <div class="p-0 border border-3 border-success text-center text-danger rounded bg-light">
+                                    <?php foreach ($saldo->result() as $data) : ?>
+                                        <h2><?= rupiah($data->nominal) ?></h2>
+                                        Update : <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
+                                    <?php endforeach; ?>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div>
-                            <h5 class="card-title">Saldo Cash</h5>
-                        </div>
-                        <div class="col">
-                            <div class="p-0 border border-3 border-primary text-center text-danger rounded bg-light">
-                                <?php foreach ($cash->result() as $data) : ?>
-                                    <h2><?= rupiah($data->nominal) ?></h2>
-                                    <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
-                                <?php endforeach; ?>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                <h5 class="card-title">Saldo Cash</h5>
                             </div>
+                            <div class="col">
+                                <div class="p-0 border border-3 border-primary text-center text-danger rounded bg-light">
+                                    <?php foreach ($cash->result() as $data) : ?>
+                                        <h2><?= rupiah($data->nominal) ?></h2>
+                                        <i class="bx bx-calendar"></i><?= date('d-M-Y', strtotime($data->last)) ?> <i class="bx bx-time"></i><?= date('H:i:s', strtotime($data->last)) ?>
+                                    <?php endforeach; ?>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-body">
-                        <div>
-                            <h5 class="card-title">Dana Cadangan</h5>
-                        </div>
-                        <div class="col">
-                            <div class="p-0 border border-3 border-warning text-center text-danger rounded bg-light">
-                                <h2><?= rupiah($cadangan) ?></h2>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                <h5 class="card-title">Dana Cadangan</h5>
                             </div>
+                            <div class="col">
+                                <div class="p-0 border border-3 border-warning text-center text-danger rounded bg-light">
+                                    <h2><?= rupiah($cadangan) ?></h2>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div>
-                            <!-- <h5 class="card-title">Selisih Saldo</h5> -->
-                        </div>
-                        <div class="col">
-                            <center>
-                                <strong style="color: #FC6A83;">(Saldo Bank + Saldo Tunai) <?= rupiah($saldo->row('nominal') + $cash->row('nominal')) ?></strong>
-                            </center>
-                            <div class="p-1 border border-1 text-center border-success rounded bg-light mb-1 mt-1">
-                                <strong>Selisih = (Saldo Bank + Saldo Tunai) - Saldo Sistem </strong><br>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div>
+                                <!-- <h5 class="card-title">Selisih Saldo</h5> -->
                             </div>
-                            <center>
-                                <h4><strong><?= rupiah(($saldo->row('nominal') + $cash->row('nominal')) - ($masuk - $keluar)) ?></strong></h4>
-                            </center>
+                            <div class="col">
+                                <center>
+                                    <strong style="color: #FC6A83;">(Saldo Bank + Saldo Tunai) <?= rupiah($saldo->row('nominal') + $cash->row('nominal')) ?></strong>
+                                </center>
+                                <div class="p-1 border border-1 text-center border-success rounded bg-light mb-1 mt-1">
+                                    <strong>Selisih = (Saldo Bank + Saldo Tunai) - Saldo Sistem </strong><br>
+                                </div>
+                                <center>
+                                    <h4><strong><?= rupiah(($saldo->row('nominal') + $cash->row('nominal')) - ($masuk - $keluar)) ?></strong></h4>
+                                </center>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -363,5 +375,21 @@
         <?php if ($pjnData->num_rows() > 0 || $spjData->num_rows() > 0 || $pakData->num_rows() > 0) { ?>
             $('.modalInfo').modal('show');
         <?php } ?>
+    });
+</script>
+<script>
+    // Ambil elemen <i> dan elemen target
+    const toggleIcon = document.getElementById('toggleIcon');
+    const content = document.getElementById('content-hide');
+
+    // Tambahkan event listener ke elemen <i>
+    toggleIcon.addEventListener('click', () => {
+        if (content.style.display === 'none') {
+            content.style.display = 'block'; // Tampilkan konten
+            // toggleIcon.textContent = '🙈'; // Ubah ikon
+        } else {
+            content.style.display = 'none'; // Sembunyikan konten
+            // toggleIcon.textContent = '👁️'; // Ubah ikon kembali
+        }
     });
 </script>
