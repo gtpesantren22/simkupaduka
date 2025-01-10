@@ -4,7 +4,7 @@
 <!--start page wrapper -->
 <div class="page-wrapper">
     <div class="page-content">
-        <div class="row ">
+        <!-- <div class="row ">
             <div class="col">
                 <div class="card radius-10 border-start border-0 border-3 border-info">
                     <div class="card-body">
@@ -52,12 +52,12 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!--end row-->
 
 
         <div class="row">
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
                         <div>
@@ -74,8 +74,8 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
+            </div> -->
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-body">
                         <div>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <!-- <div class="col-md-4">
                 <div class="card">
                     <div class="card-body">
                         <div>
@@ -117,7 +117,6 @@
                 <div class="card">
                     <div class="card-body">
                         <div>
-                            <!-- <h5 class="card-title">Selisih Saldo</h5> -->
                         </div>
                         <div class="col">
                             <center>
@@ -132,7 +131,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <div class="row">
