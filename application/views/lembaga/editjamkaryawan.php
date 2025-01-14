@@ -6,7 +6,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Jam Kerja Guru (PTTY)</div>
+            <div class="breadcrumb-title pe-3">Input Jam Kerja Karyawan</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
@@ -28,18 +28,25 @@
                                     <tr style="color: white; background-color: #008CFF; font-weight: bold;">
                                         <th>No</th>
                                         <th>Bulan</th>
-                                        <th>#</th>
+                                        <th>Nama</th>
+                                        <th>Ket</th>
+                                        <th>Jml Jam</th>
+                                        <th>Hasil</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
                                     foreach ($data as $ls_jns) :
+                                        $nom = $ls_jns->santri == 'santri' ? $ls_jns->kehadiran * 7000 : $ls_jns->kehadiran * 12000;
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
-                                            <td><?= bulan($ls_jns->bulan) . ' ' . $ls_jns->tahun ?></td>
-                                            <td><a href="<?= base_url('honor/editJam/' . $ls_jns->honor_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Jam</button></a></td>
+                                            <td><?= bulan($ls_jns->bulan) . ' ' . $ls_jns->tahun; ?></td>
+                                            <td><?= $ls_jns->nama; ?></td>
+                                            <td><?= $ls_jns->santri; ?></td>
+                                            <td><input type="text" class="form-control form-input" data-id="<?= $ls_jns->id ?>" value="<?= $ls_jns->kehadiran ?>"></td>
+                                            <td><b id="hasil-honor-<?= $ls_jns->id ?>"><?= $ls_jns->kehadiran ?> jam</b></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -53,3 +60,32 @@
     </div>
 </div>
 <!--end page wrapper -->
+<script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
+<script>
+    $('#example').on('change', '.form-input', function() {
+        var newValue = $(this).val(); // nilai baru dari input
+        var id = $(this).data('id'); // id dari baris data
+
+        $.ajax({
+            url: '<?= base_url("honor/updateJamKaryawan") ?>', // endpoint untuk update data
+            type: 'POST',
+            data: {
+                id: id,
+                value: newValue
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status == 'ok') {
+                    $(this).val(newValue);
+                    $(`#hasil-honor-${id}`).text(response.besaran + ` jam`);
+                    // alert(response.isi)
+                } else {
+                    alert('Gagal mengupdate data');
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan saat mengupdate data');
+            }
+        });
+    });
+</script>

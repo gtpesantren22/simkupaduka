@@ -22,8 +22,6 @@ class Honor extends CI_Controller
         if ((!$this->Auth_model->current_user() && $user->level != 'lembaga') || (!$this->Auth_model->current_user() && $user->level != 'admin')) {
             redirect('login/logout');
         }
-        $this->honor_santri = 7000;
-        $this->honor_non = 14000;
     }
 
     public function jamkerja()
@@ -35,6 +33,17 @@ class Honor extends CI_Controller
 
         $this->load->view('lembaga/head', $data);
         $this->load->view('lembaga/jamkerja', $data);
+        $this->load->view('lembaga/foot', $data);
+    }
+    public function jamkaryawan()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $data['data'] = $this->model->getKehadiran()->result();
+
+        $this->load->view('lembaga/head', $data);
+        $this->load->view('lembaga/jamkaryawan', $data);
         $this->load->view('lembaga/foot', $data);
     }
 
@@ -52,6 +61,20 @@ class Honor extends CI_Controller
         $this->load->view('lembaga/editjamkerja', $data);
         $this->load->view('lembaga/foot', $data);
     }
+    public function editJamKehadiran($id)
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+
+        $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $data['data'] = $this->model->getKehadiranRinci($id, $lembaga->satminkal)->result();
+
+        // echo $lembaga->satminkal . '<br>' . $id;
+        // var_dump($data['data']);
+        $this->load->view('lembaga/head', $data);
+        $this->load->view('lembaga/editjamkaryawan', $data);
+        $this->load->view('lembaga/foot', $data);
+    }
 
     public function updateJam()
     {
@@ -62,6 +85,22 @@ class Honor extends CI_Controller
         $guru = $this->model->flat_getBy('guru', 'guru_id', $dtlHonor->guru_id)->row();
 
         $this->model->flat_edit('honor', ['kehadiran' => $value], 'id', $id);
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'ok', 'besaran' => $value]);
+        } else {
+            echo json_encode(['status' => 'gagal']);
+        }
+        // echo json_encode(['status' => 'ok', 'isi' => $guru->santri]);
+    }
+    public function updateJamKaryawan()
+    {
+        $id = $this->input->post('id', true);
+        $value = $this->input->post('value', true);
+
+        $dtlHonor = $this->model->flat_getBy('kehadiran', 'id', $id)->row();
+        // $guru = $this->model->flat_getBy('guru', 'guru_id', $dtlHonor->guru_id)->row();
+
+        $this->model->flat_edit('kehadiran', ['kehadiran' => $value], 'id', $id);
         if ($this->db->affected_rows() > 0) {
             echo json_encode(['status' => 'ok', 'besaran' => $value]);
         } else {

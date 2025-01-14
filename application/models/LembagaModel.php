@@ -220,6 +220,14 @@ class LembagaModel extends CI_Model
         $this->flat->order_by('bulan', 'DESC');
         return $this->flat->get();
     }
+    function getKehadiran()
+    {
+        $this->flat->from('kehadiran');
+        $this->flat->group_by('kehadiran_id');
+        $this->flat->order_by('tahun', 'DESC');
+        $this->flat->order_by('bulan', 'DESC');
+        return $this->flat->get();
+    }
     function getPotongan()
     {
         $this->flat->from('potongan');
@@ -235,6 +243,16 @@ class LembagaModel extends CI_Model
         $this->flat->join('guru', 'honor.guru_id=guru.guru_id');
         $this->flat->where('guru.satminkal', $lembaga);
         $this->flat->where('honor_id', $id);
+        $this->flat->order_by('guru.nama', 'ASC');
+        return $this->flat->get();
+    }
+    function getKehadiranRinci($id, $lembaga)
+    {
+        $this->flat->select('kehadiran.*, guru.nama, guru.santri');
+        $this->flat->from('kehadiran');
+        $this->flat->join('guru', 'kehadiran.guru_id=guru.guru_id');
+        $this->flat->where('guru.satminkal', $lembaga);
+        $this->flat->where('kehadiran_id', $id);
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
     }

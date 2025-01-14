@@ -135,7 +135,11 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <div class="menu-title">Gaji/Honor</div>
                     </a>
                     <ul>
-                        <li> <a href="<?= base_url('honor/jamkerja'); ?>"><i class="bx bx-right-arrow-alt"></i>Input Jam (PTTY)</a>
+                        <li>
+                            <a href="<?= base_url('honor/jamkerja'); ?>"><i class="bx bx-right-arrow-alt"></i>Input Jam (PTTY)</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('honor/jamkaryawan'); ?>"><i class="bx bx-right-arrow-alt"></i>Input Jam (Karyawan)</a>
                         </li>
                         <li>
                             <a href="<?= base_url('honor/potongan'); ?>"><i class="bx bx-right-arrow-alt"></i>Input Potongan</a>

@@ -6,7 +6,7 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Jam Kerja Guru (PTTY)</div>
+            <div class="breadcrumb-title pe-3">Jam Kerja Karyawan</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
@@ -39,7 +39,7 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td><?= bulan($ls_jns->bulan) . ' ' . $ls_jns->tahun ?></td>
-                                            <td><a href="<?= base_url('honor/editJam/' . $ls_jns->honor_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Jam</button></a></td>
+                                            <td><a href="<?= base_url('honor/editJamKehadiran/' . $ls_jns->kehadiran_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Jam</button></a></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
