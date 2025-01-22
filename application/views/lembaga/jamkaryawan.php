@@ -39,7 +39,7 @@
                                         <tr>
                                             <td><?= $no++; ?></td>
                                             <td><?= bulan($ls_jns->bulan) . ' ' . $ls_jns->tahun ?></td>
-                                            <td><a href="<?= base_url('honor/editJamKehadiran/' . $ls_jns->kehadiran_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Jam</button></a></td>
+                                            <td><a href="<?= base_url('honor/editJamKehadiran/' . $ls_jns->kehadiran_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Kehadiran</button></a></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
