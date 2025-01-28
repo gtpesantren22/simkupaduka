@@ -201,6 +201,13 @@ class LembagaModel extends CI_Model
         $this->flat->where($where2, $dtwhere2);
         return $this->flat->get($table);
     }
+    function flat_getBy3($table, $where, $dtwhere, $where2, $dtwhere2, $where3, $dtwhere3)
+    {
+        $this->flat->where($where, $dtwhere);
+        $this->flat->where($where2, $dtwhere2);
+        $this->flat->where($where3, $dtwhere3);
+        return $this->flat->get($table);
+    }
     function flat_getBy2Ord($table, $where, $dtwhere, $where2, $dtwhere2, $ord, $sort)
     {
         $this->flat->where($where, $dtwhere);
@@ -241,7 +248,7 @@ class LembagaModel extends CI_Model
         $this->flat->select('honor.*, guru.nama, guru.santri');
         $this->flat->from('honor');
         $this->flat->join('guru', 'honor.guru_id=guru.guru_id');
-        $this->flat->where('guru.satminkal', $lembaga);
+        $this->flat->where('honor.lembaga', $lembaga);
         $this->flat->where('honor_id', $id);
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
@@ -291,6 +298,17 @@ class LembagaModel extends CI_Model
         $this->flat->where('potongan_id', $potonganID);
         $this->flat->where('guru_id', $guruID);
         $this->flat->from('potongan');
+        return $this->flat->get();
+    }
+
+    public function allPtty($lembaga)
+    {
+        $this->flat->select('guru_id, guru.nama AS nama, satminkal.nama AS lembaga');
+        $this->flat->from('guru');
+        $this->flat->join('satminkal', 'guru.satminkal=satminkal.id');
+        $this->flat->where('satminkal !=', $lembaga);
+        $this->flat->where('sik', 'PTTY');
+        $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
     }
 }

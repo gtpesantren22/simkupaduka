@@ -51,12 +51,36 @@ class Honor extends CI_Controller
     {
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
+        $data['lembaga'] = $this->lembaga;
 
         $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
-        $data['data'] = $this->model->getHonorRinci($id, $lembaga->satminkal)->result();
+        $data['ptty'] = $this->model->allPtty($lembaga->satminkal)->result();
+        $data['honor'] = $this->model->flat_getBy('honor', 'honor_id', $id)->row();
 
-        // echo $lembaga->satminkal . '<br>' . $id;
-        // var_dump($data['data']);
+        $datas = $this->model->getHonorRinci($id, $lembaga->satminkal)->result();
+        $datakirim = [];
+        foreach ($datas as $datai) {
+            $guru = $this->model->flat_getBy('guru', 'guru_id', $datai->guru_id)->row();
+            $datakirim[] = [
+                'bulan' => $datai->bulan,
+                'tahun' => $datai->tahun,
+                'nama' => $datai->nama,
+                'santri' => $datai->santri,
+                'id' => $datai->id,
+                'kehadiran' => $datai->kehadiran,
+                'lembaga' => $lembaga->satminkal,
+                'asal' => $guru->satminkal,
+            ];
+        }
+
+        $data['data'] = $datakirim;
+
+        // echo "<pre>";
+        // print_r($datakirim);
+        // echo "</pre>";
+        // die();
+
+
         $this->load->view('lembaga/head', $data);
         $this->load->view('lembaga/editjamkerja', $data);
         $this->load->view('lembaga/foot', $data);
@@ -90,7 +114,6 @@ class Honor extends CI_Controller
         } else {
             echo json_encode(['status' => 'gagal']);
         }
-        // echo json_encode(['status' => 'ok', 'isi' => $guru->santri]);
     }
     public function updateJamKaryawan()
     {
@@ -227,5 +250,50 @@ class Honor extends CI_Controller
         $hasil = $this->model->flat_totoalPotongan($data->potongan_id, $data->guru_id)->row();
         echo json_encode(['status' => 'success', 'data' => $hasil->total, 'id' => $id]);
         // echo json_encode(['status' => 'success', 'id' => $id]);
+    }
+
+    public  function addPtty()
+    {
+        $honor_id = $this->input->post('honor_id', true);
+        // $lembaga = $this->input->post('lembaga', true);
+        $guru_id = $this->input->post('guru_id', true);
+        $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+
+        $cek = $this->model->flat_getBy3('honor', 'honor_id', $honor_id, 'lembaga', $lembaga->satminkal, 'guru_id', $guru_id)->row();
+        if ($cek) {
+            $this->session->set_flashdata('error', 'Data sudah ada');
+            redirect('honor/editJam/' . $this->input->post('honor_id', true));
+        } else {
+            $datas = [
+                'honor_id' => $honor_id,
+                'lembaga' => $lembaga->satminkal,
+                'guru_id' => $guru_id,
+                'bulan' => $this->input->post('bulan', true),
+                'tahun' => $this->input->post('tahun', true),
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            $this->model->flat_input('honor', $datas);
+            if ($this->db->affected_rows() > 0) {
+                $this->session->set_flashdata('ok', 'Data berhasil ditambahkan');
+                redirect('honor/editJam/' . $this->input->post('honor_id', true));
+            } else {
+                $this->session->set_flashdata('error', 'Data gagal ditambahkan');
+                redirect('honor/editJam/' . $this->input->post('honor_id', true));
+            }
+        }
+    }
+
+    public function delPtty($id)
+    {
+        $data = $this->model->flat_getBy('honor', 'id', $id)->row();
+        $this->model->flat_delete('honor', 'id', $id);
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Data berhasil dihapus');
+            redirect('honor/editJam/' . $data->honor_id);
+        } else {
+            $this->session->set_flashdata('error', 'Data gagal dihapus');
+            redirect('honor/editJam/' . $data->honor_id);
+        }
     }
 }
