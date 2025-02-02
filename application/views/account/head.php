@@ -92,6 +92,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     </a>
                     <ul>
                         <li><a href="<?= base_url('account/bos'); ?>"><i class="bx bx-right-arrow-alt"></i>Pemasukan BOS</a></li>
+                        <li><a href="<?= base_url('account/bungaBank'); ?>"><i class="bx bx-right-arrow-alt"></i>Bunga Bank</a></li>
                         <li><a href="<?= base_url('account/bpMasuk'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya Pendidikan</a></li>
                         <li><a href="<?= base_url('account/talangan'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Talangan</a></li>
                     </ul>

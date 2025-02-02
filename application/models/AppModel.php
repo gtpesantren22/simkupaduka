@@ -73,6 +73,7 @@ class AppModel extends CI_Model
         // $realSisa = $this->getBySum('real_sisa', 'tahun', $tahun, 'sisa')->row();
         // $pesantren = $this->getBySum('pesantren', 'tahun', $tahun, 'nominal')->row();
         // $cadangan = $this->getBySum('cadangan', 'tahun', $tahun, 'nominal')->row();
+        $bunga = $this->getBySum('bunga_bank', 'tahun', $tahun, 'nominal')->row();
         $pembayaran = $this->getBySum('pembayaran', 'tahun', $tahun, 'nominal')->row();
         $bos = $this->getBySum('bos', 'tahun', $tahun, 'nominal')->row();
         $talangan = $this->getBySum('talangan', 'tahun', $tahun, 'nominal')->row();
@@ -85,7 +86,7 @@ class AppModel extends CI_Model
 
         $saldoTabungan = ($tabungan->total - $tabungan->pakai) + $tabungan->biaya_admin;
 
-        $masuk = $bos->jml + $pembayaran->jml +  $sumCicil->jml + $daftar->jml + $regist->jml + $talangan->jml + $pemasukanPSB->jml + $saldoTabungan;
+        $masuk = $bos->jml + $pembayaran->jml +  $sumCicil->jml + $daftar->jml + $regist->jml + $talangan->jml + $pemasukanPSB->jml + $saldoTabungan + $bunga->jml;
         // $masuk = $bos->jml + $pembayaran->jml + $pesantren->jml + $sumCicil->jml + $realSisa->jml + $cadangan->jml + $daftar->jml + $regist->jml + $talangan->jml;
 
         return $masuk;

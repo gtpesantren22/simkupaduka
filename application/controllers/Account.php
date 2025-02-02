@@ -2567,4 +2567,74 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 			redirect($rdrc);
 		}
 	}
+
+	public function bungaBank()
+	{
+		$data['data'] = $this->model->getBy('bunga_bank', 'tahun', $this->tahun)->result();
+		$data['sum'] = $this->model->selectSum('bunga_bank', 'nominal', 'tahun', $this->tahun)->row();
+		$data['tahunData'] = $this->model->getAll('tahun')->result();
+
+		$data['user'] = $this->Auth_model->current_user();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+		$data['tahun'] = $this->tahun;
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/bungaBank', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function bungaAdd()
+	{
+		$data = [
+			'tanggal' => $this->input->post('tanggal', true),
+			'nominal' => rmRp($this->input->post('nominal', true)),
+			'ket' => $this->input->post('ket', true),
+			'bulan' => $this->input->post('bulan', true),
+			'tahun' => $this->input->post('tahun', true),
+			'kasir' => $this->user,
+			'at' => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('bunga_bank', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Input Pemasukan Bunga Bank Berhasil');
+			redirect('account/bungaBank');
+		} else {
+			$this->session->set_flashdata('error', 'Input Pemasukan Bunga Bank Gagal');
+			redirect('account/bungaBank');
+		}
+	}
+	public function bungaEdit()
+	{
+		$data = [
+			'tanggal' => $this->input->post('tanggal', true),
+			'nominal' => rmRp($this->input->post('nominal', true)),
+			'ket' => $this->input->post('ket', true),
+			'bulan' => $this->input->post('bulan', true),
+			'tahun' => $this->input->post('tahun', true),
+		];
+		$id = $this->input->post('id', true);
+
+		$this->model->update('bunga_bank', $data, 'id_bunga', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Update Pemasukan Bunga Bank Berhasil');
+			redirect('account/bungaBank');
+		} else {
+			$this->session->set_flashdata('error', 'Update Pemasukan Bunga Bank Gagal');
+			redirect('account/bungaBank');
+		}
+	}
+
+	public function delBunga($id)
+	{
+		$this->model->delete('bunga_bank', 'id_bunga', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus Pemasukan Bunga Bank Berhasil');
+			redirect('account/bungaBank');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus Pemasukan Bunga Bank Gagal');
+			redirect('account/bungaBank');
+		}
+	}
 }
