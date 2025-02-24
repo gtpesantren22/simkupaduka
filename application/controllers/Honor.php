@@ -302,42 +302,40 @@ class Honor extends CI_Controller
     {
         $dipilih = $this->input->post('dipilih', true);
         $id_asal = $this->input->post('id_asal', true);
+        $guru_id = $this->input->post('guru_id', true);
 
-        $dataGuru = $this->model->flat_getBy('guru', 'satminkal', $this->lembaga)->result();
         $dataAsal = $this->model->flat_getBy('potongan', 'potongan_id', $id_asal)->row();
+        // Hapus data potongan lama sesuai guru_id dan potongan_id
+        $this->model->flat_delete2('potongan', 'guru_id', $guru_id, 'potongan_id', $id_asal);
 
-        foreach ($dataGuru as $gr) {
-            // Hapus data potongan lama sesuai guru_id dan potongan_id
-            $this->model->flat_delete2('potongan', 'guru_id', $gr->guru_id, 'potongan_id', $id_asal);
+        // Ambil data pilihan yang akan diinput untuk guru tersebut
+        $dataPilihan = $this->model->flat_getBy2('potongan', 'potongan_id', $dipilih, 'guru_id', $guru_id)->result();
 
-            // Ambil data pilihan yang akan diinput untuk guru tersebut
-            $dataPilihan = $this->model->flat_getBy3('potongan', 'potongan_id', $dipilih, 'guru_id', $gr->guru_id, 'ket !=', null)->result();
-
-            // Jika data pilihan tidak kosong, lakukan insert untuk setiap pilihan
-            if (!empty($dataPilihan)) {
-                foreach ($dataPilihan as $p) {
-                    $input = [
-                        'potongan_id' => $id_asal,
-                        'guru_id'     => $gr->guru_id,
-                        'bulan'       => $dataAsal->bulan,
-                        'tahun'       => $dataAsal->tahun,
-                        'ket'         => $p->ket,
-                        'nominal'     => $p->nominal,
-                    ];
-                    $this->model->flat_input('potongan', $input);
-                }
+        // Jika data pilihan tidak kosong, lakukan insert untuk setiap pilihan
+        if (!empty($dataPilihan)) {
+            foreach ($dataPilihan as $p) {
+                $input = [
+                    'potongan_id' => $id_asal,
+                    'guru_id'     => $guru_id,
+                    'bulan'       => $dataAsal->bulan,
+                    'tahun'       => $dataAsal->tahun,
+                    'ket'         => $p->ket,
+                    'nominal'     => $p->nominal,
+                ];
+                $this->model->flat_input('potongan', $input);
             }
-
-            usleep(100000);
         }
-
 
         if ($this->db->affected_rows() > 0) {
-            $this->session->set_flashdata('ok', 'Data berhasil diclone');
-            redirect('honor/editPotongan/' . $id_asal);
+            echo json_encode(['message' => 'success']);
         } else {
-            $this->session->set_flashdata('error', 'Data gagal diclone');
-            redirect('honor/editPotongan/' . $id_asal);
+            echo json_encode(['message' => 'gagal']);
         }
+    }
+
+    public function getDataguru()
+    {
+        $dataGuru = $this->model->flat_getBy('guru', 'satminkal', $this->lembaga)->result();
+        echo json_encode($dataGuru);
     }
 }

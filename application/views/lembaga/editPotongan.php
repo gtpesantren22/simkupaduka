@@ -101,11 +101,11 @@
                 <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="<?= base_url('honor/clonePotongan') ?>" method="post" class="mt-2">
-                    <input type="hidden" name="id_asal" value="<?= $data->row('potongan_id') ?>">
+                <form action="<?= base_url('honor/clonePotongan') ?>" method="post" class="mt-2 form-clone">
+                    <input type="hidden" name="id_asal" id="id_asal" value="<?= $data->row('potongan_id') ?>">
                     <div class="form-group mb-2">
-                        <label for="">Pilih potongan</label>
-                        <select name="dipilih" id="" class="form-select" required>
+                        <label for="">Pilih data potongan</label>
+                        <select name="dipilih" id="dipilih" class="form-select" required>
                             <option value=""> -pilih- </option>
                             <?php
                             $cek = $data->row('bulan') . '_' . $data->row('tahun');
@@ -119,7 +119,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+                        <button type="submit" id="proses-clone" class="btn btn-sm btn-success">Simpan</button>
                     </div>
                 </form>
                 <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
@@ -279,6 +279,64 @@
             }
         })
     })
+
+    $(document).on('submit', '.form-clone', function(e) {
+        e.preventDefault(); // Mencegah form dari reload halaman
+
+        var id_asal = $('#id_asal').val();
+        var dipilih = $('#dipilih').val();
+
+        var $button = $('#proses-clone');
+        $('#dipilih').prop('disabled', true);
+        $button.prop('disabled', true);
+        $button.text('Cloning on Process. Please wait. Jangan di lighulih takut burung!!');
+
+        $.ajax({
+            url: '<?= base_url("honor/getDataguru") ?>',
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const ajaxRequests = response.map((item, index) => {
+                    return new Promise((resolve) => {
+                        setTimeout(() => {
+                            $.ajax({
+                                url: '<?= base_url("honor/clonePotongan") ?>',
+                                type: 'POST',
+                                data: {
+                                    guru_id: item.guru_id,
+                                    id_asal: id_asal,
+                                    dipilih: dipilih
+                                },
+                                dataType: 'json',
+                                success: function(response) {
+                                    console.log(response.message);
+                                },
+                                error: function() {
+                                    console.log(response.message);
+                                },
+                                complete: resolve
+                            });
+                        }, index * 500);
+                    });
+                });
+
+                Promise.all(ajaxRequests)
+                    .then(function() {
+                        window.location.reload()
+                    })
+                    .catch(function(error) {
+                        console.error('Ada permintaan AJAX yang gagal', error);
+                    });
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+                console.log(status);
+                console.log(error);
+                // alert(xhr.responseText);
+            }
+        });
+    });
+
 
     function formatRupiah(number) {
         return new Intl.NumberFormat('id-ID', {
