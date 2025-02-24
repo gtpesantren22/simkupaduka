@@ -101,7 +101,7 @@
                 <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="<?= base_url('honor/clonePotongan') ?>" method="post" class="mt-2 form-clone">
+                <form class="mt-2 form-clone">
                     <input type="hidden" name="id_asal" id="id_asal" value="<?= $data->row('potongan_id') ?>">
                     <div class="form-group mb-2">
                         <label for="">Pilih data potongan</label>
