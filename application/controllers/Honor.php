@@ -327,6 +327,8 @@ class Honor extends CI_Controller
                     $this->model->flat_input('potongan', $input);
                 }
             }
+
+            usleep(100000);
         }
 
 
