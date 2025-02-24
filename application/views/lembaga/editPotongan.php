@@ -22,6 +22,7 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
+                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#cloneData">Cloning data potongan</button>
                         <div class="table-responsive mt-3">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
@@ -37,7 +38,7 @@
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    foreach ($data as $ls_jns) :
+                                    foreach ($data->result() as $ls_jns) :
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
@@ -84,6 +85,42 @@
                 <form action="<?= base_url('honor/add_row') ?>" method="post" class="form-addrow mt-2">
                     <input type="hidden" name="id" id="id">
                     <button class="btn btn-sm btn-light" type="submit"><i class="bx bx-plus-circle"></i>Tambah baru</button>
+                </form>
+                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="cloneData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Cloning Data Potongan </h5>
+                <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('honor/clonePotongan') ?>" method="post" class="mt-2">
+                    <input type="hidden" name="id_asal" value="<?= $data->row('potongan_id') ?>">
+                    <div class="form-group mb-2">
+                        <label for="">Pilih potongan</label>
+                        <select name="dipilih" id="" class="form-select" required>
+                            <option value=""> -pilih- </option>
+                            <?php
+                            $cek = $data->row('bulan') . '_' . $data->row('tahun');
+                            foreach ($potongan as $pt):
+                                $cek2 = $pt->bulan . '_' . $pt->tahun;
+                                if ($cek != $cek2):
+                            ?>
+                                    <option value="<?= $pt->potongan_id ?>"><?= bulan($pt->bulan) . ' ' . $pt->tahun ?></option>
+                            <?php endif;
+                            endforeach ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+                    </div>
                 </form>
                 <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
             </div>

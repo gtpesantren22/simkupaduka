@@ -150,7 +150,8 @@ class Honor extends CI_Controller
         $data['tahun'] = $this->tahun;
 
         $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
-        $data['data'] = $this->model->getPotonganRinci($id, $lembaga->satminkal)->result();
+        $data['data'] = $this->model->getPotonganRinci($id, $lembaga->satminkal);
+        $data['potongan'] = $this->model->getPotongan()->result();
         $data['lembaga'] = $lembaga->nama;
 
         $this->load->view('lembaga/head', $data);
@@ -294,6 +295,41 @@ class Honor extends CI_Controller
         } else {
             $this->session->set_flashdata('error', 'Data gagal dihapus');
             redirect('honor/editJam/' . $data->honor_id);
+        }
+    }
+
+    public function clonePotongan()
+    {
+        $dipilih = $this->input->post('dipilih', true);
+        $id_asal = $this->input->post('id_asal', true);
+
+        $dataGuru = $this->model->flat_getBy('guru', 'satminkal', $this->lembaga)->result();
+        $dataAsal = $this->model->flat_getBy('potongan', 'potongan_id', $id_asal)->row();
+
+        foreach ($dataGuru as $gr) {
+            $this->model->flat_delete2('potongan', 'guru_id', $gr->guru_id, 'potongan_id', $id_asal);
+            if ($this->db->affected_rows() > 0) {
+                $dataPilihan = $this->model->flat_getBy2('potongan', 'potongan_id', $dipilih, 'guru_id', $gr->guru_id)->result();
+                foreach ($dataPilihan as $p) {
+                    $input = [
+                        'potongan_id' => $id_asal,
+                        'guru_id' => $gr->guru_id,
+                        'bulan' => $dataAsal->bulan,
+                        'tahun' => $dataAsal->tahun,
+                        'ket' => $p->ket,
+                        'nominal' => $p->nominal,
+                    ];
+                    $this->model->flat_input('potongan', $input);
+                }
+            }
+        }
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Data berhasil diclone');
+            redirect('honor/editPotongan/' . $id_asal);
+        } else {
+            $this->session->set_flashdata('error', 'Data gagal diclone');
+            redirect('honor/editPotongan/' . $id_asal);
         }
     }
 }

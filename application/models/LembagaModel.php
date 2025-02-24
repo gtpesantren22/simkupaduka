@@ -291,6 +291,13 @@ class LembagaModel extends CI_Model
         $this->flat->delete($table);
         return $this->flat->affected_rows();
     }
+    public function flat_delete2($table, $where, $dtwhere, $where2, $dtwhere2)
+    {
+        $this->flat->where($where, $dtwhere);   
+        $this->flat->where($where2, $dtwhere2);   
+        $this->flat->delete($table);
+        return $this->flat->affected_rows();
+    }
 
     public function flat_totoalPotongan($potonganID, $guruID)
     {
