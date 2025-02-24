@@ -311,7 +311,7 @@ class Honor extends CI_Controller
             $this->model->flat_delete2('potongan', 'guru_id', $gr->guru_id, 'potongan_id', $id_asal);
 
             // Ambil data pilihan yang akan diinput untuk guru tersebut
-            $dataPilihan = $this->model->flat_getBy2('potongan', 'potongan_id', $dipilih, 'guru_id', $gr->guru_id)->result();
+            $dataPilihan = $this->model->flat_getBy3('potongan', 'potongan_id', $dipilih, 'guru_id', $gr->guru_id, 'ket !=', null)->result();
 
             // Jika data pilihan tidak kosong, lakukan insert untuk setiap pilihan
             if (!empty($dataPilihan)) {
