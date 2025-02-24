@@ -335,7 +335,8 @@ class Honor extends CI_Controller
 
     public function getDataguru()
     {
-        $dataGuru = $this->model->flat_getBy('guru', 'satminkal', $this->lembaga)->result();
+        $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+        $dataGuru = $this->model->flat_getBy('guru', 'satminkal', $lembaga->satminkal)->result();
         echo json_encode($dataGuru);
     }
 }
