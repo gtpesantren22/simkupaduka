@@ -307,22 +307,28 @@ class Honor extends CI_Controller
         $dataAsal = $this->model->flat_getBy('potongan', 'potongan_id', $id_asal)->row();
 
         foreach ($dataGuru as $gr) {
+            // Hapus data potongan lama sesuai guru_id dan potongan_id
             $this->model->flat_delete2('potongan', 'guru_id', $gr->guru_id, 'potongan_id', $id_asal);
-            if ($this->db->affected_rows() > 0) {
-                $dataPilihan = $this->model->flat_getBy2('potongan', 'potongan_id', $dipilih, 'guru_id', $gr->guru_id)->result();
+
+            // Ambil data pilihan yang akan diinput untuk guru tersebut
+            $dataPilihan = $this->model->flat_getBy2('potongan', 'potongan_id', $dipilih, 'guru_id', $gr->guru_id)->result();
+
+            // Jika data pilihan tidak kosong, lakukan insert untuk setiap pilihan
+            if (!empty($dataPilihan)) {
                 foreach ($dataPilihan as $p) {
                     $input = [
                         'potongan_id' => $id_asal,
-                        'guru_id' => $gr->guru_id,
-                        'bulan' => $dataAsal->bulan,
-                        'tahun' => $dataAsal->tahun,
-                        'ket' => $p->ket,
-                        'nominal' => $p->nominal,
+                        'guru_id'     => $gr->guru_id,
+                        'bulan'       => $dataAsal->bulan,
+                        'tahun'       => $dataAsal->tahun,
+                        'ket'         => $p->ket,
+                        'nominal'     => $p->nominal,
                     ];
                     $this->model->flat_input('potongan', $input);
                 }
             }
         }
+
 
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Data berhasil diclone');
