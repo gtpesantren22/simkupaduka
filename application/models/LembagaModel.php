@@ -259,6 +259,7 @@ class LembagaModel extends CI_Model
         $this->flat->from('kehadiran');
         $this->flat->join('guru', 'kehadiran.guru_id=guru.guru_id');
         $this->flat->where('guru.satminkal', $lembaga);
+        $this->flat->where('guru.kategori', 5);
         $this->flat->where('kehadiran_id', $id);
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
@@ -293,8 +294,8 @@ class LembagaModel extends CI_Model
     }
     public function flat_delete2($table, $where, $dtwhere, $where2, $dtwhere2)
     {
-        $this->flat->where($where, $dtwhere);   
-        $this->flat->where($where2, $dtwhere2);   
+        $this->flat->where($where, $dtwhere);
+        $this->flat->where($where2, $dtwhere2);
         $this->flat->delete($table);
         return $this->flat->affected_rows();
     }
