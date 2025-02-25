@@ -56,6 +56,7 @@ class Honor extends CI_Controller
         $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
         $data['ptty'] = $this->model->allPtty($lembaga->satminkal)->result();
         $data['honor'] = $this->model->flat_getBy('honor', 'honor_id', $id)->row();
+        $data['gaji'] = $this->model->flat_getBy2('gaji', 'bulan', $data['honor']->bulan, 'tahun', $data['honor']->tahun)->row();
 
         $datas = $this->model->getHonorRinci($id, $lembaga->satminkal)->result();
         $datakirim = [];
@@ -91,7 +92,8 @@ class Honor extends CI_Controller
         $data['tahun'] = $this->tahun;
 
         $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
-        $data['data'] = $this->model->getKehadiranRinci($id, $lembaga->satminkal)->result();
+        $data['data'] = $this->model->getKehadiranRinci($id, $lembaga->satminkal);
+        $data['gaji'] = $this->model->flat_getBy2('gaji', 'bulan', $data['data']->row('bulan'), 'tahun', $data['data']->row('tahun'))->row();
 
         // echo $lembaga->satminkal . '<br>' . $id;
         // var_dump($data['data']);
@@ -152,6 +154,7 @@ class Honor extends CI_Controller
         $lembaga = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
         $data['data'] = $this->model->getPotonganRinci($id, $lembaga->satminkal);
         $data['potongan'] = $this->model->getPotongan()->result();
+        $data['gaji'] = $this->model->flat_getBy2('gaji', 'bulan', $data['data']->row('bulan'), 'tahun', $data['data']->row('tahun'))->row();
         $data['lembaga'] = $lembaga->nama;
 
         $this->load->view('lembaga/head', $data);

@@ -22,7 +22,9 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
-                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#cloneData">Cloning data potongan</button>
+                        <?php if ($gaji->status != 'kunci') { ?>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#cloneData">Cloning data potongan</button>
+                        <?php } ?>
                         <div class="table-responsive mt-3">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
@@ -46,7 +48,11 @@
                                             <td><?= $lembaga; ?></td>
                                             <td><?= $ls_jns->nama; ?></td>
                                             <td><b id="total-hasil-<?= $ls_jns->id ?>"><?= rupiah($ls_jns->total); ?></b></td>
-                                            <td><button class="btn btn-warning btn-sm btn-edit" data-id="<?= $ls_jns->id ?>">Edit</button></td>
+                                            <td>
+                                                <?php if ($gaji->status != 'kunci') { ?>
+                                                    <button class="btn btn-warning btn-sm btn-edit" data-id="<?= $ls_jns->id ?>">Edit</button>
+                                                <?php } ?>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -60,76 +66,78 @@
     </div>
 </div>
 
-<div class="modal fade" id="edit-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Data Potongan </h5>
-                <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table width="100%" id="table-potongan">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Jenis Potongan</th>
-                                <th>Nominal</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
+<?php if ($gaji->status != 'kunci') { ?>
+    <div class="modal fade" id="edit-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Data Potongan </h5>
+                    <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="<?= base_url('honor/add_row') ?>" method="post" class="form-addrow mt-2">
-                    <input type="hidden" name="id" id="id">
-                    <button class="btn btn-sm btn-light" type="submit"><i class="bx bx-plus-circle"></i>Tambah baru</button>
-                </form>
-                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-            </div>
-            <div class="modal-footer">
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table width="100%" id="table-potongan">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Jenis Potongan</th>
+                                    <th>Nominal</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <form action="<?= base_url('honor/add_row') ?>" method="post" class="form-addrow mt-2">
+                        <input type="hidden" name="id" id="id">
+                        <button class="btn btn-sm btn-light" type="submit"><i class="bx bx-plus-circle"></i>Tambah baru</button>
+                    </form>
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                </div>
+                <div class="modal-footer">
+                </div>
             </div>
         </div>
     </div>
-</div>
-<div class="modal fade" id="cloneData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Cloning Data Potongan </h5>
-                <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form class="mt-2 form-clone">
-                    <input type="hidden" name="id_asal" id="id_asal" value="<?= $data->row('potongan_id') ?>">
-                    <div class="form-group mb-2">
-                        <label for="">Pilih data potongan</label>
-                        <select name="dipilih" id="dipilih" class="form-select" required>
-                            <option value=""> -pilih- </option>
-                            <?php
-                            $cek = $data->row('bulan') . '_' . $data->row('tahun');
-                            foreach ($potongan as $pt):
-                                $cek2 = $pt->bulan . '_' . $pt->tahun;
-                                if ($cek != $cek2):
-                            ?>
-                                    <option value="<?= $pt->potongan_id ?>"><?= bulan($pt->bulan) . ' ' . $pt->tahun ?></option>
-                            <?php endif;
-                            endforeach ?>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" id="proses-clone" class="btn btn-sm btn-success">Simpan</button>
-                    </div>
-                </form>
-                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-            </div>
-            <div class="modal-footer">
+    <div class="modal fade" id="cloneData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cloning Data Potongan </h5>
+                    <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="mt-2 form-clone">
+                        <input type="hidden" name="id_asal" id="id_asal" value="<?= $data->row('potongan_id') ?>">
+                        <div class="form-group mb-2">
+                            <label for="">Pilih data potongan</label>
+                            <select name="dipilih" id="dipilih" class="form-select" required>
+                                <option value=""> -pilih- </option>
+                                <?php
+                                $cek = $data->row('bulan') . '_' . $data->row('tahun');
+                                foreach ($potongan as $pt):
+                                    $cek2 = $pt->bulan . '_' . $pt->tahun;
+                                    if ($cek != $cek2):
+                                ?>
+                                        <option value="<?= $pt->potongan_id ?>"><?= bulan($pt->bulan) . ' ' . $pt->tahun ?></option>
+                                <?php endif;
+                                endforeach ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" id="proses-clone" class="btn btn-sm btn-success">Simpan</button>
+                        </div>
+                    </form>
+                    <div id="view-hasil" class="mt-3"></div>
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                </div>
+                <div class="modal-footer">
+                </div>
             </div>
         </div>
     </div>
-</div>
-
+<?php } ?>
 <!--end page wrapper -->
 <script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
 <script src="<?= base_url('vertical/'); ?>assets/js/jquery.mask.min.js"></script>
@@ -296,6 +304,18 @@
             type: 'GET',
             dataType: 'json',
             success: function(response) {
+                const hasil = $('#view-hasil');
+                let berhasil = 0;
+                let gagal = 0;
+
+
+                function updateProgress() {
+                    hasil.html(`
+                            <strong class="mb-1">Total success : ${berhasil}</strong><br>
+                            <strong class="mb-1 text-danger">Total error : ${gagal}</strong><br>
+                        `);
+                }
+
                 const ajaxRequests = response.map((item, index) => {
                     return new Promise((resolve) => {
                         setTimeout(() => {
@@ -309,9 +329,13 @@
                                 },
                                 dataType: 'json',
                                 success: function(response) {
+                                    berhasil++;
+                                    updateProgress();
                                     console.log(response.message);
                                 },
                                 error: function() {
+                                    gagal++;
+                                    updateProgress();
                                     console.log(response.message);
                                 },
                                 complete: resolve
