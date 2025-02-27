@@ -314,7 +314,7 @@ class LembagaModel extends CI_Model
         $this->flat->select('guru_id, guru.nama AS nama, satminkal.nama AS lembaga');
         $this->flat->from('guru');
         $this->flat->join('satminkal', 'guru.satminkal=satminkal.id');
-        $this->flat->where('satminkal !=', $lembaga);
+        // $this->flat->where('satminkal !=', $lembaga);
         $this->flat->where('sik', 'PTTY');
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
