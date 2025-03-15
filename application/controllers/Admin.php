@@ -105,11 +105,10 @@ class Admin extends CI_Controller
 			redirect('admin/bp');
 		}
 	}
-	public function delBp()
+	public function delBp($id)
 	{
-		$where = ['id_tangg' => $this->input->post('id_tangg', true)];
 
-		$this->model->delete('tangg', $where);
+		$this->model->delete('tangg', 'id_tangg', $id);
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Tanggungan berhasil dihapus');
 			redirect('admin/bp');

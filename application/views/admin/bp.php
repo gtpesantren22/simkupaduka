@@ -52,29 +52,7 @@
                                             <td>
                                                 <!-- <a data-toggle="modal" data-target="#modal_edit<?= $a->id_tangg; ?>" href="#"><i class="fa fa-cog"></i> Edit</a> | -->
                                                 <a href="<?= base_url('admin/bpDetail/') . $a->id_tangg; ?>"><i class='bx bx-message-square-edit mr-1'></i></a> |
-                                                <a data-bs-toggle="modal" data-bs-target="#modal_del<?= $a->id_tangg; ?>" href="#"><i class='bx bx-trash mr-1'></i></a>
-
-                                                <div class="modal fade" id="modal_del<?= $a->id_tangg; ?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Hapus
-                                                                    DataSyahriah</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <form action="<?= base_url('admin/delBp/'); ?>" method="post">
-                                                                <input type="hidden" name="id_tangg" value="<?= $a->id_tangg; ?>">
-                                                                <div class="modal-body">
-                                                                    <h5>Yajin akan menghapus data ini ?</h5>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                                                    <button type="submit" name="delete" class="btn btn-danger">Ya.! Hapus Pon</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <a href="<?= base_url('admin/delBp/') . $a->id_tangg; ?>" class="tombol-hapus"><i class='bx bx-trash mr-1'></i></a>
                                             </td>
 
                                         </tr>
