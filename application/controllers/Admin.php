@@ -547,7 +547,7 @@ class Admin extends CI_Controller
 		$data['bulan_cal'] = $this->bulan;
 
 		for ($i = 1; $i <= 12; $i++) {
-			$i !== 5 && $i !== 6 ? $field = 'ju_ap' : $field = 'me_ju';
+			$i !== 6 ? $field = 'ju_ap' : $field = 'me_ju';
 
 			$tangg_perbulan = $this->model->getBySum('tangg', 'tahun', $this->tahun, $field)->row();
 			$bayar_perbulan = $this->model->getBySum2('pembayaran', 'tahun', $this->tahun, 'bulan', $i, 'nominal')->row();
