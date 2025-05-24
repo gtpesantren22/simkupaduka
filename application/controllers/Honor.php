@@ -109,8 +109,20 @@ class Honor extends CI_Controller
 
         $dtlHonor = $this->model->flat_getBy('honor', 'id', $id)->row();
         $guru = $this->model->flat_getBy('guru', 'guru_id', $dtlHonor->guru_id)->row();
+        $honor_rami = $this->model->flat_getBy('settings', 'nama', 'honor_rami')->row('isi');
+        $honor_santri = $this->model->flat_getBy('settings', 'nama', 'honor_santri')->row('isi');
+        $honor_non = $this->model->flat_getBy('settings', 'nama', 'honor_non')->row('isi');
 
-        $this->model->flat_edit('honor', ['kehadiran' => $value], 'id', $id);
+
+        if ($dtlHonor->lembaga == 8 || $dtlHonor->lembaga == 9) {
+            $nominal = $value * $honor_rami;
+        } else {
+            $nominal = $guru->santri == 'santri' ? $value * $honor_santri : $value * $honor_non;
+        }
+
+        // $this->model->edit('honor', 'id', $id, ['kehadiran' => $jam, 'nominal' => $nominal]);
+
+        $this->model->flat_edit('honor', ['kehadiran' => $value, 'nominal' => $nominal], 'id', $id);
         if ($this->db->affected_rows() > 0) {
             echo json_encode(['status' => 'ok', 'besaran' => $value]);
         } else {
