@@ -727,10 +727,13 @@ Terimakasih';
 		$ket = 'hapus';
 		$tahun = $rab->tahun;
 
-		$cek = $this->db->query("SELECT * FROM pak_detail WHERE kode_rab = '$rab->kode' ")->num_rows();
+		$pakai = $this->db->query("SELECT IFNULL (SUM(vol),0) AS qty FROM realis WHERE kode = '$rab->kode' AND tahun = '$tahun' ")->row();
+		$pakaiSm = $this->db->query("SELECT IFNULL (SUM(vol),0) AS qty FROM real_sm WHERE kode = '$rab->kode' AND tahun = '$tahun' ")->row();
 
-		if ($cek > 0) {
-			$this->session->set_flashdata('error', 'Maaf. item RAB ini sudah dipakai PAK');
+		// $cek = $this->db->query("SELECT * FROM pak_detail WHERE kode_rab = '$rab->kode' ")->num_rows();
+
+		if (($pakaiSm->qty + $pakai->qty) < 1) {
+			$this->session->set_flashdata('error', 'Maaf. item ini sudah Habis');
 			redirect('lembaga/pakDetail/' . $kd_pak);
 		} else {
 			$data = [
@@ -807,10 +810,13 @@ Terimakasih';
 		$ket = 'edit';
 		$tahun = $rab->tahun;
 
-		$cek = $this->db->query("SELECT * FROM pak_detail WHERE kode_rab = '$rab->kode' ")->num_rows();
+		$pakai = $this->db->query("SELECT IFNULL (SUM(vol),0) AS qty FROM realis WHERE kode = '$rab->kode' AND tahun = '$tahun' ")->row();
+		$pakaiSm = $this->db->query("SELECT IFNULL (SUM(vol),0) AS qty FROM real_sm WHERE kode = '$rab->kode' AND tahun = '$tahun' ")->row();
 
-		if ($cek > 0) {
-			$this->session->set_flashdata('error', 'Maaf. item RAB ini sudah dipakai PAK');
+		// $cek = $this->db->query("SELECT * FROM pak_detail WHERE kode_rab = '$rab->kode' ")->num_rows();
+
+		if (($pakaiSm->qty + $pakai->qty) < 1) {
+			$this->session->set_flashdata('error', 'Maaf. Item sudah habis');
 			redirect('lembaga/pakDetail/' . $kd_pak);
 		} elseif ($qty > $sisa) {
 			$this->session->set_flashdata('error', 'Maaf. Jumlah QTY melebihi sisa');
