@@ -732,7 +732,7 @@ Terimakasih';
 
 		// $cek = $this->db->query("SELECT * FROM pak_detail WHERE kode_rab = '$rab->kode' ")->num_rows();
 
-		if (($pakaiSm->qty + $pakai->qty) < 1) {
+		if (($pakaiSm->qty + $pakai->qty) >= $rab->qty) {
 			$this->session->set_flashdata('error', 'Maaf. item ini sudah Habis');
 			redirect('lembaga/pakDetail/' . $kd_pak);
 		} else {
@@ -802,7 +802,7 @@ Terimakasih';
 		$rab = $this->model->getBy('rab', 'kode', $kd_rab)->row();
 
 		$qty = $this->input->post('jml', true);
-		$sisa = $this->input->post('sisa', true);
+		// $sisa = $this->input->post('sisa', true);
 
 		$satuan = $rab->satuan;
 		$harga_satuan = $rab->harga_satuan;
@@ -815,10 +815,10 @@ Terimakasih';
 
 		// $cek = $this->db->query("SELECT * FROM pak_detail WHERE kode_rab = '$rab->kode' ")->num_rows();
 
-		if (($pakaiSm->qty + $pakai->qty) < 1) {
+		if (($pakaiSm->qty + $pakai->qty) >= $rab->qty) {
 			$this->session->set_flashdata('error', 'Maaf. Item sudah habis');
 			redirect('lembaga/pakDetail/' . $kd_pak);
-		} elseif ($qty > $sisa) {
+		} elseif (($pakaiSm->qty + $pakai->qty + $qty) > $rab->qty) {
 			$this->session->set_flashdata('error', 'Maaf. Jumlah QTY melebihi sisa');
 			redirect('lembaga/pakDetailEdit/' . $kd_pak . '/' . $rab->id_rab);
 		} else {

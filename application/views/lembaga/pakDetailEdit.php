@@ -71,7 +71,7 @@
                                 <?= form_open('lembaga/addEditPak'); ?>
                                 <label for="">QTY yang akan diajukan</label>
                                 <input type="number" class="form-control" name="jml" required>
-                                <input type="hidden" class="form-control" name="sisa" value="<?= $rab->qty - $relJml->jml; ?>">
+                                <!-- <input type="hidden" class="form-control" name="sisa" value="<?= $rab->qty - $relJml->jml; ?>"> -->
                                 <input type="hidden" class="form-control" name="kd_rab" value="<?= $rab->kode ?>">
                                 <input type="hidden" class="form-control" name="kd_pak" value="<?= $pak->kode_pak ?>">
                                 <small class="text-danger">* QTY ini tidak boleh melebihi dari
