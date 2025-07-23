@@ -10,7 +10,7 @@ class AppModel extends CI_Model
 
         $this->db2 = $this->load->database('dekos', true);
         $this->db5 = $this->load->database('nikmus', true);
-        $this->db6 = $this->load->database('psb24', true);
+        $this->db6 = $this->load->database('psb', true);
         $this->kasir = $this->load->database('kasir', true);
     }
 
