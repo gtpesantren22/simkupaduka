@@ -11,7 +11,7 @@ class KasirModel extends CI_Model
         $this->db3 = $this->load->database('sekretaris', true);
         $this->db4 = $this->load->database('santri', true);
         $this->db5 = $this->load->database('nikmus', true);
-        $this->db6 = $this->load->database('psb24', true);
+        $this->db6 = $this->load->database('psb', true);
     }
     function apikey()
     {
