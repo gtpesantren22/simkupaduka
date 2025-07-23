@@ -93,7 +93,7 @@ class Admin extends CI_Controller
 			'briva' => $this->input->post('briva', true),
 			'ju_ap' => rmRp($this->input->post('ju_ap', true)),
 			'me_ju' => rmRp($this->input->post('me_ju', true)),
-			'total' => (rmRp($this->input->post('me_ju', true)) * 2) + (rmRp($this->input->post('ju_ap', true)) * 10)
+			'total' => (rmRp($this->input->post('me_ju', true))) + (rmRp($this->input->post('ju_ap', true)) * 11)
 		];
 
 		$this->model->update('tangg', $data, 'id_tangg', $where);
@@ -256,7 +256,8 @@ class Admin extends CI_Controller
 							'briva' => $val[2],
 							'ju_ap' => $val[3],
 							'me_ju' => $val[4],
-							'total' => ($val[3] * 10) + $val[4] * 2,
+							// 'total' => ($val[3] * 10) + $val[4] * 2,
+							'total' => ($val[3] * 11) + $val[4],
 							'tahun' => $val[5]
 						];
 					}
@@ -2622,7 +2623,8 @@ Update data pertanggal
 					'briva' => $worksheet->getCell('C' . $row)->getValue(),
 					'ju_ap' => $worksheet->getCell('D' . $row)->getValue(),
 					'me_ju' => $worksheet->getCell('E' . $row)->getValue(),
-					'total' => ($worksheet->getCell('D' . $row)->getValue() * 10) + ($worksheet->getCell('E' . $row)->getValue() * 2),
+					// 'total' => ($worksheet->getCell('D' . $row)->getValue() * 10) + ($worksheet->getCell('E' . $row)->getValue() * 2),
+					'total' => ($worksheet->getCell('D' . $row)->getValue() * 11) + ($worksheet->getCell('E' . $row)->getValue()),
 					'tahun' => $worksheet->getCell('F' . $row)->getValue(),
 				];
 
