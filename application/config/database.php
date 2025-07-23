@@ -213,17 +213,17 @@ $db['nikmus'] = array(
 	'save_queries' => TRUE
 );
 
-$db['psb24'] = array(
+$db['psb'] = array(
 	'dsn'	=> '',
 	'hostname' => 'localhost',
 
 	'username' => 'root',
 	'password' => '',
-	'database' => 'psb24',
+	'database' => 'psb25',
 
 	// 'username' => 'u9048253_dwk',
 	// 'password' => 'PesantrenDWKIT2021',
-	// 'database' => 'u9048253_psb24',
+	// 'database' => 'u9048253_psb25',
 
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

@@ -85,7 +85,6 @@ if ($pesern >= 0 && $pesern <= 25) {
                                         style="width: <?= $pesern ?>%"><?= $pesern ?>%
                                     </div>
                                 </div> -->
-
                             </div>
                         </div>
                     </div>
@@ -97,29 +96,43 @@ if ($pesern >= 0 && $pesern <= 25) {
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Program</th>
+                                        <th>Kode</th>
+                                        <th>Nama Barang</th>
                                         <th>Rencana Waktu</th>
-                                        <th>Total RAB</th>
+                                        <th>QTY</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Jumlah</th>
+                                        <!-- <th>%</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    foreach ($program as $a) : ?>
+                                    foreach ($data as $a) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><?= $a['program'] ?></td>
-                                            <!-- <td><?= bulan($a['bulan']) ?></td> -->
-                                            <td><?php
-                                                $input_bulan = array_map('intval', explode(',', $a['bulan']));
-                                                $output = array_map('bulan', $input_bulan);
-                                                echo implode(', ', $output);
-                                                ?></td>
-                                            <td><?= rupiah($a['total']) ?></td>
+                                            <td><?= $a->kode ?></td>
+                                            <td><?= $a->nama ?></td>
+                                            <td><?= bulan($a->rencana) ?></td>
+                                            <td><?= $a->qty . ' ' . $a->satuan ?></td>
+                                            <td><?= rupiah($a->harga_satuan) ?></td>
+                                            <td><?= rupiah($a->total) ?></td>
+                                            <!-- <td><?= round($rls->vol / $a->qty * 100, 1); ?>%</td> -->
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
-
+                                <tfoot>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Kode</th>
+                                        <th>Nama Barang</th>
+                                        <th>Rencana Waktu</th>
+                                        <th>QTY</th>
+                                        <th>Harga Satuan</th>
+                                        <th>Jumlah</th>
+                                        <!-- <th>%</th> -->
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </div>

@@ -69,7 +69,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     </a>
                 </li>
                 <li>
-                    <a href="<?= base_url('lembaga/rab'); ?>">
+                    <a href="<?= base_url('rab'); ?>">
                         <div class="parent-icon"><i class='bx bx-wallet'></i>
                         </div>
                         <div class="menu-title">RAB</div>
@@ -85,7 +85,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li> <a href="<?= base_url('lembaga/realis'); ?>"><i class="bx bx-right-arrow-alt"></i>Data</a>
                         </li>
                         <li>
-                            <a href="<?= base_url('lembaga/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan</a>
+                            <a href="<?= base_url('pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan</a>
                         </li>
                     </ul>
                 </li>
@@ -162,11 +162,11 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     </a>
                 </li>
                 <li>
-                    <a href="<?= base_url('lembaga/rab24'); ?>">
+                    <!-- <a href="<?= base_url('lembaga/rab24'); ?>">
                         <div class="parent-icon"><i class='bx bx-data'></i>
                         </div>
                         <div class="menu-title">RAB 23/24 <span class="badge bg-danger">sementara</span></div>
-                    </a>
+                    </a> -->
                 </li>
 
             </ul>
@@ -422,3 +422,5 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
         <!--end header -->
         <div class="flash-data" data-flashdata="<?= $this->session->flashdata('ok') ?>"></div>
         <div class="flash-data-error" data-flashdata="<?= $this->session->flashdata('error') ?>"></div>
+        <div class="flash-data-info" data-flashdata="<?= $this->session->flashdata('info') ?>"></div>
+        <div class="flash-data-warning" data-flashdata="<?= $this->session->flashdata('warning') ?>"></div>

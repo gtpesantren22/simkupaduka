@@ -27,7 +27,7 @@
                                         <th>Kode</th>
                                         <th>Lembaga</th>
                                         <th>Periode</th>
-                                        <th>Verval / Approv / Cair / SPJ</th>
+                                        <th>Pendataan / Bendahara / Cair / SPJ</th>
                                         <th>Nominal</th>
                                         <th>#</th>
                                     </tr>
@@ -49,33 +49,34 @@
                                         }
 
                                     ?>
-                                    <tr>
-                                        <td><?= $no++ ?></td>
-                                        <td><?= $kd_pj ?></td>
-                                        <td><?= $a->nama . ' ' . $rt ?></td>
-                                        <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
-                                        <td>
-                                            <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
-                                            <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
-                                            <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
-                                            <?php if ($a->spj == 0) { ?>
-                                            <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
-                                                upload</span>
-                                            <?php } else if ($a->spj == 1) { ?>
-                                            <span class="badge bg-warning btn-xs">
-                                                <i class="bx bx-refresh"></i>
-                                                proses verifikasi
-                                            </span>
-                                            <?php } else { ?>
-                                            <span class="badge bg-success"><i class="bx bx-check"></i> sudah
-                                                selesai</span>
-                                            <?php } ?>
-                                        </td>
-                                        <td><?= rupiah($kfe) ?></td>
-                                        <td><a href="<?= base_url('account/pengajuanDtl/' . $a->kode_pengajuan) ?>"><button
-                                                    class="btn btn-primary btn-sm"><i class="bx bx-search"></i> Cek &
-                                                    Verifikasi</button></a></td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $no++ ?></td>
+                                            <td><?= $kd_pj ?></td>
+                                            <td><?= $a->nama . ' ' . $rt ?></td>
+                                            <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
+                                            <td>
+                                                <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                                <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                                <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                                <?php if ($a->spj == 0) { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
+                                                        upload</span>
+                                                <?php } else if ($a->spj == 1) { ?>
+                                                    <span class="badge bg-warning btn-xs">
+                                                        <i class="bx bx-refresh"></i>
+                                                        proses verifikasi
+                                                    </span>
+                                                <?php } else { ?>
+                                                    <span class="badge bg-success"><i class="bx bx-check"></i> sudah
+                                                        selesai</span>
+                                                <?php } ?>
+                                            </td>
+                                            <td><?= rupiah($kfe) ?></td>
+                                            <td>
+                                                <a href="<?= base_url('account/pengajuanDtl/' . $a->kode_pengajuan) ?>" class="btn btn-primary btn-sm"><i class="bx bx-search"></i> Cek & Verifikasi</a>
+                                                <a href="<?= base_url('account/pengajuanDel/' . $a->kode_pengajuan) ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i> Hapus</a>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>

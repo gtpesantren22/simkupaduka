@@ -1,6 +1,27 @@
 <div class="flash-data" data-flashdata="<?= $this->session->flashdata('ok') ?>"></div>
 <div class="flash-data-error" data-flashdata="<?= $this->session->flashdata('error') ?>"></div>
+<style>
+    .accordion-button:not(.collapsed) {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
 
+    .status-pending {
+        color: #ffc107;
+    }
+
+    .status-approved {
+        color: #198754;
+    }
+
+    .status-rejected {
+        color: #dc3545;
+    }
+
+    .status-process {
+        color: #0dcaf0;
+    }
+</style>
 <!--start page wrapper -->
 <div class="page-wrapper">
     <div class="page-content">
@@ -33,7 +54,7 @@
                                             <th>Ket</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <!-- <tbody>
 
                                         <?php foreach ($jenis as $dtJenis) :
                                             $sisa = $rabJml[$dtJenis->kode_jns]->jml3 - $pakaiJml[$dtJenis->kode_jns]->nominal;
@@ -56,7 +77,7 @@
                                             </tr>
                                         <?php endforeach ?>
 
-                                    </tbody>
+                                    </tbody> -->
                                     <tfoot>
                                         <tr>
                                             <th>TOTAL</th>
@@ -101,7 +122,7 @@
                 </div>
                 <div class="card radius-10">
                     <div class="card-body">
-                        <div class="table-responsive">
+                        <!-- <div class="table-responsive">
                             <table id="example2" class="table table-striped table-bordered">
                                 <thead>
                                     <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
@@ -113,9 +134,6 @@
                                         <th>Ket</th>
                                         <th>#</th>
                                     </tr>
-                                    <!-- <tr style="color: white; background-color: plum; font-weight: bold;">
-                                        <th colspan="7">A. Belanja Barang</th>
-                                    </tr> -->
                                 </thead>
                                 <tbody>
                                     <?php
@@ -193,6 +211,63 @@
                                     <?php } ?>
                                 </tbody>
                             </table>
+                        </div> -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h5>Daftar Pengajuan</h5>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Cari by Nama Item...">
+                                    <button class="btn btn-outline-secondary" type="button">
+                                        <i class="bx bx-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion" id="pengajuanAccordion">
+                            <!-- Item Pengajuan 2 -->
+                            <?php foreach ($data as $a): ?>
+                                <div class="accordion-item mb-3 border rounded-3">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#col_<?= $a['id'] ?>" aria-expanded="false" aria-controls="col_<?= $a['id'] ?>">
+                                            <div class="d-flex justify-content-between align-items-center w-100 pe-3">
+                                                <div>
+                                                    <span class="fw-bold"><?= $a['kode_item'] ?></span>
+                                                    <span class="ms-3"><?= $a['nama_item'] ?></span>
+                                                </div>
+                                                <div>
+                                                    <span class="badge bg-success bg-opacity-10">
+                                                        <i class="bi bi-check-circle me-1"></i> <?= $a['stas'] ?>
+                                                    </span>
+                                                    <span class="ms-2 text-muted small"><?= rupiah($a['nominal']) ?></span>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="col_<?= $a['id'] ?>" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#pengajuanAccordion">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <h5 class="mb-3">Rincian Pengajuan</h5>
+                                                    <ul class="list-unstyled">
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Program</strong> : <?= $a['program'] ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Akun/Coa</strong> : <?= $a['coa'] ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Nama Barang</strong> : <?= $a['ssh'] ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Harga</strong> : <?= rupiah($a['harga']) ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Jumlah</strong> : <?= $a['qty'] . ' ' . $a['satuan'] ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Total</strong> : <?= rupiah($a['nominal']) ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Jenis Cair</strong> : <?= $a['stas'] ?></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <!-- <h5 class="mb-3">Proses Persetujuan</h5> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                 </div>

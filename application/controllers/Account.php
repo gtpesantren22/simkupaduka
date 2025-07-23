@@ -649,18 +649,18 @@ Terimakasih';
 		if ($data['rinci']->cair == 1) {
 
 			if (preg_match("/DISP./i", $kode)) {
-				$data['data'] = $this->db->query("SELECT realis.*, 0 as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM realis WHERE realis.kode_pengajuan = '$kode' ")->result();
+				$data_cek = $this->db->query("SELECT realis.*, 0 as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM realis WHERE realis.kode_pengajuan = '$kode' ")->result();
 			} else {
-				$data['data'] = $this->db->query("SELECT realis.*, rab.rencana, rab_sm24.kegiatan, dppk.program FROM realis JOIN rab ON realis.kode=rab.kode JOIN rab_sm24 ON realis.kode=rab_sm24.kode JOIN dppk ON rab_sm24.kode_pak=dppk.id_dppk WHERE realis.kode_pengajuan = '$kode' ")->result();
+				$data_cek = $this->db->query("SELECT * FROM realis WHERE kode_pengajuan = '$kode' ")->result();
 			}
 
 			$data['nom'] = $this->model->getBySum('realis', 'kode_pengajuan', $kode, 'nominal')->row();
 			$data['nomCair'] = $this->model->getBySum('realis', 'kode_pengajuan', $kode, 'nom_cair')->row();
 		} else {
 			if (preg_match("/DISP./i", $kode)) {
-				$data['data'] = $this->db->query("SELECT real_sm.*, 0 as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM real_sm WHERE real_sm.kode_pengajuan = '$kode' ")->result();
+				$data_cek = $this->db->query("SELECT real_sm.*, 0 as rencana, 'DISPOSISI' as kegiatan, 'DISPOSISI' as program FROM real_sm WHERE real_sm.kode_pengajuan = '$kode' ")->result();
 			} else {
-				$data['data'] = $this->db->query("SELECT real_sm.*, rab.rencana, rab_sm24.kegiatan, dppk.program FROM real_sm JOIN rab ON real_sm.kode=rab.kode JOIN rab_sm24 ON real_sm.kode=rab_sm24.kode JOIN dppk ON rab_sm24.kode_pak=dppk.id_dppk WHERE real_sm.kode_pengajuan = '$kode' ")->result();
+				$data_cek = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
 			}
 
 			$data['nom'] = $this->model->getBySum('real_sm', 'kode_pengajuan', $kode, 'nominal')->row();
@@ -686,7 +686,29 @@ Terimakasih';
 			$data['nomJml'][$kodeJenis] = $this->model->getBySum2('real_sm', 'kode_pengajuan', $kode, 'jenis', $kodeJenis, 'nominal')->row();
 		}
 
+		$data_all = [];
+		foreach ($data_cek as $dts) {
+			$kode_rinci = explode('-', $dts->kode);
+			$program = $this->model->getBy2('dppk', 'id_dppk', $kode_rinci[1], 'tahun', $this->tahun)->row();
+			$coa = $this->model->getBy2('coa', 'kode', $kode_rinci[2], 'tahun', $this->tahun)->row();
+			$ssh = $this->model->getBy('ssh', 'kode', $kode_rinci[3])->row();
+			$data_all[] = [
+				'id' => $dts->id_realis,
+				'kode_item' => $dts->kode,
+				'nama_item' => $dts->ket,
+				'stas' => $dts->stas,
+				'nominal' => $dts->nominal,
+				'harga' => $dts->harga,
+				'satuan' => $ssh ? $ssh->satuan : '',
+				'qty' => $dts->vol,
+				'program' => $program->program,
+				'ssh' => $ssh ? $ssh->nama : '',
+				'coa' => $coa->nama,
+			];
+		}
 
+
+		$data['data'] = $data_all;
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
@@ -695,6 +717,25 @@ Terimakasih';
 		$this->load->view('account/head', $data);
 		$this->load->view('account/pengajuanDetail', $data);
 		$this->load->view('account/foot');
+	}
+
+	public function pengajuanDel($id)
+	{
+		$cek = $this->db->query("SELECT * FROM pengajuan WHERE kode_pengajuan = '$id' AND verval = 0 AND apr = 0 AND cair = 0 AND spj = 0 ")->row();
+		if (!$cek) {
+			$this->session->set_flashdata('error', 'Pengajuan sudah diproses');
+			redirect('account/pengajuan');
+		} else {
+			$this->model->delete('pengajuan', 'kode_pengajuan', $id);
+			$this->model->delete('spj', 'kode_pengajuan', $id);
+			if ($this->db->affected_rows() > 0) {
+				$this->session->set_flashdata('ok', 'Hapus Pemasukan Pesantren Berhasil');
+				redirect('account/pengajuan');
+			} else {
+				$this->session->set_flashdata('error', 'Hapus Pemasukan Pesantren Gagal');
+				redirect('account/pengajuan');
+			}
+		}
 	}
 
 	public function editRealSm()
@@ -748,7 +789,8 @@ Terimakasih';
 			'stts' => 1,
 			'tahun' => $this->tahun
 		];
-		$data2 = ['verval' => '1', 'apr' => '1'];
+		// $data2 = ['verval' => '1', 'apr' => '1'];
+		$data2 = ['verval' => '1'];
 
 		if (preg_match("/DISP./i", $kode)) {
 			$rt = '*(DISPOSISI)*';
@@ -756,8 +798,7 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI PENCAIRAN PENGAJUAN* ' . $rt . '
+		$psn = '*INFORMASI PENCAIRAN PENGAJUAN* ' . $rt . '
 
 pengajuan dari :
 
@@ -773,10 +814,10 @@ Terimakasih';
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			// kirim_person($this->apiKey, '082264061060', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan berhasil diverval');
 			redirect('account/pengajuanDtl/' . $pjData->kode_pengajuan);

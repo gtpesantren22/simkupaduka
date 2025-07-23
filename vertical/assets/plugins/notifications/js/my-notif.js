@@ -2,6 +2,8 @@
 
 const flashData = $('.flash-data').data('flashdata');
 const flashDataError = $('.flash-data-error').data('flashdata');
+const flashDataInfo = $('.flash-data-info').data('flashdata');
+const flashDataWarn = $('.flash-data-warning').data('flashdata');
 
 if (flashData) {
 	Lobibox.notify('success', {
@@ -19,6 +21,24 @@ if (flashDataError) {
 		position: 'top right',
 		icon: 'bx bx-x-circle',
 		msg: flashDataError
+	});
+}
+if (flashDataInfo) {
+	Lobibox.notify('info', {
+		pauseDelayOnHover: true,
+		continueDelayOnInactiveTab: false,
+		position: 'top right',
+		icon: 'bx bx-info',
+		msg: flashDataInfo
+	});
+}
+if (flashDataWarn) {
+	Lobibox.notify('warning', {
+		pauseDelayOnHover: true,
+		continueDelayOnInactiveTab: false,
+		position: 'top right',
+		icon: 'bx bx-alert-tri',
+		msg: flashDataWarn
 	});
 }
 
