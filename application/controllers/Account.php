@@ -17,7 +17,7 @@ class Account extends CI_Controller
 
 		$this->db5 = $this->load->database('nikmus', true);
 		$this->db2 = $this->load->database('dekos', true);
-		$this->db6 = $this->load->database('psb24', true);
+		$this->db6 = $this->load->database('psb', true);
 
 		$user = $this->Auth_model->current_user();
 		$this->tahun = $this->session->userdata('tahun');
