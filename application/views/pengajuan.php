@@ -120,14 +120,13 @@ include 'lembaga/head.php';
                     <div class="form-group mb-3">
                         <label for="inputEmail3" class="col-sm-2 control-label">Bulan *</label>
                         <div class="col-sm-10">
-                            <!-- <select name="bulan" class="form-control" required>
+                            <select name="bulan" class="form-control" required>
                                 <option value=""> -- pilih bulan -- </option>
                                 <?php
                                 for ($i = 1; $i < count($bulan); $i++) { ?>
                                     <option <?= date('m') == $i ? 'selected' : '' ?> value="<?= $i ?>"><?= $bulan[$i] ?></option>
                                 <?php } ?>
-                            </select> -->
-                            <input type="text" class="form-control" name="bulan" value="<?= date('m') ?>" readonly>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group mb-3">
