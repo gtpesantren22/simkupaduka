@@ -50,7 +50,9 @@ class Pengajuan extends CI_Controller
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
 		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 		$data['coa'] = $this->model->getBy('coa', 'tahun', $this->tahun)->result();
-		$data['program'] = $this->model->getBy2('dppk', 'tahun', $this->tahun, 'lembaga', $this->lembaga)->result();
+		// $data['program'] = $this->model->getBy2('dppk', 'tahun', $this->tahun, 'lembaga', $this->lembaga)->result();
+		$pejn = $data['pj']->bulan;
+		$data['program'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($pejn, bulan) AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->result();
 		$data['satuan'] = $this->model->getAll('satuan')->result();
 
 		$data['dataBulan'] = $this->bulan;
@@ -414,6 +416,64 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 				$this->session->set_flashdata('error', 'Pengajuan gagal diajukan kepada Bendahara');
 				redirect('pengajuan/detail/' . $kode);
 			}
+		}
+	}
+
+	public function rencana()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		if ($data['user']->lembaga !== '03') {
+			echo "Maaf Akun anda bukan perencanaan";
+		} else {
+			$data['dataPj'] = $this->db->query("SELECT * FROM pengajuan WHERE tahun = '$this->tahun' ")->result();
+			$data['cekSPJ'] = $this->db->query("SELECT * FROM spj WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND stts != 3 ")->num_rows();
+			$data['cekPjn'] = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND spj != 3 ")->num_rows();
+			$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+			$data['akses'] = $this->model->getBy2('akses', 'tahun', $this->tahun, 'lembaga', $data['user']->lembaga)->row();
+
+			$this->load->view('rencana', $data);
+		}
+	}
+
+	public function rencanaDtl($kode)
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$pejn = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$data['dppk'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($pejn->bulan, bulan) AND tahun = '$this->tahun' AND lembaga = '$pejn->lembaga' ")->result();
+
+		$dataKirim = [];
+		$dataSQL = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
+		foreach ($dataSQL as $key => $value) {
+			$kodefull = explode('-', $value->kode);
+			$program = $this->model->getBy2('dppk', 'id_dppk', $kodefull[1], 'tahun', $this->tahun)->row();
+			$dataKirim[] = [
+				'kode' => $program->id_dppk,
+				'program' => $program->program,
+				'bulan' => $program->bulan,
+				'rincian' => $value->ket,
+			];
+		}
+		$data['dataKirim'] = $dataKirim;
+		$data['pengajuan'] = $pejn;
+
+		$this->load->view('rencanaDtl', $data);
+	}
+
+	public function vervalRencana($kode)
+	{
+		$this->model->update('pengajuan', ['apr' => 1], 'kode_pengajuan', $kode);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Verifikasi berhasil');
+			redirect('pengajuan/rencana');
+		} else {
+			$this->session->set_flashdata('error', 'Verifikasi berhasil');
+			redirect('pengajuan/rencana');
 		}
 	}
 }

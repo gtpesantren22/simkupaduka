@@ -27,7 +27,7 @@
                                         <th>Kode</th>
                                         <th>Lembaga</th>
                                         <th>Periode</th>
-                                        <th>Pendataan / Bendahara / Cair / SPJ</th>
+                                        <th>Prencanaan / Bendahara / Cair / SPJ</th>
                                         <th>Nominal</th>
                                         <th>#</th>
                                     </tr>
@@ -55,8 +55,8 @@
                                             <td><?= $a->nama . ' ' . $rt ?></td>
                                             <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
                                             <td>
-                                                <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
                                                 <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                                <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
                                                 <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
                                                 <?php if ($a->spj == 0) { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum

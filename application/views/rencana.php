@@ -24,8 +24,6 @@ include 'lembaga/head.php';
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
-
-                        <button class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus-circle"></i> Buat Pengajuan Baru</button>
                         <div class="table-responsive">
                             <table id="table1" class="table table-hover align-middle table-nowrap mb-0">
                                 <thead>
@@ -33,8 +31,8 @@ include 'lembaga/head.php';
                                         <th scope="col">No</th>
                                         <th scope="col">Kode</th>
                                         <th scope="col">Bulan</th>
-                                        <th scope="col">Perencanaan</th>
                                         <th scope="col">Bendahara</th>
+                                        <th scope="col">Perencanaan</th>
                                         <th scope="col">Pencairan</th>
                                         <th scope="col">SPJ</th>
                                         <th scope="col">#</th>
@@ -71,7 +69,7 @@ include 'lembaga/head.php';
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <button onclick="window.location='<?= base_url('pengajuan/detail/' . $a->kode_pengajuan) ?>'" type="button" class="btn btn-success btn-label waves-effect waves-light btn-sm"> Detail</button>
+                                                <button onclick="window.location='<?= base_url('pengajuan/rencanaDtl/' . $a->kode_pengajuan) ?>'" type="button" class="btn btn-success btn-label waves-effect waves-light btn-sm"> Detail</button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -95,54 +93,3 @@ include 'lembaga/head.php';
         $('#table1').DataTable();
     })
 </script>
-
-
-
-
-
-<?php if ($akses && $akses->pengajuan === 'Y') : ?>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Buat Pengajuan Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <?= form_open('pengajuan/pengajuanAdd'); ?>
-                <input type="hidden" name="jenis" value="biasa">
-                <div class="modal-body">
-                    <div class="form-group mb-3">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Lembaga *</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" value="<?= $lembaga->nama ?>" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Bulan *</label>
-                        <div class="col-sm-10">
-                            <!-- <select name="bulan" class="form-control" required>
-                                <option value=""> -- pilih bulan -- </option>
-                                <?php
-                                for ($i = 1; $i < count($bulan); $i++) { ?>
-                                    <option <?= date('m') == $i ? 'selected' : '' ?> value="<?= $i ?>"><?= $bulan[$i] ?></option>
-                                <?php } ?>
-                            </select> -->
-                            <input type="text" class="form-control" name="bulan" value="<?= date('m') ?>" readonly>
-                        </div>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" name="tahun" value="<?= date('Y') ?>" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Buat Pengajuan</button>
-                </div>
-                <?= form_close(); ?>
-            </div>
-        </div>
-    </div>
-<?php endif; ?>
