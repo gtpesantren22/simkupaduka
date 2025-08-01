@@ -169,6 +169,68 @@ class Pengajuan extends CI_Controller
 			echo json_encode(['status' => 'error', 'message' => 'Tambah item data gagal']);
 		}
 	}
+	public function addItemBarangModal()
+	{
+		$id_realis = $this->uuid->v4();
+		$kode_pengajuan = $this->input->post('kode_pengajuan', true);
+		$program = $this->input->post('program', true);
+		$coa = $this->input->post('coa', true);
+		$vol = $this->input->post('qty', true);
+		$nama = $this->input->post('nama', true);
+		$satuan = $this->input->post('satuan', true);
+		$harga_satuan = rmRp($this->input->post('harga_satuan', true));
+
+		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
+		if ($dt->stts === 'yes') {
+			$this->session->set_flashdata('error', 'Tidak bisa tambah item baru. Pengajuan sudah diproses');
+			redirect('pengajuan/detail/' . $kode_pengajuan);
+		}
+
+		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		$cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		$urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
+
+		// $dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
+
+		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-BnS-' . $urut;
+
+		$data = [
+			'id_realis' => $id_realis,
+			'lembaga' => $this->lembaga,
+			'bidang' => '-',
+			'jenis' => 'BnSHH',
+			'kode' => $kode,
+			'vol' => $vol,
+			'harga' => $harga_satuan,
+			'nominal' => $harga_satuan * $vol,
+			'tgl' => date('Y-m-d'),
+			'pj' => $this->user,
+			'bulan' => date('m'),
+			'tahun' => $this->tahun,
+			'ket' => $nama . ' - @ ' . $vol . ' ' . $satuan . ' x ' . number_format($harga_satuan, 0, ',', '.'),
+			'kode_pengajuan' => $kode_pengajuan,
+			'nom_cair' => $harga_satuan * $vol,
+			'nom_serap' => $harga_satuan * $vol,
+			'stas' => 'non tunai'
+		];
+		$data2 = [
+			'id_detail' => $id_realis,
+			'kode_coa' => $coa,
+			'kode_ssh' => 'BnS',
+			'kode_program' => $program,
+			'created_at' => date('Y-m-d H:i:s'),
+		];
+
+		$this->model->input('real_sm', $data);
+		$this->model->input('realis_detail', $data2);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('success', 'Tambah Barang berhasil');
+			redirect('pengajuan/detail/' . $kode_pengajuan);
+		} else {
+			$this->session->set_flashdata('error', 'Tambah barang gagal');
+			redirect('pengajuan/detail/' . $kode_pengajuan);
+		}
+	}
 
 	public function addItemTunai()
 	{

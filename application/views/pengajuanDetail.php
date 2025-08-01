@@ -97,6 +97,7 @@ require 'lembaga/head.php';
                                                     <label for="nameInput" class="form-label">Pilih Item (SSH)</label>
                                                 </div>
                                                 <div class="col-lg-9">
+                                                    <span role="button" data-bs-toggle="modal" data-bs-target="#inputno-modal" style="cursor: pointer;" class="badge bg-primary mb-2">Barang tidak ada di SSH</span>
                                                     <select class="js-example-basic-single select-dependent" id="item-ssh" name="ssh" required>
                                                     </select>
                                                 </div>
@@ -227,8 +228,8 @@ require 'lembaga/head.php';
                                                     <div class="col-lg-5">
                                                         <select class="js-example-basic-single" id="satuan-select" name="satuan">
                                                             <option value="">-satuan-</option>
-                                                            <?php foreach ($satuan as $satuan): ?>
-                                                                <option value="<?= $satuan->nama ?>"><?= $satuan->nama ?></option>
+                                                            <?php foreach ($satuan as $satuanTn): ?>
+                                                                <option value="<?= $satuanTn->nama ?>"><?= $satuanTn->nama ?></option>
                                                             <?php endforeach ?>
                                                         </select>
                                                     </div>
@@ -282,6 +283,52 @@ require 'lembaga/head.php';
         </div>
     </div>
     <!--end row-->
+</div>
+
+<div class="modal fade" id="inputno-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Barang Pengajuan </h5>
+                <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('pengajuan/addItemBarangModal') ?>" method="post" class="form-addrow mt-2">
+                    <input type="hidden" name="kode_pengajuan" value="<?= $pj->kode_pengajuan ?>">
+                    <input type="hidden" id="program_modal" name="program" value="">
+                    <input type="hidden" id="coa_modal" name="coa" value="">
+                    <div class="form-group mb-2">
+                        <label for="">Nama Barang</label>
+                        <input type="text" class="form-control" name="nama" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="">Satuan</label>
+                        <select class="form-select" name="satuan" required>
+                            <option value="">-satuan-</option>
+                            <?php foreach ($satuan as $satuanMd): ?>
+                                <option value="<?= $satuanMd->nama ?>"><?= $satuanMd->nama ?></option>
+                            <?php endforeach ?>
+                        </select>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="">Harga Barang</label>
+                        <input type="text" class="form-control uang" name="harga_satuan" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="">QTY</label>
+                        <input type="number" class="form-control" name="qty" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for=""></label>
+                        <button class="btn btn-success btn-sm" type="submit">Tambahkan</button>
+                    </div>
+                </form>
+                <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- End Page-content -->
@@ -564,6 +611,15 @@ require 'lembaga/head.php';
             minimumFractionDigits: 0
         }).format(number);
     }
+
+    $('#program').on('change', function() {
+        let kode = $(this).val();
+        $('#program_modal').val(kode)
+    })
+    $('#c-coa').on('change', function() {
+        let kode = $(this).val();
+        $('#coa_modal').val(kode)
+    })
 
     function resetFormAndTable() {
         $('#form-barang')[0].reset();
