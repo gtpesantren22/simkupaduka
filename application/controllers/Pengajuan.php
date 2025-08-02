@@ -185,6 +185,10 @@ class Pengajuan extends CI_Controller
 			$this->session->set_flashdata('error', 'Tidak bisa tambah item baru. Pengajuan sudah diproses');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
+		if ($program == '' || $coa == '') {
+			$this->session->set_flashdata('error', 'Program atau Akun (COA) belum dipilih');
+			redirect('pengajuan/detail/' . $kode_pengajuan);
+		}
 
 		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
 		$cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
