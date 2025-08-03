@@ -47,7 +47,7 @@ include 'lembaga/head.php';
                                         <tr>
                                             <td scope="row"><?= $no++ ?></td>
                                             <td><?= $a->kode_pengajuan ?></td>
-                                            <td><?= $a->lembaga ?></td>
+                                            <td><?= $a->nmlmb ?></td>
                                             <td><?= bulan($a->bulan) . ' ' . $a->tahun ?></td>
                                             <td>
                                                 <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
