@@ -525,7 +525,7 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 		if ($data['user']->lembaga !== '03') {
 			echo "Maaf Akun anda bukan perencanaan";
 		} else {
-			$data['dataPj'] = $this->db->query("SELECT * FROM pengajuan WHERE tahun = '$this->tahun' ")->result();
+			$data['dataPj'] = $this->db->query("SELECT pengajuan.*, lembaga.nama as nmlmb FROM pengajuan LEFT JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE pengajuan.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND pengajuan.stts = 'yes' ")->result();
 			$data['cekSPJ'] = $this->db->query("SELECT * FROM spj WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND stts != 3 ")->num_rows();
 			$data['cekPjn'] = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$this->lembaga' AND tahun = '$this->tahun' AND spj != 3 ")->num_rows();
 			$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();

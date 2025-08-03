@@ -2701,24 +2701,61 @@ Update data pertanggal
 		$data['tahun'] = $this->tahun;
 		$data['bulan'] = $this->bulan;
 
-		$dataPar = $this->model->getBy2('coa', 'tahun', $data['tahun'], 'parrent', '')->result();
 		$datakirim = [];
-		foreach ($dataPar as $key => $value) {
+		$dataParrent = $this->model->getBy2('coa', 'tahun', $this->tahun, 'parrent', '')->result();
+		foreach ($dataParrent as $parent) {
+			$child = $this->model->getBy2('coa', 'tahun', $this->tahun, 'parrent', $parent->kode)->result();
 			$datakirim[] = [
-				'nama' => $value->nama,
-				'kode' => $value->kode,
-				'tipe' => $value->tipe,
-				'keterangan' => $value->keterangan,
-				'uraian' => $value->uraian,
-				'tahun' => $value->tahun,
+				'parrent' => $parent,
+				'child' => $child,
 			];
 		}
 		$data['data'] = $datakirim;
-		
+
+		$data['coa'] = $this->model->getBy2('coa', 'parrent', '', 'tahun', $this->tahun)->result();
 		$data['ta'] = $this->model->getAll('tahun')->result();
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/coa', $data);
 		$this->load->view('admin/foot');
+	}
+
+	public function addCoa()
+	{
+		$data = [
+			'kode' => $this->input->post('kode', true),
+			'nama' => $this->input->post('nama', true),
+			'tipe' => $this->input->post('tipe', true),
+			'keterangan' => $this->input->post('keterangan', true),
+			'uraian' => $this->input->post('uraian', true),
+			'tahun' => $this->input->post('tahun', true),
+			'parrent' => ''
+		];
+		$this->model->input('coa', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Tambah data berhasil');
+			redirect('admin/coa');
+		} else {
+			$this->session->set_flashdata('error', 'Tambah data gagal');
+			redirect('admin/coa');
+		}
+	}
+	public function delCoa($id)
+	{
+
+		$cek_cao = $this->model->getBy2('coa', 'kode', $kode, 'tahun', $this->tahun)->row();
+		if ($cek_cao->parrent != '') {
+			$this->model->delete('coa', 'kode', $id);
+		} else {
+			$this->model->delete('coa', 'parrent', $id);
+			$this->model->delete('coa', 'kode', $id);
+		}
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus data berhasil');
+			redirect('admin/coa');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus data gagal');
+			redirect('admin/coa');
+		}
 	}
 }

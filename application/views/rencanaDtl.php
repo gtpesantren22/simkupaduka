@@ -1,5 +1,6 @@
 <?php
 include 'lembaga/head.php';
+$lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lembaga' ")->row();
 ?>
 <link href="<?= base_url(''); ?>assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 
@@ -46,7 +47,7 @@ include 'lembaga/head.php';
                                     </tr>
                                     <tr>
                                         <th>Lembaga</th>
-                                        <td><?= $pengajuan->lembaga; ?></td>
+                                        <td><?= $lembg->nama; ?></td>
                                     </tr>
                                 </table>
                             </div>
