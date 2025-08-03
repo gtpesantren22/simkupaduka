@@ -81,8 +81,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li> <a href="<?= base_url('admin/kode'); ?>"><i class="bx bx-right-arrow-alt"></i>Daftar
                                 Kode</a>
                         </li>
-                        <li> <a href="<?= base_url('admin/pagu'); ?>"><i class="bx bx-right-arrow-alt"></i>List Pagu</a>
-                        </li>
+                        <li> <a href="<?= base_url('admin/pagu'); ?>"><i class="bx bx-right-arrow-alt"></i>List Pagu</a></li>
+                        <li> <a href="<?= base_url('admin/ssh'); ?>"><i class="bx bx-right-arrow-alt"></i>Data SSH</a></li>
+                        <li> <a href="<?= base_url('admin/coa'); ?>"><i class="bx bx-right-arrow-alt"></i>Data Akun Belanja (COA)</a></li>
                     </ul>
                 </li>
                 <li>

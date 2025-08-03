@@ -2694,4 +2694,31 @@ Update data pertanggal
 			redirect('admin/setting');
 		}
 	}
+
+	public function coa()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$dataPar = $this->model->getBy2('coa', 'tahun', $data['tahun'], 'parrent', '')->result();
+		$datakirim = [];
+		foreach ($dataPar as $key => $value) {
+			$datakirim[] = [
+				'nama' => $value->nama,
+				'kode' => $value->kode,
+				'tipe' => $value->tipe,
+				'keterangan' => $value->keterangan,
+				'uraian' => $value->uraian,
+				'tahun' => $value->tahun,
+			];
+		}
+		$data['data'] = $datakirim;
+		
+		$data['ta'] = $this->model->getAll('tahun')->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/coa', $data);
+		$this->load->view('admin/foot');
+	}
 }

@@ -126,11 +126,22 @@ class Pengajuan extends CI_Controller
 			exit();
 		}
 
+
 		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
 		$cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
 		$urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
 
 		$dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
+
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$program' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+
+		if (($vol * $dataSsh->harga) > $sisa) {
+			echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
+			die();
+		}
 
 		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . $urut;
 
@@ -187,6 +198,16 @@ class Pengajuan extends CI_Controller
 		}
 		if ($program == '' || $coa == '') {
 			$this->session->set_flashdata('error', 'Program atau Akun (COA) belum dipilih');
+			redirect('pengajuan/detail/' . $kode_pengajuan);
+		}
+
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$program' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+
+		if (($vol * $harga_satuan) > $sisa) {
+			$this->session->set_flashdata('error', 'Nominal melebihi batas');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
 
@@ -252,6 +273,16 @@ class Pengajuan extends CI_Controller
 		if ($dt->stts === 'yes') {
 			echo json_encode(['status' => 'error', 'message' => 'Tidak bisa tambah item baru. Pengajuan sudah diproses']);
 			exit();
+		}
+
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$program' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+
+		if (($vol * $harga) > $sisa) {
+			echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
+			die();
 		}
 
 		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
@@ -470,8 +501,8 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 			$this->model->update('pengajuan', $data, 'kode_pengajuan', $kode);
 			if ($this->db->affected_rows() > 0) {
 
-				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				// kirim_person($this->apiKey, '082302301003', $psn);
 				// kirim_person($this->apiKey, '082264061060', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
