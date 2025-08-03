@@ -564,12 +564,35 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 
 	public function vervalRencana($kode)
 	{
+		$dtPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$lembaga = $this->model->getBy2('lembaga', 'kode', $dtPj->lembaga, 'tahun', $this->tahun)->row();
+		if (preg_match("/DISP./i", $kode)) {
+			$rt = '*(DISPOSISI)*';
+		} else {
+			$rt = '';
+		}
+		$bwh = $dtPj->verval == 1 ? 'Pengajuan sudah bisa dicairkan. Dimohon kepada KPA Lembaga Terkait untuk menghubungi Admin Pencairan.' : 'Selanjutnya Pengajuan menunggu verifikasi dari bendahara';
+
 		$this->model->update('pengajuan', ['apr' => 1], 'kode_pengajuan', $kode);
 		if ($this->db->affected_rows() > 0) {
+			$psn = '*INFORMASI VERIFIKASI PENGAJUAN* ' . $rt . '
+			
+pengajuan dari :
+
+Lembaga : ' . $lembaga->nama . '
+Kode Pengajuan : ' . $kode . '
+Periode : ' . bulan($dtPj->bulan) . ' ' . $dtPj->tahun . '
+*Telah di Verifikasi dan Validasi Oleh Bagian Perencanaan pada ' . date('Y-m-d') . '*
+
+*_' . $bwh . '_*
+Terimakasih';
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 			$this->session->set_flashdata('ok', 'Verifikasi berhasil');
 			redirect('pengajuan/rencana');
 		} else {
-			$this->session->set_flashdata('error', 'Verifikasi berhasil');
+			$this->session->set_flashdata('error', 'Verifikasi gagal');
 			redirect('pengajuan/rencana');
 		}
 	}

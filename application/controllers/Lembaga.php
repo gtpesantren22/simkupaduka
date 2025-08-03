@@ -72,7 +72,7 @@ class Lembaga extends CI_Controller
 		$lembaga = $this->lembaga;
 		$data['data'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 		$data['tahun'] = $this->tahun;
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $lembaga)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $lembaga, 'tahun', $this->tahun)->row();
 
 		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 		foreach ($data['jenis'] as $jns) {

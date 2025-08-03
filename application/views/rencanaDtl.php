@@ -1,6 +1,6 @@
 <?php
 include 'lembaga/head.php';
-$lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lembaga' ")->row();
+$lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lembaga' AND tahun = '$pengajuan->tahun' ")->row();
 ?>
 <link href="<?= base_url(''); ?>assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 
@@ -52,7 +52,14 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                 </table>
                             </div>
                             <div class="col-md-6">
-                                <a href="<?= base_url('pengajuan/vervalRencana/' . $pengajuan->kode_pengajuan) ?>" class="btn btn-success tbl-confirm" value="Pengajuan akan diverfikasi perencanaan"><i class="bx bx-check-circle"></i> Verifikasi Pengajuan</a>
+                                <?php if ($pengajuan->apr == 0) { ?>
+                                    <a href="<?= base_url('pengajuan/vervalRencana/' . $pengajuan->kode_pengajuan) ?>" class="btn btn-success tbl-confirm" value="Pengajuan akan diverfikasi perencanaan"><i class="bx bx-check-circle"></i> Verifikasi Pengajuan</a>
+                                    <form action="" method="post">
+                                        
+                                    </form>
+                                <?php } else {
+                                    echo "Pengajuan sudah diverifikasi";
+                                } ?>
                             </div>
                         </div>
                     </div>

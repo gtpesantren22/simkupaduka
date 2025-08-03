@@ -797,8 +797,9 @@ Terimakasih';
 		} else {
 			$rt = '';
 		}
+		$bwh = $pjData->apr == 1 ? 'Pengajuan sudah bisa dicairkan. Dimohon kepada KPA Lembaga Terkait untuk menghubungi Admin Pencairan.' : 'Selanjutnya Pengajuan menunggu verifikasi dari perencanaan';
 
-		$psn = '*INFORMASI PENCAIRAN PENGAJUAN* ' . $rt . '
+		$psn = '*INFORMASI VERIFIKASI PENGAJUAN* ' . $rt . '
 
 pengajuan dari :
 
@@ -807,15 +808,15 @@ Kode Pengajuan : ' . $kode . '
 Nominal : ' . rupiah($total->jml) . '
 *Telah di Verifikasi dan Validasi Oleh Sub Bagian Accounting pada ' . date('Y-m-d') . '*
 
-*_Pengajuan sudah bisa dicairkan. Dimohon kepada KPA Lembaga Terkait untuk menghubungi Admin Pencairan._*
+*_' . $bwh . '_*
 Terimakasih';
 
 		$this->model->input('verifikasi', $data);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			// kirim_person($this->apiKey, '082264061060', $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 
