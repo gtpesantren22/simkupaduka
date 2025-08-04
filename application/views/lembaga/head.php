@@ -87,7 +87,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li>
                             <a href="<?= base_url('pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan</a>
                         </li>
-                        <?php if ($user->lembaga == 3): ?>
+                        <?php if ($user->lembaga == '03'): ?>
                             <li>
                                 <a href="<?= base_url('pengajuan/rencana'); ?>"><i class="bx bx-right-arrow-alt"></i>Verval Pengajuan</a>
                             </li>
@@ -166,13 +166,22 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <div class="menu-title">Pengaturan</div>
                     </a>
                 </li>
-                <li>
-                    <!-- <a href="<?= base_url('lembaga/rab24'); ?>">
+                <!-- <li>
+                    <a href="<?= base_url('lembaga/rab24'); ?>">
                         <div class="parent-icon"><i class='bx bx-data'></i>
                         </div>
                         <div class="menu-title">RAB 23/24 <span class="badge bg-danger">sementara</span></div>
-                    </a> -->
-                </li>
+                    </a>
+                </li> -->
+                <?php if ($user->lembaga == '03'): ?>
+                    <li>
+                        <a href="<?= base_url('lembaga/history'); ?>">
+                            <div class="parent-icon"><i class='bx bx-history'></i>
+                            </div>
+                            <div class="menu-title">History Pengajuan</div>
+                        </a>
+                    </li>
+                <?php endif ?>
 
             </ul>
             <!--end navigation-->

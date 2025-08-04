@@ -319,4 +319,21 @@ class LembagaModel extends CI_Model
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
     }
+    public function getPengajuanAll($tahun)
+    {
+        $this->db->from('pengajuan');
+        $this->db->join('lembaga', 'ON pengajuan.lembaga=lembaga.kode');
+        $this->db->where('pengajuan.tahun', $tahun);
+        $this->db->where('lembaga.tahun', $tahun);
+        $this->db->order_by('pengajuan.at', 'DESC');
+        return $this->db->get();
+    }
+    function getByJoin3($table1, $table2, $on1, $on2, $where1, $where2, $dtwhere1, $dtwhere2)
+    {
+        $this->db->from($table1);
+        $this->db->join($table2, 'ON ' . $table1 . '.' . $on1 . '=' . $table2 . '.' . $on2);
+        $this->db->where($where1, $dtwhere1);
+        $this->db->where($where2, $dtwhere2);
+        return $this->db->get();
+    }
 }

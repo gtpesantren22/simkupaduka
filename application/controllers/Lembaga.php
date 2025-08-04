@@ -1930,4 +1930,39 @@ Terimakasih';
 			}
 		}
 	}
+
+	public function history()
+	{
+		$data['data'] = $this->model->getPengajuanAll($this->tahun)->result();
+		$data['bulan'] = $this->bulan;
+		$data['tahun'] = $this->tahun;
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/history', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	public function historyDtl($kode)
+	{
+		$sql = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode);
+		$data['data'] = $sql->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $data['data']->lembaga, 'tahun', $this->tahun)->row();
+		$data['bulan'] = $this->bulan;
+		$data['tahun'] = $this->tahun;
+
+		$data['real'] = $this->model->getBySum('realis', 'kode_pengajuan', $kode, 'nominal')->row();
+		$data['real_sm'] = $this->model->getBySum('real_sm', 'kode_pengajuan', $kode, 'nominal')->row();
+		$data['a'] = $this->model->getByJoin3('pengajuan', 'lembaga', 'lembaga', 'kode', 'kode_pengajuan', 'kode', $kode, $data['lembaga']->kode)->row();
+		$data['spj'] = $this->model->getBy('spj', 'kode_pengajuan', $kode)->row();
+		$data['veral'] = $this->model->getBy('verifikasi', 'kode_pengajuan', $kode)->result();
+		$data['apr'] = $this->model->getBy('approv', 'kode_pengajuan', $kode)->result();
+		$data['cair'] = $this->model->getBy('pencairan', 'kode_pengajuan', $kode)->result();
+		$data['history'] = $this->model->getBy('history', 'kode_pengajuan', $kode)->result();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/historyDtl', $data);
+		$this->load->view('lembaga/foot');
+	}
 }
