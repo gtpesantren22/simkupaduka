@@ -158,20 +158,18 @@ class Kasir extends CI_Controller
         $kasir = $this->input->post('kasir', true);
         $penerima = $this->input->post('penerima', true);
 
-        $data = [
-            'id_cair' => $id,
+        $history = [
             'kode_pengajuan' => $kd_pnj,
             'lembaga' => $dataPj->lembaga,
-            'nominal' => $jml->nom_cair,
-            'nominal_cair' => $jml->nom_serap,
-            'tgl_cair' => $tgl_cair,
-            'kasir' => $kasir,
-            'penerima' => $penerima,
+            'tgl_verval' => date('Y-m-d H:i:s'),
+            'user' => $this->user,
+            'stts' => 'pencairan',
             'tahun' => $this->tahun,
+            'pesan' => 'Pengajuan dicairkan'
         ];
-
         $data2 = ['cair' => 1];
-        $this->model->input('pencairan', $data);
+        $this->model->input('history', $history);
+        // $this->model->input('pencairan', $data);
         $this->model->update('pengajuan', $data2, 'kode_pengajuan', $kd_pnj);
 
         foreach ($dataReal as $x) {
@@ -216,7 +214,7 @@ Terimakasih';
         if ($this->db->affected_rows() > 0) {
             kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
             kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            kirim_person($this->apiKey, '082264061060', $psn);
+            // kirim_person($this->apiKey, '082264061060', $psn);
             kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pengajuan sudah dicairkan');

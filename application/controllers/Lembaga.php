@@ -543,12 +543,21 @@ Terimakasih';
 			$data2 = [
 				'spj' => 1,
 			];
-
+			$history = [
+				'kode_pengajuan' => $kode,
+				'lembaga' => $file->lembaga,
+				'tgl_verval' => date('Y-m-d H:i:s'),
+				'user' => $this->user,
+				'stts' => 'spj',
+				'tahun' => $this->tahun,
+				'pesan' => 'KPA mengupload SPJ'
+			];
 
 			if ($spj->file_spj != '') {
 				unlink('./vertical/assets/uploads/' . $spj->file_spj);
 				$this->model->update('spj', $data, 'kode_pengajuan', $kode);
 			} else {
+				$this->model->input('history', $history);
 				$this->model->update('spj', $data, 'kode_pengajuan', $kode);
 				$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 			}

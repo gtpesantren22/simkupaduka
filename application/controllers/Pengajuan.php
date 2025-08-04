@@ -455,6 +455,15 @@ class Pengajuan extends CI_Controller
 		} else {
 			$rt = '';
 		}
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $dt->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'diajukan',
+			'tahun' => $this->tahun,
+			'pesan' => 'Diajukan KPA'
+		];
 
 		$psn_old = '*INFORMASI PENGAJUAN* ' . $rt . '
 
@@ -499,6 +508,7 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 			redirect('pengajuan/detail/' . $kode);
 		} else {
 			$this->model->update('pengajuan', $data, 'kode_pengajuan', $kode);
+			$this->model->input('history', $history);
 			if ($this->db->affected_rows() > 0) {
 
 				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
@@ -573,7 +583,18 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 		}
 		$bwh = $dtPj->verval == 1 ? 'Pengajuan sudah bisa dicairkan. Dimohon kepada KPA Lembaga Terkait untuk menghubungi Admin Pencairan.' : 'Selanjutnya Pengajuan menunggu verifikasi dari bendahara';
 
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $dtPj->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'verifikasi',
+			'tahun' => $this->tahun,
+			'pesan' => 'Diverifikasi Perencanaan'
+		];
+
 		$this->model->update('pengajuan', ['apr' => 1], 'kode_pengajuan', $kode);
+		$this->model->input('history', $history);
 		if ($this->db->affected_rows() > 0) {
 			$psn = '*INFORMASI VERIFIKASI PENGAJUAN* ' . $rt . '
 			
@@ -609,6 +630,16 @@ Terimakasih';
 		} else {
 			$rt = '';
 		}
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $dtPj->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'ditolak',
+			'tahun' => $this->tahun,
+			'pesan' => 'Ditolak Perencanaan. ' . $alasan
+		];
+		$this->model->input('history', $history);
 		$this->model->update('pengajuan', ['apr' => 0, 'stts' => 'no'], 'kode_pengajuan', $kode);
 		if ($this->db->affected_rows() > 0) {
 			$psn = '*INFORMASI PENOLAKAN PENGAJUAN* ' . $rt . '

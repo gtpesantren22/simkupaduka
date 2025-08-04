@@ -780,14 +780,14 @@ Terimakasih';
 		$total = $this->model->getBySum('real_sm', 'kode_pengajuan', $kode, 'nominal')->row();
 
 		$where = $kode;
-		$data = [
-			'id_verval' => $this->uuid->v4(),
+		$history = [
 			'kode_pengajuan' => $kode,
 			'lembaga' => $pjData->lembaga,
-			'tgl_verval' => date('Y-m-d'),
+			'tgl_verval' => date('Y-m-d H:i:s'),
 			'user' => $this->user,
-			'stts' => 1,
-			'tahun' => $this->tahun
+			'stts' => 'verifikasi',
+			'tahun' => $this->tahun,
+			'pesan' => 'Diverifikasi Bendahara'
 		];
 		// $data2 = ['verval' => '1', 'apr' => '1'];
 		$data2 = ['verval' => '1'];
@@ -811,7 +811,7 @@ Nominal : ' . rupiah($total->jml) . '
 *_' . $bwh . '_*
 Terimakasih';
 
-		$this->model->input('verifikasi', $data);
+		$this->model->input('history', $history);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
@@ -838,15 +838,14 @@ Terimakasih';
 		$pesan = $this->input->post('pesan', true);
 		$tgl = $this->input->post('tgl', true);
 
-		$data = [
-			'id_verval' => $this->uuid->v4(),
+		$history = [
 			'kode_pengajuan' => $kode,
-			'lembaga' => $pjData->lembaga,
-			'tgl_verval' => $tgl,
+			'lembaga' => $dtPj->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
 			'user' => $this->user,
-			'stts' => 0,
-			'pesan' => $pesan,
-			'tahun' => $this->tahun
+			'stts' => 'verifikasi',
+			'tahun' => $this->tahun,
+			'pesan' => 'Ditolak Bendahara. ' . $pesan
 		];
 		$data2 = ['stts' => 'no'];
 
@@ -873,7 +872,7 @@ dengan catatan : _*' . $pesan . '*_
 
 Terimakasih';
 
-		$this->model->input('verifikasi', $data);
+		$this->model->input('history', $history);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
@@ -914,6 +913,8 @@ Terimakasih';
 		$isi =  $this->input->post('isi', true);
 		$at = date('d-m-Y H:i');
 
+		$dtPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+
 		if (preg_match("/DISP./i", $kode)) {
 			$rt = "*(DISPOSISI)*";
 		} else {
@@ -935,7 +936,17 @@ Terimakasih';
 
 		$data1 = ['stts' => '0'];
 		$data2 = ['spj' => '0'];
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $dtPj->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'spj',
+			'tahun' => $this->tahun,
+			'pesan' => 'SPJ Ditolak'
+		];
 
+		$this->model->input('history', $history);
 		$this->model->update('spj', $data1, 'id_spj', $id);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
@@ -999,6 +1010,17 @@ Terimakasih';
 		$data1 = ['stts' => '2'];
 		$data2 = ['spj' => '2'];
 
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $dtPj->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'spj',
+			'tahun' => $this->tahun,
+			'pesan' => 'SPJ Disetujui'
+		];
+
+		$this->model->input('history', $history);
 		$this->model->update('spj', $data1, 'id_spj', $id);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 		$this->model->input('real_sisasm', $data3);
