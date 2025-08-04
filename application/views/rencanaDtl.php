@@ -31,7 +31,7 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-5">
                                 <table class="table table-striped">
                                     <tr>
                                         <th>Kode Pengajuan</th>
@@ -51,16 +51,27 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                     </tr>
                                 </table>
                             </div>
-                            <div class="col-md-6">
-                                <?php if ($pengajuan->apr == 0) { ?>
+                            <?php if ($pengajuan->apr == 0) { ?>
+                                <div class="col-md-2">
                                     <a href="<?= base_url('pengajuan/vervalRencana/' . $pengajuan->kode_pengajuan) ?>" class="btn btn-success tbl-confirm" value="Pengajuan akan diverfikasi perencanaan"><i class="bx bx-check-circle"></i> Verifikasi Pengajuan</a>
-                                    <form action="" method="post">
-                                        
+                                </div>
+                                <div class="col-md-5">
+                                    <form action="<?= base_url('pengajuan/tolakRencana') ?>" method="post">
+                                        <input type="hidden" name="kode_pengajuan" value="<?= $pengajuan->kode_pengajuan ?>">
+                                        <h5>Form penolakan pengajuan</h5>
+                                        <div class="form-group mb-1">
+                                            <label for="alasan">Catatan penolakan</label>
+                                            <textarea class="form-control" id="alasan" name="alasan"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for=""></label>
+                                            <button class="btn btn-danger btn-sm">Tolak pengajuan</button>
+                                        </div>
                                     </form>
-                                <?php } else {
-                                    echo "Pengajuan sudah diverifikasi";
-                                } ?>
-                            </div>
+                                </div>
+                            <?php } else {
+                                echo "Pengajuan sudah diverifikasi";
+                            } ?>
                         </div>
                     </div>
                 </div>

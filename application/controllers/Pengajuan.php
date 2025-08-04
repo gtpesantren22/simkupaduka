@@ -596,4 +596,40 @@ Terimakasih';
 			redirect('pengajuan/rencana');
 		}
 	}
+	public function tolakRencana()
+	{
+		$kode = $this->input->post('kode_pengajuan', true);
+		$alasan = $this->input->post('alasan', true);
+
+		$dtPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$lembaga = $this->model->getBy2('lembaga', 'kode', $dtPj->lembaga, 'tahun', $this->tahun)->row();
+
+		if (preg_match("/DISP./i", $kode)) {
+			$rt = '*(DISPOSISI)*';
+		} else {
+			$rt = '';
+		}
+		$this->model->update('pengajuan', ['apr' => 0, 'stts' => 'no'], 'kode_pengajuan', $kode);
+		if ($this->db->affected_rows() > 0) {
+			$psn = '*INFORMASI PENOLAKAN PENGAJUAN* ' . $rt . '
+			
+pengajuan dari :
+
+Lembaga : ' . $lembaga->nama . '
+Kode Pengajuan : ' . $kode . '
+Periode : ' . bulan($dtPj->bulan) . ' ' . $dtPj->tahun . '
+*Ditolak* Oleh Bagian Perencanaan pada ' . date('Y-m-d') . ', dengan catatan :
+
+*_' . $alasan . '_*
+Kepada KPA terkait diharapkan untuk merevisi ulang. Terimakasih';
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
+			$this->session->set_flashdata('ok', 'Penolakan berhasil');
+			redirect('pengajuan/rencana');
+		} else {
+			$this->session->set_flashdata('error', 'Penolakan gagal');
+			redirect('pengajuan/rencana');
+		}
+	}
 }
