@@ -392,7 +392,7 @@
                                 <label for="">Pilih Lembaga</label>
                                 <select name="lembaga" id="" class="form-select" required>
                                     <?php foreach ($data as $lm) : ?>
-                                        <option <?= $currData->lembaga == $lm->kode ? 'selected' : '' ?> value="<?= $lm->kode ?>"><?= $lm->nama ?></option>
+                                        <option <?= $currData->lembaga == $lm->kode ? 'selected' : '' ?> value="<?= $lm->kode ?>"><?= $lm->kode . '. ' . $lm->nama ?></option>
                                     <?php endforeach ?>
                                 </select>
                             </div>

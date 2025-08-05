@@ -262,6 +262,7 @@ require 'lembaga/head.php';
                             <table class="table table-nowrap align-middle" id="tableData">
                                 <thead class="text-muted table-dark">
                                     <tr class="">
+                                        <th class="text-light" data-sort="id">No</th>
                                         <th class="text-light" data-sort="id">Kode Item</th>
                                         <th class="text-light" data-sort="customer_name">Akun/COA</th>
                                         <th class="text-light" data-sort="product_name">Nama Item</th>
@@ -577,6 +578,7 @@ require 'lembaga/head.php';
                     response.forEach(function(item, index) {
                         rows += `
                             <tr>
+                                <td class="text-center">${index + 1}</td>
                                 <td class="id"><a href="#" class="fw-medium link-primary">${item.kode_item}</a></td>
                                 <td class="customer_name">${item.coa}</td>
                                 <td class="product_name">${item.ssh == null && item.ket ? parseItemDetail(item.ket)?.nama : item.ssh}</td>
