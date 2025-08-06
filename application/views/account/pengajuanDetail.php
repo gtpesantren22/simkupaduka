@@ -54,30 +54,7 @@
                                             <th>Ket</th>
                                         </tr>
                                     </thead>
-                                    <!-- <tbody>
 
-                                        <?php foreach ($jenis as $dtJenis) :
-                                            $sisa = $rabJml[$dtJenis->kode_jns]->jml3 - $pakaiJml[$dtJenis->kode_jns]->nominal;
-                                            $pengajuan = $nomJml[$dtJenis->kode_jns]->jml;
-                                        ?>
-                                            <tr>
-                                                <td> <?= $dtJenis->kode_jns . '. ' . $dtJenis->nama ?></td>
-                                                <td><?= rupiah($sisa) ?></td>
-                                                <td><?= rupiah($pengajuan); ?></td>
-                                                <td>
-                                                    <?php if ($sisa >= $pengajuan) { ?>
-                                                        <span class="badge bg-success"><i class="bx bx-check"></i> RAB
-                                                            Mencukupi</span>
-                                                    <?php } else { ?>
-                                                        <span class="badge bg-danger"><i class="bx bx-no-entry"></i> RAB
-                                                            Tidak
-                                                            Mencukupi</span>
-                                                    <?php } ?>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach ?>
-
-                                    </tbody> -->
                                     <tfoot>
                                         <tr>
                                             <th>TOTAL</th>
@@ -86,7 +63,7 @@
                                             <th><?= rupiah(($totalAjukan->jml)); ?>
                                             </th>
                                             <th></th>
-                                            <!-- <th><?= rupiah(($sisaA + $sisaB + $sisaC + $sisaD) - ($nomA->jml + $nomB->jml + $nomC->jml + $nomD->jml)); ?></th> -->
+
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -237,7 +214,7 @@
                                                     <span class="ms-3"><?= $a['nama_item'] ?></span>
                                                 </div>
                                                 <div>
-                                                    <span class="badge bg-success bg-opacity-10">
+                                                    <span class="badge bg-success bg-opacity-10" id="sts_<?= $a['id'] ?>">
                                                         <i class="bi bi-check-circle me-1"></i> <?= $a['stas'] ?>
                                                     </span>
                                                     <span class="ms-2 text-muted small"><?= rupiah($a['nominal']) ?></span>
@@ -261,7 +238,29 @@
                                                     </ul>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <!-- <h5 class="mb-3">Proses Persetujuan</h5> -->
+                                                    <h5 class="mb-3">Edit Item</h5>
+                                                    <form action="" method="post" class="edit-item">
+                                                        <input type="hidden" name="id" value="<?= $a['id'] ?>">
+                                                        <div class="form-group">
+                                                            <label for="">Jenis cair</label>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="cair" value="tunai" <?= $a['stas'] == 'tunai' ? 'checked' : '' ?> id="flexRadioDefault1">
+                                                                <label class="form-check-label" for="flexRadioDefault1">
+                                                                    Tunai
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check">
+                                                                <input class="form-check-input" type="radio" name="cair" value="non tunai" <?= $a['stas'] == 'non tunai' ? 'checked' : '' ?> id="flexRadioDefault2">
+                                                                <label class="form-check-label" for="flexRadioDefault2">
+                                                                    Non Tunai
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for=""></label>
+                                                            <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+                                                        </div>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -326,3 +325,28 @@
         </div>
     </div>
 </div>
+
+<script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
+<script>
+    $('.edit-item').on('submit', function(e) {
+        e.preventDefault();
+        var id = $(this).find('input[name="id"]').val();
+        var nameID = 'sts_' + id;
+        $.ajax({
+            type: "POST",
+            url: "<?= base_url('account/editItem'); ?>",
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(data) {
+                if (data.status == 'success') {
+                    $(`#${nameID}`).text(data.data);
+                } else {
+                    alert(data.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        })
+    })
+</script>

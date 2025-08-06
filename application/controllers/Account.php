@@ -2701,4 +2701,20 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 			redirect('account/bungaBank');
 		}
 	}
+
+	public function editItem()
+	{
+		$id = $this->input->post('id', true);
+		$stas = $this->input->post('cair', true);
+		$data = [
+			'stas' => $stas
+		];
+
+		$this->model->update('real_sm', $data, 'id_realis', $id);
+		if ($this->db->affected_rows() > 0) {
+			echo json_encode(['status' => 'success', 'data' => $stas]);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Update data gagal']);
+		}
+	}
 }
