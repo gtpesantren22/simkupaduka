@@ -43,8 +43,9 @@
                             <div>
                                 <p class="mb-0 text-secondary">Pengajuan Terakhir</p>
                                 <?php if ($spj) { ?>
-                                    <p class="mb-0 font-13">VerVal :
+                                    <p class="mb-0 font-13">Bendahara/Perencanaan :
                                         <?= $pj->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
+                                        <?= $pj->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
                                     </p>
                                     <p class="mb-0 font-13">Pencairan :
                                         <?= $pj->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>

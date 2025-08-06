@@ -58,9 +58,9 @@
                             <div class="col-sm-3 invoice-col">
                                 <center>
                                     <b>Status Pengajuan</b><br>
-                                    Verval :
+                                    Bendahara :
                                     <?= $a->verval == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i> belum</span>"; ?><br>
-                                    Approv :
+                                    Perencanaan :
                                     <?= $a->apr == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i> belum</span>"; ?><br>
                                     Cair :
                                     <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-times'></i> belum</span>"; ?><br>
@@ -108,7 +108,7 @@
                                                 <th>Kode RAB</th>
                                                 <th>Periode</th>
                                                 <th>PJ</th>
-                                                <th>Nominal</th>
+                                                <!-- <th>Nominal</th> -->
                                                 <th>Keterangan</th>
                                             </tr>
                                         </thead>
@@ -129,7 +129,7 @@
                                                     <td><?= $ade->kode ?></td>
                                                     <td><?= $bulan[$ade->bulan] . ' ' . $ade->tahun ?></td>
                                                     <td><?= $ade->pj ?></td>
-                                                    <td><?= rupiah($ade->nominal) ?></td>
+                                                    <!-- <td><?= rupiah($ade->nominal) ?></td> -->
                                                     <td><?= $ade->ket ?></td>
                                                     <!-- <td>
                                             <a onclick="return confirm('Yakin akan dihapus ?. Menghapus data ini akan menghapus data realisasi juga')" href="<?= 'hapus.php?kd=rab&id=' . $ade->id_realis; ?>"><span class="fa fa-trash-o text-danger"> Hapus</span></a>
@@ -137,12 +137,12 @@
                                                 </tr>
                                             <?php } ?>
                                         </tbody>
-                                        <tfoot>
+                                        <!-- <tfoot>
                                             <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
                                                 <th colspan="4">SUB JUMLAH</th>
                                                 <th colspan="2"><?= rupiah($tt->tot) ?></th>
                                             </tr>
-                                        </tfoot>
+                                        </tfoot> -->
                                     </table>
                                 </div>
                             </div>
