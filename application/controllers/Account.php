@@ -694,6 +694,7 @@ Terimakasih';
 			$ssh = $this->model->getBy('ssh', 'kode', $kode_rinci[3])->row();
 			$data_all[] = [
 				'id' => $dts->id_realis,
+				'kode_pengajuan' => $dts->kode_pengajuan,
 				'kode_item' => $dts->kode,
 				'nama_item' => $dts->ket,
 				'stas' => $dts->stas,
@@ -701,6 +702,7 @@ Terimakasih';
 				'harga' => $dts->harga,
 				'satuan' => $ssh ? $ssh->satuan : '',
 				'qty' => $dts->vol,
+				'ket' => $dts->ket,
 				'program' => $program->program,
 				'ssh' => $ssh ? $ssh->nama : '',
 				'coa' => $coa->nama,
@@ -2706,8 +2708,26 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 	{
 		$id = $this->input->post('id', true);
 		$stas = $this->input->post('cair', true);
+		$qty = $this->input->post('qty', true);
+		$kode_pengajuan = $this->input->post('kode_pengajuan', true);
+		$teks = $this->input->post('ket', true);
+		$harga = rmRp($this->input->post('harga', true));
+		$total = $harga * $qty;
+		$dtpj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
+
+		if ($dtpj->cair == 1) {
+			echo json_encode(['status' => 'error', 'message' => 'Maaf. pengajuan sudah dicairkan']);
+			die();
+		}
+		$ketNew = preg_replace('/@ \d+ x [0-9.]+/', "@ {$qty} x " . number_format($harga, 0, ',', '.'), $teks);
 		$data = [
-			'stas' => $stas
+			'stas' => $stas,
+			'vol' => $qty,
+			'harga' => $harga,
+			'nominal' => $total,
+			'nom_cair' => $total,
+			'nom_serap' => $total,
+			'ket' => $ketNew,
 		];
 
 		$this->model->update('real_sm', $data, 'id_realis', $id);

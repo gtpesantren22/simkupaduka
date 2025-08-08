@@ -241,24 +241,44 @@
                                                     <h5 class="mb-3">Edit Item</h5>
                                                     <form action="" method="post" class="edit-item">
                                                         <input type="hidden" name="id" value="<?= $a['id'] ?>">
-                                                        <div class="form-group">
-                                                            <label for="">Jenis cair</label>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="cair" value="tunai" <?= $a['stas'] == 'tunai' ? 'checked' : '' ?> id="flexRadioDefault1">
-                                                                <label class="form-check-label" for="flexRadioDefault1">
-                                                                    Tunai
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="cair" value="non tunai" <?= $a['stas'] == 'non tunai' ? 'checked' : '' ?> id="flexRadioDefault2">
-                                                                <label class="form-check-label" for="flexRadioDefault2">
-                                                                    Non Tunai
-                                                                </label>
+                                                        <input type="hidden" name="ket" value="<?= $a['ket']; ?>">
+                                                        <input type="hidden" name="kode_pengajuan" value="<?= $a['kode_pengajuan']; ?>">
+                                                        <div class="row mb-1">
+                                                            <label for="input35" class="col-sm-3 col-form-label">Jenis Cair</label>
+                                                            <div class="col-sm-9">
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="cair" value="tunai" <?= $a['stas'] == 'tunai' ? 'checked' : '' ?> id="flexRadioDefault1">
+                                                                    <label class="form-check-label" for="flexRadioDefault1">
+                                                                        Tunai
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="cair" value="non tunai" <?= $a['stas'] == 'non tunai' ? 'checked' : '' ?> id="flexRadioDefault2">
+                                                                    <label class="form-check-label" for="flexRadioDefault2">
+                                                                        Non Tunai
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label for=""></label>
-                                                            <button type="submit" class="btn btn-sm btn-success">Simpan</button>
+                                                        <div class="row mb-1">
+                                                            <label for="input36" class="col-sm-3 col-form-label">Harga Satuan</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="harga" class="form-control uang" id="input36" placeholder="Phone No" value="<?= $a['harga'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-1">
+                                                            <label for="inputqty" class="col-sm-3 col-form-label">QTY</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="number" name="qty" class="form-control" id="inputqty" placeholder="Phone No" value="<?= $a['qty'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label class="col-sm-3 col-form-label"></label>
+                                                            <div class="col-sm-9">
+                                                                <div class="d-md-flex d-grid align-items-center gap-3">
+                                                                    <button type="submit" class="btn btn-success btn-sm px-4">Simpan</button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -339,7 +359,8 @@
             dataType: 'json',
             success: function(data) {
                 if (data.status == 'success') {
-                    $(`#${nameID}`).text(data.data);
+                    // $(`#${nameID}`).text(data.data);
+                    window.location.reload()
                 } else {
                     alert(data.message);
                 }

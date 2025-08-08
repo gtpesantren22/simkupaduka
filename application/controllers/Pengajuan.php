@@ -354,6 +354,25 @@ class Pengajuan extends CI_Controller
 			}
 		}
 	}
+	public function delRencana($id)
+	{
+		$sn = $this->model->getBy('real_sm', 'id_realis', $id)->row();
+		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $sn->kode_pengajuan)->row();
+		if ($dt->cair == 1) {
+			$this->session->set_flashdata('error', 'Pengajuan sudah dicairkan');
+			redirect('pengajuan/rencanaDtl/' . $dt->kode_pengajuan);
+		} else {
+			$this->model->delete('real_sm', 'id_realis', $id);
+			$this->model->delete('realis_detail', 'id_detail', $id);
+			if ($this->db->affected_rows() > 0) {
+				$this->session->set_flashdata('ok', 'Hapus item berhasil');
+				redirect('pengajuan/rencanaDtl/' . $dt->kode_pengajuan);
+			} else {
+				$this->session->set_flashdata('error', 'Hapus item gagal');
+				redirect('pengajuan/rencanaDtl/' . $dt->kode_pengajuan);
+			}
+		}
+	}
 
 	public function totalPengjuan()
 	{
@@ -560,6 +579,7 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 			$kodefull = explode('-', $value->kode);
 			$program = $this->model->getBy2('dppk', 'id_dppk', $kodefull[1], 'tahun', $this->tahun)->row();
 			$dataKirim[] = [
+				'id_realis' => $value->id_realis,
 				'kode' => $program->id_dppk,
 				'program' => $program->program,
 				'bulan' => $program->bulan,
