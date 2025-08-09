@@ -186,12 +186,21 @@
                         <tbody>
                             <?php
                             $no = 1;
-                            foreach ($ajuanData->result() as $dtm) : ?>
+                            foreach ($ajuanData->result() as $dtm) :
+                                $ket = $dtm->ket;
+                                // Ambil nama
+                                preg_match('/^(.*?)\s*-\s*@/u', $ket, $namaMatch);
+                                $nama = isset($namaMatch[1]) ? trim($namaMatch[1]) : null;
+
+                                // Ambil satuan
+                                preg_match('/\d+\s+([^\s]+)\s+x/u', $ket, $satuanMatch);
+                                $satuan = isset($satuanMatch[1]) ? trim($satuanMatch[1]) : null
+                            ?>
                                 <tr>
                                     <td class="text-center"><?= $no++ ?></td>
-                                    <td colspan="3"><?= $dtm->nama ?></td>
+                                    <td colspan="3"><?= $nama ?></td>
                                     <td class="text-center"><?= $dtm->vol ?></td>
-                                    <td><?= $dtm->satuan ?></td>
+                                    <td><?= $satuan ?></td>
                                     <td><?= $dtm->namaMitra ?></td>
                                 </tr>
                             <?php endforeach; ?>

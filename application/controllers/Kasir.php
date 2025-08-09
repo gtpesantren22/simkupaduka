@@ -1168,10 +1168,9 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
         $sttsPj->cair == 1 ? $tblSelect = 'realis' : $tblSelect = 'real_sm';
 
         $data['mitra'] = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
-        // $data['order_mitra'] = $this->model->getBy('order_mitra', 'kode_pengajuan', $data['kode_pj']);
-        // $data['order_mitra'] = $this->model->getByJoin2('order_mitra', 'real_sm', 'kode', 'kode', 'order_mitra.kode_pengajuan', $data['kode_pj'], 'order_mitra.id_mitra', $id_mitra);
 
-        $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, $tblSelect.*, rab.nama, rab.satuan, rab.harga_satuan FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
+        // $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, $tblSelect.*, rab.nama, rab.satuan, rab.harga_satuan FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode JOIN rab ON order_mitra.kode=rab.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
+        $data['order_mitra'] = $this->db->query("SELECT order_mitra.*, $tblSelect.* FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ");
 
         $data['order_mitraTotal'] = $this->db->query("SELECT SUM($tblSelect.nominal) AS total FROM order_mitra JOIN $tblSelect ON order_mitra.kode=$tblSelect.kode WHERE order_mitra.kode_pengajuan = '$kode_lj' AND order_mitra.id_mitra = '$id_mitra' ")->row();
 
@@ -1581,7 +1580,7 @@ Bendahara PPDWK
     {
         $data['kode_pj'] = $kodePj;
 
-        $data['ajuanData'] = $this->db->query("SELECT order_mitra.*, real_sm.*, rab.nama, rab.satuan, mitra.nama AS namaMitra FROM order_mitra JOIN real_sm ON order_mitra.kode=real_sm.kode JOIN rab ON order_mitra.kode=rab.kode JOIN mitra ON order_mitra.id_mitra=mitra.id_mitra WHERE order_mitra.kode_pengajuan = '$kodePj' ORDER BY order_mitra.id_mitra ");
+        $data['ajuanData'] = $this->db->query("SELECT order_mitra.*, real_sm.*, mitra.nama AS namaMitra FROM order_mitra JOIN real_sm ON order_mitra.kode=real_sm.kode JOIN mitra ON order_mitra.id_mitra=mitra.id_mitra WHERE order_mitra.kode_pengajuan = '$kodePj' ORDER BY order_mitra.id_mitra ");
 
         $data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $data['ajuanData']->row('lembaga'));
         $data['kasir'] = $this->user;
