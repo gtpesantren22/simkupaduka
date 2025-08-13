@@ -285,11 +285,11 @@ class Pengajuan extends CI_Controller
 			die();
 		}
 
-		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		$cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		$urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
+		// $cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		// $cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		// $urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
 
-		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . $urut;
+		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . time();
 
 		$data = [
 			'id_realis' => $id_realis,

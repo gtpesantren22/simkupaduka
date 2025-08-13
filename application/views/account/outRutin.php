@@ -127,6 +127,8 @@
                         <option value="INTERNET"> INTERNET/WIFI</option>
                         <option value="HONOR"> HONOR</option>
                         <option value="BPJS"> Subsidi BPJS</option>
+                        <option value="SAMPAH"> SAMPAH</option>
+                        <option value="KORAN"> KORAN</option>
                     </select>
                 </div>
                 <div class="form-group mb-2">
