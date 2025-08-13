@@ -153,13 +153,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                 </li>
                 <li class="menu-label">AddOn</li>
                 <li>
-                    <a href="<?= base_url('lembaga/info'); ?>">
-                        <div class="parent-icon"><i class='bx bx-message-detail'></i>
-                        </div>
-                        <div class="menu-title">Informasi</div>
-                    </a>
-                </li>
-                <li>
                     <a href="<?= base_url('lembaga/setting'); ?>">
                         <div class="parent-icon"><i class='bx bx-cog'></i>
                         </div>
@@ -169,11 +162,18 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                 <!-- <li>
                     <a href="<?= base_url('lembaga/rab24'); ?>">
                         <div class="parent-icon"><i class='bx bx-data'></i>
-                        </div>
-                        <div class="menu-title">RAB 23/24 <span class="badge bg-danger">sementara</span></div>
-                    </a>
-                </li> -->
+                    </div>
+                    <div class="menu-title">RAB 23/24 <span class="badge bg-danger">sementara</span></div>
+                </a>
+            </li> -->
                 <?php if ($user->lembaga == '03'): ?>
+                    <li>
+                        <a href="<?= base_url('programs'); ?>">
+                            <div class="parent-icon"><i class='bx bx-message-detail'></i>
+                            </div>
+                            <div class="menu-title">Promgram</div>
+                        </a>
+                    </li>
                     <li>
                         <a href="<?= base_url('lembaga/history'); ?>">
                             <div class="parent-icon"><i class='bx bx-history'></i>
