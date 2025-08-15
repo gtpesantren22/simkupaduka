@@ -148,9 +148,11 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                                 <?php if ($ls_jns->pjnDataMitra) { ?>
                                                     <span class="badge bg-secondary"><?= $ls_jns->pjnDataMitra->nama ?></span>
 
-                                                    <a href="#" class="delOrderMitra" data-id_order="<?= $ls_jns->pjnDataMitra->id_order ?>">
-                                                        <span class="badge bg-danger">X</span>
-                                                    </a>
+                                                    <?php if ($pjn->cair != 1): ?>
+                                                        <a href="#" class="delOrderMitra" data-id_order="<?= $ls_jns->pjnDataMitra->id_order ?>">
+                                                            <span class="badge bg-danger">X</span>
+                                                        </a>
+                                                    <?php endif; ?>
 
                                                 <?php } else { ?>
                                                     <?php foreach ($mitra as $mtr) : ?>

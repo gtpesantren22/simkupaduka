@@ -405,8 +405,8 @@ require 'lembaga/head.php';
             },
             dataType: 'json',
             success: function(data) {
-                $('#c-coa').empty();
-                $('#c-coa').append('<option>pilih coa</option>')
+                $('#c-coa-tunai').empty();
+                $('#c-coa-tunai').append('<option>pilih coa</option>')
                 $.each(data.hasil, function(index, item) {
                     $('#c-coa-tunai').append(
                         $('<option>', {

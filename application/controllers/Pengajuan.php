@@ -127,9 +127,9 @@ class Pengajuan extends CI_Controller
 		}
 
 
-		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		$cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		$urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
+		// $cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		// $cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		// $urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
 
 		$dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
 
@@ -143,7 +143,7 @@ class Pengajuan extends CI_Controller
 			die();
 		}
 
-		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . $urut;
+		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . time();
 
 		$data = [
 			'id_realis' => $id_realis,
@@ -211,13 +211,13 @@ class Pengajuan extends CI_Controller
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
 
-		$cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		$cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		$urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
+		// $cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		// $cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
+		// $urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
 
 		// $dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
 
-		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-BnS-' . $urut;
+		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-BnS-' . time();
 
 		$data = [
 			'id_realis' => $id_realis,
@@ -379,7 +379,9 @@ class Pengajuan extends CI_Controller
 	public function totalPengjuan()
 	{
 		$kode = $this->input->post('kode', true);
-		$total = $this->db->query("SELECT SUM(nominal) as total FROM real_sm WHERE kode_pengajuan = '$kode'")->row('total');
+		$pjdata = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$tblselect = $pjdata->cair == 1 ? 'realis' : 'real_sm';
+		$total = $this->db->query("SELECT SUM(nominal) as total FROM $tblselect WHERE kode_pengajuan = '$kode'")->row('total');
 		echo json_encode($total);
 	}
 

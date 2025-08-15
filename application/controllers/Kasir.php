@@ -86,15 +86,16 @@ class Kasir extends CI_Controller
         $data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $data['pjn']->lembaga, 'tahun', $this->tahun)->row();
 
 
-        $crr = $this->model->getBySum('pencairan', 'kode_pengajuan', $kode, 'nominal_cair')->row();
-        $dt2 = $this->model->getBySum('real_sm', 'kode_pengajuan', $kode, 'nominal')->row();
+        // $crr = $this->model->getBySum('pencairan', 'kode_pengajuan', $kode, 'nominal_cair')->row();
+        $tblseselct = $data['pjn']->cair == 1 ? 'realis' : 'real_sm';
+        $dt2 = $this->model->getBySum($tblseselct, 'kode_pengajuan', $kode, 'nominal')->row();
 
         $data['mitra'] = $this->model->getAll('mitra')->result();
 
-        if ($crr->jml) {
+        if ($data['pjn']->cair == 1) {
             $data['tbl_slct'] = 'realis';
             $sts_tmbl = 'disabled';
-            $data['dcair'] = $crr->jml;
+            $data['dcair'] = $dt2->jml;
             $data['dblm'] = 0;
         } else {
             $data['tbl_slct'] = 'real_sm';
@@ -103,8 +104,8 @@ class Kasir extends CI_Controller
             $data['dblm'] = $dt2->jml;
         }
 
-        $data['rls'] = $this->model->getBy2($data['tbl_slct'], 'kode_pengajuan', $kode, 'stas', 'tunai')->result();
-        $data['rls2'] = $this->model->getBy2($data['tbl_slct'], 'kode_pengajuan', $kode, 'stas', 'non tunai')->result();
+        $data['rls'] = $this->model->getBy2($tblseselct, 'kode_pengajuan', $kode, 'stas', 'tunai')->result();
+        $data['rls2'] = $this->model->getBy2($tblseselct, 'kode_pengajuan', $kode, 'stas', 'non tunai')->result();
         foreach ($data['rls2'] as $key => $ls_jns) {
             $data['rls2'][$key]->pjnDataMitra = $this->model->getByJoin2('order_mitra', 'mitra', 'id_mitra', 'id_mitra', 'order_mitra.kode', $ls_jns->kode, 'order_mitra.kode_pengajuan', $ls_jns->kode_pengajuan)->row();
         }
@@ -119,6 +120,7 @@ class Kasir extends CI_Controller
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/cair', $data);
         $this->load->view('kasir/foot');
+        // echo $crr->jml;
     }
 
     public function editSerap()
