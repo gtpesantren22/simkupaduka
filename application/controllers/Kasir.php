@@ -190,7 +190,8 @@ class Kasir extends CI_Controller
                 'kode_pengajuan' => $x->kode_pengajuan,
                 'nom_cair' => $x->nom_cair,
                 'nom_serap' => $x->nom_serap,
-                'stas' => $x->stas
+                'stas' => $x->stas,
+                'harga' => $x->harga
             ];
 
             $this->model->input('realis', $dt);

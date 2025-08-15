@@ -353,7 +353,7 @@ require 'lembaga/head.php';
         }
     });
     $(document).ready(function() {
-        $('#table1').DataTable();
+        $('#table1').DataTable()
         $('.js-example-basic-single').select2({
             theme: 'bootstrap4',
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',

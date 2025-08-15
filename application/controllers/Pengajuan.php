@@ -331,7 +331,9 @@ class Pengajuan extends CI_Controller
 	public function loadTable()
 	{
 		$kode = $this->input->post('kode', true);
-		$qr = $this->db->query("SELECT id_realis, a.kode as kode_item, d.nama as coa, c.nama as ssh, a.harga, a.vol, c.satuan, a.stas, a.ket FROM real_sm a JOIN realis_detail b ON a.id_realis=b.id_detail LEFT JOIN ssh c ON b.kode_ssh=c.kode JOIN coa d ON b.kode_coa=d.kode WHERE a.kode_pengajuan = '$kode' ORDER BY b.created_at DESC")->result();
+		$pjdata = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$tblselect = $pjdata->cair == 1 ? 'realis' : 'real_sm';
+		$qr = $this->db->query("SELECT id_realis, a.kode as kode_item, d.nama as coa, c.nama as ssh, a.harga, a.vol, c.satuan, a.stas, a.ket FROM $tblselect a JOIN realis_detail b ON a.id_realis=b.id_detail LEFT JOIN ssh c ON b.kode_ssh=c.kode JOIN coa d ON b.kode_coa=d.kode WHERE a.kode_pengajuan = '$kode' ORDER BY b.created_at DESC")->result();
 
 		echo json_encode($qr);
 	}
