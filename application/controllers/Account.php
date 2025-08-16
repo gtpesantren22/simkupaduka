@@ -2564,6 +2564,10 @@ SELECT 'LISTRIK (PR)' AS ket, 179628000 AS total_rab, SUM(nominal) as pakai FROM
 UNION 
 SELECT 'INTERNET (PR)' AS ket, 62229000 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'INTERNET'
 UNION 
+SELECT 'SAMPAH (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'SAMPAH'
+UNION 
+SELECT 'KORAN (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'KORAN'
+UNION 
 SELECT 'Sarpras' AS ket,150000000 AS total_rab, SUM(qty*harga_satuan) as pakai FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan'
 UNION 
 SELECT 'Haflah' AS ket,0 AS total_rab, SUM(qty*harga_satuan) as pakai FROM haflah_detail JOIN haflah ON haflah_detail.kode_pengajuan=haflah.kode_pengajuan WHERE haflah_detail.tahun = '$this->tahun' AND (haflah.status = 'dicairkan' OR haflah.status = 'selesai') ")->result();
