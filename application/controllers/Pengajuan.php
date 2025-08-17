@@ -434,8 +434,14 @@ class Pengajuan extends CI_Controller
 			'no_urut' => $urut
 		];
 
-		$cek = $this->db->query("SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' AND tahun = '$tahun' ")->num_rows();
-		if ($cek < 1) {
+		$cek3 = $this->db->query("SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' AND tahun = '$tahun' ")->num_rows();
+		$cek2 = $this->db->query("SELECT * FROM pengajuan WHERE spj != 3 AND tahun = '$tahun' AND lembaga = 'this->lembaga' AND tahun = '$tahun' ")->num_rows();
+		if ($cek2 > 1) {
+			$this->session->set_flashdata('error', 'Pengajuan belumnya SPJ an');
+			redirect($rdrc);
+			die();
+		}
+		if ($cek3 < 1) {
 			$this->model->input('pengajuan', $data);
 			$this->model->input('spj', $data2);
 
