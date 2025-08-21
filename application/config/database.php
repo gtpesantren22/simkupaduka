@@ -248,7 +248,6 @@ $db['flat'] = array(
 	'username' => 'root',
 	'password' => '',
 	'database' => 'gaji_flat',
-
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
