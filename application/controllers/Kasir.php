@@ -2387,17 +2387,17 @@ https://simkupaduka.ppdwk.com/';
 
     public function loadSantri()
     {
-        // $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'ramadhan') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        // $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'maulid') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
-        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'ramadhan') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'maulid') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
         $this->load->view('kasir/loadSantri', $data);
     }
     public function loadRekom()
     {
-        // $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'ramadhan' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        // $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'maulid' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
-        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'ramadhan' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'maulid' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
         $this->load->view('kasir/loadRekom', $data);
     }
@@ -2406,8 +2406,8 @@ https://simkupaduka.ppdwk.com/';
     {
         $data = array(
             'nis' => $this->input->post('nis'),
-            'ket' => 'ramadhan',
-            // 'ket' => 'ramadhan',
+            'ket' => 'maulid',
+            // 'ket' => 'maulid',
             'tahun' => $this->tahun,
         );
 
