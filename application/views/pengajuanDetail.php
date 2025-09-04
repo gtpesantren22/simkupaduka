@@ -26,7 +26,7 @@ require 'lembaga/head.php';
             <div class="col-12 col-lg-12">
                 <div class="card" id="orderList">
                     <div class="card-header align-items-xl-center d-xl-flex">
-                        <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">List Pengajuan</h5>
+                        <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">Status : <?= $pj->stts == 'yes' ? 'sudah diajuakan' : 'belum diajuakan' ?></h5>
                         <div class="flex-shrink-0">
                             <ul class="nav nav-tabs nav-primary" role="tablist">
                                 <li class="nav-item" role="presentation">
