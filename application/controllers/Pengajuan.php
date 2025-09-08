@@ -460,6 +460,10 @@ class Pengajuan extends CI_Controller
 
 	public function ajukan($kode)
 	{
+		$this->session->set_flashdata('error', 'Tanggal sudah lewat');
+		redirect('pengajuan/detail/' . $kode);
+		die();
+
 		$bulan = $this->bulan;
 		$data = [
 			'stts' => 'yes',

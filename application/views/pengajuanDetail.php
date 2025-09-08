@@ -4,6 +4,7 @@ require 'lembaga/head.php';
 <link href="<?= base_url(''); ?>assets/plugins/datatable/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
 <link href="<?= base_url(''); ?>assets/plugins/select2/css/select2.min.css" rel="stylesheet" />
 <link href="<?= base_url(''); ?>assets/plugins/select2/css/select2-bootstrap4.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <!-- Start right Content here -->
 <!-- ============================================================== -->
 <div class="page-wrapper">
@@ -344,6 +345,13 @@ require 'lembaga/head.php';
 <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+
 <script>
     const notyf = new Notyf({
         duration: 3000,
@@ -573,30 +581,103 @@ require 'lembaga/head.php';
             },
             dataType: 'json',
             success: function(response) {
-                let rows = '';
-                if (response.length > 0) {
-                    response.forEach(function(item, index) {
-                        rows += `
-                            <tr>
-                                <td class="text-center">${index + 1}</td>
-                                <td class="id"><a href="#" class="fw-medium link-primary">${item.kode_item}</a></td>
-                                <td class="customer_name">${item.coa}</td>
-                                <td class="product_name">${item.ssh == null && item.ket ? parseItemDetail(item.ket)?.nama : item.ssh}</td>
-                                <td class="amount">${rupiah(item.harga)}</td>
-                                <td class="date">${item.vol} <small class="text-muted">${item.satuan == null && item.ket ? parseItemDetail(item.ket)?.satuan : item.satuan}</small></td>
-                                <td class="payment">${rupiah(item.vol*item.harga)}</td>
-                                <td class="status"><span class="badge bg-warning-subtle text-success text-uppercase">${item.stas =='tunai'?'Tunai':'Non-Tunai'}</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" onclick="delItem('${item.id_realis}')">Del</button>
-                                </td>
-                            </tr>
-                        `;
-                    });
+                if ($.fn.DataTable.isDataTable('#tableData')) {
+                    // kalau sudah ada DataTable, cukup update datanya
+                    let table = $('#tableData').DataTable();
+                    table.clear(); // kosongkan dulu
+                    if (response.length > 0) {
+                        response.forEach(function(item, index) {
+                            table.row.add([
+                                index + 1,
+                                `<a href="#" class="fw-medium link-primary">${item.kode_item}</a>`,
+                                item.coa,
+                                item.ssh == null && item.ket ? parseItemDetail(item.ket)?.nama : item.ssh,
+                                rupiah(item.harga),
+                                `${item.vol} <small class="text-muted">${item.satuan == null && item.ket ? parseItemDetail(item.ket)?.satuan : item.satuan}</small>`,
+                                rupiah(item.vol * item.harga),
+                                `<span class="badge bg-warning-subtle text-success text-uppercase">${item.stas =='tunai'?'Tunai':'Non-Tunai'}</span>`,
+                                `<button class="btn btn-sm btn-danger" onclick="delItem('${item.id_realis}')">Del</button>`
+                            ]);
+                        });
+                    }
+                    table.draw(); // render ulang
                 } else {
-                    rows = `<tr><td colspan="8" class="text-center">Tidak ada data</td></tr>`;
+                    // kalau pertama kali load, baru bikin DataTable
+                    $('#tableData').DataTable({
+                        data: response.map((item, index) => [
+                            index + 1,
+                            `<a href="#" class="fw-medium link-primary">${item.kode_item}</a>`,
+                            item.coa,
+                            item.ssh == null && item.ket ? parseItemDetail(item.ket)?.nama : item.ssh,
+                            rupiah(item.harga),
+                            `${item.vol} <small class="text-muted">${item.satuan == null && item.ket ? parseItemDetail(item.ket)?.satuan : item.satuan}</small>`,
+                            rupiah(item.vol * item.harga),
+                            `<span class="badge bg-warning-subtle text-success text-uppercase">${item.stas =='tunai'?'Tunai':'Non-Tunai'}</span>`,
+                            `<button class="btn btn-sm btn-danger" onclick="delItem('${item.id_realis}')">Del</button>`
+                        ]),
+                        columns: [{
+                                title: "#"
+                            },
+                            {
+                                title: "Kode Item"
+                            },
+                            {
+                                title: "COA"
+                            },
+                            {
+                                title: "Detail"
+                            },
+                            {
+                                title: "Harga"
+                            },
+                            {
+                                title: "Volume"
+                            },
+                            {
+                                title: "Total"
+                            },
+                            {
+                                title: "Status"
+                            },
+                            {
+                                title: "Aksi"
+                            }
+                        ],
+                        paging: false,
+                        searching: true,
+                        ordering: true,
+                        responsive: true,
+                        autoWidth: false,
+                        dom: 'Bfrtip', // B = Buttons, f = filter, r = processing, t = table, i = info, p = pagination
+                        buttons: [{
+                                extend: 'excelHtml5',
+                                title: 'Data Realisasi',
+                                text: '<i class="bx bx-excel"></i> Export Excel',
+                                className: 'btn btn-warning btn-sm'
+                            },
+                            {
+                                extend: 'csvHtml5',
+                                title: 'Data Realisasi',
+                                text: '<i class="bx bx-file-csv"></i> Export CSV',
+                                className: 'btn btn-info btn-sm'
+                            },
+                            {
+                                extend: 'pdfHtml5',
+                                title: 'Data Realisasi',
+                                text: '<i class="bx bx-file-pdf"></i> Export PDF',
+                                className: 'btn btn-danger btn-sm'
+                            },
+                            {
+                                extend: 'print',
+                                text: '<i class="bx bx-printer"></i> Print',
+                                className: 'btn btn-secondary btn-sm'
+                            }
+                        ],
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/id.json'
+                        }
+                    });
                 }
-
-                $('#tableData tbody').html(rows);
             },
             error: function(xhr, status, error) {
                 // console.log(xhr.responseText);

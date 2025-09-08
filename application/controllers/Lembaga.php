@@ -490,6 +490,10 @@ Terimakasih';
 
 	public function uploadSpj()
 	{
+		$this->session->set_flashdata('error', 'Tanggal sudah lewat');
+		redirect('lembaga/spj');
+		die();
+		
 		$id = $this->uuid->v4();
 		$kode  = $this->input->post('kode');
 		$bulan  = $this->input->post('bulan');
