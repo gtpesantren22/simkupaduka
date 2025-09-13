@@ -692,6 +692,8 @@ Terimakasih';
 			$program = $this->model->getBy2('dppk', 'id_dppk', $kode_rinci[1], 'tahun', $this->tahun)->row();
 			$coa = $this->model->getBy2('coa', 'kode', $kode_rinci[2], 'tahun', $this->tahun)->row();
 			$ssh = $this->model->getBy('ssh', 'kode', $kode_rinci[3])->row();
+			$rlsdtl = $this->model->getBy('realis_detail', 'id_detail', $dts->id_realis)->row();
+			$stn = explode(" ", $dts->ket);
 			$data_all[] = [
 				'id' => $dts->id_realis,
 				'kode_pengajuan' => $dts->kode_pengajuan,
@@ -700,17 +702,19 @@ Terimakasih';
 				'stas' => $dts->stas,
 				'nominal' => $dts->nominal,
 				'harga' => $dts->harga,
-				'satuan' => $ssh ? $ssh->satuan : '',
+				'satuan' => preg_match('/@ \d+\s+(\w+)/', $dts->ket, $match) ? $match[1] : '',
 				'qty' => $dts->vol,
 				'ket' => $dts->ket,
 				'program' => $program->program,
 				'ssh' => $ssh ? $ssh->nama : '',
 				'coa' => $coa->nama,
+				'kegiatan' => $rlsdtl->kegiatan,
 			];
 		}
 
 
 		$data['data'] = $data_all;
+		$data['satuan'] = $this->model->getAll('satuan')->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
@@ -2716,6 +2720,8 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 		$kode_pengajuan = $this->input->post('kode_pengajuan', true);
 		$teks = $this->input->post('ket', true);
 		$harga = rmRp($this->input->post('harga', true));
+		$nama = $this->input->post('nama', true);
+		$satuan = $this->input->post('satuan', true);
 		$total = $harga * $qty;
 		$dtpj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
 
@@ -2723,7 +2729,7 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 			echo json_encode(['status' => 'error', 'message' => 'Maaf. pengajuan sudah dicairkan']);
 			die();
 		}
-		$ketNew = preg_replace('/@ \d+ x [0-9.]+/', "@ {$qty} x " . number_format($harga, 0, ',', '.'), $teks);
+		$ketNew = $nama . ' - @ ' . $qty . ' ' . $satuan . ' x ' . number_format($harga, 0, ',', '.');
 		$data = [
 			'stas' => $stas,
 			'vol' => $qty,

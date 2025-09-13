@@ -119,6 +119,7 @@ class Pengajuan extends CI_Controller
 		$coa = $this->input->post('coa', true);
 		$ssh = $this->input->post('ssh', true);
 		$vol = $this->input->post('qty', true);
+		$kegiatan = $this->input->post('kegiatan', true);
 
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
 		if ($dt->stts === 'yes') {
@@ -159,6 +160,7 @@ class Pengajuan extends CI_Controller
 			'bulan' => date('m'),
 			'tahun' => $this->tahun,
 			'ket' => $dataSsh->nama . ' - @ ' . $vol . ' x ' . number_format($dataSsh->harga, 0, ',', '.'),
+			'ket' => $dataSsh->nama . ' - @ ' . $vol . ' ' . $dataSsh->satuan . ' x ' . number_format($dataSsh->harga, 0, ',', '.'),
 			'kode_pengajuan' => $kode_pengajuan,
 			'nom_cair' => $dataSsh->harga * $vol,
 			'nom_serap' => $dataSsh->harga * $vol,
@@ -169,6 +171,7 @@ class Pengajuan extends CI_Controller
 			'kode_coa' => $coa,
 			'kode_ssh' => $ssh,
 			'kode_program' => $program,
+			'kegiatan' => $kegiatan,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
 

@@ -229,6 +229,7 @@
                                                     <h5 class="mb-3">Rincian Pengajuan</h5>
                                                     <ul class="list-unstyled">
                                                         <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Program</strong> : <?= $a['program'] ?></li>
+                                                        <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Kegiatan</strong> : <?= $a['kegiatan'] ?></li>
                                                         <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Akun/Coa</strong> : <?= $a['coa'] ?></li>
                                                         <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Nama Barang</strong> : <?= $a['ssh'] ?></li>
                                                         <li class="mb-1 d-flex"><strong class="me-2" style="width:150px;">Harga</strong> : <?= rupiah($a['harga']) ?></li>
@@ -261,15 +262,33 @@
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
-                                                            <label for="input36" class="col-sm-3 col-form-label">Harga Satuan</label>
+                                                            <label for="" class="col-sm-3 col-form-label">Nama Item</label>
                                                             <div class="col-sm-9">
-                                                                <input type="text" name="harga" class="form-control uang" id="input36" placeholder="Phone No" value="<?= $a['harga'] ?>">
+                                                                <input type="text" name="nama" class="form-control" id="" placeholder="Nama Item" value="<?= $nama = explode(" - ", $a['ket'])[0];
+                                                                                                                                                            ?>">
                                                             </div>
                                                         </div>
                                                         <div class="row mb-1">
                                                             <label for="inputqty" class="col-sm-3 col-form-label">QTY</label>
                                                             <div class="col-sm-9">
                                                                 <input type="number" name="qty" class="form-control" id="inputqty" placeholder="Phone No" value="<?= $a['qty'] ?>">
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-1">
+                                                            <label for="input36" class="col-sm-3 col-form-label">Satuan</label>
+                                                            <div class="col-sm-9">
+                                                                <select class="form-select id=" name="satuan">
+                                                                    <option value="">-satuan-</option>
+                                                                    <?php foreach ($satuan as $satuanTn): ?>
+                                                                        <option <?= $satuanTn->nama == $a['satuan'] ? 'selected' : '' ?> value="<?= $satuanTn->nama ?>"><?= $satuanTn->nama ?></option>
+                                                                    <?php endforeach ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-1">
+                                                            <label for="input36" class="col-sm-3 col-form-label">Harga Satuan</label>
+                                                            <div class="col-sm-9">
+                                                                <input type="text" name="harga" class="form-control uang" id="input36" placeholder="Phone No" value="<?= $a['harga'] ?>">
                                                             </div>
                                                         </div>
                                                         <div class="row">

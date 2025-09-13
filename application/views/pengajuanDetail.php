@@ -95,6 +95,14 @@ require 'lembaga/head.php';
                                             </div>
                                             <div class="row mb-2">
                                                 <div class="col-lg-3">
+                                                    <label for="kegiatan" class="form-label">Nama Kegiatan</label>
+                                                </div>
+                                                <div class="col-lg-9">
+                                                    <input type="text" class="fr-kegiatan form-control" name="kegiatan" placeholder="Masukan nama kegiata" required>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-lg-3">
                                                     <label for="nameInput" class="form-label">Pilih Item (SSH)</label>
                                                 </div>
                                                 <div class="col-lg-9">
@@ -198,6 +206,14 @@ require 'lembaga/head.php';
                                                         </select>
                                                         <select class="js-example-basic-single select-dependent" id="c-coa-tunai" name="coa" required>
                                                         </select>
+                                                    </div>
+                                                </div>
+                                                <div class="row mb-2">
+                                                    <div class="col-lg-3">
+                                                        <label for="kegiatan" class="form-label">Nama Kegiatan</label>
+                                                    </div>
+                                                    <div class="col-lg-9">
+                                                        <input type="text" class="fr-kegiatan form-control" name="kegiatan" placeholder="Masukan nama kegiata" required>
                                                     </div>
                                                 </div>
                                             </div>
@@ -723,6 +739,7 @@ require 'lembaga/head.php';
         $('#nama-kategori').text('')
         $('#harga').text('');
         $('#satuan').text('')
+        $('.fr-kegiatan').text('')
         $('#qty').text(0)
         $('#total-harga').text(0)
     }
