@@ -21,6 +21,7 @@ class Lembaga extends CI_Controller
 
 		$api = $this->model->apiKey()->row();
 		$this->apiKey = $api->nama_key;
+		$this->user = $user->nama;
 		$this->lembaga = $user->lembaga;
 
 		if ((!$this->Auth_model->current_user() && $user->level != 'lembaga') || (!$this->Auth_model->current_user() && $user->level != 'admin')) {
@@ -493,7 +494,7 @@ Terimakasih';
 		$this->session->set_flashdata('error', 'Tanggal sudah lewat');
 		redirect('lembaga/spj');
 		die();
-		
+
 		$id = $this->uuid->v4();
 		$kode  = $this->input->post('kode');
 		$bulan  = $this->input->post('bulan');
@@ -1968,5 +1969,87 @@ Terimakasih';
 		$this->load->view('lembaga/head', $data);
 		$this->load->view('lembaga/historyDtl', $data);
 		$this->load->view('lembaga/foot');
+	}
+
+	public function spjSs()
+	{
+		if ($this->lembaga != 3 || $this->lembaga != '03') {
+			redirect('lembaga');
+			die();
+		}
+		$data['data'] = $this->model->getSPJAll($this->tahun)->result();
+		$data['dataSr'] = $this->db->query("SELECT * FROM spj JOIN lembaga ON spj.lembaga=lembaga.kode JOIN sarpras ON sarpras.kode_pengajuan=spj.kode_pengajuan WHERE spj.kode_pengajuan LIKE '%.SRPS.%' AND spj.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND file_spj != '' ")->result();
+		$data['bulan'] = $this->bulan;
+		$data['tahun'] = $this->tahun;
+		$data['user'] = $this->Auth_model->current_user();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+		// $data['tahun'] = $this->tahun;
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/spjSs', $data);
+		$this->load->view('lembaga/foot');
+	}
+	public function viewSpj($kode)
+	{
+		$data['bulan'] = $this->bulan;
+		$data['tahun'] = $this->tahun;
+		$data['user'] = $this->Auth_model->current_user();
+		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
+		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
+
+		$data['spj'] = $this->model->getBy('spj', 'kode_pengajuan', $kode)->row();
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/viewSpj', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	public function setujuiSpj($kode)
+	{
+		$pjn = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$lmb = $this->model->getBy('lembaga', 'kode', $pjn->lembaga)->row();
+
+		$at = date('d-m-Y H:i');
+
+		if (preg_match("/DISP./i", $kode)) {
+			$rt = "*(DISPOSISI)*";
+		} else {
+			$rt = '';
+		}
+
+		$psn = '*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+
+Ada pelaporan SPJ dari :
+    
+Lembaga : ' . $lmb->nama . '
+Kode Pengajuan : ' . $kode . '
+Pada : ' . $at . '
+
+*_SPJ telah disetujui oleh bagian PERENCANAAN. Selanjutnya menunggu verifikasi dari BEndahara._*
+
+Terimakasih';
+
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $lmb->nama,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'spj',
+			'tahun' => $this->tahun,
+			'pesan' => 'SPJ Disetujui Perencanaan'
+		];
+
+		$this->model->input('history', $history);
+		$this->model->update('spj', ['perencanaan' => 1], 'kode_pengajuan', $kode);
+
+		if ($this->db->affected_rows() > 0) {
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+			$this->session->set_flashdata('ok', 'SPJ berhasil disetujui');
+			redirect('lembaga/spjSs');
+		} else {
+			$this->session->set_flashdata('error', 'SPJ tidak bisa disetujui');
+			redirect('lembaga/spjSs');
+		}
 	}
 }

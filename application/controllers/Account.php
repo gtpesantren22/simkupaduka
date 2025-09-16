@@ -505,7 +505,7 @@ Terimakasih';
 		if ($this->db->affected_rows() > 0) {
 			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
 			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_person($this->apiKey, '085235583647', $psn);
 			// kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil ditolak');
@@ -542,8 +542,8 @@ Terimakasih';
 		if ($this->db->affected_rows() > 0) {
 			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
 			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, '085235583647', $psn);
-			kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil disetujui');
 			redirect('account/pakDetail/' . $kode);
@@ -949,7 +949,7 @@ Terimakasih';
 			'user' => $this->user,
 			'stts' => 'spj',
 			'tahun' => $this->tahun,
-			'pesan' => 'SPJ Ditolak'
+			'pesan' => 'SPJ Ditolak oleh bendahara'
 		];
 
 		$this->model->input('history', $history);
@@ -992,6 +992,7 @@ Terimakasih';
 			'tahun' => $this->tahun,
 		];
 
+
 		$at = date('d-m-Y H:i');
 
 		if (preg_match("/DISP./i", $kode)) {
@@ -1014,7 +1015,7 @@ Pada : ' . $at . '
 Terimakasih';
 
 		$data1 = ['stts' => '2'];
-		$data2 = ['spj' => '2'];
+		$data2 = ['spj' => '2', 'bendahara' => 1];
 
 		$history = [
 			'kode_pengajuan' => $kode,
@@ -1023,7 +1024,7 @@ Terimakasih';
 			'user' => $this->user,
 			'stts' => 'spj',
 			'tahun' => $this->tahun,
-			'pesan' => 'SPJ Disetujui'
+			'pesan' => 'SPJ Disetujui Bendahara'
 		];
 
 		$this->model->input('history', $history);

@@ -109,7 +109,7 @@
                                                                 <li> <span style="color: red;"><i>Untuk Upload berkas SPJ
                                                                             dilakukan
                                                                             1
-                                                                            kali setiap pengajuan. Jika ada penguploadan
+                                                                            kali setiap pengajuan. <br>Jika ada penguploadan
                                                                             baru,
                                                                             maka
                                                                             file lama akan terhapus</i>

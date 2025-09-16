@@ -94,13 +94,27 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <?php endif ?>
                     </ul>
                 </li>
-                <li>
-                    <a href="<?= base_url('lembaga/spj'); ?>">
-                        <div class="parent-icon"><i class='bx bx-notepad'></i>
-                        </div>
-                        <div class="menu-title">SPJ</div>
-                    </a>
-                </li>
+                <?php if ($user->lembaga == '03') { ?>
+                    <li>
+                        <a href="javascript:;" class="has-arrow">
+                            <div class="parent-icon"><i class='bx bx-notepad'></i>
+                            </div>
+                            <div class="menu-title">SPJ</div>
+                        </a>
+                        <ul>
+                            <li> <a href="<?= base_url('lembaga/spj'); ?>"><i class="bx bx-right-arrow-alt"></i>SPJ Saya</a></li>
+                            <li><a href="<?= base_url('lembaga/spjSs'); ?>"><i class="bx bx-right-arrow-alt"></i>Verval SPJ</a></li>
+                        </ul>
+                    </li>
+                <?php } else { ?>
+                    <li>
+                        <a href="<?= base_url('lembaga/spj'); ?>">
+                            <div class="parent-icon"><i class='bx bx-notepad'></i>
+                            </div>
+                            <div class="menu-title">SPJ</div>
+                        </a>
+                    </li>
+                <?php } ?>
                 <!-- <li>
                     <a href="<?= base_url('lembaga/disposisi'); ?>">
                         <div class="parent-icon"><i class='bx bx-money'></i>
