@@ -40,7 +40,7 @@
                                     <?php
                                     $no = 1;
                                     foreach ($data as $a) :
-                                        $lembaga = $this->db->query("SELECT lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$a->kode_pengajuan' ")->row();
+                                        $lembaga = $this->db->query("SELECT lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$a->kode_pengajuan' AND lembaga.tahun='$tahun' ")->row();
                                     ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
