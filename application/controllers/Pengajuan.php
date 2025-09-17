@@ -400,6 +400,14 @@ class Pengajuan extends CI_Controller
 		if ($cek) {
 			$this->session->set_flashdata('error', 'Ada pengajuan yang belum selesai');
 			redirect('pengajuan');
+			exit;
+		}
+
+		$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
+		if ($cek1) {
+			$this->session->set_flashdata('error', 'Pengajuan bulan terpilih sudah ada');
+			redirect('pengajuan');
+			exit;
 		}
 
 		$pj = $this->db->query("SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun'")->row();

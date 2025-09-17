@@ -97,7 +97,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Lembaga</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Pengeluaran Rutin</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <?= form_open('kasir/saveOutRutin'); ?>
@@ -127,6 +127,8 @@
                         <option value="LISTRIK"> LISTRIK</option>
                         <option value="INTERNET"> INTERNET/WIFI</option>
                         <option value="HONOR"> HONOR</option>
+                        <option value="SAMPAH"> SAMPAH</option>
+                        <option value="KORAN"> KORAN</option>
                     </select>
                 </div>
                 <div class="form-group mb-2">

@@ -949,7 +949,7 @@ Terimakasih';
 			'user' => $this->user,
 			'stts' => 'spj',
 			'tahun' => $this->tahun,
-			'pesan' => 'SPJ Ditolak oleh bendahara'
+			'pesan' => 'SPJ Ditolak oleh bendahara. ' . $isi
 		];
 
 		$this->model->input('history', $history);

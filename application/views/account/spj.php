@@ -64,8 +64,10 @@
                                             <td><?= $a->nama . ' ' . $rt; ?></td>
                                             <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
                                             <td>
-                                                <?php if ($a->stts == 0) { ?>
+                                                <?php if ($a->stts == 0 && $a->file_spj == '') { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-times"></i> belum upload</span>
+                                                <?php } else if ($a->stts == 0 && $a->file_spj != '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> ditolak</span>
                                                 <?php } else if ($a->stts == 1) { ?>
                                                     <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses verifikasi</span>
                                                 <?php } else { ?>
@@ -79,7 +81,7 @@
                                                 <a href="<?= base_url('account/viewSpj/') . $a->kode_pengajuan ?>"><i class="bx bx-show-alt"></i>Lihat</a>
                                             </td>
                                             <td>
-                                                <?php if ($a->stts == 1) { ?>
+                                                <?php if ($a->stts == 1 && $a->perencanaan == 1) { ?>
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambah_bos<?= $a->id_spj ?>"><i class="bx bx-check"></i>Setujui</button>
                                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolak_bos<?= $a->id_spj ?>"><i class="bx bx-no-entry"></i>Tolak</button>
 
@@ -315,15 +317,14 @@
                                             <td><?= $a2->nama . ' ' . $rt; ?></td>
                                             <td><?= $bulan[$a2->bulan] . ' ' . $a2->tahun ?></td>
                                             <td>
-                                                <?php if ($a2->stts == 0) { ?>
-                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> belum
-                                                        upload</span>
+                                                <?php if ($a2->stts == 0 && $a2->file_spj == '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> belum upload</span>
+                                                <?php } else if ($a2->stts == 0 && $a2->file_spj != '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> ditolak</span>
                                                 <?php } else if ($a2->stts == 1) { ?>
-                                                    <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses
-                                                        verifikasi</span>
+                                                    <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses verifikasi</span>
                                                 <?php } else { ?>
-                                                    <span class="badge bg-success"><i class="bx bx-check"></i> sudah
-                                                        selesai</span>
+                                                    <span class="badge bg-success"><i class="bx bx-check"></i> selesai</span>
                                                 <?php } ?>
                                             </td>
                                             <td><?= rupiah($jml->jml) ?></td>

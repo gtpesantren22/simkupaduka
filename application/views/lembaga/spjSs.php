@@ -62,8 +62,10 @@
                                             <td><?= $a->nama . ' ' . $rt; ?></td>
                                             <td><?= $bulan[$a->bulan] . ' ' . $a->tahun ?></td>
                                             <td>
-                                                <?php if ($a->stts == 0) { ?>
+                                                <?php if ($a->stts == 0 && $a->file_spj == '') { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-times"></i> belum upload</span>
+                                                <?php } else if ($a->stts == 0 && $a->file_spj != '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> ditolak</span>
                                                 <?php } else if ($a->stts == 1 && $a->perencanaan == 0) { ?>
                                                     <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses verifikasi</span>
                                                 <?php } else if ($a->perencanaan == 1) { ?>
@@ -75,7 +77,7 @@
                                                 <a href="<?= base_url('lembaga/viewSpj/') . $a->kode_pengajuan ?>"><i class="bx bx-show-alt"></i>Lihat</a>
                                             </td>
                                             <td>
-                                                <?php if ($a->perencanaan == 0) { ?>
+                                                <?php if ($a->perencanaan == 0 && $a->stts == 1 && $a->file_spj != '') { ?>
                                                     <a href="<?= base_url('lembaga/setujuiSpj/' . $a->kode_pengajuan) ?>" class="btn btn-primary btn-sm tbl-confirm" value="SPJ akan disetujui"><i class="bx bx-check"></i>Setujui</a>
                                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolak_bos<?= $a->id_spj ?>"><i class="bx bx-no-entry"></i>Tolak</button>
 
@@ -173,8 +175,10 @@
                                             <td><?= $a2->nama . ' ' . $rt; ?></td>
                                             <td><?= $bulan[$a2->bulan] . ' ' . $a2->tahun ?></td>
                                             <td>
-                                                <?php if ($a2->stts == 0) { ?>
+                                                <?php if ($a2->stts == 0 && $a2->file_spj == '') { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-times"></i> belum upload</span>
+                                                <?php } else if ($a2->stts == 0 && $a2->file_spj != '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-times"></i> ditolak</span>
                                                 <?php } else if ($a2->stts == 1 && $a2->perencanaan == 0) { ?>
                                                     <span class="badge bg-warning btn-xs"><i class="bx bx-recycle"></i> proses verifikasi</span>
                                                 <?php } else if ($a2->perencanaan == 1) { ?>
@@ -188,7 +192,7 @@
                                                 <a href="<?= base_url('lembaga/viewSpj/') . $a2->kode_pengajuan ?>"><i class="bx bx-show-alt"></i>Lihat</a>
                                             </td>
                                             <td>
-                                                <?php if ($a2->stts == 1) { ?>
+                                                <?php if ($a2->perencanaan == 0 && $a2->stts == 1 && $a2->file_spj != '') { ?>
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#setujuiSpjSarpras<?= $a2->id_spj ?>"><i class="bx bx-check"></i>Setujui</button>
                                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolakSpjSarpras<?= $a2->id_spj ?>"><i class="bx bx-no-entry"></i>Tolak</button>
 
