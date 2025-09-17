@@ -2329,7 +2329,7 @@ Terimakasih';
         ];
 
         $kode = $sisa->kode_pengajuan;
-        $lmb = $this->db->query("SELECT pengajuan.*, lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode'")->row();
+        $lmb = $this->db->query("SELECT pengajuan.*, lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' ")->row();
 
         if (preg_match("/DISP./i", $kode)) {
             $rt = "*(DISPOSISI)*";
@@ -2337,8 +2337,7 @@ Terimakasih';
             $rt = '';
         }
 
-        $psn = '
-*INFORMASI VERIFIKASI BERKAS SPJ* ' . $rt . '
+        $psn = '*INFORMASI VERIFIKASI BERKAS SPJ* ' . $rt . '
 
 Ada pelaporan SPJ dari :
     
