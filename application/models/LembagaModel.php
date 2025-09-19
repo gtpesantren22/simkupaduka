@@ -129,6 +129,13 @@ class LembagaModel extends CI_Model
         $this->db->where($where2, $dtwhere2);
         return $this->db->get($table);
     }
+    function getBy3($table, $where1, $dtwhere1, $where2, $dtwhere2, $where3, $dtwhere3)
+    {
+        $this->db->where($where1, $dtwhere1);
+        $this->db->where($where2, $dtwhere2);
+        $this->db->where($where3, $dtwhere3);
+        return $this->db->get($table);
+    }
 
     function getBySum($table, $where, $dtwhere, $sum)
     {
