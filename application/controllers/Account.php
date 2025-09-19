@@ -2748,4 +2748,27 @@ SELECT 'Cicilan' AS ket, SUM(nominal) AS nominal FROM cicilan WHERE tahun = '$th
 			echo json_encode(['status' => 'error', 'message' => 'Update data gagal']);
 		}
 	}
+
+	public function editAkses($jenis, $kode)
+	{
+		if ($jenis == 'pengajuan') {
+			$tbale = 'pengajuan';
+			$rdrc = 'account/pengajuan';
+		} else {
+			$tbale = 'spj';
+			$rdrc = 'account/spj';
+		}
+
+		$cek = $this->model->getBy($tbale, 'kode_pengajuan', $kode)->row();
+		$akses = $cek->akses == 'N' ? 'Y' : 'N';
+
+		$this->model->update($tbale, ['akses' => $akses], 'kode_pengajuan', $kode);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Edit akses Berhasil');
+			redirect($rdrc);
+		} else {
+			$this->session->set_flashdata('error', 'Edit akses Gagal');
+			redirect($rdrc);
+		}
+	}
 }

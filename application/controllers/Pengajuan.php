@@ -396,16 +396,16 @@ class Pengajuan extends CI_Controller
 		$tahunInput = $this->input->post('tahun', true);
 		$bln = $this->input->post('bulan', true);
 
-		$cek = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' AND verval != 1 AND apr != 1 AND cair != 1 AND spj != 3 ")->row();
+		$cek = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' AND verval = 0 AND apr = 0 AND stts = 'no' ")->row();
 		if ($cek) {
-			$this->session->set_flashdata('error', 'Ada pengajuan yang belum selesai');
+			$this->session->set_flashdata('error', 'Ada pengajuan yang belum diajukan');
 			redirect('pengajuan');
 			exit;
 		}
 
 		$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
 		if ($cek1) {
-			$this->session->set_flashdata('error', 'Pengajuan bulan terpilih sudah ada');
+			$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
 			redirect('pengajuan');
 			exit;
 		}
@@ -434,7 +434,8 @@ class Pengajuan extends CI_Controller
 			'tahun' => $this->tahun,
 			'no_urut' => $urut,
 			'at' => date('Y-m-d H:i'),
-			'stts' => 'no'
+			'stts' => 'no',
+			'akses' => 'N',
 		];
 		$data2 = [
 			'id_spj' => $this->uuid->v4(),
@@ -442,7 +443,8 @@ class Pengajuan extends CI_Controller
 			'lembaga' => $lembaga,
 			'bulan' => $this->input->post('bulan', true),
 			'tahun' => $this->tahun,
-			'no_urut' => $urut
+			'no_urut' => $urut,
+			'akses' => 'N',
 		];
 
 		$cek3 = $this->db->query("SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' AND tahun = '$tahun' ")->num_rows();
@@ -471,21 +473,31 @@ class Pengajuan extends CI_Controller
 
 	public function ajukan($kode)
 	{
-		$this->session->set_flashdata('error', 'Tanggal sudah lewat');
-		redirect('pengajuan/detail/' . $kode);
-		die();
+		$pjini = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
+		$blCek = $pjini->bulan - 2;
+		$cekPjn = $this->model->getBy3('pengajuan', 'bulan', $blCek, 'tahun', $this->tahun, 'lembaga', $this->lembaga)->row();
+		$hari = date("j");
+		if ($pjini->akses == 'N') {
+			if ($hari < 1 || $hari > 20) {
+				$this->session->set_flashdata('error', 'Tanggal Pengajuan belum sampai/sdah lewat');
+				redirect('pengajuan/detail/' . $kode);
+				exit;
+			}
+			if ($cekPjn->spj != 3) {
+				$this->session->set_flashdata('error', 'Pengajuan sebelumnya belum selesai');
+				redirect('pengajuan/detail/' . $kode);
+				exit;
+			}
+		}
 
 		$bulan = $this->bulan;
-		$data = [
-			'stts' => 'yes',
-			// 'verval' => 1,
-			// 'apr' => 1
-		];
+		$data = ['stts' => 'yes', 'akses' => 'N'];
 
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
 		if ($dt->stts === 'yes') {
 			$this->session->set_flashdata('warning', 'Pengajuan sudah diajukan');
 			redirect('pengajuan/detail/' . $kode);
+			exit;
 		}
 		$cekPj = $this->model->getBy('real_sm', 'kode_pengajuan', $dt->kode_pengajuan)->row();
 		$lm = $this->model->getBy2('lembaga', 'kode', $dt->lembaga, 'tahun', $this->tahun)->row();
@@ -508,19 +520,6 @@ class Pengajuan extends CI_Controller
 			'tahun' => $this->tahun,
 			'pesan' => 'Diajukan KPA'
 		];
-
-		$psn_old = '*INFORMASI PENGAJUAN* ' . $rt . '
-
-Ada pengajuan baru dari :
-    
-Lembaga : ' . $lm->nama . '
-Kode Pengajuan : ' . $dt->kode_pengajuan . '
-Periode : ' . $perod . '
-Pada : ' . $dt->at . '
-Nominal : ' . rupiah($jml->jml) . '
-
-*_dimohon kepada Bendahara untuk segera mengecek pengjuan tersebut di https://simkupaduka.ppdwk.com_*
-Terimakasih';
 
 		$psn = '🌟 [INFORMASI PENGAJUAN BARU]
 Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
@@ -557,9 +556,7 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 
 				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
 				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-				// kirim_person($this->apiKey, '082302301003', $psn);
-				// kirim_person($this->apiKey, '082264061060', $psn);
-				kirim_person($this->apiKey, '085236924510', $psn);
+				// kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Pengajuan berhasil diajukan kepada Bendahara');
 				redirect('pengajuan/detail/' . $kode);

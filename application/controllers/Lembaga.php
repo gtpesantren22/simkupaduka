@@ -491,14 +491,28 @@ Terimakasih';
 
 	public function uploadSpj()
 	{
-		$this->session->set_flashdata('error', 'Tanggal sudah lewat');
-		redirect('lembaga/spj');
-		die();
-
 		$id = $this->uuid->v4();
 		$kode  = $this->input->post('kode');
 		$bulan  = $this->input->post('bulan');
 		$tahun  = $this->input->post('tahun');
+
+		$pjini = $this->model->getBy('spj', 'kode_pengajuan', $kode)->row();
+		$cekPjn = $this->model->getBy3('spj',  'tahun', $this->tahun, 'lembaga', $this->lembaga, 'stts !=', 3)->row();
+
+		$hari = date("j");
+		if ($pjini->akses == 'N') {
+			if ($hari < 1 || $hari > 10) {
+				$this->session->set_flashdata('error', 'Tanggal Pengajuan belum sampai/sdah lewat');
+				redirect('lembaga/spj');
+				exit;
+			}
+			if ($cekPjn) {
+				$this->session->set_flashdata('error', 'SPJ pengajuan sebelumnya belum selesai');
+				redirect('lembaga/spj');
+				exit;
+			}
+		}
+
 		$date = date('Y-m-d');
 		$at = date('Y-m-d H:i:s');
 
@@ -544,6 +558,7 @@ Terimakasih';
 				'stts' => 1,
 				'file_spj' => $uploaded_data['file_name'],
 				'tgl_upload' => $date,
+				'akses' => 'N',
 			];
 			$data2 = [
 				'spj' => 1,

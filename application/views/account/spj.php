@@ -35,6 +35,7 @@
                                         <th>Cair</th>
                                         <th>Serap</th>
                                         <th>File</th>
+                                        <th>Akses</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -80,7 +81,9 @@
                                             <td>
                                                 <a href="<?= base_url('account/viewSpj/') . $a->kode_pengajuan ?>"><i class="bx bx-show-alt"></i>Lihat</a>
                                             </td>
+                                            <td><?= $a->akses == 'Y' ? 'Ya' : 'Tidak' ?></td>
                                             <td>
+                                                <a href="<?= base_url('account/editAkses/spj/' . $a->kode_pengajuan) ?>" class="btn btn-warning btn-sm tbl-confirm" value="Akses upload SPJ akan dibuka/ditutup"><i class="bx bx-key"></i></a>
                                                 <?php if ($a->stts == 1 && $a->perencanaan == 1) { ?>
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#tambah_bos<?= $a->id_spj ?>"><i class="bx bx-check"></i>Setujui</button>
                                                     <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#tolak_bos<?= $a->id_spj ?>"><i class="bx bx-no-entry"></i>Tolak</button>

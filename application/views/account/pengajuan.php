@@ -29,6 +29,7 @@
                                         <th>Periode</th>
                                         <th>Prencanaan / Bendahara / Cair / SPJ</th>
                                         <th>Nominal</th>
+                                        <th>Akses</th>
                                         <th>#</th>
                                     </tr>
                                 </thead>
@@ -72,9 +73,18 @@
                                                 <?php } ?>
                                             </td>
                                             <td><?= rupiah($kfe) ?></td>
+                                            <td><?= $a->akses == 'Y' ? 'Ya' : 'Tidak' ?></td>
                                             <td>
-                                                <a href="<?= base_url('account/pengajuanDtl/' . $a->kode_pengajuan) ?>" class="btn btn-primary btn-sm"><i class="bx bx-search"></i> Cek & Verifikasi</a>
-                                                <a href="<?= base_url('account/pengajuanDel/' . $a->kode_pengajuan) ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i> Hapus</a>
+                                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                                                    <div class="btn-group " role="group">
+                                                        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">Aksi</button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="<?= base_url('account/pengajuanDtl/' . $a->kode_pengajuan) ?>">Cek dan Verval</a></li>
+                                                            <li><a class="dropdown-item tbl-confirm" value="Akses pengajuan akan dibuka/ditutup" href="<?= base_url('account/editAkses/pengajuan/' . $a->kode_pengajuan) ?>">Edit Akses</a></li>
+                                                            <li><a class="dropdown-item tombol-hapus" href="<?= base_url('account/pengajuanDel/' . $a->kode_pengajuan) ?>">Hapus</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
