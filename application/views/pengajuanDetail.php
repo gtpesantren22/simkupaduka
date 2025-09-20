@@ -449,12 +449,12 @@ require 'lembaga/head.php';
                                 $date = new DateTime($hst->tgl_verval);
                             ?>
                                 <div class="mb-3 position-relative">
-                                    <div class="position-absolute top-0 start-0 translate-middle-x bg-white rounded-circle border border-success p-1"></div>
+                                    <div class="position-absolute top-0 start-0 translate-middle-x bg-white rounded-circle border <?= $first ? 'border-warning border-width: 3px;' : 'border-dark' ?> p-1"></div>
                                     <div class="ms-4">
                                         <h6 class="mb-0 <?= $first ? 'latest-status' : '' ?>">
                                             <?= $hst->pesan ?>
                                         </h6>
-                                        <small class="text-muted"><?= $date->format("d M Y, H:i"); ?></small>
+                                        <small class="text-muted <?= $first ? 'latest-status' : '' ?>"><?= $date->format("d M Y, H:i"); ?></small>
                                     </div>
                                 </div>
                             <?php

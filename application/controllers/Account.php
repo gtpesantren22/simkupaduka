@@ -1104,6 +1104,16 @@ https://simkupaduka.ppdwk.com/';
 			'tahun' => $this->tahun,
 		];
 
+		$history = [
+			'kode_pengajuan' => $kode,
+			'lembaga' => $file->lembaga,
+			'tgl_verval' => date('Y-m-d H:i:s'),
+			'user' => $this->user,
+			'stts' => 'spj',
+			'tahun' => $this->tahun,
+			'pesan' => 'Verifikasi SPJ Hardcopy Oleh Bendahara'
+		];
+
 		$this->model->update('spj', $data1, 'id_spj', $id);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 		$this->model->input('real_sisa', $data3);

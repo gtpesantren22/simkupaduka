@@ -279,7 +279,6 @@ class AdminModel extends CI_Model
         $this->db->from('spj');
         $this->db->join('lembaga', 'ON spj.lembaga=lembaga.kode');
         $this->db->join('pengajuan', 'ON spj.kode_pengajuan=pengajuan.kode_pengajuan');
-        $this->db->where('spj.file_spj !=', '');
         $this->db->where('spj.tahun', $tahun);
         $this->db->where('pengajuan.tahun', $tahun);
         $this->db->where('lembaga.tahun', $tahun);
