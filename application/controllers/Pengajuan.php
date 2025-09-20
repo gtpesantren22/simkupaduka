@@ -57,6 +57,8 @@ class Pengajuan extends CI_Controller
 
 		$data['dataBulan'] = $this->bulan;
 		$data['bulan_ini'] = date('m');
+		$data['statusWA'] = cekStatusWA($this->apiKey);
+		$data['history'] = $this->db->query("SELECT * FROM history WHERE kode_pengajuan = '$kode' ORDER BY tgl_verval DESC ")->result();
 
 		$data['dppk'] = $this->db->query("SELECT dppk.* FROM dppk JOIN rab ON dppk.id_dppk=rab.id_dppk WHERE dppk.tahun = '$this->tahun' AND dppk.lembaga = '$this->lembaga' AND rab.rencana = 7 ")->result();
 

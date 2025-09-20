@@ -149,6 +149,34 @@ function kirim_nota($key, $no_hp, $url_file, $as_document, $caption)
     curl_close($curl2);
 }
 
+function cekStatusWA($apiKey)
+{
+    $ch = curl_init();
+
+    $query = http_build_query(['apiKey' => $apiKey]);
+    curl_setopt($ch, CURLOPT_URL, 'http://31.97.179.141:3000/api/getState?' . $query);
+
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        $error = curl_error($ch);
+        curl_close($ch);
+        return [
+            'status' => 'error',
+            'message' => $error
+        ];
+    }
+
+    curl_close($ch);
+
+    // Jika JSON decode otomatis
+    $decoded = json_decode($response, true);
+    return $decoded ?: $response;
+}
+
 function gel($gel)
 {
     $nm = array(0, 70000, 120000, 170000);

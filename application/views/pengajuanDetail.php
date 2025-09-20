@@ -7,6 +7,127 @@ require 'lembaga/head.php';
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
 <!-- Start right Content here -->
 <!-- ============================================================== -->
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .shopee-header {
+        background-color: #EE4D2D;
+        color: white;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .status-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: none;
+        margin-bottom: 20px;
+    }
+
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    .step-icon-active {
+        background-color: #EE4D2D;
+        color: white;
+        border: 3px solid #EE4D2D;
+    }
+
+    .step-icon-completed {
+        background-color: #EE4D2D;
+        color: white;
+        border: 3px solid #EE4D2D;
+    }
+
+    .step-icon-inactive {
+        background-color: white;
+        color: #9E9E9E;
+        border: 3px solid #E0E0E0;
+    }
+
+    .step-active {
+        color: #EE4D2D;
+        font-weight: bold;
+    }
+
+    .step-inactive {
+        color: #9E9E9E;
+    }
+
+    .progress-connector {
+        height: 3px;
+        flex-grow: 1;
+        margin: 0 10px;
+        margin-top: 23px;
+    }
+
+    .detail-list {
+        border-left: 2px dashed #EE4D2D;
+        margin-left: 10px;
+        padding-left: 20px;
+    }
+
+    .tracking-map {
+        border-radius: 10px;
+        height: 200px;
+        background: linear-gradient(rgba(238, 77, 45, 0.1), rgba(238, 77, 45, 0.05));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #6c757d;
+        border: 1px dashed #EE4D2D;
+    }
+
+    .btn-orange {
+        background-color: #EE4D2D;
+        color: white;
+    }
+
+    .btn-orange:hover {
+        background-color: #d84327;
+        color: white;
+    }
+
+    .btn-outline-orange {
+        border-color: #EE4D2D;
+        color: #EE4D2D;
+    }
+
+    .btn-outline-orange:hover {
+        background-color: #EE4D2D;
+        color: white;
+    }
+
+    .latest-status {
+        font-weight: 700;
+        color: #EE4D2D;
+    }
+
+    .product-img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .status-badge {
+        background-color: #FFF0EE;
+        color: #EE4D2D;
+        border-radius: 20px;
+        padding: 5px 12px;
+        font-weight: 500;
+    }
+</style>
 <div class="page-wrapper">
     <div class="page-content">
         <!--breadcrumb-->
@@ -24,10 +145,10 @@ require 'lembaga/head.php';
         </div>
         <!--end breadcrumb-->
         <div class="row">
-            <div class="col-12 col-lg-10">
+            <div class="col-12 col-lg-9">
                 <div class="card" id="orderList">
                     <div class="card-header align-items-xl-center d-xl-flex">
-                        <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">Status : <?= $pj->stts == 'yes' ? 'sudah diajuakan' : 'belum diajuakan' ?></h5>
+                        <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">List Pengajuan</h5>
                         <div class="flex-shrink-0">
                             <ul class="nav nav-tabs nav-primary" role="tablist">
                                 <li class="nav-item" role="presentation">
@@ -89,8 +210,7 @@ require 'lembaga/head.php';
                                                         <?php }
                                                         endforeach ?>
                                                     </select>
-                                                    <select class="js-example-basic-single select-dependent" id="c-coa" name="coa" required>
-                                                    </select>
+                                                    <select class="js-example-basic-single select-dependent" id="c-coa" name="coa" required></select>
                                                 </div>
                                             </div>
                                             <div class="row mb-2">
@@ -297,7 +417,52 @@ require 'lembaga/head.php';
 
                     </div>
                 </div>
-                <div class="col-12 col-lg-2">
+            </div>
+            <div class="col-2 col-lg-3">
+                <div class="card" id="orderList">
+                    <div class="card-header align-items-xl-center d-xl-flex">
+                        <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">Informasi Pengajuan</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-borderless mb-2">
+                            <tr>
+                                <th>Status Pengajuan</th>
+                                <td>:</td>
+                                <td><?= $pj->stts == 'yes' ? "<b class='text-success'><i class='bx bx-message-square-check'></i> Diajukan</b>" : "<b class='text-danger'><i class='bx bx-message-square-x'></i> Belum</b>" ?></td>
+                            </tr>
+                            <tr>
+                                <th>WA Informasi</th>
+                                <td>:</td>
+                                <td><?= $statusWA['results']['state'] == 'CONNECTED' ? "<b class='text-success'><i class='bx bx-wifi'></i> Online</b>" : "<b class='text-danger'><i class='bx bx-wifi-off'></i> Terputus</b>" ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"> <small>Pastika status WA Online agar informasi terkirim. Jika tidak silahkan hub Tim Teknis sebelum klik ajukan ke bendahara</small></td>
+                            </tr>
+
+                        </table>
+                        <h5 class="mb-3"><i class="bx bx-list-ol me-2"></i>Detail Perjalanan</h5>
+                        <div class="detail-list">
+                            <?php
+                            $first = true; // penanda item pertama
+                            foreach ($history as $hst):
+                                $date = new DateTime($hst->tgl_verval);
+                            ?>
+                                <div class="mb-3 position-relative">
+                                    <div class="position-absolute top-0 start-0 translate-middle-x bg-white rounded-circle border border-success p-1"></div>
+                                    <div class="ms-4">
+                                        <h6 class="mb-0 <?= $first ? 'latest-status' : '' ?>">
+                                            <?= $hst->pesan ?>
+                                        </h6>
+                                        <small class="text-muted"><?= $date->format("d M Y, H:i"); ?></small>
+                                    </div>
+                                </div>
+                            <?php
+                                $first = false; // setelah item pertama, sisanya false
+                            endforeach
+                            ?>
+                        </div>
+                    </div><!-- end card-body -->
 
                 </div>
             </div>
@@ -544,6 +709,11 @@ require 'lembaga/head.php';
 
     $('#form-barang').on('submit', function(e) {
         e.preventDefault();
+        // cek validasi HTML5
+        if (!this.checkValidity()) {
+            this.reportValidity(); // munculkan pesan error bawaan browser
+            return; // hentikan
+        }
         var dataForm = $(this).serialize()
         $.ajax({
             type: "POST",
@@ -567,6 +737,12 @@ require 'lembaga/head.php';
     })
     $('#form-tunai').on('submit', function(e) {
         e.preventDefault();
+        // cek validasi HTML5
+        if (!this.checkValidity()) {
+            this.reportValidity(); // munculkan pesan error bawaan browser
+            return; // hentikan
+        }
+
         var dataForm = $(this).serialize()
         $.ajax({
             type: "POST",
