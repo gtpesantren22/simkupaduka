@@ -67,7 +67,7 @@
                                                     <span class="badge bg-warning"><i class="bx bx-recycle"></i>proses verifikasi</span>
                                                     <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#stt<?= $ls_jns->id_spj; ?>"><i class="bx bx-upload"></i>Upload ulang berkas SPJ</button>
                                                 <?php } else if ($ls_jns->stts == 2) { ?>
-                                                    <span class="badge bg-warning"><i class="bx bx-message-square-error"></i>Setor SPJ Gan!</span>
+                                                    <span class="badge bg-warning"><i class="bx bx-message-square-error"></i> Setor SPJ Gan!</span>
                                                 <?php } else { ?>
                                                     <span class="badge bg-success"><i class="bx bx-check"></i> sudah
                                                         selesai</span>

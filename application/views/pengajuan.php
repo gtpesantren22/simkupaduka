@@ -67,8 +67,7 @@ include 'lembaga/head.php';
                                                     <span class="badge bg-warning"><i class="bx bx-recycle"></i>
                                                         proses verifikasi</span>
                                                 <?php } else if ($a->spj == 2) { ?>
-                                                    <span class="badge bg-warning"><i class="bx bx-message-square-error"></i>
-                                                        setor SPJ Gan!</span>
+                                                    <span class="badge bg-warning"><i class="bx bx-message-square-error"></i> setor SPJ Gan!</span>
                                                 <?php } else { ?>
                                                     <span class="badge bg-success"><i class="bx bx-check"></i> sudah
                                                         selesai</span>
