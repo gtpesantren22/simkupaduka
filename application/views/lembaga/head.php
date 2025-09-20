@@ -44,14 +44,17 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
 </head>
 
 <body>
+    <?php
+    $controller = $this->router->fetch_class();   // mis. "pengajuan"
+    $method     = $this->router->fetch_method();  // mis. "detail"
+
+    $tgld = ($controller === 'pengajuan' && $method === 'detail') ? 'toggled' : '';
+    ?>
     <!--wrapper-->
-    <div class="wrapper">
+    <div class="wrapper <?= $tgld ?>">
         <!--sidebar wrapper -->
         <div class="sidebar-wrapper" data-simplebar="true">
             <div class="sidebar-header">
-                <div>
-                    <!-- <img src="<?= base_url('vertical/'); ?>assets/images/logo-icon.png" class="logo-icon" alt="logo icon"> -->
-                </div>
                 <div>
                     <h4 class="logo-text">SIMKUPADUKA</h4>
                 </div>

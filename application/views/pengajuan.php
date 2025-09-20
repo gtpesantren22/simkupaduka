@@ -59,12 +59,16 @@ include 'lembaga/head.php';
                                                 <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
                                             </td>
                                             <td>
-                                                <?php if ($a->spj == 0) { ?>
-                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
-                                                        upload</span>
+                                                <?php if ($a->spj == 0 && $a->file_spj == '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum upload</span>
+                                                <?php } else if ($a->spj == 0 && $a->file_spj != '') { ?>
+                                                    <span class="badge bg-danger"><i class="bx bx-x"></i> ditolak</span>
                                                 <?php } else if ($a->spj == 1) { ?>
                                                     <span class="badge bg-warning"><i class="bx bx-recycle"></i>
                                                         proses verifikasi</span>
+                                                <?php } else if ($a->spj == 2) { ?>
+                                                    <span class="badge bg-warning"><i class="bx bx-message-square-error"></i>
+                                                        setor SPJ Gan!</span>
                                                 <?php } else { ?>
                                                     <span class="badge bg-success"><i class="bx bx-check"></i> sudah
                                                         selesai</span>

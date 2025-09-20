@@ -54,17 +54,20 @@
                                             <td><?= rupiah($pjan); ?></td>
                                             <td>
                                                 <?php if ($ls_jns->stts == 0) { ?>
-                                                    <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum
-                                                        upload</span>
+                                                    <?php if ($ls_jns->file_spj == '') { ?>
+                                                        <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum upload</span>
+                                                    <?php } else { ?>
+                                                        <span class="badge bg-danger"><i class="bx bx-x"></i> ditolak</span>
+                                                    <?php } ?>
                                                     <?php if ($ls_jns->b_cair == 1) { ?>
                                                         | <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#stt<?= $ls_jns->id_spj; ?>"><i class="bx bx-upload"></i>
                                                             Upload berkas SPJ</button>
                                                     <?php } ?>
                                                 <?php } else if ($ls_jns->stts == 1) { ?>
-                                                    <span class="badge bg-warning"><i class="bx bx-recycle"></i>
-                                                        proses verifikasi</span>
-                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#stt<?= $ls_jns->id_spj; ?>"><i class="bx bx-upload"></i>
-                                                        Upload ulang berkas SPJ</button>
+                                                    <span class="badge bg-warning"><i class="bx bx-recycle"></i>proses verifikasi</span>
+                                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#stt<?= $ls_jns->id_spj; ?>"><i class="bx bx-upload"></i>Upload ulang berkas SPJ</button>
+                                                <?php } else if ($ls_jns->stts == 2) { ?>
+                                                    <span class="badge bg-warning"><i class="bx bx-message-square-error"></i>Setor SPJ Gan!</span>
                                                 <?php } else { ?>
                                                     <span class="badge bg-success"><i class="bx bx-check"></i> sudah
                                                         selesai</span>
