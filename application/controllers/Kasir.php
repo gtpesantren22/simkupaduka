@@ -110,12 +110,18 @@ class Kasir extends CI_Controller
             $data['rls2'][$key]->pjnDataMitra = $this->model->getByJoin2('order_mitra', 'mitra', 'id_mitra', 'id_mitra', 'order_mitra.kode', $ls_jns->kode, 'order_mitra.kode_pengajuan', $ls_jns->kode_pengajuan)->row();
         }
 
-        $data['mitraHasil'] = $this->model->getByGroup('order_mitra', 'kode_pengajuan', $kode, 'id_mitra')->result();
-        foreach ($data['mitraHasil'] as $key) {
-            $id_mitra = $key->id_mitra;
-            $data['isiMitra'][$id_mitra] = $this->model->getBy2('order_mitra', 'id_mitra', $id_mitra, 'kode_pengajuan', $kode)->num_rows();
-            $data['infoMitra'][$id_mitra] = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
+        $dtMitras = [];
+        $mitraDatas = $this->model->getByGroup('order_mitra', 'kode_pengajuan', $kode, 'id_mitra')->result();
+        foreach ($mitraDatas as $key) {
+            // $id_mitra = $key->id_mitra;
+            // $data['isiMitra'][$id_mitra] = $this->model->getBy2('order_mitra', 'id_mitra', $id_mitra, 'kode_pengajuan', $kode)->num_rows();
+            // $data['infoMitra'][$id_mitra] = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
+            $dtMitras[] = [
+                'mitra_info' => $this->model->getBy('mitra', 'id_mitra', $key->id_mitra)->row(),
+                'mitra_jml' => $this->model->getBy2('order_mitra', 'id_mitra', $key->id_mitra, 'kode_pengajuan', $kode)->num_rows(),
+            ];
         }
+        $data['mitraHasil'] = $dtMitras;
 
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/cair', $data);

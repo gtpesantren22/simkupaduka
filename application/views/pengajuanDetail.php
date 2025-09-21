@@ -418,7 +418,7 @@ require 'lembaga/head.php';
                     </div>
                 </div>
             </div>
-            <div class="col-2 col-lg-3">
+            <div class="col-12 col-lg-3">
                 <div class="card" id="orderList">
                     <div class="card-header align-items-xl-center d-xl-flex">
                         <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">Informasi Pengajuan</h5>
@@ -842,7 +842,7 @@ require 'lembaga/head.php';
                         searching: true,
                         ordering: true,
                         responsive: true,
-                        autoWidth: false,
+                        autoWidth: true,
                         dom: 'Bfrtip', // B = Buttons, f = filter, r = processing, t = table, i = info, p = pagination
                         buttons: [{
                                 extend: 'excelHtml5',

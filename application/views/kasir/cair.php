@@ -237,18 +237,13 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                         <ul class="list-group">
                                             <?php foreach ($mitraHasil as $row) : ?>
                                                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    <?= $infoMitra[$row->id_mitra]->nama ?>
-                                                    <!-- <span class="badge bg-primary rounded-pill"><?= $isiMitra[$row->id_mitra] ?></span> -->
-                                                    <!-- <span class="badge bg-danger"><i class="bx bx-printer"></i></span> -->
-                                                    <!-- <span class="badge bg-secondary"><i class="bx bx-send"></i></span> -->
+                                                    <?= $row['mitra_info']->nama ?>
                                                     <div class="btn-group" role="group" aria-label="Basic example">
 
-                                                        <button type="button" class="btn btn-warning btn-sm"><?= $isiMitra[$row->id_mitra] ?></button>
+                                                        <button type="button" class="btn btn-warning btn-sm"><?= $row['mitra_jml'] ?></button>
 
-                                                        <a href="<?= base_url('kasir/notaMitra/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" target="_blank" class="btn btn-outline-dark btn-sm"><i class="bx bx-printer"></i>
+                                                        <a href="<?= base_url('kasir/notaMitra/' . $pjn->kode_pengajuan . '/' . $row['mitra_info']->id_mitra) ?>" target="_blank" class="btn btn-outline-dark btn-sm"><i class="bx bx-printer"></i>
                                                         </a>
-
-                                                        <!-- <a href="<?= base_url('kasir/sendNota/' . $pjn->kode_pengajuan . '/' . $infoMitra[$row->id_mitra]->id_mitra) ?>" type="button" class="btn btn-outline-dark btn-sm tbl-confirm" value="Nota akan dikirimkan kepada Mitra terkait"><i class="bx bx-send"></i></a> -->
                                                     </div>
                                                 </li>
                                             <?php endforeach; ?>
