@@ -137,11 +137,10 @@ $dt = $this->db->query("SELECT SUM(nom_cair) as jml, SUM(IF( stas = 'tunai', nom
                                     foreach ($rls2 as $ls_jns) {
                                         $ids = explode('-', $ls_jns->id_realis);
                                         $idOk = $ids[0];
+                                        $no2 = 1;
                                     ?>
                                         <tr>
-                                            <td>
-
-                                            </td>
+                                            <td><?= $no2++ ?></td>
                                             <td><?= $ls_jns->kode; ?></td>
                                             <td><?= $ls_jns->ket; ?></td>
                                             <td>

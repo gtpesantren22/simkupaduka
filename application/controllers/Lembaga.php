@@ -543,7 +543,7 @@ Terimakasih';
 		$config['allowed_types']        = 'pdf';
 		$config['file_name']            = $file_name;
 		$config['overwrite']            = true;
-		$config['max_size']             = 5120; // 1MB
+		$config['max_size']             = 10240; // 1MB
 		$config['max_width']            = 1080;
 		$config['max_height']           = 1080;
 

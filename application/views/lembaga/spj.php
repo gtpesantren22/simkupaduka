@@ -118,7 +118,7 @@
                                                                             file lama akan terhapus</i>
                                                                     </span>
                                                                 </li>
-                                                                <li> <span style="color: red;"><i>File yang doperbolehkan hanya PDF (.pdf). Max file 5
+                                                                <li> <span style="color: red;"><i>File yang doperbolehkan hanya PDF (.pdf). Max file 10
                                                                             Mb</i>
                                                                     </span>
                                                                 </li>
