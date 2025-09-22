@@ -42,10 +42,16 @@ class Rab extends CI_Controller
 		$dataprogram = $this->model->getBy2('dppk', 'lembaga', $kode, 'tahun', $this->tahun)->result();
 		foreach ($dataprogram as $dtpr) {
 			$total = $this->db->query("SELECT SUM(total) as total FROM rab WHERE lembaga = '$kode' AND tahun = '$this->tahun' AND id_dppk = '$dtpr->id_dppk' GROUP BY id_dppk ")->row();
+			$kdprog = $dtpr->id_dppk;
+			$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kdprog' AND tahun = '$this->tahun' ")->row();
+			$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' ")->row();
+			$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' ")->row();
+			$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
 			$program[] = [
 				'program' => $dtpr->program,
 				'bulan' => $dtpr->bulan,
 				'total' => $total->total,
+				'sisa' => $sisa,
 			];
 		}
 		$data['program'] = $program;

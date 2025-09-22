@@ -100,6 +100,9 @@ if ($pesern >= 0 && $pesern <= 25) {
                                         <th>Program</th>
                                         <th>Rencana Waktu</th>
                                         <th>Total RAB</th>
+                                        <?php if ($user->level == 'admin') {
+                                            echo "<th>Terpakai</th>";
+                                        } ?>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -116,6 +119,9 @@ if ($pesern >= 0 && $pesern <= 25) {
                                                 echo implode(', ', $output);
                                                 ?></td>
                                             <td><?= rupiah($a['total']) ?></td>
+                                            <?php if ($user->level == 'admin') {
+                                                echo '<td>' . rupiah($a['sisa']) . '</td>';
+                                            } ?>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
