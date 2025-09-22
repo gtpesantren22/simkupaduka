@@ -841,8 +841,8 @@ require 'lembaga/head.php';
                         paging: false,
                         searching: true,
                         ordering: true,
-                        responsive: true,
-                        autoWidth: true,
+                        responsive: false,
+                        autoWidth: false,
                         dom: 'Bfrtip', // B = Buttons, f = filter, r = processing, t = table, i = info, p = pagination
                         buttons: [{
                                 extend: 'excelHtml5',
