@@ -123,16 +123,15 @@ class Pengajuan extends CI_Controller
 		$vol = $this->input->post('qty', true);
 		$kegiatan = $this->input->post('kegiatan', true);
 
+		if ($kode_pengajuan == '' || $program == '' || $coa == '' || $ssh == '' || $coa == 'pilih coa' || $vol == '' || $kegiatan == '') {
+			echo json_encode(['status' => 'error', 'message' => 'Semua kolom harus terisi']);
+			exit();
+		}
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
 		if ($dt->stts === 'yes') {
 			echo json_encode(['status' => 'error', 'message' => 'Tidak bisa tambah item baru. Pengajuan sudah diproses']);
 			exit();
 		}
-
-
-		// $cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		// $cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		// $urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
 
 		$dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
 
@@ -195,6 +194,12 @@ class Pengajuan extends CI_Controller
 		$nama = $this->input->post('nama', true);
 		$satuan = $this->input->post('satuan', true);
 		$harga_satuan = rmRp($this->input->post('harga_satuan', true));
+		$kegiatan = $this->input->post('kegiatan', true);
+
+		if ($kode_pengajuan == '' || $program == '' || $coa == '' || $coa == 'pilih coa' || $vol == '' || $nama == '' || $satuan == '' || $harga_satuan == '' || $kegiatan == '') {
+			$this->session->set_flashdata('error', 'Semua kolom harus terisi');
+			redirect('pengajuan/detail/' . $kode_pengajuan);
+		}
 
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
 		if ($dt->stts === 'yes') {
@@ -215,12 +220,6 @@ class Pengajuan extends CI_Controller
 			$this->session->set_flashdata('error', 'Nominal melebihi batas');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
-
-		// $cekRealis = $this->model->getBy2('realis', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		// $cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
-		// $urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
-
-		// $dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
 
 		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-BnS-' . time();
 
@@ -248,6 +247,7 @@ class Pengajuan extends CI_Controller
 			'kode_coa' => $coa,
 			'kode_ssh' => 'BnS',
 			'kode_program' => $program,
+			'kegiatan' => $kegiatan,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
 
@@ -269,10 +269,16 @@ class Pengajuan extends CI_Controller
 		$program = $this->input->post('program-tunai', true);
 		$coa = $this->input->post('coa', true);
 		$barang = $this->input->post('barang', true);
-		$satuan = $this->input->post('satuan', true);
+		$kegiatan = $this->input->post('kegiatan', true);
 		$harga = rmRp($this->input->post('harga', true));
 		$vol = $this->input->post('qty', true);
+		$satuan = $this->input->post('satuan', true);
 		$ssh = 'TNI';
+
+		if ($kode_pengajuan == '' || $program == '' || $coa == '' || $coa == 'pilih coa' || $barang == '' || $harga == '' || $kegiatan == '' || $vol == '' || $satuan == '') {
+			echo json_encode(['status' => 'error', 'message' => 'Semua kolom harus terisi']);
+			exit();
+		}
 
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
 		if ($dt->stts === 'yes') {
@@ -320,6 +326,7 @@ class Pengajuan extends CI_Controller
 			'kode_coa' => $coa,
 			'kode_ssh' => $ssh,
 			'kode_program' => $program,
+			'kegiatan' => $kegiatan,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
 

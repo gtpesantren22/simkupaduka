@@ -481,8 +481,8 @@ require 'lembaga/head.php';
             <div class="modal-body">
                 <form action="<?= base_url('pengajuan/addItemBarangModal') ?>" method="post" class="form-addrow mt-2">
                     <input type="hidden" name="kode_pengajuan" value="<?= $pj->kode_pengajuan ?>">
-                    <input type="hidden" id="program_modal" name="program" value="">
-                    <input type="hidden" id="coa_modal" name="coa" value="">
+                    <input type="hidden" id="program_modal" name="program">
+                    <input type="hidden" id="coa_modal" name="coa">
                     <div class="form-group mb-2">
                         <label for="">Nama Barang</label>
                         <input type="text" class="form-control" name="nama" required>
@@ -503,6 +503,10 @@ require 'lembaga/head.php';
                     <div class="form-group mb-2">
                         <label for="">QTY</label>
                         <input type="number" class="form-control" name="qty" required>
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="">Nama Kegiatan</label>
+                        <input type="text" class="form-control" name="kegiatan" required>
                     </div>
                     <div class="form-group mb-2">
                         <label for=""></label>
@@ -661,22 +665,27 @@ require 'lembaga/head.php';
     $('#input-qty').on('input', function() {
         var jml = $(this).val();
         var ssh = $('#item-ssh').val();
-        $.ajax({
-            type: "POST",
-            url: "<?= base_url('pengajuan/detilSsh') ?>",
-            data: {
-                kode: ssh
-            },
-            dataType: 'json',
-            success: function(data) {
-                $('#qty').text(jml)
-                let hargaFormatted = Number(data.hasil.harga * jml).toLocaleString('id-ID');
-                $('#total-harga').text(hargaFormatted)
-            },
-            error: function(xhr, status, error) {
-                alert(xhr.responseText);
-            }
-        })
+        if (ssh && ssh != 'pilih barang') {
+            $.ajax({
+                type: "POST",
+                url: "<?= base_url('pengajuan/detilSsh') ?>",
+                data: {
+                    kode: ssh
+                },
+                dataType: 'json',
+                success: function(data) {
+                    $('#qty').text(jml)
+                    let hargaFormatted = Number(data.hasil.harga * jml).toLocaleString('id-ID');
+                    $('#total-harga').text(hargaFormatted)
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText);
+                }
+            })
+        } else {
+            notyf.error('Silahkan pilih barangnya');
+        }
+
         // alert(ssh)
     });
 
