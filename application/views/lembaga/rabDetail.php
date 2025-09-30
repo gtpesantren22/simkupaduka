@@ -101,7 +101,7 @@ if ($pesern >= 0 && $pesern <= 25) {
                                         <th>Rencana Waktu</th>
                                         <th>Total RAB</th>
                                         <?php if ($user->level == 'admin') {
-                                            echo "<th>Terpakai</th>";
+                                            echo "<th>Sisa</th>";
                                         } ?>
                                     </tr>
                                 </thead>
