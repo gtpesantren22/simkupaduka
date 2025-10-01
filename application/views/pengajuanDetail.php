@@ -400,7 +400,7 @@ require 'lembaga/head.php';
                                 <thead class="text-muted table-dark">
                                     <tr class="">
                                         <th class="text-light" data-sort="id">No</th>
-                                        <!-- <th class="text-light" data-sort="id">Kode Item</th> -->
+                                        <th class="text-light" data-sort="id">Kode Item</th>
                                         <th class="text-light" data-sort="customer_name">Akun/COA</th>
                                         <th class="text-light" data-sort="product_name">Nama Item</th>
                                         <th class="text-light" data-sort="amount">Harga</th>
@@ -793,7 +793,7 @@ require 'lembaga/head.php';
                         response.forEach(function(item, index) {
                             table.row.add([
                                 index + 1,
-                                // `<a href="#" class="fw-medium link-primary">${item.kode_item}</a>`,
+                                `<a href="#" class="fw-medium link-primary">${item.kode_item}</a>`,
                                 item.coa,
                                 item.ssh == null && item.ket ? parseItemDetail(item.ket)?.nama : item.ssh,
                                 rupiah(item.harga),
@@ -810,7 +810,7 @@ require 'lembaga/head.php';
                     $('#tableData').DataTable({
                         data: response.map((item, index) => [
                             index + 1,
-                            // `<a href="#" class="fw-medium link-primary">${item.kode_item}</a>`,
+                            `<a href="#" class="fw-medium link-primary">${item.kode_item}</a>`,
                             item.coa,
                             item.ssh == null && item.ket ? parseItemDetail(item.ket)?.nama : item.ssh,
                             rupiah(item.harga),
@@ -822,9 +822,9 @@ require 'lembaga/head.php';
                         columns: [{
                                 title: "#"
                             },
-                            // {
-                            //     title: "Kode Item"
-                            // },
+                            {
+                                title: "Kode Item"
+                            },
                             {
                                 title: "COA"
                             },
