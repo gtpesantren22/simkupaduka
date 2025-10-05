@@ -13,6 +13,9 @@
                     </ol>
                 </nav>
             </div>
+            <div class="ms-auto">
+                <button class="btn btn-primary float-right" data-bs-toggle="modal" data-bs-target="#uploadBp">Upload Pembayaran</button>
+            </div>
         </div>
         <!--end breadcrumb-->
         <div class="row">
@@ -67,3 +70,25 @@
     </div>
 </div>
 <!--end page wrapper -->
+<div class="modal fade" id="uploadBp" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Upload Pembayaran BP</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <?= form_open_multipart('import/preview'); ?>
+            <div class="modal-body">
+                <div class="form-group mb-2">
+                    <label for="">Pilih File</label>
+                    <input type="file" name="file_excel" accept=".xls,.xlsx" class="form-control" required></input>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Upload</button>
+            </div>
+            <?= form_close(); ?>
+        </div>
+    </div>
+</div>

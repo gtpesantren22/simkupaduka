@@ -274,4 +274,9 @@ class KasirModel extends CI_Model
     {
         $this->db5->query("");
     }
+
+    public function insert_batch($table, $data)
+    {
+        return $this->db->insert_batch($table, $data);
+    }
 }
