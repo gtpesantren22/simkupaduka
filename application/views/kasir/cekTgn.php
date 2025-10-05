@@ -68,7 +68,7 @@
                                         <select name="t_formal" id="t_formal" class="form-control" required>
                                             <option value="">Pilih Lembaga</option>
                                             <?php foreach ($lmbFr as $kl) { ?>
-                                                <option value="<?= $kl->lembaga ?>"><?= $kl->lembaga ?>
+                                                <option value="<?= $kl->nama ?>"><?= $kl->nama ?>
                                                 </option>
                                             <?php } ?>
                                             <option value="MAHASISWA">Mahasiswa</option>
