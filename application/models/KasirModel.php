@@ -252,6 +252,10 @@ class KasirModel extends CI_Model
         $this->db4->group_by('lembaga');
         return $this->db4->get('kl_formal');
     }
+    function getLembagaFr2()
+    {
+        return $this->db4->get('lembaga');
+    }
     function getByDb4($tbl, $where, $dtwhere)
     {
         $this->db4->where($where, $dtwhere);

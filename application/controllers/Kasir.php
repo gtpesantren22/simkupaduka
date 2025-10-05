@@ -2257,7 +2257,7 @@ Terimakasih';
         $data['tahun'] = $this->tahun;
         $data['bulan'] = $this->bulan;
 
-        $data['lmbFr'] = $this->model->getLembagaFr()->result();
+        $data['lmbFr'] = $this->model->getLembagaFr2()->result();
         $data['tahunData'] = $this->model->getAll('tahun')->result();
 
         $this->load->view('kasir/head', $data);
