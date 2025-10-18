@@ -77,18 +77,76 @@
                 <h5 class="modal-title" id="exampleModalLabel">Upload Pembayaran BP</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open_multipart('import/preview'); ?>
+            <?= form_open_multipart('import/save'); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Pilih File</label>
-                    <input type="file" name="file_excel" accept=".xls,.xlsx" class="form-control" required></input>
+                    <input type="file" name="file_excel" id="file_excel" accept=".xls,.xlsx" class="form-control" required></input>
                 </div>
+                <div class="progress mt-4" style="height: 25px; display: none;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar" style="width: 0%">0%</div>
+                </div>
+                <div id="message" class="mt-2"></div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Upload</button>
+                <button id="btnImport" class="btn btn-primary"><i class="bx bx-save"></i> Upload</button>
             </div>
             <?= form_close(); ?>
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#btnImport').click(function(e) {
+            e.preventDefault();
+
+            let file = $('#file_excel')[0].files[0];
+            if (!file) {
+                alert('Pilih file Excel terlebih dahulu!');
+                return;
+            }
+
+            let formData = new FormData();
+            formData.append('file_excel', file);
+
+            $('.progress').show();
+            $('.progress-bar').css('width', '0%').text('0%');
+
+            $.ajax({
+                xhr: function() {
+                    let xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(e) {
+                        if (e.lengthComputable) {
+                            let percent = Math.round((e.loaded / e.total) * 100);
+                            $('.progress-bar').css('width', percent + '%').text(percent + '%');
+                        }
+                    }, false);
+                    return xhr;
+                },
+                url: '<?= site_url("import/save") ?>',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $('#message').html('');
+                    $('#btnImport').prop('disabled', true);
+                },
+                success: function(response) {
+                    $('#btnImport').prop('disabled', false);
+                    $('.progress-bar').css('width', '100%').text('100%');
+                    $('#message').html('<div class="alert alert-success mt-3">' + response + '</div>');
+                    window.location.reload()
+                },
+                error: function(xhr) {
+                    $('#btnImport').prop('disabled', false);
+                    $('#message').html('<div class="alert alert-danger mt-3">Terjadi kesalahan: ' + xhr.responseText + '</div>');
+                }
+            });
+        });
+    });
+</script>

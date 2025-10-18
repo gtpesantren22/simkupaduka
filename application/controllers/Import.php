@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class Import extends CI_Controller
 {
@@ -16,6 +17,7 @@ class Import extends CI_Controller
         $user = $this->Auth_model->current_user();
         $this->user = $user->nama;
         $this->tahun = $this->session->userdata('tahun');
+        $this->load->library('upload');
     }
 
     public function index()
@@ -45,37 +47,59 @@ class Import extends CI_Controller
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/import_review', $data);
         $this->load->view('kasir/foot');
+        unset($spreadsheet); // Hapus dari memori setelah dipakai
     }
 
-    // Step 2: Simpan ke database
     public function save()
     {
-        $sheetData = $this->session->userdata('preview_data');
-        if (!$sheetData) {
-            $this->session->set_flashdata('error', 'Tidak ada data untuk disimpan.');
-            redirect('kasir/bayar');
+        $config['upload_path']   = './vertical/assets/uploads/';
+        $config['allowed_types'] = 'xls|xlsx';
+        $config['max_size']      = 2048;
+        $config['encrypt_name']  = TRUE;
+
+        $this->upload->initialize($config);
+
+        if (!$this->upload->do_upload('file_excel')) {
+            http_response_code(400);
+            echo 'Upload gagal: ' . strip_tags($this->upload->display_errors());
+            return;
         }
 
-        $pegawai = [];
-        $no = 0;
-        foreach ($sheetData as $row) {
-            $no++;
-            if ($no == 1) continue; // skip header
+        $fileData = $this->upload->data();
+        $filePath = './vertical/assets/uploads/' . $fileData['file_name'];
 
-            $data[] = [
-                'nis' => $row['B'],
-                'nama' => $this->model->getBy('tb_santri', 'nis', $row['B'])->row('nama'),
-                'tgl' => $row['C'],
-                'nominal' => $row['D'],
-                'bulan' => $row['E'],
-                'tahun' => $row['F'],
-                'kasir' => $this->user,
-            ];
+        try {
+            $spreadsheet = IOFactory::load($filePath);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+            $data = [];
+            for ($i = 1; $i < count($sheetData); $i++) { // baris 0 = header
+                if (!empty($sheetData[$i][0])) {
+                    $nis = $sheetData[$i][1];
+                    $nama  = $this->db->query("SELECT nama FROM tb_santri WHERE nis = '$nis' ")->row();
+                    $data[] = [
+                        'nis'   => $nis,
+                        'nama'  => $nama ? $nama->nama : '',
+                        'tgl' => $sheetData[$i][2],
+                        'nominal' => $sheetData[$i][3],
+                        'bulan' => $sheetData[$i][4],
+                        'tahun' => $sheetData[$i][5],
+                        'kasir' => $this->user,
+                    ];
+                }
+            }
+
+            if (!empty($data)) {
+                $this->model->insert_batch('pembayaran', $data);
+                echo "✅ Import berhasil! " . count($data) . " data ditambahkan.";
+            } else {
+                echo "⚠️ Tidak ada data yang valid di file Excel.";
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo 'Gagal memproses file Excel: ' . $e->getMessage();
         }
 
-        $this->model->insert_batch('pembayaran', $data);
-        $this->session->unset_userdata('preview_data');
-        $this->session->set_flashdata('ok', 'Data pembayaran berhasil diimport!');
-        redirect('kasir/bayar');
+        unlink($filePath);
     }
 }
