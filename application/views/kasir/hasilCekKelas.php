@@ -4,6 +4,7 @@
                                         <tr style="background-color: purple; color: white; font-weight: bold;">
                                             <th>No</th>
                                             <th>Nama</th>
+                                            <th>JKL</th>
                                             <th>Kelas</th>
                                             <th>Jul</th>
                                             <th>Ags</th>
@@ -45,6 +46,7 @@
                                             <tr>
                                                 <td><?= $i; ?></td>
                                                 <td><?= $r->nama; ?></td>
+                                                <td><?= $r->jkl; ?></td>
                                                 <td><?= $r->k_formal; ?>-<?= $r->jurusan; ?>-<?= $r->t_formal; ?></td>
 
                                                 <!-- Juli -->
