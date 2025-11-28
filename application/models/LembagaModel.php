@@ -266,7 +266,7 @@ class LembagaModel extends CI_Model
         $this->flat->from('kehadiran');
         $this->flat->join('guru', 'kehadiran.guru_id=guru.guru_id');
         $this->flat->where('guru.satminkal', $lembaga);
-        $this->flat->where('guru.kategori', 5);
+        $this->flat->where('guru.kriteria', 'Karyawan');
         $this->flat->where('kehadiran_id', $id);
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
