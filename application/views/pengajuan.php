@@ -135,7 +135,13 @@ include 'lembaga/head.php';
                     <div class="form-group mb-3">
                         <label for="inputEmail3" class="col-sm-2 control-label">Tahun *</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" name="tahun" value="<?= date('Y') ?>" readonly>
+                            <select name="tahun" class="form-control" required>
+                                <option value=""> -- pilih tahun -- </option>
+                                <?php
+                                for ($i = 2000; $i <= date('Y'); $i++) { ?>
+                                    <option value="<?= $i ?>"><?= $i ?></option>
+                                <?php } ?>
+                            </select>
                         </div>
                     </div>
                 </div>
