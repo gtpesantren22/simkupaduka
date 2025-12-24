@@ -138,7 +138,7 @@ include 'lembaga/head.php';
                             <select name="tahun" class="form-control" required>
                                 <option value=""> -- pilih tahun -- </option>
                                 <?php
-                                for ($i = 2000; $i <= date('Y'); $i++) { ?>
+                                for ($i = 2000; $i <= date('Y') + 1; $i++) { ?>
                                     <option value="<?= $i ?>"><?= $i ?></option>
                                 <?php } ?>
                             </select>
