@@ -223,8 +223,8 @@ Terimakasih';
         if ($this->db->affected_rows() > 0) {
             kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
             kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // kirim_person($this->apiKey, '082264061060', $psn);
-            kirim_person($this->apiKey, '085236924510', $psn);
+            // // kirim_person($this->apiKey, '082264061060', $psn);
+            // kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pengajuan sudah dicairkan');
             redirect('kasir/cairProses/' . $kd_pnj);
@@ -472,8 +472,8 @@ Terimakasih';
                     $this->model->input('pembayaran', $data);
 
                     if ($this->db->affected_rows() > 0) {
-                        kirim_person($this->apiKey, $hpNo, $pesan);
-                        kirim_person($this->apiKey, $hpNo2, $pesan);
+                        // kirim_person($this->apiKey, $hpNo, $pesan);
+                        // kirim_person($this->apiKey, $hpNo2, $pesan);
                         $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                         redirect('kasir/discrb/' . $nis);
                     } else {
@@ -484,8 +484,8 @@ Terimakasih';
                     $this->model->input('pembayaran', $data);
 
                     if ($this->db->affected_rows() > 0) {
-                        kirim_person($this->apiKey, $hpNo, $pesan);
-                        kirim_person($this->apiKey, $hpNo2, $pesan);
+                        // kirim_person($this->apiKey, $hpNo, $pesan);
+                        // kirim_person($this->apiKey, $hpNo2, $pesan);
                         $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                         redirect('kasir/discrb/' . $nis);
                     } else {
@@ -567,8 +567,8 @@ Terimakasih';
                 $this->model->input('pembayaran', $data);
 
                 if ($this->db->affected_rows() > 0) {
-                    kirim_person($this->apiKey, $hpNo, $pesan);
-                    kirim_person($this->apiKey, $hpNo2, $pesan);
+                    // kirim_person($this->apiKey, $hpNo, $pesan);
+                    // kirim_person($this->apiKey, $hpNo2, $pesan);
                     $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                     redirect('kasir/discrb/' . $nis);
                 } else {
@@ -579,8 +579,8 @@ Terimakasih';
                 $this->model->input('pembayaran', $data);
 
                 if ($this->db->affected_rows() > 0) {
-                    kirim_person($this->apiKey, $hpNo, $pesan);
-                    kirim_person($this->apiKey, $hpNo2, $pesan);
+                    // kirim_person($this->apiKey, $hpNo, $pesan);
+                    // kirim_person($this->apiKey, $hpNo2, $pesan);
                     $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                     redirect('kasir/discrb/' . $nis);
                 } else {
@@ -790,7 +790,7 @@ Terimakasih';
                 $this->model->input('pembayaran', $data);
 
                 if ($this->db->affected_rows() > 0) {
-                    kirim_person($this->apiKey, $hpNo, $pesan);
+                    // kirim_person($this->apiKey, $hpNo, $pesan);
                     $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
                     redirect('kasir/mutasiDtl/' . $nis);
                 } else {
@@ -829,7 +829,7 @@ Terimakasih';
 
         if ($this->db->affected_rows() > 0) {
             kirim_group($this->apiKey, '120363028015516743@g.us', $psn);
-            // kirim_person($this->apiKey, $hpNo, $psn);
+            // // kirim_person($this->apiKey, $hpNo, $psn);
             $this->session->set_flashdata('ok', 'Mutasi berhasil diverval');
             redirect('kasir/mutasiDtl/' . $mutasi->nis);
         } else {
@@ -1115,7 +1115,7 @@ Bendahara Pesantren
 
 _Jika sudah melakukan pelunasan abaikan pesan ini_';
 
-        kirim_person($this->apiKey, $santri->hp, $pesan);
+        // kirim_person($this->apiKey, $santri->hp, $pesan);
     }
 
     public function addOrderMitra()
@@ -1801,8 +1801,8 @@ Terimakasih';
         if ($this->db->affected_rows() > 0) {
             kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
             kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // kirim_person($this->apiKey, '085235583647', $psn);
-            kirim_person($this->apiKey, '085236924510', $psn);
+            // // kirim_person($this->apiKey, '085235583647', $psn);
+            // kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pencairan Pengajuan berhasil');
             redirect('kasir/sarpras');
@@ -2145,8 +2145,8 @@ Terimakasih';
                     }
 
                     if ($this->db->affected_rows() > 0) {
-                        kirim_person($this->apiKey, $hpNo, $pesan);
-                        kirim_person($this->apiKey, $hpNo2, $pesan);
+                        // kirim_person($this->apiKey, $hpNo, $pesan);
+                        // kirim_person($this->apiKey, $hpNo2, $pesan);
                         $this->session->set_flashdata('ok', 'Tabungan berhasil diinput');
                         redirect('kasir/tabungan');
                     } else {
@@ -2161,8 +2161,8 @@ Terimakasih';
                     }
 
                     if ($this->db->affected_rows() > 0) {
-                        kirim_person($this->apiKey, $hpNo, $pesan);
-                        kirim_person($this->apiKey, $hpNo2, $pesan);
+                        // kirim_person($this->apiKey, $hpNo, $pesan);
+                        // kirim_person($this->apiKey, $hpNo2, $pesan);
                         $this->session->set_flashdata('ok', 'Tabungan berhasil diinput');
                         redirect('kasir/tabungan');
                     } else {
@@ -2368,8 +2368,8 @@ https://simkupaduka.ppdwk.com/';
 
             kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
             kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // kirim_person($this->apiKey, $hp, $psn);
-            kirim_person($this->apiKey, '085236924510', $psn);
+            // // kirim_person($this->apiKey, $hp, $psn);
+            // kirim_person($this->apiKey, '085236924510', $psn);
             $this->session->set_flashdata('ok', 'Update data sukses');
             redirect('kasir/sisa');
         } else {
@@ -2591,8 +2591,8 @@ Terimakasih';
         if ($this->db->affected_rows() > 0) {
             kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
             kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // kirim_person($this->apiKey, '085235583647', $psn);
-            kirim_person($this->apiKey, '085236924510', $psn);
+            // // kirim_person($this->apiKey, '085235583647', $psn);
+            // kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pencairan Pengajuan berhasil');
             redirect('kasir/haflah');
@@ -2683,9 +2683,9 @@ Updater : ' . $this->user . '
 
         $this->model->update('saldo', $saldo, 'name', 'cash', 'tahun', $this->tahun);
         if ($this->db->affected_rows() > 0) {
-            kirim_person($this->apiKey, '082264061060', $psn);
-            kirim_person($this->apiKey, '085258222376', $psn);
-            kirim_person($this->apiKey, '085236924510', $psn);
+            // kirim_person($this->apiKey, '082264061060', $psn);
+            // kirim_person($this->apiKey, '085258222376', $psn);
+            // kirim_person($this->apiKey, '085236924510', $psn);
             $this->session->set_flashdata('ok', 'Saldo sudah diperbarui');
             redirect('kasir');
         } else {
