@@ -2419,7 +2419,7 @@ https://simkupaduka.ppdwk.com/';
         $result = $this->model->input('rekom', $data);
 
         if ($result) {
-            echo "Data berhasil ditambahkan.";
+            echo "Data berhasil ditambahkan." ;
         } else {
             echo "Terjadi kesalahan saat menambahkan data.";
         }

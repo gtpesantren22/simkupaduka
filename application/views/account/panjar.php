@@ -55,7 +55,9 @@
                                                     <td><?= rupiah($a->nominal) ?></td>
                                                     <td><?= $a->berkas ?></td>
                                                     <td><?= $a->pj ?></td>
-                                                    <td></td>
+                                                    <td>
+                                                        <a href="<?= base_url('account/delPanjar/' . $a->id_panjar) ?>" class="btn btn-danger btn-sm tombol-hapus">Del</a>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>

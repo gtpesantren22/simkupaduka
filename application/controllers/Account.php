@@ -2235,6 +2235,18 @@ ORDER BY tanggal DESC")->result();
 		}
 	}
 
+	public function delPanjar($id)
+	{
+		$this->model->delete('panjar', 'id_panjar', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus Data Panjar Berhasil');
+			redirect('account/panjar');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus Data Panjar Gagal');
+			redirect('account/panjar');
+		}
+	}
+
 	public function cadangan()
 	{
 		$data['user'] = $this->Auth_model->current_user();
