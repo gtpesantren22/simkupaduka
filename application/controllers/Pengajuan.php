@@ -615,6 +615,7 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 				'program' => $program->program,
 				'bulan' => $program->bulan,
 				'rincian' => $value->ket,
+				'nominal' => $value->nominal,
 			];
 		}
 		$data['dataKirim'] = $dataKirim;

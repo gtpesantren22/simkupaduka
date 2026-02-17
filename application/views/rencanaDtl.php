@@ -124,6 +124,7 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                         <th scope="col">Program</th>
                                         <th scope="col">Bulan</th>
                                         <th scope="col">Rincian Belanja</th>
+                                        <th scope="col">Nominal</th>
                                         <th scope="col">#</th>
                                     </tr>
                                 </thead>
@@ -145,7 +146,9 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                                 }
                                                 ?>
                                             </td>
-                                            <td><?= preg_replace('/x\s*\d+(\.\d+)?/', '', $a['rincian']) ?></td>
+                                            <!-- <td><?= preg_replace('/x\s*\d+(\.\d+)?/', '', $a['rincian']) ?></td> -->
+                                            <td><?= $a['rincian'] ?></td>
+                                            <td>Rp. <?= number_format($a['nominal'], 0, ',', '.') ?></td>
                                             <td><a class="btn btn-danger btn-sm tombol-hapus" href="<?= base_url('pengajuan/delRencana/' . $a['id_realis']) ?>">Hapus</a></td>
                                         </tr>
                                     <?php endforeach; ?>
