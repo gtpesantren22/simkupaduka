@@ -25,8 +25,38 @@
                         <?php if ($gaji->status != 'kunci') { ?>
                             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#cloneData">Cloning data potongan</button>
                         <?php } ?>
-                        <div class="table-responsive mt-3">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                        <!-- TOOLBAR -->
+                        <div class="row px-4 py-2 align-items-center">
+                            <!-- PER PAGE (KIRI) -->
+                            <div class="col-md-6 col-12 mb-2 mb-md-0">
+                                <div class="d-flex align-items-center gap-2">
+                                    <label class="mb-0 fw-semibold">Show</label>
+                                    <select id="perPage" class="form-select form-select w-auto">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="100">100</option>
+                                    </select>
+                                    <span class="fw-semibold">entries</span>
+                                </div>
+                            </div>
+
+                            <!-- SEARCH (KANAN) -->
+                            <div class="col-md-6 col-12 text-md-end">
+                                <div class="input-group input-group w-60 w-md-50 ms-md-auto">
+                                    <span class="input-group-text">
+                                        <i class="bx bx-search"></i>
+                                    </span>
+                                    <input
+                                        type="search"
+                                        id="search"
+                                        class="form-control"
+                                        placeholder="Cari data...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="list-guru" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr style="color: white; background-color: #008CFF; font-weight: bold;">
                                         <th>No</th>
@@ -38,25 +68,27 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
-                                    $no = 1;
-                                    foreach ($data->result() as $ls_jns) :
-                                    ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><?= bulan($ls_jns->bulan) . ' ' . $ls_jns->tahun; ?></td>
-                                            <td><?= $lembaga; ?></td>
-                                            <td><?= $ls_jns->nama; ?></td>
-                                            <td><b id="total-hasil-<?= $ls_jns->id ?>"><?= rupiah($ls_jns->total); ?></b></td>
-                                            <td>
-                                                <?php if ($gaji->status != 'kunci') { ?>
-                                                    <button class="btn btn-warning btn-sm btn-edit" data-id="<?= $ls_jns->id ?>">Edit</button>
-                                                <?php } ?>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
+
                                 </tbody>
                             </table>
+                        </div>
+                        <!-- Pagination -->
+                        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between p-3 border-top">
+
+                            <!-- INFO -->
+                            <div class="text-muted small mb-md-0">
+                                Menampilkan
+                                <span id="startRecord">1</span>
+                                sampai
+                                <span id="endRecord">10</span>
+                                dari
+                                <span id="totalRecords">100</span>
+                                entri
+                            </div>
+
+                            <!-- PAGINATION -->
+                            <div id="pagination"></div>
+
                         </div>
                     </div>
                 </div>
@@ -109,14 +141,14 @@
                 </div>
                 <div class="modal-body">
                     <form class="mt-2 form-clone">
-                        <input type="hidden" name="id_asal" id="id_asal" value="<?= $data->row('potongan_id') ?>">
+                        <input type="hidden" name="id_asal" id="id_asal" value="<?= $potongan->potongan_id ?>">
                         <div class="form-group mb-2">
                             <label for="">Pilih data potongan</label>
                             <select name="dipilih" id="dipilih" class="form-select" required>
                                 <option value=""> -pilih- </option>
                                 <?php
-                                $cek = $data->row('bulan') . '_' . $data->row('tahun');
-                                foreach ($potongan as $pt):
+                                $cek = $potongan->bulan . '_' . $potongan->tahun;
+                                foreach ($potongan_list as $pt):
                                     $cek2 = $pt->bulan . '_' . $pt->tahun;
                                     if ($cek != $cek2):
                                 ?>
@@ -142,33 +174,203 @@
 <script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
 <script src="<?= base_url('vertical/'); ?>assets/js/jquery.mask.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.btn-edit').on('click', function() {
-            var id = $(this).data('id');
-            $('#hasil-tampil').text('Proses pengambilan data.....')
-            $('#edit-modal').modal('show');
-            $.ajax({
-                type: 'POST',
-                url: '<?= base_url('honor/ambil_data/'); ?>' + id,
-                dataType: 'json',
-                data: {
-                    id: id
-                },
-                success: function(response) {
-                    const rows = generateTableRows(response.data);
-                    $('#table-potongan tbody').html(rows);
-                    $('#id').val(id);
-                    $('.btn-close').attr('value', id);
-                    $('.uang').mask('000.000.000.000', {
-                        reverse: true
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseText);
-                }
-            })
-        })
+    let state = {
+        page: 1,
+        perPage: 10,
+        search: '',
+        sortBy: 'nama',
+        sortDir: 'ASC',
+        total: 0,
+        potongan_id: '<?= $potongan_id ?>'
+    };
+
+    function loadData() {
+
+        const params = new URLSearchParams({
+            page: state.page,
+            perPage: state.perPage,
+            search: state.search,
+            sortBy: state.sortBy,
+            sortDir: state.sortDir,
+            potongan_id: state.potongan_id
+        }).toString();
+
+        fetch(`<?= base_url('honor/rincian_potong') ?>?${params}`)
+            .then(res => res.json())
+            .then(res => {
+                renderTable(res.data, res);
+                renderPagination(res);
+                state.total = res.total;
+                info(state.perPage, state.page, state.total);
+            });
+    }
+
+    function renderTable(data, meta) {
+        const tbody = document.getElementById('list-guru').querySelector('tbody');
+        tbody.innerHTML = '';
+
+        if (!Array.isArray(data)) return;
+        let start = (meta.page - 1) * meta.perPage;
+        // console.log(data);
+        data.forEach((row, index) => {
+            // console.log(row.lembaga_id + ' <> ' + row.lembaga_terpilih + ' || ' + row.lembaga_user);
+            let wrn = 'black'
+            const $row = $(`
+                    <tr style="color: ${wrn}">
+                        <td>${start + index + 1}</td>
+                        <td id="ket-bulan-${row.guru_id}">${row.bulan+' '+row.tahun}</td>
+                        <td>${row.nama}</td>
+                        <td>${row.satminkal}</td>
+                        <td id="hasil-honor-${row.guru_id}">${formatRupiah(row.nominal)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-primary btn-edit" data-guru_id="${row.guru_id}" data-potongan_id="${row.potongan_id}">Edit Potongan</button>
+                        </td>
+                    </tr>
+                `);
+
+            $('#list-guru tbody').append($row);
+        });
+    }
+
+    function renderPagination(meta) {
+        const pag = document.getElementById('pagination');
+        pag.innerHTML = `
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-rounded"></ul>
+                </nav>
+            `;
+
+        const ul = pag.querySelector('ul');
+
+        const current = meta.page;
+        const last = meta.lastPage;
+        const delta = 1;
+
+        function addButton(label, page = null, active = false, disabled = false) {
+
+            let liClass = 'page-item';
+            if (active) liClass += ' active';
+            if (disabled) liClass += ' disabled';
+
+            let content = label;
+            if (label === '«') {
+                content = `<i class="icon-base bx bx-chevrons-left icon-sm"></i>`;
+                liClass += ' first';
+            }
+            if (label === '»') {
+                content = `<i class="icon-base bx bx-chevrons-right icon-sm"></i>`;
+                liClass += ' last';
+            }
+
+            ul.innerHTML += `
+                    <li class="${liClass}">
+                        <a class="page-link"
+                        href="javascript:void(0);"
+                        ${(!disabled && page) ? `onclick="goPage(${page})"` : ''}>
+                        ${content}
+                        </a>
+                    </li>
+                `;
+        }
+
+        // Prev
+        addButton('«', current - 1, false, current === 1);
+
+        // Page 1
+        addButton(1, 1, current === 1);
+
+        let start = Math.max(2, current - delta);
+        let end = Math.min(last - 1, current + delta);
+
+        if (start > 2) addButton('...', null, false, true);
+
+        for (let i = start; i <= end; i++) {
+            addButton(i, i, current === i);
+        }
+
+        if (end < last - 1) addButton('...', null, false, true);
+
+        // Last page
+        if (last > 1) addButton(last, last, current === last);
+
+        // Next
+        addButton('»', current + 1, false, current === last);
+    }
+
+
+    function goPage(page) {
+        state.page = page;
+        loadData();
+    }
+
+    function sort(field) {
+        state.sortDir = state.sortDir === 'ASC' ? 'DESC' : 'ASC';
+        state.sortBy = field;
+        loadData();
+    }
+
+    function info(perpage, page, total) {
+        document.getElementById('startRecord').textContent = (page - 1) * perpage + 1;
+        document.getElementById('endRecord').textContent = Math.min(page * perpage, total);
+        document.getElementById('totalRecords').textContent = total;
+    }
+
+    /* ===== EVENTS ===== */
+    document.getElementById('search').addEventListener('input', e => {
+        state.search = e.target.value;
+        state.page = 1;
+        loadData();
+        info(state.perPage, state.page, state.total);
     });
+
+    document.getElementById('perPage').addEventListener('change', e => {
+        state.perPage = e.target.value;
+        state.page = 1;
+        loadData();
+        info(state.perPage, state.page, 0);
+    });
+
+    function formatRupiah(number) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(number);
+    }
+
+    loadData();
+</script>
+<script>
+    $(document).on('click', '.btn-edit', function() {
+        var guru_id = $(this).data('guru_id');
+        var potongan_id = $(this).data('potongan_id');
+
+        $('#hasil-tampil').text('Proses pengambilan data.....')
+        $('#edit-modal').modal('show');
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url('honor/ambil_data'); ?>',
+            dataType: 'json',
+            data: {
+                guru_id: guru_id,
+                potongan_id: potongan_id
+            },
+            success: function(response) {
+                const rows = generateTableRows(response.data);
+                $('#table-potongan tbody').html(rows);
+                $('#guru_id').val(guru_id);
+                $('#potongan_id').val(potongan_id);
+                $('.btn-close').attr('value', response.id);
+                $('.uang').mask('000.000.000.000', {
+                    reverse: true
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        })
+    })
+
     $('#table-potongan').on('change', '.form-input', function() {
         var newValue = $(this).val(); // nilai baru dari input
         var id = $(this).data('id'); // id dari baris data
@@ -279,7 +481,7 @@
                 id: id
             },
             success: function(response) {
-                $('#total-hasil-' + id).text(formatRupiah(response.data))
+                $('#hasil-honor-' + response.guru_id).text(formatRupiah(response.data))
                 // alert('total-hasil-' + response.id)
             },
             error: function(xhr, status, error) {

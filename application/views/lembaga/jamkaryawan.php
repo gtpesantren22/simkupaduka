@@ -34,12 +34,12 @@
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    foreach ($data as $ls_jns) :
+                                    foreach ($data as $hdr) :
                                     ?>
                                         <tr>
                                             <td><?= $no++; ?></td>
-                                            <td><?= bulan($ls_jns->bulan) . ' ' . $ls_jns->tahun ?></td>
-                                            <td><a href="<?= base_url('honor/editJamKehadiran/' . $ls_jns->kehadiran_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Kehadiran</button></a></td>
+                                            <td><?= bulan($hdr->bulan) . ' ' . $hdr->tahun ?></td>
+                                            <td><a href="<?= base_url('honor/editJamKehadiran/' . $hdr->kehadiran_id) ?>"><button class="btn btn-info btn-sm"><i class="bx bx-search"></i> Edit Kehadiran</button></a></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

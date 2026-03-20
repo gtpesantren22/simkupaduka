@@ -228,27 +228,33 @@ class LembagaModel extends CI_Model
     }
     function getHonor()
     {
-        $this->flat->from('honor');
-        $this->flat->group_by('honor_id');
-        $this->flat->order_by('tahun', 'DESC');
-        $this->flat->order_by('bulan', 'DESC');
-        return $this->flat->get();
+        return $this->flat->query("SELECT
+                honor_id,
+                MAX(bulan) AS bulan,
+                MAX(tahun) AS tahun
+            FROM honor
+            GROUP BY honor_id
+            ORDER BY tahun DESC, bulan DESC");
     }
     function getKehadiran()
     {
-        $this->flat->from('kehadiran');
-        $this->flat->group_by('kehadiran_id');
-        $this->flat->order_by('tahun', 'DESC');
-        $this->flat->order_by('bulan', 'DESC');
-        return $this->flat->get();
+        return $this->flat->query("SELECT
+                kehadiran_id,
+                MAX(bulan) AS bulan,
+                MAX(tahun) AS tahun
+            FROM kehadiran
+            GROUP BY kehadiran_id
+            ORDER BY tahun DESC, bulan DESC");
     }
     function getPotongan()
     {
-        $this->flat->from('potongan');
-        $this->flat->group_by('potongan_id');
-        $this->flat->order_by('tahun', 'DESC');
-        $this->flat->order_by('bulan', 'DESC');
-        return $this->flat->get();
+        return $this->flat->query("SELECT
+                potongan_id,
+                MAX(bulan) AS bulan,
+                MAX(tahun) AS tahun
+            FROM potongan
+            GROUP BY potongan_id
+            ORDER BY tahun DESC, bulan DESC");
     }
     function getHonorRinci($id, $lembaga)
     {
@@ -282,6 +288,10 @@ class LembagaModel extends CI_Model
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
     }
+    public function flat_query($query)
+    {
+        return $this->flat->query($query);
+    }
     public function flat_edit($table, $data, $where, $dtwhere)
     {
         $this->flat->where($where, $dtwhere);
@@ -306,6 +316,14 @@ class LembagaModel extends CI_Model
         $this->flat->delete($table);
         return $this->flat->affected_rows();
     }
+    public function flat_delete3($table, $where, $dtwhere, $where2, $dtwhere2, $where3, $dtwhere3)
+    {
+        $this->flat->where($where, $dtwhere);
+        $this->flat->where($where2, $dtwhere2);
+        $this->flat->where($where3, $dtwhere3);
+        $this->flat->delete($table);
+        return $this->flat->affected_rows();
+    }
 
     public function flat_totoalPotongan($potonganID, $guruID)
     {
@@ -326,6 +344,21 @@ class LembagaModel extends CI_Model
         $this->flat->order_by('guru.nama', 'ASC');
         return $this->flat->get();
     }
+    public function getToken()
+    {
+        $this->flat->select('isi');
+        $this->flat->from('settings');
+        $this->flat->where('nama', 'token');
+        return $this->flat->get()->row('isi');
+    }
+
+    public function getHonorGuru($guruId, $honorId)
+    {
+        $this->flat->where('guru_id', $guruId);
+        $this->flat->where('honor_id', $honorId);
+        return $this->flat->get('honor');
+    }
+
     public function getPengajuanAll($tahun)
     {
         $this->db->from('pengajuan');
