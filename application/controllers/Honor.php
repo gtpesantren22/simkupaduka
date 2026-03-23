@@ -155,7 +155,11 @@ class Honor extends CI_Controller
                 'bulan' => $honor->bulan,
                 'tahun' => $honor->tahun,
             ], 'id', $id);
-            $sql2 = $this->model->flat_query("UPDATE gaji_detail SET is_dirty = 1 WHERE guru_id = '$guru_id' AND bulan = '$honor->bulan' AND tahun = '$honor->tahun'");
+
+            $gaji = $this->model->flat_getBy2('gaji', 'bulan', $honor->bulan, 'tahun', $honor->tahun)->row();
+            if ($gaji && $gaji->status != 'kunci') {
+                $this->model->flat_query("UPDATE gaji_detail SET is_dirty = 1 WHERE guru_id = '$guru_id' AND gaji_id = '$gaji->gaji_id'");
+            }
 
             $newId = $id;
         }
@@ -199,7 +203,11 @@ class Honor extends CI_Controller
                 'bulan' => $kehadiran->bulan,
                 'tahun' => $kehadiran->tahun,
             ], 'id', $id);
-            $sql2 = $this->model->flat_query("UPDATE gaji_detail SET is_dirty = 1 WHERE guru_id = '$guru_id' AND bulan = '$kehadiran->bulan' AND tahun = '$kehadiran->tahun'");
+
+            $gaji = $this->model->flat_getBy2('gaji', 'bulan', $kehadiran->bulan, 'tahun', $kehadiran->tahun)->row();
+            if ($gaji && $gaji->status != 'kunci') {
+                $this->model->flat_query("UPDATE gaji_detail SET is_dirty = 1 WHERE guru_id = '$guru_id' AND gaji_id = '$gaji->gaji_id'");
+            }
 
             $newId = $id;
         }
@@ -329,7 +337,12 @@ class Honor extends CI_Controller
         if ($edit > 0) {
             $data = $this->model->flat_getBy('potongan', 'id', $id)->row();
             $hasil = $this->model->flat_getBy2('potongan', 'guru_id', $data->guru_id, 'potongan_id', $data->potongan_id)->result();
-            $this->model->flat_query("UPDATE gaji_detail SET is_dirty = 1 WHERE guru_id = '$data->guru_id' AND bulan = '$data->bulan' AND tahun = '$data->tahun'");
+
+            $gaji = $this->model->flat_getBy2('gaji', 'bulan', $data->bulan, 'tahun', $data->tahun)->row();
+            if ($gaji && $gaji->status != 'kunci') {
+                $this->model->flat_query("UPDATE gaji_detail SET is_dirty = 1 WHERE guru_id = '$data->guru_id' AND gaji_id = '$gaji->gaji_id'");
+            }
+
             echo json_encode(['status' => 'success', 'data' => $hasil]);
         } else {
             echo json_encode(['status' => 'gagal']);
