@@ -325,10 +325,12 @@
 
                     } else {
                         alert('Gagal mengupdate data');
+                        console.log(response);
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
                     alert('Terjadi kesalahan saat mengupdate data');
+                    console.log(xhr.responseText);
                 }
             });
 
