@@ -117,8 +117,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
-                            </tbody>
+                            <tbody></tbody>
                         </table>
                     </div>
                     <form action="<?= base_url('honor/add_row') ?>" method="post" class="form-addrow mt-2">
@@ -223,7 +222,7 @@
                         <td>${row.satminkal}</td>
                         <td id="hasil-honor-${row.guru_id}">${formatRupiah(row.nominal)}</td>
                         <td>
-                            <button class="btn btn-sm btn-primary btn-edit" data-guru_id="${row.guru_id}" data-potongan_id="${row.potongan_id}">Edit Potongan</button>
+                            <button class="btn btn-sm btn-primary btn-edit" data-id="${row.id}" data-guru_id="${row.guru_id}" data-potongan_id="${row.potongan_id}">Edit Potongan</button>
                         </td>
                     </tr>
                 `);
@@ -344,6 +343,7 @@
     $(document).on('click', '.btn-edit', function() {
         var guru_id = $(this).data('guru_id');
         var potongan_id = $(this).data('potongan_id');
+        var id = $(this).data('id');
 
         $('#hasil-tampil').text('Proses pengambilan data.....')
         $('#edit-modal').modal('show');
@@ -358,8 +358,9 @@
             success: function(response) {
                 const rows = generateTableRows(response.data);
                 $('#table-potongan tbody').html(rows);
-                $('#guru_id').val(guru_id);
-                $('#potongan_id').val(potongan_id);
+                // $('#guru_id').val(guru_id);
+                // $('#potongan_id').val(potongan_id);
+                $('#id').val(id);
                 $('.btn-close').attr('value', response.id);
                 $('.uang').mask('000.000.000.000', {
                     reverse: true

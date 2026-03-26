@@ -290,7 +290,7 @@ class Honor extends CI_Controller
 
     public function add_row()
     {
-        $id = $this->input->post('id', 'true');
+        $id = $this->input->post('id', true);
         $data = $this->model->flat_getBy('potongan', 'id', $id)->row();
         $simpandata = [
             'potongan_id' => $data->potongan_id,
