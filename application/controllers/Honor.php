@@ -996,7 +996,7 @@ class Honor extends CI_Controller
 
         if (!empty($guruIds)) {
 
-            $this->flat->select('guru_id, bulan, tahun, SUM(nominal) as total');
+            $this->flat->select('id, guru_id, bulan, tahun, SUM(nominal) as total');
             $this->flat->from('potongan');
             $this->flat->where_in('guru_id', $guruIds);
             $this->flat->where('potongan_id', $potongan_id);
