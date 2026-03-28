@@ -125,8 +125,11 @@ class Honor extends CI_Controller
         $honor_santri = $this->model->flat_getBy('settings', 'nama', 'honor_santri')->row('isi');
         $honor_non = $this->model->flat_getBy('settings', 'nama', 'honor_non')->row('isi');
 
+        $id_ra = $this->model->flat_getBy('settings', 'nama', 'id_ra')->row('isi');
+        $id_mi = $this->model->flat_getBy('settings', 'nama', 'id_mi')->row('isi');
 
-        if (strpos($satminkal, 'MI') === 0 || strpos($satminkal, 'RA') === 0) {
+
+        if ($satminkal_id === $id_ra || $satminkal_id === $id_mi) {
             $nominal = $jam * $honor_rami;
         } else {
             $nominal = $ket === 'Santri' ? $jam * $honor_santri : $jam * $honor_non;
