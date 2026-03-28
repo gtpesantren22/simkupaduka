@@ -167,7 +167,7 @@
                         <td id="ket-bulan-${row.guru_id}">${row.bulan+' '+row.tahun}</td>
                         <td>${row.nama}</td>
                         <td>${row.ket}</td>
-                        <td><input type="text" class="form-control form-input" data-id="${row.id}" data-honor_id="${row.honor_id}" data-guru_id="${row.guru_id}" data-satminkal="${row.satminkal}" data-ket="${row.ket}" data-satminkal_id="${row.satminkal_id}" value="${row.hadir}"></td>
+                        <td><input type="text" class="form-control form-input <?= $gaji->status == 'kunci' ? 'disabled' : '' ?>" data-id="${row.id}" data-honor_id="${row.honor_id}" data-guru_id="${row.guru_id}" data-satminkal="${row.satminkal}" data-ket="${row.ket}" data-satminkal_id="${row.satminkal_id}" value="${row.hadir}"></td>
                         <td id="hasil-honor-${row.guru_id}">${row.hadir} jam</td>
                         <td></td>
                     </tr>
