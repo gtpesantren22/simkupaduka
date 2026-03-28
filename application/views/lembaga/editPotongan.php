@@ -222,7 +222,7 @@
                         <td>${row.satminkal}</td>
                         <td id="hasil-honor-${row.guru_id}">${formatRupiah(row.nominal)}</td>
                         <td>
-                            <button class="btn btn-sm btn-primary btn-edit <?= $gaji->status == 'kunci' ? 'disabled' : '' ?>" data-id="${row.id}" data-guru_id="${row.guru_id}" data-potongan_id="${row.potongan_id}">Edit Potongan</button>
+                            <button class="btn btn-sm btn-primary btn-edit" <?= $gaji->status == 'kunci' ? 'disabled' : '' ?> data-id="${row.id}" data-guru_id="${row.guru_id}" data-potongan_id="${row.potongan_id}">Edit Potongan</button>
                         </td>
                     </tr>
                 `);

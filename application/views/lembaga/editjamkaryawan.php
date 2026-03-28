@@ -140,7 +140,7 @@
                         <td id="ket-bulan-${row.guru_id}">${row.bulan+' '+row.tahun}</td>
                         <td>${row.nama}</td>
                         <td>${row.ket}</td>
-                        <td><input type="text" class="form-control form-input <?= $gaji->status == 'kunci' ? 'disabled' : '' ?>" data-id="${row.id}" data-kehadiran_id="${row.kehadiran_id}" data-guru_id="${row.guru_id}" value="${row.hadir}"></td>
+                        <td><input type="text" class="form-control form-input" <?= $gaji->status == 'kunci' ? 'disabled' : '' ?> data-id="${row.id}" data-kehadiran_id="${row.kehadiran_id}" data-guru_id="${row.guru_id}" value="${row.hadir}"></td>
                         <td id="hasil-kehadiran-${row.guru_id}">${row.hadir} hari</td>
                     </tr>
                 `);
