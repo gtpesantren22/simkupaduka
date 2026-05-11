@@ -406,17 +406,20 @@ class Pengajuan extends CI_Controller
 		$bln = $this->input->post('bulan', true);
 
 		$cek = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' AND verval = 0 AND apr = 0 AND stts = 'no' ")->row();
-		if ($cek) {
-			$this->session->set_flashdata('error', 'Ada pengajuan yang belum diajukan');
-			redirect('pengajuan');
-			exit;
-		}
 
-		$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
-		if ($cek1) {
-			$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
-			redirect('pengajuan');
-			exit;
+		if ($lembaga != 15) {
+			if ($cek) {
+				$this->session->set_flashdata('error', 'Ada pengajuan yang belum diajukan');
+				redirect('pengajuan');
+				exit;
+			}
+
+			$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
+			if ($cek1) {
+				$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
+				redirect('pengajuan');
+				exit;
+			}
 		}
 
 		$pj = $this->db->query("SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun'")->row();
