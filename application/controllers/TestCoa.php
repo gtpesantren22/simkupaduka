@@ -5,7 +5,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Testcoa extends CI_Controller
 {
 
-    private $api_key = "AIzaSyAG48jaSfAEa_u1MgYMjqw-MuaIFXg4ofg"; // Ganti dengan API Key Anda
+    private $api_key;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->api_key = $this->db->where('name', 'google_key')->get('settings')->row()->val;
+        $this->model_ai = $this->db->where('name', 'model_ai')->get('settings')->row()->val;
+    }
 
     public function index()
     {
@@ -53,7 +60,7 @@ class Testcoa extends CI_Controller
         $context = "Anda adalah auditor keuangan. Referensi COA kami:";
 
         foreach ($data_coa as $row) {
-            $context .= "\n" . $row->kode . " - " . $row->nama;
+            $context .= "\n" . $row->kode . " : " . $row->nama;
         }
 
         $prompt = "User menginput barang: '$barang' dengan kode COA: '$coa_user'. 
@@ -61,9 +68,17 @@ class Testcoa extends CI_Controller
                    Kembalikan dalam JSON: 
                    {'status': 'Sesuai'|'Tidak Sesuai', 'alasan': '...', 'saran_coa': '...'}";
 
+
         // 3. Panggil fungsi untuk hit API Gemini
         $response_ai = $this->call_gemini($context, $prompt);
         $result = json_decode($response_ai, TRUE);
+
+        // echo json_encode([
+        //     "status" => "Tidak Sesuai",
+        //     "alasan" => $response_ai,
+        //     "saran_coa" => ''
+        // ]);
+        // exit;
 
         // 4. Logika Bisnis
         if ($result['status'] === "Tidak Sesuai") {
@@ -83,7 +98,7 @@ class Testcoa extends CI_Controller
     private function call_gemini($system_instruction, $prompt)
     {
         // 1. Gunakan v1beta dan model gemini-pro (paling stabil)
-        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=" . $this->api_key;
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/" . $this->model_ai . ":generateContent?key=" . $this->api_key;
 
         $data = [
             "contents" => [
