@@ -15,7 +15,7 @@ class Testcoa extends CI_Controller
     public function get_parent_coa()
     {
         $data = $this->db
-            ->where('tahun', '2025/2026')
+            ->where('tahun', '2026/2027')
             ->where('parrent IS NULL', null, false)
             ->get('coa')
             ->result_array();
@@ -30,7 +30,7 @@ class Testcoa extends CI_Controller
         $parent = $this->input->get('parent');
 
         $data = $this->db
-            ->where('tahun', '2025/2026')
+            ->where('tahun', '2026/2027')
             ->where('parrent', $parent) // 🔥 ini yang benar
             ->order_by('kode')
             ->get('coa')
