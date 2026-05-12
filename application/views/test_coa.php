@@ -13,7 +13,7 @@
     <div class="w-full max-w-2xl bg-white p-6 rounded-2xl shadow-lg">
 
         <h2 class="text-2xl font-bold mb-4 text-gray-700">
-            🔍 Validasi COA
+            🔍 Test Validasi COA
         </h2>
 
         <!-- Parent -->
