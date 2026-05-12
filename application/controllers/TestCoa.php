@@ -2,7 +2,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class TestCoa extends CI_Controller
+class Testcoa extends CI_Controller
 {
 
     private $api_key = "AIzaSyAG48jaSfAEa_u1MgYMjqw-MuaIFXg4ofg"; // Ganti dengan API Key Anda
