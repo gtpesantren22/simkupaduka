@@ -140,7 +140,7 @@ class Pengajuan extends CI_Controller
 		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
 		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
 
-		if (($vol * $dataSsh->harga) > $sisa) {
+		if (($vol * $dataSsh->harga) > $sisa && $this->lembaga != '15') {
 			echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
 			die();
 		}
@@ -216,7 +216,7 @@ class Pengajuan extends CI_Controller
 		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
 		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
 
-		if (($vol * $harga_satuan) > $sisa) {
+		if (($vol * $harga_satuan) > $sisa && $this->lembaga != '15') {
 			$this->session->set_flashdata('error', 'Nominal melebihi batas');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
@@ -291,7 +291,7 @@ class Pengajuan extends CI_Controller
 		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
 		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
 
-		if (($vol * $harga) > $sisa) {
+		if (($vol * $harga) > $sisa && $this->lembaga != '15') {
 			echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
 			die();
 		}

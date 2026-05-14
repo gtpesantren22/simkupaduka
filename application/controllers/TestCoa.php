@@ -83,7 +83,7 @@ class Testcoa extends CI_Controller
         // 4. Logika Bisnis
         if ($result['status'] === "Tidak Sesuai") {
             echo json_encode([
-                "status" => "Tidak Sesuai",
+                "status" => "Tid---ak Sesuai",
                 "alasan" => $result['alasan'],
                 "saran_coa" => $result['saran_coa']
             ]);
