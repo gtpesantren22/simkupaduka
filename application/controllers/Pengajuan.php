@@ -489,16 +489,18 @@ class Pengajuan extends CI_Controller
 		$blCek = $pjini->bulan - 2;
 		$cekPjn = $this->model->getBy3('pengajuan', 'bulan', $blCek, 'tahun', $this->tahun, 'lembaga', $this->lembaga)->row();
 		$hari = date("j");
-		if ($pjini->akses == 'N') {
-			if ($hari < 1 || $hari > 20) {
-				$this->session->set_flashdata('error', 'Tanggal Pengajuan belum sampai/sdah lewat');
-				redirect('pengajuan/detail/' . $kode);
-				exit;
-			}
-			if ($cekPjn->spj != 3) {
-				$this->session->set_flashdata('error', 'Pengajuan sebelumnya belum selesai');
-				redirect('pengajuan/detail/' . $kode);
-				exit;
+		if ($this->lembaga != 15) {
+			if ($pjini->akses == 'N') {
+				if ($hari < 1 || $hari > 20) {
+					$this->session->set_flashdata('error', 'Tanggal Pengajuan belum sampai/sdah lewat');
+					redirect('pengajuan/detail/' . $kode);
+					exit;
+				}
+				if ($cekPjn->spj != 3) {
+					$this->session->set_flashdata('error', 'Pengajuan sebelumnya belum selesai');
+					redirect('pengajuan/detail/' . $kode);
+					exit;
+				}
 			}
 		}
 
