@@ -51,8 +51,8 @@ class Pengajuan extends CI_Controller
 		$data['jenis'] = $this->model->getBy('jenis', 'tahun', $this->tahun)->result();
 		$data['coa'] = $this->model->getBy('coa', 'tahun', $this->tahun)->result();
 		// $data['program'] = $this->model->getBy2('dppk', 'tahun', $this->tahun, 'lembaga', $this->lembaga)->result();
-		$pejn = $data['pj']->bulan;
-		$data['program'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($pejn, bulan) AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->result();
+		$pejn = (int)$data['pj']->bulan;
+		$data['program'] = $this->db->query("SELECT DISTINCT kode_program, program FROM dppk WHERE FIND_IN_SET($pejn, REPLACE(bulan, ' ', '')) AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ORDER BY kode_program ASC ")->result();
 		$data['satuan'] = $this->model->getAll('satuan')->result();
 
 		$data['dataBulan'] = $this->bulan;
@@ -113,17 +113,61 @@ class Pengajuan extends CI_Controller
 		echo json_encode(['hasil' => $hasil, 'kategori' => $kategori]);
 	}
 
+	public function getKegiatanByProgram()
+	{
+		$program_id = $this->input->post('program_id', true);
+		$bulan_pj = (int)$this->input->post('bulan_pj', true);
+
+		// Get kegiatan from dppk where program matches and bulan matches the pengajuan bulan
+		$result = $this->db->query("SELECT id_dppk, kode_program, kode_kegiatan, program, kegiatan, bulan 
+			FROM dppk 
+			WHERE FIND_IN_SET($bulan_pj, REPLACE(bulan, ' ', '')) 
+			AND tahun = '$this->tahun' 
+			AND lembaga = '$this->lembaga' 
+			AND kode_program = '$program_id'
+		")->result();
+
+		echo json_encode(['status' => 'success', 'data' => $result]);
+	}
+
+	public function getRabByDppk()
+	{
+		$id_dppk = $this->input->post('id_dppk', true);
+
+		$rab = $this->db->query("SELECT rab.*, rab_sm24.kegiatan as kegiatan_rab 
+			FROM rab 
+			LEFT JOIN rab_sm24 ON rab.kode = rab_sm24.kode AND rab_sm24.tahun = '$this->tahun'
+			WHERE rab.id_dppk = '$id_dppk' 
+			AND rab.tahun = '$this->tahun'
+		")->result();
+
+		// Calculate sisa for this program
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$id_dppk' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
+
+		echo json_encode([
+			'status' => 'success',
+			'data' => $rab,
+			'total_rab' => $nomProg->total ?? 0,
+			'total_pakai' => ($nomPakai->total ?? 0) + ($nomSm->total ?? 0),
+			'sisa' => $sisa
+		]);
+	}
+
 	public function addItemBarang()
 	{
 		$id_realis = $this->uuid->v4();
 		$kode_pengajuan = $this->input->post('kode_pengajuan', true);
 		$program = $this->input->post('program', true);
+		$kegiatan_dppk = $this->input->post('kegiatan_dppk', true);
 		$coa = $this->input->post('coa', true);
 		$ssh = $this->input->post('ssh', true);
 		$vol = $this->input->post('qty', true);
 		$kegiatan = $this->input->post('kegiatan', true);
 
-		if ($kode_pengajuan == '' || $program == '' || $coa == '' || $ssh == '' || $coa == 'pilih coa' || $vol == '' || $kegiatan == '') {
+		if ($kode_pengajuan == '' || $program == '' || $kegiatan_dppk == '' || $coa == '' || $ssh == '' || $coa == 'pilih coa' || $vol == '' || $kegiatan == '') {
 			echo json_encode(['status' => 'error', 'message' => 'Semua kolom harus terisi']);
 			exit();
 		}
@@ -135,17 +179,17 @@ class Pengajuan extends CI_Controller
 
 		$dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
 
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$program' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
-		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
-		if (($vol * $dataSsh->harga) > $sisa && $this->lembaga != '15') {
+		if (($vol * $dataSsh->harga) > $sisa) {
 			echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
 			die();
 		}
 
-		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . time();
+		$kode = $this->lembaga . '-' . $kegiatan_dppk . '-' . $coa . '-' . $ssh . '-' . time();
 
 		$data = [
 			'id_realis' => $id_realis,
@@ -160,7 +204,6 @@ class Pengajuan extends CI_Controller
 			'pj' => $this->user,
 			'bulan' => date('m'),
 			'tahun' => $this->tahun,
-			'ket' => $dataSsh->nama . ' - @ ' . $vol . ' x ' . number_format($dataSsh->harga, 0, ',', '.'),
 			'ket' => $dataSsh->nama . ' - @ ' . $vol . ' ' . $dataSsh->satuan . ' x ' . number_format($dataSsh->harga, 0, ',', '.'),
 			'kode_pengajuan' => $kode_pengajuan,
 			'nom_cair' => $dataSsh->harga * $vol,
@@ -171,7 +214,7 @@ class Pengajuan extends CI_Controller
 			'id_detail' => $id_realis,
 			'kode_coa' => $coa,
 			'kode_ssh' => $ssh,
-			'kode_program' => $program,
+			'kode_program' => $kegiatan_dppk,
 			'kegiatan' => $kegiatan,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
@@ -189,6 +232,7 @@ class Pengajuan extends CI_Controller
 		$id_realis = $this->uuid->v4();
 		$kode_pengajuan = $this->input->post('kode_pengajuan', true);
 		$program = $this->input->post('program', true);
+		$kegiatan_dppk = $this->input->post('kegiatan_dppk', true);
 		$coa = $this->input->post('coa', true);
 		$vol = $this->input->post('qty', true);
 		$nama = $this->input->post('nama', true);
@@ -196,32 +240,48 @@ class Pengajuan extends CI_Controller
 		$harga_satuan = rmRp($this->input->post('harga_satuan', true));
 		$kegiatan = $this->input->post('kegiatan', true);
 
-		if ($kode_pengajuan == '' || $program == '' || $coa == '' || $coa == 'pilih coa' || $vol == '' || $nama == '' || $satuan == '' || $harga_satuan == '' || $kegiatan == '') {
+		if ($kode_pengajuan == '' || $program == '' || $kegiatan_dppk == '' || $coa == '' || $coa == 'pilih coa' || $vol == '' || $nama == '' || $satuan == '' || $harga_satuan == '' || $kegiatan == '') {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(['status' => 'error', 'message' => 'Semua kolom harus terisi']);
+				exit();
+			}
 			$this->session->set_flashdata('error', 'Semua kolom harus terisi');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
 
 		$dt = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
 		if ($dt->stts === 'yes') {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(['status' => 'error', 'message' => 'Tidak bisa tambah item baru. Pengajuan sudah diproses']);
+				exit();
+			}
 			$this->session->set_flashdata('error', 'Tidak bisa tambah item baru. Pengajuan sudah diproses');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
-		if ($program == '' || $coa == '') {
-			$this->session->set_flashdata('error', 'Program atau Akun (COA) belum dipilih');
+		if ($program == '' || $kegiatan_dppk == '' || $coa == '') {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(['status' => 'error', 'message' => 'Program, Kegiatan, atau Akun (COA) belum dipilih']);
+				exit();
+			}
+			$this->session->set_flashdata('error', 'Program, Kegiatan, atau Akun (COA) belum dipilih');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
 
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$program' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
-		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
-		if (($vol * $harga_satuan) > $sisa && $this->lembaga != '15') {
+		if (($vol * $harga_satuan) > $sisa) {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
+				exit();
+			}
 			$this->session->set_flashdata('error', 'Nominal melebihi batas');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
 
-		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-BnS-' . time();
+		$kode = $this->lembaga . '-' . $kegiatan_dppk . '-' . $coa . '-BnS-' . time();
 
 		$data = [
 			'id_realis' => $id_realis,
@@ -246,7 +306,7 @@ class Pengajuan extends CI_Controller
 			'id_detail' => $id_realis,
 			'kode_coa' => $coa,
 			'kode_ssh' => 'BnS',
-			'kode_program' => $program,
+			'kode_program' => $kegiatan_dppk,
 			'kegiatan' => $kegiatan,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
@@ -254,9 +314,17 @@ class Pengajuan extends CI_Controller
 		$this->model->input('real_sm', $data);
 		$this->model->input('realis_detail', $data2);
 		if ($this->db->affected_rows() > 0) {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(['status' => 'success', 'message' => 'Tambah Barang berhasil']);
+				exit();
+			}
 			$this->session->set_flashdata('success', 'Tambah Barang berhasil');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		} else {
+			if ($this->input->is_ajax_request()) {
+				echo json_encode(['status' => 'error', 'message' => 'Tambah barang gagal']);
+				exit();
+			}
 			$this->session->set_flashdata('error', 'Tambah barang gagal');
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
@@ -267,6 +335,7 @@ class Pengajuan extends CI_Controller
 		$id_realis = $this->uuid->v4();
 		$kode_pengajuan = $this->input->post('kode_pengajuan', true);
 		$program = $this->input->post('program-tunai', true);
+		$kegiatan_dppk = $this->input->post('kegiatan_dppk', true);
 		$coa = $this->input->post('coa', true);
 		$barang = $this->input->post('barang', true);
 		$kegiatan = $this->input->post('kegiatan', true);
@@ -275,7 +344,7 @@ class Pengajuan extends CI_Controller
 		$satuan = $this->input->post('satuan', true);
 		$ssh = 'TNI';
 
-		if ($kode_pengajuan == '' || $program == '' || $coa == '' || $coa == 'pilih coa' || $barang == '' || $harga == '' || $kegiatan == '' || $vol == '' || $satuan == '') {
+		if ($kode_pengajuan == '' || $program == '' || $kegiatan_dppk == '' || $coa == '' || $coa == 'pilih coa' || $barang == '' || $harga == '' || $kegiatan == '' || $vol == '' || $satuan == '') {
 			echo json_encode(['status' => 'error', 'message' => 'Semua kolom harus terisi']);
 			exit();
 		}
@@ -286,12 +355,12 @@ class Pengajuan extends CI_Controller
 			exit();
 		}
 
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$program' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$program-%' AND tahun = '$this->tahun' ")->row();
-		$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
-		if (($vol * $harga) > $sisa && $this->lembaga != '15') {
+		if (($vol * $harga) > $sisa) {
 			echo json_encode(['status' => 'error', 'message' => 'Nominal melebihi batas']);
 			die();
 		}
@@ -300,7 +369,7 @@ class Pengajuan extends CI_Controller
 		// $cekRealisSm = $this->model->getBy2('real_sm', 'lembaga', $this->lembaga, 'tahun', $this->tahun)->num_rows();
 		// $urut = $cekRealis + $cekRealisSm == 0 ? str_pad(1, 3, '0', STR_PAD_LEFT) : str_pad(($cekRealis + $cekRealisSm + 1), 3, '0', STR_PAD_LEFT);
 
-		$kode = $this->lembaga . '-' . $program . '-' . $coa . '-' . $ssh . '-' . time();
+		$kode = $this->lembaga . '-' . $kegiatan_dppk . '-' . $coa . '-' . $ssh . '-' . time();
 
 		$data = [
 			'id_realis' => $id_realis,
@@ -325,7 +394,7 @@ class Pengajuan extends CI_Controller
 			'id_detail' => $id_realis,
 			'kode_coa' => $coa,
 			'kode_ssh' => $ssh,
-			'kode_program' => $program,
+			'kode_program' => $kegiatan_dppk,
 			'kegiatan' => $kegiatan,
 			'created_at' => date('Y-m-d H:i:s'),
 		];
@@ -407,19 +476,18 @@ class Pengajuan extends CI_Controller
 
 		$cek = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' AND verval = 0 AND apr = 0 AND stts = 'no' ")->row();
 
-		if ($lembaga != 15) {
-			if ($cek) {
-				$this->session->set_flashdata('error', 'Ada pengajuan yang belum diajukan');
-				redirect('pengajuan');
-				exit;
-			}
 
-			$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
-			if ($cek1) {
-				$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
-				redirect('pengajuan');
-				exit;
-			}
+		if ($cek) {
+			$this->session->set_flashdata('error', 'Ada pengajuan yang belum diajukan');
+			redirect('pengajuan');
+			exit;
+		}
+
+		$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
+		if ($cek1) {
+			$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
+			redirect('pengajuan');
+			exit;
 		}
 
 		$pj = $this->db->query("SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun'")->row();
@@ -486,21 +554,40 @@ class Pengajuan extends CI_Controller
 	public function ajukan($kode)
 	{
 		$pjini = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
-		$blCek = $pjini->bulan - 2;
-		$cekPjn = $this->model->getBy3('pengajuan', 'bulan', $blCek, 'tahun', $this->tahun, 'lembaga', $this->lembaga)->row();
-		$hari = date("j");
-		if ($this->lembaga != 15) {
-			if ($pjini->akses == 'N') {
-				if ($hari < 1 || $hari > 20) {
-					$this->session->set_flashdata('error', 'Tanggal Pengajuan belum sampai/sdah lewat');
-					redirect('pengajuan/detail/' . $kode);
-					exit;
-				}
-				if ($cekPjn->spj != 3) {
-					$this->session->set_flashdata('error', 'Pengajuan sebelumnya belum selesai');
-					redirect('pengajuan/detail/' . $kode);
-					exit;
-				}
+
+		if ($pjini->akses == 'N') {
+			// 1. Pengajuan hanya bisa diajukan antara tanggal 1-20
+			$hari = (int)date("j");
+			if ($hari < 1 || $hari > 20) {
+				$this->session->set_flashdata('error', 'Tanggal Pengajuan belum sampai/sudah lewat (hanya bisa tgl 1-20)');
+				redirect('pengajuan/detail/' . $kode);
+				exit;
+			}
+
+			// 2. Jika ada pengajuan sebelumnya yang berstatus bukan 3 maka masih belum bisa diajukan
+			$cekPjn = $this->db->where('tahun', $this->tahun)
+				->where('lembaga', $this->lembaga)
+				->where('kode_pengajuan !=', $kode)
+				->where('spj !=', 3)
+				->get('pengajuan')
+				->row();
+			if ($cekPjn) {
+				$this->session->set_flashdata('error', 'Pengajuan sebelumnya belum selesai');
+				redirect('pengajuan/detail/' . $kode);
+				exit;
+			}
+
+			// 3. Pengajuan pada bulan yang terpilih itu seharusnya dilakukan pada bulan sebelumnya
+			$targetBulan = (int)$pjini->bulan;
+			$currentBulan = (int)date('m');
+			$prevBulan = $targetBulan - 1;
+			if ($prevBulan === 0) {
+				$prevBulan = 12;
+			}
+			if ($currentBulan !== $prevBulan) {
+				$this->session->set_flashdata('error', 'Pengajuan untuk bulan ' . $this->bulan[$targetBulan] . ' seharusnya pada bulan ' . $this->bulan[$prevBulan]);
+				redirect('pengajuan/detail/' . $kode);
+				exit;
 			}
 		}
 
@@ -535,30 +622,22 @@ class Pengajuan extends CI_Controller
 			'pesan' => 'Diajukan KPA'
 		];
 
-		$psn = '🌟 [INFORMASI PENGAJUAN BARU]
-Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
+		$psn = '🌟 *[PENGAJUAN BARU' . ($rt ? ' - ' . $rt : '') . ']*
+
+Terdapat pengajuan baru yang membutuhkan verifikasi. Berikut rincian detailnya:
 
 ━━━━━━━━━━━━━━━━━━━━
-🔖 Kode Pengajuan
-' . $dt->kode_pengajuan . '
-
-🏫 Lembaga
-' . $lm->nama . '
-
-📆 Periode
-' . $perod . '
-
-🗓️ Tanggal Pengajuan
-' . $dt->at . '
-
-💵 Total Pengajuan
-' . rupiah($jml->jml) . '
+🔖 *Kode*      : ' . $dt->kode_pengajuan . '
+🏫 *Lembaga*   : ' . $lm->nama . '
+📆 *Periode*   : ' . $perod . '
+🗓️ *Tanggal*   : ' . $dt->at . '
+💵 *Total*     : *' . rupiah($jml->jml) . '*
 ━━━━━━━━━━━━━━━━━━━━
 
-📌 Akan segera ditindaklanjuti oleh Bendahara dan Perencanaan melalui link berikut:
+📌 Silakan periksa dan tindak lanjuti melalui tautan berikut:
 🔗 https://simkupaduka.ppdwk.com
 
-🙏 Terima kasih atas kerjasamanya.';
+Terima kasih atas perhatian dan kerjasamanya.';
 
 		if ($cekPj->pj == '' || $cekPj->tgl == '') {
 			$this->session->set_flashdata('error', 'Maaf. Nama PJ dan Tanggal belum diisi. Silahkan klik tombol - Edit PJ - Berwarna Kuning');
@@ -568,9 +647,9 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 			$this->model->input('history', $history);
 			if ($this->db->affected_rows() > 0) {
 
-				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-				// kirim_person($this->apiKey, '085236924510', $psn);
+				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Pengajuan berhasil diajukan kepada Bendahara');
 				redirect('pengajuan/detail/' . $kode);
@@ -607,18 +686,21 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 		$data['bulan'] = $this->bulan;
 
 		$pejn = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
-		$data['dppk'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($pejn->bulan, bulan) AND tahun = '$this->tahun' AND lembaga = '$pejn->lembaga' ")->result();
+		$bulan_pj = (int)$pejn->bulan;
+		$data['dppk'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($bulan_pj, REPLACE(bulan, ' ', '')) AND tahun = '$this->tahun' AND lembaga = '$pejn->lembaga' ")->result();
 
 		$dataKirim = [];
 		$dataSQL = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
 		foreach ($dataSQL as $key => $value) {
-			$kodefull = explode('-', $value->kode);
-			$program = $this->model->getBy2('dppk', 'id_dppk', $kodefull[1], 'tahun', $this->tahun)->row();
+			$delimiter = (strpos($value->kode, '-') !== false) ? '-' : '_';
+			$kodefull = explode($delimiter, $value->kode);
+			$prog_id = isset($kodefull[1]) ? $kodefull[1] : '';
+			$program = $prog_id ? $this->model->getBy2('dppk', 'id_dppk', $prog_id, 'tahun', $this->tahun)->row() : null;
 			$dataKirim[] = [
 				'id_realis' => $value->id_realis,
-				'kode' => $program->id_dppk,
-				'program' => $program->program,
-				'bulan' => $program->bulan,
+				'kode' => $program ? $program->id_dppk : '',
+				'program' => $program ? $program->program : '',
+				'bulan' => $program ? $program->bulan : '',
 				'rincian' => $value->ket,
 				'nominal' => $value->nominal,
 			];
@@ -653,19 +735,23 @@ Mohon perhatian, ada pengajuan terbaru dengan detail sebagai berikut:
 		$this->model->update('pengajuan', ['apr' => 1], 'kode_pengajuan', $kode);
 		$this->model->input('history', $history);
 		if ($this->db->affected_rows() > 0) {
-			$psn = '*INFORMASI VERIFIKASI PENGAJUAN* ' . $rt . '
-			
-pengajuan dari :
+			$psn = '✅ *[VERIFIKASI PENGAJUAN' . ($rt ? ' - ' . $rt : '') . ']*
 
-Lembaga : ' . $lembaga->nama . '
-Kode Pengajuan : ' . $kode . '
-Periode : ' . bulan($dtPj->bulan) . ' ' . $dtPj->tahun . '
-*Telah di Verifikasi dan Validasi Oleh Bagian Perencanaan pada ' . date('Y-m-d') . '*
+Pengajuan dana berikut telah diverifikasi dan divalidasi oleh Bagian Perencanaan:
 
-*_' . $bwh . '_*
-Terimakasih';
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lembaga->nama . '
+🔖 *Kode*      : ' . $kode . '
+📆 *Periode*   : ' . bulan($dtPj->bulan) . ' ' . $dtPj->tahun . '
+📅 *Tanggal*   : ' . date('d-m-Y') . '
+━━━━━━━━━━━━━━━━━━━━
+
+ℹ️ *Status Selanjutnya*:
+_' . $bwh . '_
+
+Terima kasih atas kerjasamanya.';
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 			$this->session->set_flashdata('ok', 'Verifikasi berhasil');
 			redirect('pengajuan/rencana');
@@ -699,19 +785,24 @@ Terimakasih';
 		$this->model->input('history', $history);
 		$this->model->update('pengajuan', ['apr' => 0, 'stts' => 'no'], 'kode_pengajuan', $kode);
 		if ($this->db->affected_rows() > 0) {
-			$psn = '*INFORMASI PENOLAKAN PENGAJUAN* ' . $rt . '
-			
-pengajuan dari :
+			$psn = '⚠️ *[PENOLAKAN PENGAJUAN' . ($rt ? ' - ' . $rt : '') . ']*
 
-Lembaga : ' . $lembaga->nama . '
-Kode Pengajuan : ' . $kode . '
-Periode : ' . bulan($dtPj->bulan) . ' ' . $dtPj->tahun . '
-*Ditolak* Oleh Bagian Perencanaan pada ' . date('Y-m-d') . ', dengan catatan :
+Pengajuan dana berikut telah ditolak oleh Bagian Perencanaan:
 
-*_' . $alasan . '_*
-Kepada KPA terkait diharapkan untuk merevisi ulang. Terimakasih';
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lembaga->nama . '
+🔖 *Kode*      : ' . $kode . '
+📆 *Periode*   : ' . bulan($dtPj->bulan) . ' ' . $dtPj->tahun . '
+📅 *Tanggal*   : ' . date('d-m-Y') . '
+━━━━━━━━━━━━━━━━━━━━
+📝 *Catatan*:
+_*"' . $alasan . '"*_
+
+Kepada KPA lembaga terkait diharapkan segera melakukan revisi sesuai catatan di atas.
+
+Terima kasih.';
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 			$this->session->set_flashdata('ok', 'Penolakan berhasil');
 			redirect('pengajuan/rencana');

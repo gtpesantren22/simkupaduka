@@ -151,7 +151,7 @@
                                 <select name="lembaga" id="" class="form-control" required>
                                     <option value=""> -pilih lembaga- </option>
                                     <?php
-                                    $sal = $this->db->query("SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun') ")->result();
+                                    $sal = $this->db->query("SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun') AND tahun = '$tahun' ")->result();
                                     foreach ($sal as $r) {
                                     ?>
                                         <option value="<?= $r->kode; ?>"><?= $r->nama; ?></option>

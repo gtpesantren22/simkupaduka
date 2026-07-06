@@ -8,6 +8,9 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Lembaga extends CI_Controller
 {
+	// Tentukan kode lembaga untuk fitur Cetak Nota di sini:
+	private $target_lembaga = '20';
+
 	function __construct()
 	{
 		parent::__construct();
@@ -83,6 +86,7 @@ class Lembaga extends CI_Controller
 		}
 
 		$data['rabA'] = $this->model->getBy2('rab', 'lembaga', $lembaga, 'tahun', $this->tahun)->result();
+		$data['pengajuan'] = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$this->tahun' ORDER BY at DESC")->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 		$this->load->view('lembaga/head', $data);
@@ -250,7 +254,7 @@ class Lembaga extends CI_Controller
 		$kol = $this->lembaga;
 		$tahun = $this->tahun;
 
-		$data['query'] = $this->db->query("SELECT * FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun' GROUP BY jenis")->result();
+		$data['query'] = $this->db->query("SELECT DISTINCT jenis FROM rab WHERE lembaga = '$kol' AND tahun = '$tahun'")->result();
 
 		$this->load->view('lembaga/show', $data);
 	}
@@ -433,18 +437,21 @@ class Lembaga extends CI_Controller
 			$rt = '';
 		}
 
-		$psn = '*INFORMASI PENGAJUAN* ' . $rt . '
+		$psn = '📝 *[PENGAJUAN BARU]* ' . $rt . '
 
-Ada pengajuan baru dari :
-    
-Lembaga : ' . $lm->nama . '
-Kode Pengajuan : ' . $dt->kode_pengajuan . '
-Periode : ' . $perod . '
-Pada : ' . $dt->at . '
-Nominal : ' . rupiah($jml->jml) . '
+Informasi pengajuan anggaran baru sebagai berikut:
 
-*_dimohon kepada Bendahara untuk segera mengecek pengjuan tersebut di https://simkupaduka.ppdwk.com_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : ' . $lm->nama . '
+🔖 *Kode Peng.*  : ' . $dt->kode_pengajuan . '
+📅 *Periode*     : ' . $perod . '
+⏰ *Waktu*       : ' . $dt->at . '
+💰 *Nominal*     : ' . rupiah($jml->jml) . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Bendahara untuk segera mengecek pengajuan tersebut di https://simkupaduka.ppdwk.com_*
+
+Terima kasih.';
 
 		if ($cekPj->pj == '' || $cekPj->tgl == '') {
 			$this->session->set_flashdata('error', 'Maaf. Nama PJ dan Tanggal belum diisi. Silahkan klik tombol - Edit PJ - Berwarna Kuning');
@@ -453,11 +460,10 @@ Terimakasih';
 			$this->model->update('pengajuan', $data, 'kode_pengajuan', $kode);
 			if ($this->db->affected_rows() > 0) {
 
-				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-				kirim_person($this->apiKey, '082302301003', $psn);
-				kirim_person($this->apiKey, '082264061060', $psn);
-				// kirim_person($this->apiKey, '085236924510', $psn);
+				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Pengajuan berhasil diajukan kepada Bendahara');
 				redirect('lembaga/pengajuanDetail/' . $kode);
@@ -497,8 +503,12 @@ Terimakasih';
 		$tahun  = $this->input->post('tahun');
 
 		$pjini = $this->model->getBy('spj', 'kode_pengajuan', $kode)->row();
-		$cekPjn = $this->model->getBy3('spj',  'tahun', $this->tahun, 'lembaga', $this->lembaga, 'stts !=', 3)->row();
-
+		$cekPjn = $this->db->where('tahun', $this->tahun)
+			->where('lembaga', $this->lembaga)
+			->where('kode_pengajuan !=', $kode)
+			->where('stts !=', 3)
+			->get('spj')
+			->row();
 		$hari = date("j");
 		if ($pjini->akses == 'N') {
 			if ($hari < 1 || $hari > 10) {
@@ -526,17 +536,19 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+		$psn = '✅ *[PELAPORAN SPJ]* ' . $rt . '
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : ' . $lembaga->nama . '
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+Informasi pelaporan berkas SPJ baru sebagai berikut:
 
-*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : ' . $lembaga->nama . '
+🔖 *Kode Peng.*  : ' . $kode . '
+📅 *Waktu*       : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Bag. Accounting untuk segera mengecek berkas tersebut di https://simkupaduka.ppdwk.com/_*
+
+Terima kasih.';
 
 		$file_name = 'SPJ-' . rand(0, 99999999);
 		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
@@ -585,9 +597,9 @@ Terimakasih';
 
 			if ($this->db->affected_rows() > 0) {
 
-				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-				// kirim_person($this->apiKey, '085236924510', $psn);
+				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
 				redirect('lembaga/spj');
@@ -972,22 +984,24 @@ Terimakasih';
 
 		$lm = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 
-		$psn = '
-*INFORMASI PENGAJUAN PAK*
+		$psn = '📝 *[PENGAJUAN PAK BARU]*
 
-Ada pengajuan baru dari :
-    
-Lembaga : ' . $lm->nama . '
-Kode PAK : ' . $kode . '
+Informasi pengajuan PAK baru sebagai berikut:
 
-*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://sekretaris.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lm->nama . '
+🔖 *Kode PAK*  : ' . $kode . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Bag. Accounting untuk segera mengecek pengajuan tersebut di https://sekretaris.ppdwk.com/_*
+
+Terima kasih.';
 		$this->model->update('pak', $data, 'kode_pak', $kode);
 		if ($this->db->affected_rows() > 0) {
 
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, '082302301003', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil dilanjutkan ke Bendahara');
@@ -1376,22 +1390,25 @@ Terimakasih';
 			$this->model->input('rab_list', $data);
 		}
 
-		$psn = '*INFORMASI PERMOHONAN VERIFIKASI* 
+		$psn = '📝 *[PERMOHONAN VERIFIKASI RAB]*
 
-Ada pengajuan RAB Tahun Ajaran 23/24  :
-    
-Lembaga : ' . $lm->nama . '
-Tahun : ' . $this->tahun . '
-Pada : ' .  date('Y-m-d H:i') . '
+Informasi pengajuan verifikasi RAB baru sebagai berikut:
 
-*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lm->nama . '
+📅 *Tahun*     : ' . $this->tahun . '
+⏰ *Waktu*     : ' . date('d-m-Y H:i') . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Sub Bag. Accounting untuk segera mengecek pengajuan tersebut di https://simkupaduka.ppdwk.com/_*
+
+Terima kasih.';
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'RAB berhasil di ajukan');
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '082302301003', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('lembaga/rab24');
 		} else {
@@ -1543,25 +1560,28 @@ Terimakasih';
 		$dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM sarpras_detail WHERE kode_pengajuan = '$kode' ")->row();
 		$dtSarpras = $this->model->getBy('sarpras', 'kode_pengajuan', $kode)->row();
 
-		$psn = '*INFORMASI PENGAJUAN SARPRAS* 
+		$psn = '📝 *[PENGAJUAN SARPRAS BARU]*
 
-Pengajuan Sarpras Pesantren  :
-    
-Kode Pengajuan : ' . $kode . '
-Nominal : ' . rupiah($dataSum->jml) . '
-Bulan : ' . $this->bulan[$dtSarpras->bulan] . '
-Pada : ' .  date('Y-m-d H:i') . '
+Informasi pengajuan sarpras pesantren sebagai berikut:
 
-*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🔖 *Kode Peng.*  : ' . $kode . '
+💰 *Nominal*     : ' . rupiah($dataSum->jml) . '
+📅 *Bulan*       : ' . $this->bulan[$dtSarpras->bulan] . '
+⏰ *Waktu*       : ' . date('d-m-Y H:i') . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Sub Bag. Accounting untuk segera mengecek pengajuan tersebut di https://simkupaduka.ppdwk.com/_*
+
+Terima kasih.';
 
 		$this->model->update('sarpras', $data, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Pengajuan sudah diteruskan');
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '082302301003', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('lembaga/sarprasDetail/' . $kode);
 		} else {
@@ -1587,17 +1607,19 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI VERIFIKASI SPJ (SARPRAS)* ' . $rt . '
+		$psn = '✅ *[PELAPORAN SPJ SARPRAS]* ' . $rt . '
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : Biro Umum (SARPRAS)
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+Informasi pelaporan berkas SPJ Sarpras baru sebagai berikut:
 
-*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : Biro Umum (SARPRAS)
+🔖 *Kode Peng.*  : ' . $kode . '
+📅 *Waktu*       : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Bag. Accounting untuk segera mengecek berkas tersebut di https://simkupaduka.ppdwk.com/_*
+
+Terima kasih.';
 
 		$file_name = 'SRPS-' . rand(0, 99999999);
 		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
@@ -1650,8 +1672,8 @@ Terimakasih';
 
 			if ($this->db->affected_rows() > 0) {
 
-				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
@@ -1810,25 +1832,28 @@ Terimakasih';
 		$dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kode' ")->row();
 		$dtHaflah = $this->model->getBy('haflah', 'kode_pengajuan', $kode)->row();
 
-		$psn = '*INFORMASI PENGAJUAN HAFLAH* 
+		$psn = '📝 *[PENGAJUAN HAFLAH BARU]*
 
-Pengajuan Haflah Pesantren  :
-    
-Kode Pengajuan : ' . $kode . '
-Nominal : ' . rupiah($dataSum->jml) . '
-Bulan : ' . $this->bulan[$dtHaflah->bulan] . '
-Pada : ' .  date('Y-m-d H:i') . '
+Informasi pengajuan haflah pesantren sebagai berikut:
 
-*_dimohon kepada SUB BAG ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🔖 *Kode Peng.*  : ' . $kode . '
+💰 *Nominal*     : ' . rupiah($dataSum->jml) . '
+📅 *Bulan*       : ' . $this->bulan[$dtHaflah->bulan] . '
+⏰ *Waktu*       : ' . date('d-m-Y H:i') . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Sub Bag. Accounting untuk segera mengecek pengajuan tersebut di https://simkupaduka.ppdwk.com/_*
+
+Terima kasih.';
 
 		$this->model->update('haflah', $data, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Pengajuan sudah diteruskan');
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '082302301003', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('lembaga/haflahDetail/' . $kode);
 		} else {
@@ -1875,17 +1900,19 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI VERIFIKASI SPJ (HAFLAH)* ' . $rt . '
+		$psn = '✅ *[PELAPORAN SPJ HAFLAH]* ' . $rt . '
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : Biro Umum (HAFLAH)
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+Informasi pelaporan berkas SPJ Haflah baru sebagai berikut:
 
-*_dimohon kepada ACCOUNTING untuk segera mengecek nya di https://simkupaduka.ppdwk.com/_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : Biro Umum (HAFLAH)
+🔖 *Kode Peng.*  : ' . $kode . '
+📅 *Waktu*       : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dimohon kepada Bag. Accounting untuk segera mengecek berkas tersebut di https://simkupaduka.ppdwk.com/_*
+
+Terima kasih.';
 
 		$file_name = 'SRPS-' . rand(0, 99999999);
 		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/';
@@ -1938,8 +1965,8 @@ Terimakasih';
 
 			if ($this->db->affected_rows() > 0) {
 
-				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
@@ -2031,17 +2058,19 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+		$psn = '✅ *[VERIFIKASI SPJ - DISETUJUI]* ' . $rt . '
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : ' . $lmb->nama . '
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+Informasi pelaporan berkas SPJ dari lembaga sebagai berikut:
 
-*_SPJ telah disetujui oleh bagian PERENCANAAN. Selanjutnya menunggu verifikasi dari BEndahara._*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : ' . $lmb->nama . '
+🔖 *Kode Peng.*  : ' . $kode . '
+📅 *Waktu*       : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
 
-Terimakasih';
+_*SPJ telah disetujui oleh bagian Perencanaan. Selanjutnya menunggu verifikasi dari Bendahara._*
+
+Terima kasih.';
 
 		$history = [
 			'kode_pengajuan' => $kode,
@@ -2057,8 +2086,9 @@ Terimakasih';
 		$this->model->update('spj', ['perencanaan' => 1], 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'SPJ berhasil disetujui');
 			redirect('lembaga/spjSs');
@@ -2066,5 +2096,156 @@ Terimakasih';
 			$this->session->set_flashdata('error', 'SPJ tidak bisa disetujui');
 			redirect('lembaga/spjSs');
 		}
+	}
+
+	private function _check_akses_cetak_nota()
+	{
+		$user = $this->Auth_model->current_user();
+		if ($user->level !== 'admin' && $user->level !== 'account' && $this->lembaga !== $this->target_lembaga) {
+			show_error('Akses ditolak. Fitur ini hanya untuk Lembaga dengan kode ' . $this->target_lembaga . ', Admin, dan Accounting.', 403);
+		}
+	}
+
+	public function cetakNota()
+	{
+		$this->_check_akses_cetak_nota();
+
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		// Ambil list pengajuan yang sudah diverval bendahara (verval = 1) dan perencanaan (apr = 1) untuk SEMUA lembaga
+		$data['data'] = $this->db->query("
+			SELECT pengajuan.*, lembaga.nama AS nama_lembaga 
+			FROM pengajuan 
+			JOIN lembaga ON pengajuan.lembaga = lembaga.kode AND lembaga.tahun = ?
+			WHERE pengajuan.tahun = ? 
+			  AND pengajuan.verval = 1 
+			  AND pengajuan.apr = 1 
+			ORDER BY pengajuan.at DESC
+		", [$this->tahun, $this->tahun])->result();
+
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
+		$data['akses'] = $this->model->getBy2('akses', 'tahun', $this->tahun, 'lembaga', $this->lembaga)->row();
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/cetakNotaList', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	public function cetakNotaDetail($kode_pengajuan)
+	{
+		$this->_check_akses_cetak_nota();
+
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['bulan'] = $this->bulan;
+
+		$data['pj'] = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
+		if (!$data['pj']) {
+			show_error('Pengajuan tidak ditemukan.', 404);
+		}
+
+		$target_lem = $data['pj']->lembaga;
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $target_lem, 'tahun', $this->tahun)->row();
+
+		$tbl = $data['pj']->cair == 1 ? 'realis' : 'real_sm';
+
+		// Get all unique partners (mitra) associated with non-tunai items in this submission
+		$data['mitra'] = $this->db->query("
+			SELECT DISTINCT order_mitra.id_mitra, mitra.nama, mitra.pj, mitra.hp 
+			FROM order_mitra 
+			JOIN mitra ON order_mitra.id_mitra = mitra.id_mitra 
+			WHERE order_mitra.kode_pengajuan = ?
+		", [$kode_pengajuan])->result();
+
+		foreach ($data['mitra'] as $m) {
+			$m->items = $this->db->query("
+				SELECT order_mitra.*, $tbl.*
+				FROM order_mitra
+				JOIN $tbl ON order_mitra.kode = $tbl.kode AND order_mitra.kode_pengajuan = $tbl.kode_pengajuan
+				WHERE order_mitra.kode_pengajuan = ?
+				  AND order_mitra.id_mitra = ?
+			", [$kode_pengajuan, $m->id_mitra])->result();
+
+			$m->total = $this->db->query("
+				SELECT SUM($tbl.nominal) AS total
+				FROM order_mitra
+				JOIN $tbl ON order_mitra.kode = $tbl.kode AND order_mitra.kode_pengajuan = $tbl.kode_pengajuan
+				WHERE order_mitra.kode_pengajuan = ?
+				  AND order_mitra.id_mitra = ?
+			", [$kode_pengajuan, $m->id_mitra])->row()->total;
+		}
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/cetakNotaDetail', $data);
+		$this->load->view('lembaga/foot');
+	}
+
+	public function cetakNotaPrint($kode_pengajuan, $id_mitra)
+	{
+		$this->_check_akses_cetak_nota();
+
+		$data['kode_pj'] = $kode_pengajuan;
+		$sttsPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
+		if (!$sttsPj) {
+			show_error('Pengajuan tidak ditemukan.', 404);
+		}
+
+		$tblSelect = $sttsPj->cair == 1 ? 'realis' : 'real_sm';
+
+		$data['mitra'] = $this->model->getBy('mitra', 'id_mitra', $id_mitra)->row();
+		if (!$data['mitra']) {
+			show_error('Mitra tidak ditemukan.', 404);
+		}
+
+		$data['order_mitra'] = $this->db->query("
+			SELECT order_mitra.*, $tblSelect.* 
+			FROM order_mitra 
+			JOIN $tblSelect ON order_mitra.kode = $tblSelect.kode AND order_mitra.kode_pengajuan = $tblSelect.kode_pengajuan
+			WHERE order_mitra.kode_pengajuan = ? 
+			  AND order_mitra.id_mitra = ?
+		", [$kode_pengajuan, $id_mitra]);
+
+		$data['order_mitraTotal'] = $this->db->query("
+			SELECT SUM($tblSelect.nominal) AS total 
+			FROM order_mitra 
+			JOIN $tblSelect ON order_mitra.kode = $tblSelect.kode AND order_mitra.kode_pengajuan = $tblSelect.kode_pengajuan
+			WHERE order_mitra.kode_pengajuan = ? 
+			  AND order_mitra.id_mitra = ?
+		", [$kode_pengajuan, $id_mitra])->row();
+
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $sttsPj->lembaga);
+		$data['kasir'] = $this->user;
+
+		$this->load->view('lembaga/cetakNotaPrint', $data);
+	}
+
+	public function cetakNotaKPAPrint($kode_pengajuan)
+	{
+		$this->_check_akses_cetak_nota();
+
+		$data['kode_pj'] = $kode_pengajuan;
+		$sttsPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode_pengajuan)->row();
+		if (!$sttsPj) {
+			show_error('Pengajuan tidak ditemukan.', 404);
+		}
+
+		$tblSelect = $sttsPj->cair == 1 ? 'realis' : 'real_sm';
+
+		// Query all non-tunai items in this submission grouped/ordered by partner
+		$data['ajuanData'] = $this->db->query("
+			SELECT order_mitra.*, $tblSelect.*, mitra.nama AS namaMitra 
+			FROM order_mitra 
+			JOIN $tblSelect ON order_mitra.kode = $tblSelect.kode AND order_mitra.kode_pengajuan = $tblSelect.kode_pengajuan
+			JOIN mitra ON order_mitra.id_mitra = mitra.id_mitra 
+			WHERE order_mitra.kode_pengajuan = ? 
+			ORDER BY order_mitra.id_mitra
+		", [$kode_pengajuan]);
+
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'tahun', $this->tahun, 'kode', $sttsPj->lembaga);
+		$data['kasir'] = $this->user;
+
+		$this->load->view('lembaga/cetakNotaKPAPrint', $data);
 	}
 }

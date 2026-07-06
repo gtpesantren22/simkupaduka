@@ -55,7 +55,6 @@ class KasirModel extends CI_Model
 
     function getBySum($table, $where, $dtwhere, $sum)
     {
-        $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where, $dtwhere);
         return $this->db->get($table);
@@ -199,6 +198,7 @@ class KasirModel extends CI_Model
 
     public function getByGroup($table, $where, $dtwhere, $group)
     {
+        $this->db->select($group);
         $this->db->from($table);
         $this->db->where($where, $dtwhere);
         $this->db->group_by($group);
@@ -214,7 +214,6 @@ class KasirModel extends CI_Model
 
     function getBySum2($table, $where1, $dtwhere1, $where2, $dtwhere2, $sum)
     {
-        $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where1, $dtwhere1);
         $this->db->where($where2, $dtwhere2);
@@ -264,7 +263,6 @@ class KasirModel extends CI_Model
 
     function getBySumPsb($table, $where, $dtwhere, $sum)
     {
-        $this->db6->select('*');
         $this->db6->select_sum($sum, 'jml');
         $this->db6->where($where, $dtwhere);
         return $this->db6->get($table);

@@ -146,7 +146,7 @@ class Kepala extends CI_Controller
 	public function rabDetail($kode)
 	{
 		$data['data'] = $this->model->getBy2('rab', 'lembaga', $kode, 'tahun', $this->tahun)->result();
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $kode)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $kode, 'tahun', $this->tahun)->row();
 		$data['sumA'] = $this->model->getTotalRabJenis('A', $kode, $this->tahun)->row();
 		$data['sumB'] = $this->model->getTotalRabJenis('B', $kode, $this->tahun)->row();
 		$data['sumC'] = $this->model->getTotalRabJenis('C', $kode, $this->tahun)->row();
@@ -215,7 +215,7 @@ class Kepala extends CI_Controller
 	{
 		$data['data'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 		$data['tahun_ajaran'] = $this->tahun;
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $lembaga)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $lembaga, 'tahun', $this->tahun)->row();
 
 		$data['sumA'] = $this->model->getTotalRabJenis('A', $lembaga, $this->tahun)->row();
 		$data['sumB'] = $this->model->getTotalRabJenis('B', $lembaga, $this->tahun)->row();
@@ -237,11 +237,11 @@ class Kepala extends CI_Controller
 
 	public function cekRealis($kode)
 	{
-		$data['rab'] = $this->model->getBy('rab', 'kode', $kode)->row();
+		$data['rab'] = $this->model->getBy2('rab', 'kode', $kode, 'tahun', $this->tahun)->row();
 		$data['lem'] = $this->model->getBy2('lembaga', 'kode', $data['rab']->lembaga, 'tahun', $this->tahun)->row();
 		$data['tahun_ajaran'] = $this->tahun;
-		$data['rel'] = $this->model->getBySum('realis', 'kode', $kode, 'nominal')->row();
-		$data['relData'] = $this->model->getBy('realis', 'kode', $kode)->result();
+		$data['rel'] = $this->model->getBySum2('realis', 'kode', $kode, 'tahun', $this->tahun, 'nominal')->row();
+		$data['relData'] = $this->model->getBy2('realis', 'kode', $kode, 'tahun', $this->tahun)->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 		$this->load->view('kepala/head', $data);

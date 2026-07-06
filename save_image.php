@@ -30,7 +30,7 @@ if ($_GET['tujuan'] == 'kirimWA') {
     $caption = $_POST['caption'];
 
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, "http://191.101.3.115:3000/api/sendMediaFromUrl");
+    curl_setopt($ch, CURLOPT_URL, "http://103.49.238.29:3000/api/sendMediaFromUrl");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, 'apiKey=' . $key . '&phone=' . $no_hp . '&url_file=' . $url_file . '&as_document=' . $as_document . '&caption=' . $caption);
     $hasil = curl_exec($ch);

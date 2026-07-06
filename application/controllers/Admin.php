@@ -58,17 +58,458 @@ class Admin extends CI_Controller
 
 	public function santri()
 	{
-		$data['santri'] = $this->model->dataSantri()->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
+
+		// Fetch list of active institutions for filtering
+		$data['lembaga_list'] = $this->db->select('t_formal')
+										 ->from('tb_santri')
+										 ->where('aktif', 'Y')
+										 ->where('t_formal !=', '')
+										 ->group_by('t_formal')
+										 ->order_by('t_formal', 'asc')
+										 ->get()
+										 ->result();
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/santri', $data);
 		$this->load->view('admin/foot');
 	}
+
+	public function santri_ajax()
+	{
+		$draw = intval($this->input->post('draw'));
+		$start = intval($this->input->post('start'));
+		$length = intval($this->input->post('length'));
+		$search_value = $this->input->post('search')['value'] ?? '';
+		$order = $this->input->post('order');
+		$filter_lembaga = $this->input->post('filter_lembaga');
+		$filter_cost = $this->input->post('filter_cost');
+
+		// Column mapping for ordering
+		$columns = [
+			0 => 'id_santri', // not sorted
+			1 => 'tb_santri.nis',
+			2 => 'cost.cost_id',
+			3 => 'tb_santri.nama',
+			4 => 'tb_santri.t_formal',
+			5 => 'id_santri' // Aksi
+		];
+
+		// Base query configuration
+		$this->db->select('tb_santri.*, cost.cost_id');
+		$this->db->from('tb_santri');
+		$this->db->join('cost', 'tb_santri.nis = cost.nis', 'left');
+		$this->db->where('tb_santri.aktif', 'Y');
+
+		// Apply Lembaga filter
+		if (!empty($filter_lembaga)) {
+			$this->db->where('tb_santri.t_formal', $filter_lembaga);
+		}
+
+		// Apply Customer ID filter
+		if ($filter_cost === 'ada') {
+			$this->db->where('cost.cost_id IS NOT NULL');
+			$this->db->where('cost.cost_id !=', '');
+		} elseif ($filter_cost === 'tidak') {
+			$this->db->group_start();
+			$this->db->where('cost.cost_id IS NULL');
+			$this->db->or_where('cost.cost_id', '');
+			$this->db->group_end();
+		}
+
+		// Handle search filter
+		if (!empty($search_value)) {
+			$this->db->group_start();
+			$this->db->like('tb_santri.nis', $search_value);
+			$this->db->or_like('tb_santri.nama', $search_value);
+			$this->db->or_like('cost.cost_id', $search_value);
+			$this->db->or_like('tb_santri.t_formal', $search_value);
+			$this->db->or_like('tb_santri.k_formal', $search_value);
+			$this->db->group_end();
+		}
+
+		// Handle ordering
+		if (isset($order[0]['column']) && isset($columns[$order[0]['column']])) {
+			$col_idx = intval($order[0]['column']);
+			$dir = ($order[0]['dir'] === 'desc') ? 'desc' : 'asc';
+			if ($col_idx > 0 && $col_idx < 5) {
+				$this->db->order_by($columns[$col_idx], $dir);
+			} else {
+				$this->db->order_by('tb_santri.nama', 'asc');
+			}
+		} else {
+			$this->db->order_by('tb_santri.nama', 'asc');
+		}
+
+		// Save query state for data count
+		$temp_db = clone $this->db;
+		$recordsFiltered = $temp_db->count_all_results();
+
+		// Apply pagination
+		$this->db->limit($length, $start);
+		$query = $this->db->get();
+		$data = $query->result();
+
+		// Total records count (unfiltered)
+		$recordsTotal = $this->db->where('aktif', 'Y')->count_all_results('tb_santri');
+
+		// Format output for DataTables
+		$output = [];
+		$no = $start + 1;
+		foreach ($data as $row) {
+			$escaped_nama = htmlspecialchars($row->nama, ENT_QUOTES);
+			$aksi_buttons = '
+			<div class="d-flex align-items-center gap-2">
+				<button type="button" class="btn btn-sm btn-outline-primary btn-edit-cost" 
+						data-nis="' . $row->nis . '" 
+						data-nama="' . $escaped_nama . '" 
+						data-costid="' . ($row->cost_id ?? '') . '">
+					<i class="bx bx-edit-alt"></i> Edit Cust
+				</button>
+				<button type="button" class="btn btn-sm btn-outline-success btn-sync-siswa" 
+						data-id="' . $row->id_santri . '">
+					<i class="bx bx-sync"></i> Sync
+				</button>
+			</div>';
+
+			$output[] = [
+				'no' => $no++,
+				'nis' => $row->nis ?? '-',
+				'cost_id' => $row->cost_id ?? '-',
+				'nama' => $row->nama,
+				'kelas_formal' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
+				'aksi' => $aksi_buttons
+			];
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode([
+			'draw' => $draw,
+			'recordsTotal' => $recordsTotal,
+			'recordsFiltered' => $recordsFiltered,
+			'data' => $output
+		]);
+		exit;
+	}
+
+	public function sinkron_batch()
+	{
+		// Fetch bearer token from gaji_flat settings table
+
+		$token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
+		$token = $token_row ? $token_row->val : '';
+
+		$page = intval($this->input->get('page') ?? 1);
+		$per_page = 500; // Batch size
+
+		$url = "https://data.ppdwk.com/api/datatables?data=referensi-peserta-didik"
+			. "&page=" . $page
+			. "&per_page=" . $per_page
+			. "&sortby=nama"
+			. "&sortbydesc=ASC";
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'Authorization: Bearer ' . $token,
+			'Accept: application/json'
+		]);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		$response = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if ($httpCode !== 200) {
+			header('Content-Type: application/json');
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'API request failed with HTTP code ' . $httpCode
+			]);
+			exit;
+		}
+
+		$result = json_decode($response, true);
+		if (!$result || !isset($result['data']['data'])) {
+			header('Content-Type: application/json');
+			echo json_encode([
+				'status' => 'error',
+				'message' => 'Invalid response structure from API'
+			]);
+			exit;
+		}
+
+		$items = $result['data']['data'];
+		$total_records = intval($result['data']['total'] ?? 0);
+		$last_page = intval($result['data']['last_page'] ?? 1);
+
+		$processed = 0;
+		foreach ($items as $item) {
+			$data = [
+				'santri_id' => $item['peserta_didik_id'] ?? null,
+				'nama' => $item['nama'] ?? null,
+				'nisn' => $item['nisn'] ?? null,
+				'nik' => $item['nik'] ?? null,
+				'no_kk' => $item['no_kk'] ?? null,
+				'jkl' => $item['jenis_kelamin'] ?? null,
+				'tempat' => $item['tempat_lahir'] ?? null,
+				'tanggal' => $item['tanggal_lahir'] ?? null,
+				'anak_ke' => !empty($item['anak_ke']) ? intval($item['anak_ke']) : null,
+				'jml_sdr' => !empty($item['jml_sdr']) ? intval($item['jml_sdr']) : null,
+				'jln' => $item['alamat'] ?? null,
+				'rt' => $item['rt'] ?? null,
+				'rw' => $item['rw'] ?? null,
+				'desa' => $item['desa'] ?? null,
+				'kec' => $item['kec'] ?? null,
+				'kab' => $item['kab'] ?? null,
+				'prov' => $item['prov'] ?? null,
+				'kd_pos' => !empty($item['kode_pos']) ? intval($item['kode_pos']) : null,
+				'nis' => $item['nis'] ?? null,
+				'aktif' => 'Y'
+			];
+
+			$existing = null;
+			if (!empty($item['nik'])) {
+				$existing = $this->db->get_where('tb_santri', ['nik' => $item['nik']])->row();
+			}
+			if (!$existing && !empty($item['nisn'])) {
+				$existing = $this->db->get_where('tb_santri', ['nisn' => $item['nisn']])->row();
+			}
+			if (!$existing && !empty($item['nis'])) {
+				$existing = $this->db->get_where('tb_santri', ['nis' => $item['nis']])->row();
+			}
+
+			if ($existing) {
+				$this->db->where('id_santri', $existing->id_santri);
+				$this->db->update('tb_santri', $data);
+			} else {
+				$this->db->insert('tb_santri', $data);
+			}
+			$processed++;
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode([
+			'status' => 'success',
+			'page' => $page,
+			'last_page' => $last_page,
+			'processed' => $processed,
+			'total' => $total_records
+		]);
+		exit;
+	}
+
+	public function update_cost_id()
+	{
+		$nis = $this->input->post('nis', true);
+		$cost_id = $this->input->post('cost_id', true);
+
+		// Fetch student name to keep cost_name consistent
+		$santri = $this->db->get_where('tb_santri', ['nis' => $nis])->row();
+		$nama = $santri ? $santri->nama : '';
+
+		// Check if record exists in cost table
+		$existing = $this->db->get_where('cost', ['nis' => $nis])->row();
+
+		if ($existing) {
+			$this->db->where('nis', $nis);
+			$this->db->update('cost', [
+				'cost_id' => $cost_id,
+				'cost_name' => $nama
+			]);
+		} else {
+			$this->db->insert('cost', [
+				'nis' => $nis,
+				'cost_id' => $cost_id,
+				'cost_name' => $nama,
+				'stas' => '',
+				'group_id' => '',
+				'group_name' => '',
+				'bill_id' => '',
+				'bill_name' => '',
+				'dekos' => 0,
+				'tgn' => 0,
+				'nominal' => 0
+			]);
+		}
+
+		if ($this->db->affected_rows() > 0 || $existing) {
+			$this->session->set_flashdata('ok', 'Customer ID berhasil diperbarui');
+		} else {
+			$this->session->set_flashdata('error', 'Gagal memperbarui Customer ID');
+		}
+
+		redirect('admin/santri');
+	}
+
+	public function sinkron_lembaga_batch()
+	{
+		// Fetch bearer token from settings
+		$token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
+		$token = $token_row ? $token_row->val : '';
+
+		$offset = intval($this->input->get('offset') ?? 0);
+		$limit = 50; // Parallel request batch limit
+
+		$students = $this->db->select('id_santri, santri_id')
+							 ->from('tb_santri')
+							 ->where('aktif', 'Y')
+							 ->where('santri_id IS NOT NULL')
+							 ->where('santri_id !=', '')
+							 ->limit($limit, $offset)
+							 ->get()
+							 ->result();
+
+		$total_students = $this->db->where('aktif', 'Y')
+								   ->where('santri_id IS NOT NULL')
+								   ->where('santri_id !=', '')
+								   ->count_all_results('tb_santri');
+
+		if (empty($students)) {
+			header('Content-Type: application/json');
+			echo json_encode([
+				'status' => 'success',
+				'offset' => $offset,
+				'processed' => 0,
+				'total' => $total_students
+			]);
+			exit;
+		}
+
+		$mh = curl_multi_init();
+		$curls = [];
+
+		foreach ($students as $student) {
+			$uuid = $student->santri_id;
+			$url = "https://data.ppdwk.com/api/pd/show/" . $uuid;
+
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, [
+				'Authorization: Bearer ' . $token,
+				'Accept: application/json'
+			]);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+			curl_multi_add_handle($mh, $ch);
+			$curls[$student->id_santri] = $ch;
+		}
+
+		$running = null;
+		do {
+			curl_multi_exec($mh, $running);
+		} while ($running);
+
+		$processed = 0;
+		foreach ($curls as $id_santri => $ch) {
+			$response = curl_multi_getcontent($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_multi_remove_handle($mh, $ch);
+			curl_close($ch);
+
+			if ($httpCode === 200) {
+				$result = json_decode($response, true);
+				if ($result && isset($result['registrasi_pd'])) {
+					$lembaga_nama = '';
+					foreach ($result['registrasi_pd'] as $reg) {
+						if (empty($reg['tanggal_keluar'])) {
+							if (isset($reg['lembaga']['nama'])) {
+								$lembaga_nama = $reg['lembaga']['nama'];
+								break;
+							}
+						}
+					}
+					
+					if (empty($lembaga_nama) && !empty($result['registrasi_pd'])) {
+						$first_reg = $result['registrasi_pd'][0];
+						if (isset($first_reg['lembaga']['nama'])) {
+							$lembaga_nama = $first_reg['lembaga']['nama'];
+						}
+					}
+
+					if (!empty($lembaga_nama)) {
+						$this->db->where('id_santri', $id_santri);
+						$this->db->update('tb_santri', ['t_formal' => $lembaga_nama]);
+					}
+				}
+			}
+			$processed++;
+		}
+		curl_multi_close($mh);
+
+		header('Content-Type: application/json');
+		echo json_encode([
+			'status' => 'success',
+			'offset' => $offset + $processed,
+			'processed' => $processed,
+			'total' => $total_students
+		]);
+		exit;
+	}
+
+	public function sinkron_siswa_single()
+	{
+		$id_santri = intval($this->input->get('id_santri'));
+		$santri = $this->db->get_where('tb_santri', ['id_santri' => $id_santri])->row();
+		if (!$santri || empty($santri->santri_id)) {
+			header('Content-Type: application/json');
+			echo json_encode(['status' => 'error', 'message' => 'Siswa tidak ditemukan atau UUID kosong']);
+			exit;
+		}
+
+		$token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
+		$token = $token_row ? $token_row->val : '';
+
+		$url = "https://data.ppdwk.com/api/pd/show/" . $santri->santri_id;
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, [
+			'Authorization: Bearer ' . $token,
+			'Accept: application/json'
+		]);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		$response = curl_exec($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if ($httpCode === 200) {
+			$result = json_decode($response, true);
+			if ($result && isset($result['registrasi_pd'])) {
+				$lembaga_nama = '';
+				foreach ($result['registrasi_pd'] as $reg) {
+					if (empty($reg['tanggal_keluar'])) {
+						if (isset($reg['lembaga']['nama'])) {
+							$lembaga_nama = $reg['lembaga']['nama'];
+							break;
+						}
+					}
+				}
+				if (empty($lembaga_nama) && !empty($result['registrasi_pd'])) {
+					$first_reg = $result['registrasi_pd'][0];
+					if (isset($first_reg['lembaga']['nama'])) {
+						$lembaga_nama = $first_reg['lembaga']['nama'];
+					}
+				}
+
+				if (!empty($lembaga_nama)) {
+					$this->db->where('id_santri', $id_santri);
+					$this->db->update('tb_santri', ['t_formal' => $lembaga_nama]);
+					header('Content-Type: application/json');
+					echo json_encode(['status' => 'success', 'message' => 'Lembaga berhasil disinkronkan', 'lembaga' => $lembaga_nama]);
+					exit;
+				}
+			}
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode(['status' => 'error', 'message' => 'Gagal mengambil data dari API (HTTP ' . $httpCode . ')']);
+		exit;
+	}
+
 	public function bp()
 	{
-		$data['bp'] = $this->model->dataBp($this->tahun)->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 		$this->load->view('admin/head', $data);
@@ -76,9 +517,132 @@ class Admin extends CI_Controller
 		$this->load->view('admin/foot');
 	}
 
-	public function bpDetail($id)
+	public function bp_ajax()
 	{
-		$data['bp'] = $this->model->getByJoin('tangg', 'tb_santri', 'nis', 'id_tangg', $id)->row();
+		$draw = intval($this->input->post('draw'));
+		$start = intval($this->input->post('start'));
+		$length = intval($this->input->post('length'));
+		$search_value = $this->input->post('search')['value'] ?? '';
+		$order = $this->input->post('order');
+
+		// Column mapping for ordering
+		$columns = [
+			0 => 'tanggungan.id_tanggungan', // not sorted
+			1 => 'tb_santri.nama',
+			2 => 'tanggungan.briva',
+			3 => 'total_nominal',
+			4 => 'tanggungan.tahun',
+			5 => 'tanggungan.id_tanggungan' // Act
+		];
+
+		// Base query configuration
+		$this->db->select('tb_santri.nama, tanggungan.nis, tanggungan.briva, SUM(tanggungan.nominal) AS total_nominal, tanggungan.tahun');
+		$this->db->from('tanggungan');
+		$this->db->join('tb_santri', 'tanggungan.nis = tb_santri.nis');
+		$this->db->where('tanggungan.tahun', $this->tahun);
+		$this->db->group_by(['tanggungan.nis', 'tb_santri.nama', 'tanggungan.briva', 'tanggungan.tahun']);
+
+		// Handle search filter
+		if (!empty($search_value)) {
+			$this->db->group_start();
+			$this->db->like('tb_santri.nama', $search_value);
+			$this->db->or_like('tanggungan.briva', $search_value);
+			$this->db->or_like('tanggungan.nis', $search_value);
+			$this->db->group_end();
+		}
+
+		// Handle ordering
+		if (isset($order[0]['column']) && isset($columns[$order[0]['column']])) {
+			$col_idx = intval($order[0]['column']);
+			$dir = ($order[0]['dir'] === 'desc') ? 'desc' : 'asc';
+			if ($col_idx > 0 && $col_idx < 5) {
+				if ($col_idx == 3) {
+					$this->db->order_by('total_nominal', $dir);
+				} else {
+					$this->db->order_by($columns[$col_idx], $dir);
+				}
+			} else {
+				$this->db->order_by('tb_santri.nama', 'asc');
+			}
+		} else {
+			$this->db->order_by('tb_santri.nama', 'asc');
+		}
+
+		// Save query state for data count
+		$temp_db = clone $this->db;
+		$filtered_query = $temp_db->get();
+		$recordsFiltered = $filtered_query ? $filtered_query->num_rows() : 0;
+
+		// Apply pagination
+		$this->db->limit($length, $start);
+		$query = $this->db->get();
+		$data = $query->result();
+
+		// Total records count (unfiltered)
+		$recordsTotalRow = $this->db->query("SELECT COUNT(DISTINCT nis) AS cnt FROM tanggungan WHERE tahun = ?", [$this->tahun])->row();
+		$recordsTotal = $recordsTotalRow ? intval($recordsTotalRow->cnt) : 0;
+
+		// Format output for DataTables
+		$output = [];
+		$no = $start + 1;
+		foreach ($data as $row) {
+			$edit_url = base_url('admin/bpDetail/') . $row->nis;
+			$del_url = base_url('admin/delBp/') . $row->nis;
+			
+			$aksi = "<a href='{$edit_url}'><i class='bx bx-message-square-edit mr-1'></i></a> | " .
+					"<a href='{$del_url}' class='tombol-hapus'><i class='bx bx-trash mr-1'></i></a>";
+
+			$output[] = [
+				'no' => $no++,
+				'nama' => $row->nama,
+				'briva' => $row->briva ?? '-',
+				'nominal' => 'Rp. ' . number_format($row->total_nominal, 0, '.', '.'),
+				'tahun' => $row->tahun,
+				'aksi' => $aksi
+			];
+		}
+
+		header('Content-Type: application/json');
+		echo json_encode([
+			'draw' => $draw,
+			'recordsTotal' => $recordsTotal,
+			'recordsFiltered' => $recordsFiltered,
+			'data' => $output
+		]);
+		exit;
+	}
+
+	public function bpDetail($nis)
+	{
+		$student = $this->db->get_where('tb_santri', ['nis' => $nis])->row();
+		if (!$student) {
+			$this->session->set_flashdata('error', 'Siswa tidak ditemukan');
+			redirect('admin/bp');
+		}
+
+		$tanggungan_list = $this->db->get_where('tanggungan', [
+			'nis' => $nis,
+			'tahun' => $this->tahun
+		])->result();
+
+		$tanggungan_map = [];
+		$briva = '';
+		foreach ($tanggungan_list as $t) {
+			$tanggungan_map[$t->bulan] = $t->nominal;
+			if (!empty($t->briva)) {
+				$briva = $t->briva;
+			}
+		}
+
+		$bp_mock = (object)[
+			'nis' => $student->nis,
+			'nama' => $student->nama,
+			'briva' => $briva,
+			'id_tangg' => $student->nis
+		];
+
+		$data['bp'] = $bp_mock;
+		$data['months_map'] = $tanggungan_map;
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 
@@ -86,29 +650,75 @@ class Admin extends CI_Controller
 		$this->load->view('admin/bpDetail', $data);
 		$this->load->view('admin/foot');
 	}
+
 	public function bpEdit()
 	{
-		$where =  $this->input->post('id', true);
-		$data = [
-			'briva' => $this->input->post('briva', true),
-			'ju_ap' => rmRp($this->input->post('ju_ap', true)),
-			'me_ju' => rmRp($this->input->post('me_ju', true)),
-			'total' => (rmRp($this->input->post('me_ju', true))) + (rmRp($this->input->post('ju_ap', true)) * 11)
-		];
-
-		$this->model->update('tangg', $data, 'id_tangg', $where);
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Tanggungan berhasil diedit');
-			redirect('admin/bp');
-		} else {
-			$this->session->set_flashdata('error', 'Tanggungan tidak bisa diedit');
-			redirect('admin/bp');
+		$nis = $this->input->post('id', true);
+		$briva = $this->input->post('briva', true);
+		if (empty($briva)) {
+			$briva = null;
 		}
-	}
-	public function delBp($id)
-	{
 
-		$this->model->delete('tangg', 'id_tangg', $id);
+		$months = [7, 8, 9, 10, 11, 12, 1, 2, 3, 4, 5, 6];
+
+		foreach ($months as $m) {
+			$raw_nominal = $this->input->post('nominal_' . $m, true) ?? '0';
+			$nominal = rmRp($raw_nominal);
+
+			$existing = $this->db->get_where('tanggungan', [
+				'nis' => $nis,
+				'bulan' => $m,
+				'tahun' => $this->tahun
+			])->row();
+
+			if ($existing) {
+				if ($nominal > 0) {
+					$this->db->where('id_tanggungan', $existing->id_tanggungan)->update('tanggungan', [
+						'nominal' => $nominal,
+						'briva' => $briva
+					]);
+				} else {
+					$this->db->where('id_tanggungan', $existing->id_tanggungan)->delete('tanggungan');
+				}
+			} else {
+				if ($nominal > 0) {
+					// UUID generator
+					$uuid = sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+						mt_rand(0, 0xffff),
+						mt_rand(0, 0x0fff) | 0x4000,
+						mt_rand(0, 0x3fff) | 0x8000,
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+					);
+					$this->db->insert('tanggungan', [
+						'id_tanggungan' => $uuid,
+						'nis' => $nis,
+						'briva' => $briva,
+						'nominal' => $nominal,
+						'bulan' => $m,
+						'tahun' => $this->tahun,
+						'tgl_upload' => date('Y-m-d'),
+						'kasir' => $this->user
+					]);
+				}
+			}
+		}
+
+		// Update briva globally for remaining student records for this year
+		$this->db->where('nis', $nis);
+		$this->db->where('tahun', $this->tahun);
+		$this->db->update('tanggungan', ['briva' => $briva]);
+
+		$this->session->set_flashdata('ok', 'Tanggungan berhasil diperbarui');
+		redirect('admin/bp');
+	}
+
+	public function delBp($nis)
+	{
+		$this->db->where('nis', $nis);
+		$this->db->where('tahun', $this->tahun);
+		$this->db->delete('tanggungan');
+
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Tanggungan berhasil dihapus');
 			redirect('admin/bp');
@@ -548,17 +1158,32 @@ class Admin extends CI_Controller
 		$data['bulan_cal'] = $this->bulan;
 
 		for ($i = 1; $i <= 12; $i++) {
-			$i !== 6 ? $field = 'ju_ap' : $field = 'me_ju';
+			$tangg_perbulan = $this->db->select('SUM(nominal) AS jml')
+									   ->from('tanggungan')
+									   ->where('tahun', $this->tahun)
+									   ->where('bulan', $i)
+									   ->get()
+									   ->row();
 
-			$tangg_perbulan = $this->model->getBySum('tangg', 'tahun', $this->tahun, $field)->row();
 			$bayar_perbulan = $this->model->getBySum2('pembayaran', 'tahun', $this->tahun, 'bulan', $i, 'nominal')->row();
+
+			$tangg_jml = !empty($tangg_perbulan->jml) ? floatval($tangg_perbulan->jml) : 0;
+			$bayar_jml = !empty($bayar_perbulan->jml) ? floatval($bayar_perbulan->jml) : 0;
+
+			$bayar_prsn = 0;
+			$kurang_prsn = 0;
+			if ($tangg_jml > 0) {
+				$bayar_prsn = ($bayar_jml / $tangg_jml) * 100;
+				$kurang_prsn = (($tangg_jml - $bayar_jml) / $tangg_jml) * 100;
+			}
+
 			$jml_tangg[] = array(
 				'bulan' => $i,
-				'tangg' => $tangg_perbulan->jml,
-				'bayar' => $bayar_perbulan->jml,
-				'bayar_prsn' => $bayar_perbulan->jml / $tangg_perbulan->jml * 100,
-				'kurang' => $tangg_perbulan->jml - $bayar_perbulan->jml,
-				'kurang_prsn' => ($tangg_perbulan->jml - $bayar_perbulan->jml) / $tangg_perbulan->jml * 100,
+				'tangg' => $tangg_jml,
+				'bayar' => $bayar_jml,
+				'bayar_prsn' => $bayar_prsn,
+				'kurang' => $tangg_jml - $bayar_jml,
+				'kurang_prsn' => $kurang_prsn,
 			);
 		}
 
@@ -583,7 +1208,7 @@ class Admin extends CI_Controller
 	public function rabDetail($kode)
 	{
 		$data['data'] = $this->model->getBy2('rab', 'lembaga', $kode, 'tahun', $this->tahun)->result();
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $kode)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $kode, 'tahun', $this->tahun)->row();
 		$data['sumA'] = $this->model->getTotalRabJenis('A', $kode, $this->tahun)->row();
 		$data['sumB'] = $this->model->getTotalRabJenis('B', $kode, $this->tahun)->row();
 		$data['sumC'] = $this->model->getTotalRabJenis('C', $kode, $this->tahun)->row();
@@ -682,7 +1307,7 @@ class Admin extends CI_Controller
 			$this->session->set_flashdata('error', 'Maaf. RAB ini sudah atau sedang diajukan');
 			redirect('admin/rabDetail/' . $data->lembaga);
 		} else {
-			$this->model->delete('rab', $id);
+			$this->model->delete('rab', 'id_rab', $id);
 			if ($this->db->affected_rows() > 0) {
 				$this->session->set_flashdata('ok', 'Item RAB berhasil dihapus');
 				redirect('admin/rabDetail/' . $data->lembaga);
@@ -945,7 +1570,7 @@ Terimakasih';
 	{
 		$data['data'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 		$data['tahun_ajaran'] = $this->tahun;
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $lembaga)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $lembaga, 'tahun', $this->tahun)->row();
 
 		$data['sumA'] = $this->model->getTotalRabJenis('A', $lembaga, $this->tahun)->row();
 		$data['sumB'] = $this->model->getTotalRabJenis('B', $lembaga, $this->tahun)->row();
@@ -967,11 +1592,11 @@ Terimakasih';
 
 	public function cekRealis($kode)
 	{
-		$data['rab'] = $this->model->getBy('rab', 'kode', $kode)->row();
+		$data['rab'] = $this->model->getBy2('rab', 'kode', $kode, 'tahun', $this->tahun)->row();
 		$data['lem'] = $this->model->getBy2('lembaga', 'kode', $data['rab']->lembaga, 'tahun', $this->tahun)->row();
 		$data['tahun_ajaran'] = $this->tahun;
-		$data['rel'] = $this->model->getBySum('realis', 'kode', $kode, 'nominal')->row();
-		$data['relData'] = $this->model->getBy('realis', 'kode', $kode)->result();
+		$data['rel'] = $this->model->getBySum2('realis', 'kode', $kode, 'tahun', $this->tahun, 'nominal')->row();
+		$data['relData'] = $this->model->getBy2('realis', 'kode', $kode, 'tahun', $this->tahun)->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['tahun'] = $this->tahun;
 		$this->load->view('admin/head', $data);
@@ -1590,6 +2215,98 @@ https://simkupaduka.ppdwk.com/';
 		}
 	}
 
+	public function ssh()
+	{
+		$this->db->select('ssh.*, kategori_ssh.nama_kategori');
+		$this->db->from('ssh');
+		$this->db->join('kategori_ssh', 'kategori_ssh.kode_kategori = ssh.kategori', 'left');
+		$data['ssh'] = $this->db->get()->result();
+
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/ssh', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function sshAdd()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['ssh'] = null;
+		$data['kategori'] = $this->model->getAll('kategori_ssh')->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/ssh_form', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function saveSsh()
+	{
+		$data = [
+			'kode' => $this->input->post('kode', true),
+			'nama' => $this->input->post('nama', true),
+			'satuan' => $this->input->post('satuan', true),
+			'harga' => rmRp($this->input->post('harga', true)),
+			'ket' => $this->input->post('ket', true),
+			'kategori' => $this->input->post('kategori', true)
+		];
+		$this->model->input('ssh', $data);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Data SSH berhasil ditambahkan');
+		} else {
+			$this->session->set_flashdata('error', 'Data SSH gagal ditambahkan');
+		}
+		redirect('admin/ssh');
+	}
+
+	public function sshEdit($id)
+	{
+		$data['ssh'] = $this->model->getBy('ssh', 'kode', $id)->row();
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+		$data['kategori'] = $this->model->getAll('kategori_ssh')->result();
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/ssh_form', $data);
+		$this->load->view('admin/foot');
+	}
+
+	public function updateSsh()
+	{
+		$id = $this->input->post('id', true); // original kode
+		$data = [
+			'kode' => $this->input->post('kode', true),
+			'nama' => $this->input->post('nama', true),
+			'satuan' => $this->input->post('satuan', true),
+			'harga' => rmRp($this->input->post('harga', true)),
+			'ket' => $this->input->post('ket', true),
+			'kategori' => $this->input->post('kategori', true)
+		];
+		$this->model->update('ssh', $data, 'kode', $id);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Data SSH berhasil diperbarui');
+		} else {
+			$this->session->set_flashdata('error', 'Data SSH tidak ada perubahan');
+		}
+		redirect('admin/ssh');
+	}
+
+	public function delSsh($id)
+	{
+		$this->model->delete('ssh', 'kode', $id);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Data SSH berhasil dihapus');
+		} else {
+			$this->session->set_flashdata('error', 'Data SSH gagal dihapus');
+		}
+		redirect('admin/ssh');
+	}
+
 	public function saveEditAkses()
 	{
 		$id =  $this->input->post('id_akses', true);
@@ -2168,9 +2885,9 @@ Updater : ' . $this->user . '
 		$data['data'] = $this->model->getBy2('rab_sm24', 'lembaga', $lembaga, 'tahun', $this->tahun)->result();
 		$data['cekData'] = $this->db->query("SELECT * FROM rab_list WHERE lembaga = '$lembaga' AND tahun = '$this->tahun' AND status = 'disetujui' OR status = 'selesai' OR status = 'proses' ")->num_rows();
 
-		$dppk = $this->model->getRabByDppk($lembaga, $this->tahun)->result();
+		$dppkList = $this->model->getRabByDppk($lembaga, $this->tahun)->result();
 		$data['rab'] = array();
-		foreach ($dppk as $dts) :
+		foreach ($dppkList as $dts) :
 			$dppk = $dts->kode_pak;
 			$dppkData = $this->model->getBy('dppk', 'id_dppk', $dppk)->row(); // Mengambil data dari tabel DPPK
 			$dataDppk = $this->model->getBy('rab_sm24', 'kode_pak', $dppk);
@@ -2179,7 +2896,7 @@ Updater : ' . $this->user . '
 			$totalItem = count($list);
 
 			foreach ($list as &$item) {
-				$item->nama_dppk = $dppkData->program;
+				$item->nama_dppk = $dppkData ? $dppkData->program : '';
 			}
 
 			$data['rab'][$dppk] = $list;
@@ -2585,58 +3302,111 @@ Update data pertanggal
 
 	public function process_upload()
 	{
-		// Load library dan helper
 		$this->load->helper('file');
 
-		// Konfigurasi upload file
-		$config['upload_path'] = 'vertical/assets/uploads/'; // Direktori penyimpanan file
-		$config['allowed_types'] = 'xls|xlsx'; // Jenis file yang diizinkan
-		$config['max_size'] = 10240; // Ukuran maksimum file (dalam kilobytes)
+		// Upload configuration
+		$config['upload_path'] = 'vertical/assets/uploads/';
+		$config['allowed_types'] = 'xls|xlsx';
+		$config['max_size'] = 10240;
 
-		// Memuat library upload
 		$this->load->library('upload', $config);
 
 		if (!$this->upload->do_upload('uploadFile')) {
-			// Jika upload gagal, tampilkan pesan error
 			$error = $this->upload->display_errors();
-			echo $error;
+			$this->session->set_flashdata('error', 'Upload gagal: ' . $error);
+			redirect('admin/bp');
 		} else {
-			// Jika upload berhasil, dapatkan informasi file
 			$data = $this->upload->data();
 			$file_path = $data['full_path'];
-			// Load file Excel menggunakan library PHPExcel
-			$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-			$objPHPExcel = $reader->load($file_path);
 
-			// Mendapatkan data dari worksheet pertama
-			$worksheet = $objPHPExcel->getActiveSheet();
-			$highestRow = $worksheet->getHighestDataRow();
-			$highestColumn = $worksheet->getHighestColumn();
+			try {
+				$objPHPExcel = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
+				$worksheet = $objPHPExcel->getActiveSheet();
+				$highestRow = $worksheet->getHighestDataRow();
 
-			// echo $highestRow;
-
-			// Mulai dari baris kedua (untuk melewati header)
-			for ($row = 2; $row <= $highestRow; $row++) {
-				$data = [
-					'nis' => $worksheet->getCell('A' . $row)->getValue(),
-					'id_cos' => $worksheet->getCell('B' . $row)->getValue(),
-					'briva' => $worksheet->getCell('C' . $row)->getValue(),
-					'ju_ap' => $worksheet->getCell('D' . $row)->getValue(),
-					'me_ju' => $worksheet->getCell('E' . $row)->getValue(),
-					// 'total' => ($worksheet->getCell('D' . $row)->getValue() * 10) + ($worksheet->getCell('E' . $row)->getValue() * 2),
-					'total' => ($worksheet->getCell('D' . $row)->getValue() * 11) + ($worksheet->getCell('E' . $row)->getValue()),
-					'tahun' => $worksheet->getCell('F' . $row)->getValue(),
+				// Month mapping
+				$months_map = [
+					'jan' => 1, 'feb' => 2, 'mar' => 3, 'apr' => 4, 'may' => 5, 'mei' => 5, 'jun' => 6,
+					'jul' => 7, 'aug' => 8, 'agu' => 8, 'sep' => 9, 'oct' => 10, 'okt' => 10, 'nov' => 11, 'dec' => 12, 'des' => 12
 				];
 
-				$this->model->input('tangg', $data);
+				// Helper UUID generator
+				$uuid_generator = function() {
+					return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+						mt_rand(0, 0xffff),
+						mt_rand(0, 0x0fff) | 0x4000,
+						mt_rand(0, 0x3fff) | 0x8000,
+						mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+					);
+				};
+
+				$inserted_count = 0;
+				$skipped_count = 0;
+
+				// Start from row 2 (skip header)
+				for ($row = 2; $row <= $highestRow; $row++) {
+					$customer_id = trim($worksheet->getCell('B' . $row)->getValue() ?? '');
+					if (empty($customer_id)) {
+						continue;
+					}
+
+					// Find matching nis from cost table
+					$cost_row = $this->db->get_where('cost', ['cost_id' => $customer_id])->row();
+					$nis = $cost_row ? $cost_row->nis : '';
+
+					// Get amount
+					$amount = intval($worksheet->getCell('H' . $row)->getValue() ?? 0);
+
+					// Parse month from BillType (Column G)
+					$billtype = $worksheet->getCell('G' . $row)->getValue() ?? '';
+					$bulan_angka = 0;
+					if (preg_match('/\[([A-Za-z]+)\]/', $billtype, $matches)) {
+						$month_str = strtolower($matches[1] ?? '');
+						$bulan_angka = $months_map[$month_str] ?? 0;
+					}
+
+					// Reject / skip duplicate entries for same month and student
+					$existing = $this->db->get_where('tanggungan', [
+						'nis' => $nis,
+						'bulan' => $bulan_angka,
+						'tahun' => $this->tahun
+					])->row();
+
+					if ($existing) {
+						$skipped_count++;
+						continue;
+					}
+
+					$insert_data = [
+						'id_tanggungan' => $uuid_generator(),
+						'nis' => $nis,
+						'briva' => null,
+						'nominal' => $amount,
+						'bulan' => $bulan_angka,
+						'tahun' => $this->tahun,
+						'tgl_upload' => date('Y-m-d'),
+						'kasir' => $this->user
+					];
+
+					$this->db->insert('tanggungan', $insert_data);
+					$inserted_count++;
+				}
+
+				$msg = $inserted_count . ' Data tanggungan berhasil diupload';
+				if ($skipped_count > 0) {
+					$msg .= ' (' . $skipped_count . ' data dilewati karena sudah ada)';
+				}
+				$this->session->set_flashdata('ok', $msg);
+			} catch (\Exception $e) {
+				$this->session->set_flashdata('error', 'Terjadi kesalahan membaca file Excel: ' . $e->getMessage());
 			}
 
-			// Hapus file setelah selesai mengimpor
+			// Clean up upload file
+			if (file_exists($file_path)) {
+				unlink($file_path);
+			}
 
-			delete_files($file_path);
-
-			// Tampilkan pesan sukses atau lakukan redirect ke halaman lain
-			$this->session->set_flashdata('ok', 'Upload Selesai');
 			redirect('admin/bp');
 		}
 	}
@@ -2694,7 +3464,6 @@ Update data pertanggal
 			redirect('admin/setting');
 		}
 	}
-
 	public function coa()
 	{
 		$data['user'] = $this->Auth_model->current_user();
@@ -2702,7 +3471,7 @@ Update data pertanggal
 		$data['bulan'] = $this->bulan;
 
 		$datakirim = [];
-		$dataParrent = $this->model->getBy2('coa', 'tahun', $this->tahun, 'parrent', '')->result();
+		$dataParrent = $this->db->query("SELECT * FROM coa WHERE (parrent = '' OR parrent IS NULL OR parrent = '-') AND tahun = '{$this->tahun}' ORDER BY kode")->result();
 		foreach ($dataParrent as $parent) {
 			$child = $this->model->getBy2('coa', 'tahun', $this->tahun, 'parrent', $parent->kode)->result();
 			$datakirim[] = [
@@ -2712,7 +3481,7 @@ Update data pertanggal
 		}
 		$data['data'] = $datakirim;
 
-		$data['coa'] = $this->model->getBy2('coa', 'parrent', '', 'tahun', $this->tahun)->result();
+		$data['coa'] = $this->db->query("SELECT * FROM coa WHERE (parrent = '' OR parrent IS NULL OR parrent = '-') AND tahun = '{$this->tahun}' ORDER BY kode")->result();
 		$data['ta'] = $this->model->getAll('tahun')->result();
 
 		$this->load->view('admin/head', $data);
@@ -2740,11 +3509,33 @@ Update data pertanggal
 			redirect('admin/coa');
 		}
 	}
+
+	public function addCoaNext()
+	{
+		$data = [
+			'kode' => $this->input->post('kode', true),
+			'nama' => $this->input->post('nama', true),
+			'tipe' => $this->input->post('tipe', true),
+			'keterangan' => $this->input->post('keterangan', true),
+			'uraian' => $this->input->post('uraian', true),
+			'tahun' => $this->input->post('tahun', true) ? $this->input->post('tahun', true) : $this->tahun,
+			'parrent' => $this->input->post('parrent', true),
+			'cair' => $this->input->post('cair', true)
+		];
+		$this->model->input('coa', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Tambah data turunan berhasil');
+			redirect('admin/coa');
+		} else {
+			$this->session->set_flashdata('error', 'Tambah data turunan gagal');
+			redirect('admin/coa');
+		}
+	}
+
 	public function delCoa($id)
 	{
-
-		$cek_cao = $this->model->getBy2('coa', 'kode', $kode, 'tahun', $this->tahun)->row();
-		if ($cek_cao->parrent != '') {
+		$cek_cao = $this->model->getBy2('coa', 'kode', $id, 'tahun', $this->tahun)->row();
+		if ($cek_cao && $cek_cao->parrent != '' && $cek_cao->parrent !== null && $cek_cao->parrent != '-') {
 			$this->model->delete('coa', 'kode', $id);
 		} else {
 			$this->model->delete('coa', 'parrent', $id);

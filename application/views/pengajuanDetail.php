@@ -127,6 +127,112 @@ require 'lembaga/head.php';
         padding: 5px 12px;
         font-weight: 500;
     }
+
+    .text-orange {
+        color: #EE4D2D !important;
+    }
+
+    .bg-orange {
+        background-color: #EE4D2D !important;
+    }
+
+    .bg-orange-subtle {
+        background-color: #FFF0EE !important;
+    }
+
+    .border-orange {
+        border-color: #EE4D2D !important;
+    }
+
+    .letter-spacing-1 {
+        letter-spacing: 1px;
+    }
+
+    .input-shadow:focus {
+        box-shadow: 0 0 0 0.25rem rgba(238, 77, 45, 0.25);
+        border-color: #EE4D2D;
+    }
+
+    /* RAB Item Cards styling */
+    .rab-card {
+        background: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .rab-card:hover {
+        border-color: #EE4D2D;
+        background-color: #FFF0EE;
+        box-shadow: 0 2px 8px rgba(238, 77, 45, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .rab-card.selected {
+        border-color: #EE4D2D;
+        background-color: #FFF0EE;
+        box-shadow: 0 0 0 2px rgba(238, 77, 45, 0.2);
+    }
+
+    .rab-card .rab-title {
+        font-weight: 600;
+        font-size: 13px;
+        color: #212529;
+        margin-bottom: 4px;
+        line-height: 1.3;
+    }
+
+    .rab-card .rab-meta {
+        font-size: 11px;
+        color: #6c757d;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    /* Tunai specific hover to keep colors in harmony */
+    .rab-card-tunai:hover {
+        border-color: #198754 !important;
+        background-color: #f4fcf7 !important;
+        box-shadow: 0 2px 8px rgba(25, 135, 84, 0.1) !important;
+    }
+
+    .rab-card-tunai.selected {
+        border-color: #198754 !important;
+        background-color: #f4fcf7 !important;
+        box-shadow: 0 0 0 2px rgba(25, 135, 84, 0.2) !important;
+    }
+
+    /* Horizontal Dashboard Styling */
+    .fs-11 {
+        font-size: 11px !important;
+    }
+
+    .fs-13 {
+        font-size: 13px !important;
+    }
+
+    .fs-14 {
+        font-size: 14px !important;
+    }
+
+    .fs-12 {
+        font-size: 12px !important;
+    }
+
+    @media (min-width: 768px) {
+        .border-end-md {
+            border-right: 1px solid #eff2f7 !important;
+        }
+    }
+
+    @media (min-width: 992px) {
+        .border-end-lg {
+            border-right: 1px solid #eff2f7 !important;
+        }
+    }
 </style>
 <div class="page-wrapper">
     <div class="page-content">
@@ -144,8 +250,103 @@ require 'lembaga/head.php';
             </div>
         </div>
         <!--end breadcrumb-->
+
+        <!-- New Horizontal Information Dashboard -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card shadow-sm border-0 mb-0" style="border-radius: 12px; background: #ffffff;">
+                    <div class="card-body p-3">
+                        <div class="row align-items-center g-3">
+                            <!-- Left: Status Badges -->
+                            <div class="col-12 col-lg-5 border-end-lg">
+                                <div class="d-flex align-items-center gap-3 flex-wrap">
+                                    <div>
+                                        <small class="text-muted d-block fw-bold text-uppercase fs-11 mb-1">Status Pengajuan</small>
+                                        <?= $pj->stts == 'yes' ? "<span class='badge bg-success px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-message-square-check me-1'></i> Diajukan</span>" : "<span class='badge bg-danger px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-message-square-x me-1'></i> Belum</span>" ?>
+                                    </div>
+                                    <div class="vr bg-light opacity-50" style="height: 35px;"></div>
+                                    <div>
+                                        <small class="text-muted d-block fw-bold text-uppercase fs-11 mb-1">WA Gateway</small>
+                                        <?= $statusWA['results']['state'] == 'CONNECTED' ? "<span class='badge bg-success px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-wifi me-1'></i> Online</span>" : "<span class='badge bg-danger px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-wifi-off me-1'></i> Terputus</span>" ?>
+                                    </div>
+                                    <div class="vr bg-light opacity-50" style="height: 35px;"></div>
+                                    <div>
+                                        <small class="text-muted d-block fw-bold text-uppercase fs-11 mb-1">Total Pengajuan</small>
+                                        <span class="badge bg-orange text-white px-3 py-2 fs-13 fw-bold" style="border-radius: 6px; box-shadow: 0 4px 6px rgba(238, 77, 45, 0.15);" id="total-pengajuan-top">Rp 0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Middle: Latest Tracking Message -->
+                            <div class="col-12 col-lg-4 border-end-lg">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="bg-orange bg-opacity-10 text-orange rounded-circle p-2 d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                                        <i class="bx bx-git-commit fs-4"></i>
+                                    </div>
+                                    <div style="min-width: 0;">
+                                        <small class="text-muted d-block fw-bold text-uppercase fs-11">Aktivitas Terakhir</small>
+                                        <?php
+                                        if (!empty($history)) {
+                                            $latest = $history[0];
+                                            $latestDate = new DateTime($latest->tgl_verval);
+                                            echo '<span class="fw-semibold text-dark text-truncate d-block fs-14" title="' . $latest->pesan . '">' . $latest->pesan . '</span>';
+                                            echo '<small class="text-muted fs-12">' . $latestDate->format("d M Y, H:i") . ' oleh ' . ($latest->user ?? 'Sistem') . '</small>';
+                                        } else {
+                                            echo '<span class="fw-semibold text-dark fs-14">- Belum ada riwayat -</span>';
+                                        }
+                                        ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Actions & Notes -->
+                            <div class="col-12 col-lg-3 text-lg-end">
+                                <div class="d-flex flex-column flex-md-row align-items-lg-center justify-content-lg-end gap-2">
+                                    <?php if ($pj->stts != 'yes'): ?>
+                                        <a href="<?= base_url('pengajuan/ajukan/' . $pj->kode_pengajuan) ?>" class="btn btn-sm btn-success tbl-confirm shadow-sm d-inline-flex align-items-center gap-2 justify-content-center" value="Pengajuan akan dilanjutkan ke Bendahara dan Perencanaan" style="border-radius: 8px; padding: 7px 15px; font-weight: 600; font-size: 13px; min-height: 35px;">
+                                            <i class="bx bx-paper-plane"></i> Ajukan ke Bendahara
+                                        </a>
+                                    <?php endif; ?>
+                                    <button class="btn btn-outline-secondary btn-sm px-3 py-2 d-flex align-items-center gap-1 justify-content-center" style="border-radius: 8px; min-height: 35px;" type="button" data-bs-toggle="collapse" data-bs-target="#historyCollapse" aria-expanded="false" aria-controls="historyCollapse">
+                                        <i class="bx bx-history"></i> Riwayat Log
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Collapsible Timeline Log -->
+                        <div class="collapse mt-3" id="historyCollapse">
+                            <hr class="my-3 opacity-25">
+                            <h6 class="fw-bold text-dark mb-3"><i class="bx bx-list-ol text-orange me-1"></i> Detail Perjalanan Pengajuan</h6>
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+                                <?php
+                                $stepIdx = 1;
+                                foreach (array_reverse($history) as $hst):
+                                    $date = new DateTime($hst->tgl_verval);
+                                ?>
+                                    <div class="col">
+                                        <div class="p-3 border rounded h-100 bg-light bg-opacity-50" style="border-radius: 8px !important;">
+                                            <div class="d-flex align-items-center gap-2 mb-2">
+                                                <span class="badge bg-secondary-subtle text-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 22px; height: 22px; font-size: 11px;"><?= $stepIdx++ ?></span>
+                                                <small class="text-muted fw-semibold"><?= $date->format("d M Y, H:i"); ?></small>
+                                            </div>
+                                            <h6 class="mb-1 text-dark fs-13"><?= $hst->pesan ?></h6>
+                                            <small class="text-muted d-block fs-11">User: <?= $hst->user ?? 'System' ?></small>
+                                        </div>
+                                    </div>
+                                <?php endforeach ?>
+                            </div>
+                            <div class="mt-2 text-muted" style="font-size: 11px;">
+                                <i class="bx bx-info-circle text-orange"></i> Pastikan status WA Gateway <b>Online</b> agar pesan notifikasi terkirim otomatis ke Bendahara & Perencanaan.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="row">
-            <div class="col-12 col-lg-9">
+            <div class="col-12 col-lg-12">
                 <div class="card" id="orderList">
                     <div class="card-header align-items-xl-center d-xl-flex">
                         <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">List Pengajuan</h5>
@@ -181,218 +382,271 @@ require 'lembaga/head.php';
                             <div class="tab-pane" id="barang" role="tabpanel">
                                 <form action="" id="form-barang">
                                     <input type="hidden" name="kode_pengajuan" value="<?= $pj->kode_pengajuan ?>">
-                                    <div class="row">
-                                        <div class="col-sm-6">
+                                    <div class="row g-3">
+                                        <!-- Card 1: Pilih Program, Kegiatan, COA & Inputs -->
+                                        <div class="col-lg-4">
+                                            <div class="card shadow-sm border-0 mb-0 h-100" style="border-radius: 12px; background-color: #fdfdfd;">
+                                                <div class="card-body p-4">
+                                                    <h6 class="text-uppercase text-muted fw-bold mb-4"><i class="bx bx-layer text-orange me-1"></i> 1. Kegiatan & Input</h6>
 
-                                            <div class="row mb-2">
-                                                <div class="col-lg-3">
-                                                    <label for="nameInput" class="form-label">Pilih Program</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <select class="js-example-basic-single" name="program" id="program" required>
-                                                        <option>pilih program</option>
-                                                        <?php foreach ($program as $program1): ?>
-                                                            <option value="<?= $program1->id_dppk ?>"><b><?= $program1->id_dppk . '. ' . $program1->program ?></b></option>
-                                                        <?php endforeach ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-lg-3">
-                                                    <label for="nameInput" class="form-label">Pilih Akun (COA)</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <select class="js-example-basic-single select2-standalone" id="p-coa" required>
-                                                        <option>pilih akun</option>
-                                                        <?php foreach ($coa as $coa1):
-                                                            if ($coa1->parrent == '') { ?>
-                                                                <option value="<?= $coa1->kode ?>"><b><?= $coa1->kode . ' ' . $coa1->nama ?></b></option>
-                                                        <?php }
-                                                        endforeach ?>
-                                                    </select>
-                                                    <select class="js-example-basic-single select-dependent" id="c-coa" name="coa" required></select>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-lg-3">
-                                                    <label for="kegiatan" class="form-label">Nama Kegiatan</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="text" class="fr-kegiatan form-control" name="kegiatan" placeholder="Masukan nama kegiata" required>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-lg-3">
-                                                    <label for="nameInput" class="form-label">Pilih Item (SSH)</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <span role="button" data-bs-toggle="modal" data-bs-target="#inputno-modal" style="cursor: pointer;" class="badge bg-primary mb-2">Barang tidak ada di SSH</span>
-                                                    <select class="js-example-basic-single select-dependent" id="item-ssh" name="ssh" required>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="row mb-2">
-                                                <div class="col-lg-3">
-                                                    <label for="jumlah" class="form-label">Jumlah (qty)</label>
-                                                </div>
-                                                <div class="col-lg-9">
-                                                    <input type="number" class="form-control" id="input-qty" name="qty" placeholder="Masukan jumlah/qty" disabled required>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold text-dark">Pilih Program</label>
+                                                        <select class="js-example-basic-single w-100" name="program" id="program" required>
+                                                            <option value="">pilih program</option>
+                                                            <?php foreach ($program as $program1): ?>
+                                                                <option value="<?= $program1->kode_program ?>"><?= $program1->kode_program . '. ' . $program1->program ?></option>
+                                                            <?php endforeach ?>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3" id="kegiatan-barang-wrapper" style="display:none;">
+                                                        <label class="form-label fw-bold text-dark">Pilih Kegiatan</label>
+                                                        <select class="form-select" name="kegiatan_dppk" id="kegiatan-barang" style="border-radius: 8px;">
+                                                            <option value="">pilih kegiatan</option>
+                                                        </select>
+                                                        <small class="text-muted mt-1 d-block" id="kegiatan-info-barang"></small>
+                                                    </div>
+
+                                                    <input type="hidden" class="fr-kegiatan" name="kegiatan">
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold text-dark">Pilih Akun (COA)</label>
+                                                        <div class="row g-2">
+                                                            <div class="col-6">
+                                                                <select class="js-example-basic-single select2-standalone w-100" id="p-coa" required>
+                                                                    <option value="">pilih parent</option>
+                                                                    <?php foreach ($coa as $coa1):
+                                                                        if ($coa1->parrent == '') { ?>
+                                                                            <option value="<?= $coa1->kode ?>"><b><?= $coa1->kode . ' ' . $coa1->nama ?></b></option>
+                                                                    <?php }
+                                                                    endforeach ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <select class="js-example-basic-single select-dependent w-100" id="c-coa" name="coa" required>
+                                                                    <option value="">pilih sub-akun</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold text-dark">Pilih Item (SSH)</label>
+                                                        <div class="d-flex gap-2">
+                                                            <div class="flex-grow-1">
+                                                                <select class="js-example-basic-single select-dependent w-100" id="item-ssh" name="ssh" required>
+                                                                    <option value="">pilih item</option>
+                                                                </select>
+                                                            </div>
+                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#inputno-modal" class="btn btn-outline-orange d-inline-flex align-items-center gap-1" style="border-radius: 8px; padding: 0 15px; white-space: nowrap; height: 38px;"><i class="bx bx-plus"></i> Manual</button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-0">
+                                                        <label class="form-label fw-bold text-dark">Jumlah (qty)</label>
+                                                        <input type="number" class="form-control bg-light border-0 px-3 py-2 input-shadow" id="input-qty" name="qty" placeholder="Masukan jumlah/qty" disabled required style="border-radius: 8px;">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--end col-->
-                                        <div class="col-sm-6">
 
-                                            <div class="d-flex mt-0">
-                                                <!-- <div class="flex-shrink-0">
-                                                    <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-sm rounded" />
-                                                </div> -->
-                                                <div class="flex-grow-1 ms-3">
-                                                    <h6 class="mb-1 fs-14" id="coa-p-desc">-</h6>
-                                                    <p class="mb-0" id="coa-c-desc">-</p>
+                                        <!-- Card 3: Preview & Submit -->
+                                        <div class="col-lg-4 flex-grow-1">
+                                            <div class="card shadow-sm border-0 mb-0 h-100" style="border-radius: 12px; background: linear-gradient(135deg, #EE4D2D, #FF7B54); box-shadow: 0 10px 20px rgba(238, 77, 45, 0.2);">
+                                                <div class="card-body p-4 d-flex flex-column position-relative z-1">
+                                                    <h5 class="text-white mb-4 fw-bold"><i class="bx bx-receipt me-2"></i>Preview & Tambah</h5>
+
+                                                    <div class="mb-4 bg-white bg-opacity-10 rounded p-3" style="backdrop-filter: blur(5px);">
+                                                        <p class="text-white-50 mb-1 fs-12 text-uppercase fw-bold letter-spacing-1">Akun COA Terpilih</p>
+                                                        <h6 class="text-white mb-1" id="coa-p-desc">-</h6>
+                                                        <p class="text-white-50 mb-0 fs-13" id="coa-c-desc">-</p>
+                                                    </div>
+
+                                                    <div class="bg-white rounded p-3 mb-auto shadow-sm">
+                                                        <div class="d-flex align-items-start mb-3">
+                                                            <div class="bg-orange bg-opacity-10 text-orange rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                                                <i class="bx bx-package fs-5"></i>
+                                                            </div>
+                                                            <div class="flex-grow-1" style="min-width: 0;">
+                                                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                                                    <span class="badge bg-orange-subtle text-orange px-2 py-0.5 border border-orange" id="kategori" style="font-size: 10px;">Kategori</span>
+                                                                    <small class="text-muted" id="satuan">-</small>
+                                                                </div>
+                                                                <h6 class="text-dark mb-0 fw-bold text-truncate" id="nama-item" style="line-height: 1.3; font-size: 13px;">Nama Barang</h6>
+                                                                <small class="text-muted d-block text-truncate" id="nama-kategori" style="font-size: 11px;">-</small>
+                                                            </div>
+                                                        </div>
+                                                        <hr class="border-secondary opacity-25 my-3">
+                                                        <div class="row text-center">
+                                                            <div class="col-4 border-end">
+                                                                <small class="text-muted d-block fw-semibold mb-1">Harga</small>
+                                                                <span class="fw-bold text-dark fs-12" id="harga">-</span>
+                                                            </div>
+                                                            <div class="col-4 border-end">
+                                                                <small class="text-muted d-block fw-semibold mb-1">Satuan</small>
+                                                                <span class="fw-bold text-dark fs-12" id="satuan">-</span>
+                                                            </div>
+                                                            <div class="col-4">
+                                                                <small class="text-muted d-block fw-semibold mb-1">Qty</small>
+                                                                <span class="fw-bold text-dark fs-12" id="qty">-</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="bg-white rounded p-3 text-dark d-flex justify-content-between align-items-center mt-3 shadow-lg border border-orange">
+                                                        <div>
+                                                            <small class="text-muted d-block fw-bold text-uppercase fs-11">Total Biaya</small>
+                                                            <h4 class="mb-0 text-orange fw-bolder" id="total-harga">Rp 0</h4>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-orange px-3 py-2 fw-bold shadow-sm d-flex align-items-center gap-1" id="btn-tambah" style="border-radius: 8px;">
+                                                            <i class="bx bx-plus-circle fs-5"></i> Tambah
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <!-- <div class="d-flex mt-3"> -->
-                                            <div class="table-responsive mt-2 mb-2">
-                                                <table class="table table-bordered text-center table-nowrap align-middle mb-0" id="products-list">
-                                                    <thead>
-                                                        <tr class="table-active">
-                                                            <th scope="col" style="width: 50px;">#</th>
-                                                            <th scope="col">Nama Barang</th>
-                                                            <th scope="col">Harga</th>
-                                                            <th scope="col">Satuan</th>
-                                                            <th scope="col">Quantity</th>
-                                                            <th scope="col" class="text-end">Total</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row" id="kategori"></th>
-                                                            <td class="text-start">
-                                                                <span class="fw-medium" id="nama-item"></span>
-                                                                <p class="text-muted mb-0" id="nama-kategori"></p>
-                                                            </td>
-                                                            <td id="harga"></td>
-                                                            <td id="satuan"></td>
-                                                            <td id="qty"></td>
-                                                            <td id="total-harga" class="text-end"></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table><!--end table-->
-                                                <!-- </div> -->
-                                            </div>
-                                            <div class="">
-                                                <button type="submit" class="btn btn-primary btn-sm" id="btn-tambah"><i class="bx bx-plus-circle"></i> Tambahkan</button>
+                                        </div>
+
+                                        <!-- Card 2: RAB Items Panel -->
+                                        <div class="col-lg-4" id="rab-panel-barang" style="display:none;">
+                                            <div class="card shadow-sm border-0 mb-0 h-100" style="border-radius: 12px; background-color: #fdfdfd;">
+                                                <div class="card-body p-4">
+                                                    <h6 class="text-uppercase text-muted fw-bold mb-3"><i class="bx bx-list-check text-orange me-1"></i> 2. Item RAB</h6>
+                                                    <div class="mb-3 text-end">
+                                                        <span class="badge bg-orange-subtle text-orange border border-orange px-2 py-1" id="sisa-anggaran-barang">Sisa: -</span>
+                                                    </div>
+                                                    <div id="rab-list-barang" class="border rounded p-2" style="max-height: 250px; overflow-y: auto; border-radius: 8px !important; background: #fafafa;">
+                                                        <p class="text-muted text-center mb-0 py-2"><i class="bx bx-loader-alt bx-spin"></i> Memuat item RAB...</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <!--end col-->
                                     </div>
                                 </form>
                             </div>
 
                             <!-- Form Tunai -->
                             <div class="tab-pane" id="tunai" role="tabpanel">
-                                <div class="row">
-                                    <form action="" id="form-tunai">
-                                        <input type="hidden" name="kode_pengajuan" value="<?= $pj->kode_pengajuan ?>">
-                                        <div class="row">
-                                            <div class="col-sm-6">
+                                <form action="" id="form-tunai">
+                                    <input type="hidden" name="kode_pengajuan" value="<?= $pj->kode_pengajuan ?>">
+                                    <div class="row g-3">
+                                        <!-- Card 1: Pilih Program, Kegiatan, COA & Nama Kegiatan -->
+                                        <div class="col-lg-4">
+                                            <div class="card shadow-sm border-0 mb-0 h-100" style="border-radius: 12px; background-color: #fcfcfc;">
+                                                <div class="card-body p-4">
+                                                    <h6 class="text-uppercase text-muted fw-bold mb-4"><i class="bx bx-layer text-success me-1"></i> 1. Kegiatan & Input</h6>
 
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3">
-                                                        <label for="nameInput" class="form-label">Pilih Program</label>
-                                                    </div>
-                                                    <div class="col-lg-9">
-                                                        <select class="js-example-basic-single" name="program-tunai" id="program-tunai" required>
-                                                            <option>pilih program</option>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold text-dark">Pilih Program</label>
+                                                        <select class="js-example-basic-single w-100" name="program-tunai" id="program-tunai" required>
+                                                            <option value="">pilih program</option>
                                                             <?php foreach ($program as $program2): ?>
-                                                                <option value="<?= $program2->id_dppk ?>"><b><?= $program2->id_dppk . '. ' . $program2->program ?></b></option>
+                                                                <option value="<?= $program2->kode_program ?>"><b><?= $program2->kode_program . '. ' . $program2->program ?></b></option>
                                                             <?php endforeach ?>
                                                         </select>
                                                     </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3">
-                                                        <label for="nameInput" class="form-label">Pilih Akun (COA)</label>
-                                                    </div>
-                                                    <div class="col-lg-9">
-                                                        <select class="js-example-basic-single select2-standalone" id="p-coa-tunai" required>
-                                                            <option>pilih akun</option>
-                                                            <?php foreach ($coa as $coa2):
-                                                                if ($coa2->parrent == '') { ?>
-                                                                    <option value="<?= $coa2->kode ?>"><b><?= $coa2->kode . ' ' . $coa2->nama ?></b></option>
-                                                            <?php }
-                                                            endforeach ?>
+
+                                                    <div class="mb-3" id="kegiatan-tunai-wrapper" style="display:none;">
+                                                        <label class="form-label fw-bold text-dark">Pilih Kegiatan</label>
+                                                        <select class="form-select" name="kegiatan_dppk" id="kegiatan-tunai" style="border-radius: 8px;">
+                                                            <option value="">pilih kegiatan</option>
                                                         </select>
-                                                        <select class="js-example-basic-single select-dependent" id="c-coa-tunai" name="coa" required>
-                                                        </select>
+                                                        <small class="text-muted mt-1 d-block" id="kegiatan-info-tunai"></small>
                                                     </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3">
-                                                        <label for="kegiatan" class="form-label">Nama Kegiatan</label>
+
+                                                    <div class="mb-0">
+                                                        <label class="form-label fw-bold text-dark">Pilih Akun (COA)</label>
+                                                        <div class="row g-2">
+                                                            <div class="col-6">
+                                                                <select class="js-example-basic-single select2-standalone w-100" id="p-coa-tunai" required>
+                                                                    <option value="">pilih parent</option>
+                                                                    <?php foreach ($coa as $coa2):
+                                                                        if ($coa2->parrent == '') { ?>
+                                                                            <option value="<?= $coa2->kode ?>"><b><?= $coa2->kode . ' ' . $coa2->nama ?></b></option>
+                                                                    <?php }
+                                                                    endforeach ?>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <select class="js-example-basic-single select-dependent w-100" id="c-coa-tunai" name="coa" required>
+                                                                    <option value="">pilih sub-akun</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="fr-kegiatan form-control" name="kegiatan" placeholder="Masukan nama kegiata" required>
-                                                    </div>
+                                                    <input type="hidden" class="fr-kegiatan" name="kegiatan">
                                                 </div>
                                             </div>
-                                            <!--end col-->
-                                            <div class="col-sm-6">
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3">
-                                                        <label for="nameInput" class="form-label">Nama Item</label>
-                                                    </div>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control" id="nama-barang" name="barang" placeholder="Masukan nama barang" required>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3">
-                                                        <label for="nameInput" class="form-label">Harga</label>
-                                                    </div>
-                                                    <div class="col-lg-9">
-                                                        <input type="text" class="form-control uang" id="harga" name="harga" placeholder="Masukan harga barang" required>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-2">
-                                                    <div class="col-lg-3">
-                                                        <label for="jumlah" class="form-label">Jumlah (qty)</label>
-                                                    </div>
-                                                    <div class="col-lg-4">
-                                                        <input type="number" class="form-control" id="input-qty" name="qty" placeholder="jumlah/qty" required>
-                                                    </div>
-                                                    <div class="col-lg-5">
-                                                        <select class="js-example-basic-single" id="satuan-select" name="satuan">
-                                                            <option value="">-satuan-</option>
-                                                            <?php foreach ($satuan as $satuanTn): ?>
-                                                                <option value="<?= $satuanTn->nama ?>"><?= $satuanTn->nama ?></option>
-                                                            <?php endforeach ?>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="">
-                                                    <button type="submit" class="btn btn-primary btn-sm" id="btn-tambah"><i class="bx bx-plus-circle"></i> Tambahkan</button>
-                                                </div>
-                                            </div>
-                                            <!--end col-->
                                         </div>
-                                    </form>
-                                </div>
-                                <!--end row-->
+
+                                        <!-- Card 3: Form Rincian & Simpan -->
+                                        <div class="col-lg-4 flex-grow-1">
+                                            <div class="card shadow-sm mb-0 h-100" style="border-radius: 12px; background-color: #f4fcf7; border: 1px solid #d1f0df;">
+                                                <div class="card-body p-4 d-flex flex-column">
+                                                    <h6 class="text-uppercase text-success fw-bold mb-4"><i class="bx bx-money me-1"></i> 3. Rincian Tunai</h6>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold text-dark">Nama Item / Keperluan</label>
+                                                        <input type="text" class="form-control bg-white border px-3 py-2" id="nama-barang" name="barang" placeholder="Contoh: Honor Narasumber" required style="border-radius: 8px;">
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-bold text-dark">Harga / Nominal</label>
+                                                        <div class="input-group">
+                                                            <span class="input-group-text bg-success text-white border-success fw-bold" style="border-radius: 8px 0 0 8px;">Rp</span>
+                                                            <input type="text" class="form-control uang bg-white border-start-0 px-3 py-2" id="harga" name="harga" placeholder="0" required style="border-radius: 0 8px 8px 0;">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-4">
+                                                        <label class="form-label fw-bold text-dark">Jumlah & Satuan</label>
+                                                        <div class="row g-2">
+                                                            <div class="col-4">
+                                                                <input type="number" class="form-control bg-white border px-3 py-2" id="input-qty" name="qty" placeholder="Qty" required style="border-radius: 8px;">
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <select class="js-example-basic-single w-100" id="satuan-select" name="satuan" required>
+                                                                    <option value="">-satuan-</option>
+                                                                    <?php foreach ($satuan as $satuanTn): ?>
+                                                                        <option value="<?= $satuanTn->nama ?>"><?= $satuanTn->nama ?></option>
+                                                                    <?php endforeach ?>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mt-auto text-end border-top pt-3 border-success border-opacity-25">
+                                                        <button type="submit" class="btn btn-success px-4 py-2 fw-bold shadow-sm d-inline-flex align-items-center gap-2" id="btn-tambah" style="border-radius: 8px; width: 100%; justify-content: center;">
+                                                            <i class="bx bx-check-circle fs-5"></i> Simpan Item Tunai
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card 2: RAB Items Panel -->
+                                        <div class="col-lg-4" id="rab-panel-tunai" style="display:none;">
+                                            <div class="card shadow-sm border-0 mb-0 h-100" style="border-radius: 12px; background-color: #fcfcfc;">
+                                                <div class="card-body p-4">
+                                                    <h6 class="text-uppercase text-muted fw-bold mb-3"><i class="bx bx-list-check text-success me-1"></i> 2. Item RAB</h6>
+                                                    <div class="mb-3 text-end">
+                                                        <span class="badge px-2 py-1" id="sisa-anggaran-tunai" style="background-color: #d1f0df; color: #198754; border: 1px solid #198754;">Sisa: -</span>
+                                                    </div>
+                                                    <div id="rab-list-tunai" class="border rounded p-2" style="max-height: 250px; overflow-y: auto; border-radius: 8px !important; background: #fafafa;">
+                                                        <p class="text-muted text-center mb-0 py-2"><i class="bx bx-loader-alt bx-spin"></i> Memuat item RAB...</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div><!-- end card-body -->
 
                     <div class="card-body pt-0">
-                        <div class="row contacts">
-                            <div class="col invoice-to">
-                                <!-- <h2 class="to">John Doe</h2> -->
-                                <a href="<?= base_url('pengajuan/ajukan/' . $pj->kode_pengajuan) ?>" class="btn btn-sm btn-success mb-2 tbl-confirm" value="Pengajuan akan dilanjutkan ke Bendahara dan Perencanaan"><i class="bx bx-upload"></i> Ajukan ke Bendahara</a>
-                            </div>
-                            <div class="col invoice-details">
-                                <h4 class="invoice-id">Total : <b id="total-pengajuan"></b></h4>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+
+                            <span id="total-pengajuan" style="display: none;"></span>
                         </div>
                         <!-- <b class="folat-right">Total </b> -->
                         <div class="table-responsive mb-1">
@@ -418,54 +672,7 @@ require 'lembaga/head.php';
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-3">
-                <div class="card" id="orderList">
-                    <div class="card-header align-items-xl-center d-xl-flex">
-                        <h5 class="card-title mb-0 flex-grow-1 mb-xl-0">Informasi Pengajuan</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-borderless mb-2">
-                            <tr>
-                                <th>Status Pengajuan</th>
-                                <td>:</td>
-                                <td><?= $pj->stts == 'yes' ? "<b class='text-success'><i class='bx bx-message-square-check'></i> Diajukan</b>" : "<b class='text-danger'><i class='bx bx-message-square-x'></i> Belum</b>" ?></td>
-                            </tr>
-                            <tr>
-                                <th>WA Informasi</th>
-                                <td>:</td>
-                                <td><?= $statusWA['results']['state'] == 'CONNECTED' ? "<b class='text-success'><i class='bx bx-wifi'></i> Online</b>" : "<b class='text-danger'><i class='bx bx-wifi-off'></i> Terputus</b>" ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="3"> <small>Pastika status WA Online agar informasi terkirim. Jika tidak silahkan hub Tim Teknis sebelum klik ajukan ke bendahara</small></td>
-                            </tr>
 
-                        </table>
-                        <h5 class="mb-3"><i class="bx bx-list-ol me-2"></i>Detail Perjalanan</h5>
-                        <div class="detail-list">
-                            <?php
-                            $first = true; // penanda item pertama
-                            foreach ($history as $hst):
-                                $date = new DateTime($hst->tgl_verval);
-                            ?>
-                                <div class="mb-3 position-relative">
-                                    <div class="position-absolute top-0 start-0 translate-middle-x bg-white rounded-circle border <?= $first ? 'border-warning border-width: 3px;' : 'border-dark' ?> p-1"></div>
-                                    <div class="ms-4">
-                                        <h6 class="mb-0 <?= $first ? 'latest-status' : '' ?>">
-                                            <?= $hst->pesan ?>
-                                        </h6>
-                                        <small class="text-muted <?= $first ? 'latest-status' : '' ?>"><?= $date->format("d M Y, H:i"); ?></small>
-                                    </div>
-                                </div>
-                            <?php
-                                $first = false; // setelah item pertama, sisanya false
-                            endforeach
-                            ?>
-                        </div>
-                    </div><!-- end card-body -->
-
-                </div>
-            </div>
         </div>
     </div>
     <!--end row-->
@@ -479,10 +686,12 @@ require 'lembaga/head.php';
                 <button type="button" class="btn-close" value="" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="<?= base_url('pengajuan/addItemBarangModal') ?>" method="post" class="form-addrow mt-2">
+                <form action="<?= base_url('pengajuan/addItemBarangModal') ?>" method="post" class="form-addrow mt-2" id="form-barang-modal">
                     <input type="hidden" name="kode_pengajuan" value="<?= $pj->kode_pengajuan ?>">
                     <input type="hidden" id="program_modal" name="program">
                     <input type="hidden" id="coa_modal" name="coa">
+                    <input type="hidden" id="kegiatan_modal" name="kegiatan">
+                    <input type="hidden" id="kegiatan_dppk_modal" name="kegiatan_dppk">
                     <div class="form-group mb-2">
                         <label for="">Nama Barang</label>
                         <input type="text" class="form-control" name="nama" required>
@@ -505,12 +714,8 @@ require 'lembaga/head.php';
                         <input type="number" class="form-control" name="qty" required>
                     </div>
                     <div class="form-group mb-2">
-                        <label for="">Nama Kegiatan</label>
-                        <input type="text" class="form-control" name="kegiatan" required>
-                    </div>
-                    <div class="form-group mb-2">
                         <label for=""></label>
-                        <button class="btn btn-success btn-sm" type="submit">Tambahkan</button>
+                        <button class="btn btn-success btn-sm px-3 d-inline-flex align-items-center gap-1" type="submit" style="border-radius: 6px;"><i class="bx bx-check-circle"></i> Tambahkan</button>
                     </div>
                 </form>
                 <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
@@ -546,15 +751,26 @@ require 'lembaga/head.php';
         position: {
             x: 'center',
             y: 'top'
-        }
+        },
+        types: [{
+            type: 'warning',
+            background: '#ffc107',
+            icon: {
+                className: 'bx bx-error-circle',
+                tagName: 'i',
+                color: '#ffffff'
+            }
+        }]
     });
     $(document).ready(function() {
         $('#table1').DataTable()
-        $('.js-example-basic-single').select2({
-            theme: 'bootstrap4',
-            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-            placeholder: $(this).data('placeholder'),
-            allowClear: Boolean($(this).data('allow-clear')),
+        $('.js-example-basic-single').each(function() {
+            $(this).select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+            });
         });
         $('.uang').mask('000.000.000.000', {
             reverse: true
@@ -562,6 +778,43 @@ require 'lembaga/head.php';
         loadSSH()
         showTable()
         totalPengajuan()
+
+        // Automatically manage modal inputs based on main form selection
+        $('#inputno-modal').on('show.bs.modal', function(e) {
+            let programVal = $('#program').val();
+            let coaVal = $('#c-coa').val();
+            let kegiatanDppkVal = $('#kegiatan-barang').val();
+            let kegiatanVal = $('#kegiatan-barang').find('option:selected').attr('data-kegiatan') || '';
+
+            if (!programVal) {
+                notyf.error('Silakan pilih Program terlebih dahulu');
+                e.preventDefault();
+                return;
+            }
+            if (!kegiatanDppkVal) {
+                notyf.error('Silakan pilih Kegiatan terlebih dahulu');
+                e.preventDefault();
+                return;
+            }
+            if (!coaVal || coaVal === 'pilih coa') {
+                notyf.error('Silakan pilih Akun (COA) terlebih dahulu');
+                e.preventDefault();
+                return;
+            }
+
+            // If opened via the "+ Manual" button (relatedTarget is defined), clear custom inputs
+            if (e.relatedTarget) {
+                $('#inputno-modal input[name="nama"]').val('');
+                $('#inputno-modal select[name="satuan"]').val('');
+                $('#inputno-modal input[name="harga_satuan"]').val('').trigger('input');
+                $('#inputno-modal input[name="qty"]').val('');
+            }
+
+            $('#program_modal').val(programVal);
+            $('#coa_modal').val(coaVal);
+            $('#kegiatan_modal').val(kegiatanVal);
+            $('#kegiatan_dppk_modal').val(kegiatanDppkVal);
+        });
     })
     $('#p-coa').on('change', function() {
         var kode = $(this).val();
@@ -655,7 +908,13 @@ require 'lembaga/head.php';
                 $('#harga').text(hargaFormatted);
 
                 $('#satuan').text(data.hasil.satuan)
-                $('#input-qty').prop('disabled', false).val('')
+                $('#input-qty').prop('disabled', false);
+                if (window.pendingQty) {
+                    $('#input-qty').val(window.pendingQty).trigger('input');
+                    window.pendingQty = null;
+                } else {
+                    $('#input-qty').val('');
+                }
             },
             error: function(xhr, status, error) {
                 alert(xhr.responseText);
@@ -776,6 +1035,36 @@ require 'lembaga/head.php';
 
     })
 
+    $('#form-barang-modal').on('submit', function(e) {
+        e.preventDefault();
+        // cek validasi HTML5
+        if (!this.checkValidity()) {
+            this.reportValidity(); // munculkan pesan error bawaan browser
+            return; // hentikan
+        }
+        var dataForm = $(this).serialize()
+        $.ajax({
+            type: "POST",
+            url: "<?= base_url('pengajuan/addItemBarangModal') ?>",
+            data: dataForm,
+            dataType: 'json',
+            success: function(data) {
+                if (data.status == 'success') {
+                    notyf.success(data.message);
+                    $('#inputno-modal').modal('hide');
+                    showTable()
+                    resetFormAndTable()
+                    totalPengajuan()
+                } else {
+                    notyf.error(data.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log(xhr.responseText);
+            }
+        })
+    })
+
     function showTable() {
         $.ajax({
             type: "POST",
@@ -800,7 +1089,7 @@ require 'lembaga/head.php';
                                 `${item.vol} <small class="text-muted">${item.satuan == null && item.ket ? parseItemDetail(item.ket)?.satuan : item.satuan}</small>`,
                                 rupiah(item.vol * item.harga),
                                 `<span class="badge bg-warning-subtle text-success text-uppercase">${item.stas =='tunai'?'Tunai':'Non-Tunai'}</span>`,
-                                `<button class="btn btn-sm btn-danger" onclick="delItem('${item.id_realis}')">Del</button>`
+                                `<button class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1" onclick="delItem('${item.id_realis}')" style="border-radius: 6px; padding: 4px 8px;"><i class="bx bx-trash"></i> Hapus</button>`
                             ]);
                         });
                     }
@@ -817,7 +1106,7 @@ require 'lembaga/head.php';
                             `${item.vol} <small class="text-muted">${item.satuan == null && item.ket ? parseItemDetail(item.ket)?.satuan : item.satuan}</small>`,
                             rupiah(item.vol * item.harga),
                             `<span class="badge bg-warning-subtle text-success text-uppercase">${item.stas =='tunai'?'Tunai':'Non-Tunai'}</span>`,
-                            `<button class="btn btn-sm btn-danger" onclick="delItem('${item.id_realis}')">Del</button>`
+                            `<button class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1" onclick="delItem('${item.id_realis}')" style="border-radius: 6px; padding: 4px 8px;"><i class="bx bx-trash"></i> Hapus</button>`
                         ]),
                         columns: [{
                                 title: "#"
@@ -899,26 +1188,321 @@ require 'lembaga/head.php';
         }).format(number);
     }
 
+    // Item Barang Tab Dynamic Logic
     $('#program').on('change', function() {
-        let kode = $(this).val();
-        $('#program_modal').val(kode)
-    })
+        let program_id = $(this).val();
+        $('#program_modal').val(program_id);
+
+        if (!program_id) {
+            $('#kegiatan-barang-wrapper').hide();
+            $('#rab-panel-barang').hide();
+            $('#kegiatan-barang').empty().append('<option value="">pilih kegiatan</option>');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "<?= base_url('pengajuan/getKegiatanByProgram') ?>",
+            data: {
+                program_id: program_id,
+                bulan_pj: '<?= $pj->bulan ?>'
+            },
+            dataType: 'json',
+            success: function(response) {
+                let select = $('#kegiatan-barang');
+                select.empty().append('<option value="">pilih kegiatan</option>');
+                if (response.status === 'success' && response.data.length > 0) {
+                    response.data.forEach(function(item) {
+                        $('<option>', {
+                            value: item.id_dppk,
+                            text: item.kode_kegiatan + ' - ' + item.kegiatan
+                        }).attr('data-kegiatan', item.kegiatan).appendTo(select);
+                    });
+                    $('#kegiatan-barang-wrapper').show();
+                } else {
+                    $('#kegiatan-barang-wrapper').hide();
+                }
+                $('#rab-panel-barang').hide();
+            },
+            error: function(xhr, status, error) {
+                console.error('Gagal mengambil kegiatan:', error);
+            }
+        });
+    });
+
+    $('#kegiatan-barang').on('change', function() {
+        let id_dppk = $(this).val();
+        let kegiatanVal = $(this).find('option:selected').attr('data-kegiatan') || '';
+        $('#form-barang input[name="kegiatan"]').val(kegiatanVal);
+
+        if (!id_dppk) {
+            $('#rab-panel-barang').hide();
+            return;
+        }
+
+        $('#rab-list-barang').html('<p class="text-muted text-center mb-0 py-2"><i class="bx bx-loader-alt bx-spin"></i> Memuat item RAB...</p>');
+        $('#rab-panel-barang').show();
+
+        $.ajax({
+            type: "POST",
+            url: "<?= base_url('pengajuan/getRabByDppk') ?>",
+            data: {
+                id_dppk: id_dppk
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#sisa-anggaran-barang').text('Sisa: ' + rupiah(response.sisa));
+
+                    let container = $('#rab-list-barang');
+                    container.empty();
+
+                    if (response.data.length > 0) {
+                        response.data.forEach(function(item) {
+                            let totalFormatted = rupiah(item.total);
+                            let hargaFormatted = rupiah(item.harga_satuan);
+                            let card = $(`
+                                <div class="rab-card" data-id="${item.kode}">
+                                    <div class="rab-title">${item.nama}</div>
+                                    <div class="rab-meta">
+                                        <span>${item.qty} ${item.satuan} &times; ${hargaFormatted}</span>
+                                        <span class="fw-bold text-orange">${totalFormatted}</span>
+                                    </div>
+                                </div>
+                            `);
+                            card.data('raw-item', item);
+                            container.append(card);
+                        });
+                    } else {
+                        container.html('<p class="text-muted text-center mb-0 py-2">Tidak ada item RAB untuk kegiatan ini</p>');
+                    }
+                } else {
+                    notyf.error(response.message || 'Gagal mengambil RAB');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Gagal mengambil RAB:', error);
+                $('#rab-list-barang').html('<p class="text-danger text-center mb-0 py-2">Gagal memuat RAB</p>');
+            }
+        });
+    });
+
+    $(document).on('click', '#rab-list-barang .rab-card', function() {
+        $('#rab-list-barang .rab-card').removeClass('selected');
+        $(this).addClass('selected');
+
+        let item = $(this).data('raw-item');
+        if (!item) return;
+
+        window.pendingQty = item.qty;
+
+        let rabName = item.nama.toLowerCase().trim();
+        let bestMatchVal = "";
+        let exactMatchVal = "";
+
+        $('#item-ssh option').each(function() {
+            let optText = $(this).text().toLowerCase().trim();
+            let optVal = $(this).val();
+            if (!optVal || optVal === "pilih barang") return;
+
+            if (optText === rabName) {
+                exactMatchVal = optVal;
+                return false;
+            }
+            if (optText.indexOf(rabName) !== -1 || rabName.indexOf(optText) !== -1) {
+                bestMatchVal = optVal;
+            }
+        });
+
+        let matchedVal = exactMatchVal || bestMatchVal;
+        if (matchedVal) {
+            $('#item-ssh').val(matchedVal).trigger('change');
+            notyf.success('Item SSH terpilih: ' + $('#item-ssh option:selected').text());
+        } else {
+            notyf.open({
+                type: 'warning',
+                message: 'Item SSH tidak cocok otomatis. Membuka form input manual...'
+            });
+
+            // Prefill the modal inputs
+            $('#inputno-modal input[name="nama"]').val(item.nama);
+
+            // Try to match/set the Satuan select dropdown
+            let satuanVal = item.satuan || '';
+            let matchedSatuan = "";
+            $('#inputno-modal select[name="satuan"] option').each(function() {
+                if ($(this).val().toLowerCase().trim() === satuanVal.toLowerCase().trim()) {
+                    matchedSatuan = $(this).val();
+                    return false;
+                }
+            });
+            if (matchedSatuan) {
+                $('#inputno-modal select[name="satuan"]').val(matchedSatuan);
+            } else {
+                $('#inputno-modal select[name="satuan"]').val('');
+            }
+
+            // Set harga (triggering input ensures standard money masking is applied)
+            let rawHarga = Math.round(Number(item.harga_satuan)).toString();
+            $('#inputno-modal input[name="harga_satuan"]').val(rawHarga).trigger('input');
+
+            // Set qty
+            $('#inputno-modal input[name="qty"]').val(item.qty);
+
+            // Open the modal after a short delay to allow visual transition
+            setTimeout(function() {
+                $('#inputno-modal').modal('show');
+            }, 300);
+        }
+    });
+
+    // Item Tunai Tab Dynamic Logic
+    $('#program-tunai').on('change', function() {
+        let program_id = $(this).val();
+
+        if (!program_id) {
+            $('#kegiatan-tunai-wrapper').hide();
+            $('#rab-panel-tunai').hide();
+            $('#kegiatan-tunai').empty().append('<option value="">pilih kegiatan</option>');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "<?= base_url('pengajuan/getKegiatanByProgram') ?>",
+            data: {
+                program_id: program_id,
+                bulan_pj: '<?= $pj->bulan ?>'
+            },
+            dataType: 'json',
+            success: function(response) {
+                let select = $('#kegiatan-tunai');
+                select.empty().append('<option value="">pilih kegiatan</option>');
+                if (response.status === 'success' && response.data.length > 0) {
+                    response.data.forEach(function(item) {
+                        $('<option>', {
+                            value: item.id_dppk,
+                            text: item.kode_kegiatan + ' - ' + item.kegiatan
+                        }).attr('data-kegiatan', item.kegiatan).appendTo(select);
+                    });
+                    $('#kegiatan-tunai-wrapper').show();
+                } else {
+                    $('#kegiatan-tunai-wrapper').hide();
+                }
+                $('#rab-panel-tunai').hide();
+            },
+            error: function(xhr, status, error) {
+                console.error('Gagal mengambil kegiatan:', error);
+            }
+        });
+    });
+
+    $('#kegiatan-tunai').on('change', function() {
+        let id_dppk = $(this).val();
+        let kegiatanVal = $(this).find('option:selected').attr('data-kegiatan') || '';
+        $('#form-tunai input[name="kegiatan"]').val(kegiatanVal);
+
+        if (!id_dppk) {
+            $('#rab-panel-tunai').hide();
+            return;
+        }
+
+        $('#rab-list-tunai').html('<p class="text-muted text-center mb-0 py-2"><i class="bx bx-loader-alt bx-spin"></i> Memuat item RAB...</p>');
+        $('#rab-panel-tunai').show();
+
+        $.ajax({
+            type: "POST",
+            url: "<?= base_url('pengajuan/getRabByDppk') ?>",
+            data: {
+                id_dppk: id_dppk
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#sisa-anggaran-tunai').text('Sisa: ' + rupiah(response.sisa));
+
+                    let container = $('#rab-list-tunai');
+                    container.empty();
+
+                    if (response.data.length > 0) {
+                        response.data.forEach(function(item) {
+                            let totalFormatted = rupiah(item.total);
+                            let hargaFormatted = rupiah(item.harga_satuan);
+                            let card = $(`
+                                <div class="rab-card rab-card-tunai" data-id="${item.kode}">
+                                    <div class="rab-title">${item.nama}</div>
+                                    <div class="rab-meta">
+                                        <span>${item.qty} ${item.satuan} &times; ${hargaFormatted}</span>
+                                        <span class="fw-bold text-success">${totalFormatted}</span>
+                                    </div>
+                                </div>
+                            `);
+                            card.data('raw-item', item);
+                            container.append(card);
+                        });
+                    } else {
+                        container.html('<p class="text-muted text-center mb-0 py-2">Tidak ada item RAB untuk kegiatan ini</p>');
+                    }
+                } else {
+                    notyf.error(response.message || 'Gagal mengambil RAB');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Gagal mengambil RAB:', error);
+                $('#rab-list-tunai').html('<p class="text-danger text-center mb-0 py-2">Gagal memuat RAB</p>');
+            }
+        });
+    });
+
+    $(document).on('click', '#rab-list-tunai .rab-card', function() {
+        $('#rab-list-tunai .rab-card').removeClass('selected');
+        $(this).addClass('selected');
+
+        let item = $(this).data('raw-item');
+        if (!item) return;
+
+        $('#form-tunai #nama-barang').val(item.nama);
+
+        let rawHarga = Math.round(Number(item.harga_satuan)).toString();
+        $('#form-tunai #harga').val(rawHarga).trigger('input');
+
+        $('#form-tunai #input-qty').val(item.qty);
+        $('#form-tunai #satuan-select').val(item.satuan).trigger('change');
+
+        notyf.success('Form Tunai diisi dari item RAB: ' + item.nama);
+    });
+
     $('#c-coa').on('change', function() {
         let kode = $(this).val();
         $('#coa_modal').val(kode)
-    })
+    });
 
     function resetFormAndTable() {
         $('#form-barang')[0].reset();
         $('#form-tunai')[0].reset();
+        if ($('#form-barang-modal').length > 0) {
+            $('#form-barang-modal')[0].reset();
+        }
         $('.select2-standalone').val(null).trigger('change');
         $('.select-dependent').html('<option value=""> pilih </option>');
-        $('#program').val(null).trigger('change');
-        $('#program-tunai').val(null).trigger('change');
-        // $('#item-ssh').val(null).trigger('change');
-        // $('#products-list tbody').html('');
+
+        // Hide and clear custom wrappers
+        $('#kegiatan-barang-wrapper').hide();
+        $('#kegiatan-tunai-wrapper').hide();
+        $('#rab-panel-barang').hide();
+        $('#rab-panel-tunai').hide();
+        $('#kegiatan-barang').empty().append('<option value="">pilih kegiatan</option>');
+        $('#kegiatan-tunai').empty().append('<option value="">pilih kegiatan</option>');
+        $('#rab-list-barang').empty();
+        $('#rab-list-tunai').empty();
+
+        // Reset Program Selects safely
+        $('#program').val(null).trigger('change.select2');
+        $('#program-tunai').val(null).trigger('change.select2');
+
         $('#coa-p-desc').text('-');
         $('#coa-c-desc').text('-');
+        window.pendingQty = null;
         loadSSH()
 
         // Table list Hasil
@@ -927,7 +1511,7 @@ require 'lembaga/head.php';
         $('#nama-kategori').text('')
         $('#harga').text('');
         $('#satuan').text('')
-        $('.fr-kegiatan').text('')
+        $('.fr-kegiatan').val('') // Clear input value (use .val() instead of .text() for input elements)
         $('#qty').text(0)
         $('#total-harga').text(0)
     }
@@ -977,10 +1561,13 @@ require 'lembaga/head.php';
             },
             dataType: 'json',
             success: function(response) {
-                $('#total-pengajuan').text(rupiah(response))
+                let formatted = rupiah(response);
+                $('#total-pengajuan').text(formatted);
+                $('#total-pengajuan-top').text(formatted);
             },
             error: function(xhr, status, error) {
-                $('#total-pengajuan').text(error)
+                $('#total-pengajuan').text(error);
+                $('#total-pengajuan-top').text(error);
             }
         })
     }

@@ -132,14 +132,14 @@ class AdminModel extends CI_Model
 
     function getBySum($table, $where, $dtwhere, $sum)
     {
-        $this->db->select('*');
+        // $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where, $dtwhere);
         return $this->db->get($table);
     }
     function getBySum2($table, $where1, $dtwhere1, $where2, $dtwhere2, $sum)
     {
-        $this->db->select('*');
+        // $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where1, $dtwhere1);
         $this->db->where($where2, $dtwhere2);
@@ -192,8 +192,11 @@ class AdminModel extends CI_Model
 
     public function dataSantri()
     {
-        $this->db->where('aktif', 'Y');
-        return $this->db->get('tb_santri');
+        $this->db->select('tb_santri.*, cost.cost_id');
+        $this->db->from('tb_santri');
+        $this->db->join('cost', 'tb_santri.nis = cost.nis', 'left');
+        $this->db->where('tb_santri.aktif', 'Y');
+        return $this->db->get();
     }
     public function dataBp($tahun)
     {
@@ -402,7 +405,7 @@ class AdminModel extends CI_Model
     }
     function getBySumPsb($table, $where, $dtwhere, $sum)
     {
-        $this->db6->select('*');
+        // $this->db6->select('*');
         $this->db6->select_sum($sum, 'jml');
         $this->db6->where($where, $dtwhere);
         return $this->db6->get($table);

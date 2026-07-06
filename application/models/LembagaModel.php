@@ -77,7 +77,7 @@ class LembagaModel extends CI_Model
 
     function getBySum2($table, $where1, $dtwhere1, $where2, $dtwhere2, $sum)
     {
-        $this->db->select('*');
+        // $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where1, $dtwhere1);
         $this->db->where($where2, $dtwhere2);
@@ -139,7 +139,7 @@ class LembagaModel extends CI_Model
 
     function getBySum($table, $where, $dtwhere, $sum)
     {
-        $this->db->select('*');
+        // $this->db->select('*');
         $this->db->select_sum($sum, 'jml');
         $this->db->where($where, $dtwhere);
         return $this->db->get($table);

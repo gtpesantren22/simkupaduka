@@ -16,37 +16,106 @@
         </div>
         <!--end breadcrumb-->
         <div class="row">
-            <div class="col-12 col-lg-12">
+            <div class="col-12">
                 <div class="card radius-10">
                     <div class="card-body">
+                        <?= form_open('admin/bpEdit') ?>
+                        <input type="hidden" name="id" value="<?= htmlspecialchars($bp->nis); ?>">
+                        
                         <div class="row">
-                            <?= form_open('admin/bpEdit') ?>
-                            <div class="col-6">
-                                <label for="" class="form-label">* NIS Santri</label>
-                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..." aria-label="readonly input example1" name="nis" value="<?= $bp->nis; ?>" readonly>
-                                <label for="" class="form-label">* Nama</label>
-                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..." aria-label="readonly input example2" name="nama" value="<?= $bp->nama; ?>" readonly>
-                                <label for="" class="form-label">* No. Briva</label>
-                                <input class="form-control mb-3" type=" text" placeholder="Readonly input here..." aria-label="readonly input example3" name="briva" value="<?= $bp->briva; ?>">
+                            <!-- Student Metadata Panel -->
+                            <div class="col-12 col-lg-4 border-end">
+                                <h5 class="mb-4 font-weight-bold">Informasi Santri</h5>
+                                
+                                <label class="form-label font-weight-bold">NIS Santri</label>
+                                <input class="form-control mb-3" type="text" value="<?= htmlspecialchars($bp->nis); ?>" readonly>
+                                
+                                <label class="form-label font-weight-bold">Nama Santri</label>
+                                <input class="form-control mb-3" type="text" value="<?= htmlspecialchars($bp->nama); ?>" readonly>
+                                
+                                <label class="form-label font-weight-bold">No. Briva</label>
+                                <input class="form-control mb-3" type="text" name="briva" value="<?= htmlspecialchars($bp->briva); ?>">
+                                
+                                <label class="form-label font-weight-bold">Total Tanggungan</label>
+                                <input class="form-control mb-4 bg-light text-primary font-weight-bold" type="text" id="total-bp" readonly>
+                                
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success"><i class="bx bx-check-circle"></i> SIMPAN</button>
+                                    <a href="<?= base_url('admin/bp'); ?>" class="btn btn-warning"><i class="bx bx-left-arrow-circle"></i> KEMBALI</a>
+                                </div>
                             </div>
-                            <div class="col-6">
-                                <input type="hidden" name="id" value="<?= $bp->id_tangg; ?>">
-                                <label for="" class="form-label">* Juli - April</label>
-                                <input class="form-control mb-3 uang" type="text" placeholder="Default input" aria-label="default input example" name="ju_ap" value="<?= $bp->ju_ap; ?>" required>
-                                <label for="" class="form-label">* Mei - Juni</label>
-                                <input class="form-control mb-3 uang" type="text" placeholder="Default input" aria-label="default input example" name="me_ju" value="<?= $bp->me_ju; ?>" required>
-                                <label for="" class="form-label">* Total</label>
-                                <input class="form-control mb-3" type="text" placeholder="Default input" aria-label="default input example" name="total" value="<?= rupiah($bp->ju_ap * 10 + $bp->me_ju * 2); ?>" readonly>
-                                <button class="btn btn-success"><i class="bx bx-check-circle"></i>SIMPAN</button>
-                                <a href="<?= base_url('admin/bp'); ?>" class="btn btn-warning"><i class="bx bx-left-arrow-circle"></i>KEMBALI</a>
+                            
+                            <!-- Monthly Tanggungan Input Fields -->
+                            <div class="col-12 col-lg-8 ps-lg-4">
+                                <h5 class="mb-4 font-weight-bold">Rincian Tanggungan Bulanan</h5>
+                                
+                                <?php
+                                $months_list = [
+                                    7 => 'Juli',
+                                    8 => 'Agustus',
+                                    9 => 'September',
+                                    10 => 'Oktober',
+                                    11 => 'November',
+                                    12 => 'Desember',
+                                    1 => 'Januari',
+                                    2 => 'Februari',
+                                    3 => 'Maret',
+                                    4 => 'April',
+                                    5 => 'Mei',
+                                    6 => 'Juni'
+                                ];
+                                ?>
+                                
+                                <div class="row">
+                                    <?php foreach ($months_list as $num => $name) : ?>
+                                        <div class="col-12 col-md-6 col-xxl-4">
+                                            <label class="form-label font-weight-bold"><?= $name ?></label>
+                                            <input class="form-control mb-3 uang month-input" type="text" name="nominal_<?= $num ?>" value="<?= isset($months_map[$num]) ? $months_map[$num] : 0; ?>" required>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
-                            <?= form_close() ?>
                         </div>
+                        <?= form_close() ?>
                     </div>
                 </div>
             </div>
         </div>
-        <!--end row-->
     </div>
 </div>
-<!--end page wrapper -->
+
+<script>
+    window.addEventListener('load', function() {
+        const inputs = document.querySelectorAll('.month-input');
+        const totalInput = document.getElementById('total-bp');
+
+        function calculateTotal() {
+            let total = 0;
+            inputs.forEach(input => {
+                let valStr = input.value.replace(/[^0-9]/g, '');
+                let val = parseInt(valStr) || 0;
+                total += val;
+            });
+            totalInput.value = 'Rp. ' + total.toLocaleString('id-ID');
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('input', calculateTotal);
+            // Trigger focusout for formatting
+            input.addEventListener('blur', function() {
+                let valStr = this.value.replace(/[^0-9]/g, '');
+                let val = parseInt(valStr) || 0;
+                this.value = val.toLocaleString('id-ID');
+            });
+        });
+
+        // Initialize display formatting on load
+        inputs.forEach(input => {
+            let valStr = input.value.replace(/[^0-9]/g, '');
+            let val = parseInt(valStr) || 0;
+            input.value = val.toLocaleString('id-ID');
+        });
+
+        calculateTotal();
+    });
+</script>

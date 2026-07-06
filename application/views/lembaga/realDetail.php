@@ -98,64 +98,61 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example2" class="table table-striped table-bordered">
-                                <thead>
-                                    <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
-                                        <th>No</th>
-                                        <th>Kode</th>
-                                        <th>Barang/Kegiatan</th>
-                                        <th>Rencana</th>
-                                        <th>Jenis</th>
-                                        <th>Anggaran RAB</th>
-                                        <th>Realiasasi</th>
-                                        <th>Sisa</th>
-                                        <th>Pemakaian (%)</th>
-                                    </tr>
-                                    <!-- <tr style="color: white; background-color: plum; font-weight: bold;">
-                                        <th colspan="7">A. Belanja Barang</th>
-                                    </tr> -->
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    // $dt1 = mysqli_query($conn, "SELECT * FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' ");
-                                    // $dt2 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(total) AS tt FROM rab WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' "));
-                                    // $dt3 = mysqli_fetch_assoc(mysqli_query($conn, "SELECT SUM(nominal) AS tt FROM realis WHERE jenis = '$jenis' AND lembaga = '$kode' AND tahun = '$tahun_ajaran' GROUP BY kode "));
-                                    $no = 1;
-                                    foreach ($rabA as $r1) {
-                                        $kd = $r1->kode;
-                                        $rs = $this->db->query("SELECT IFNULL(SUM(nominal),0) as nom FROM realis WHERE kode = '$kd' ")->row();
-                                        $sisa = $r1->total - $rs->nom;
-                                        $prc = round(($rs->nom / $r1->total) * 100, 0);
-                                        if ($prc >= 0 && $prc <= 25) {
-                                            $bg = 'bg-success';
-                                        } elseif ($prc >= 26 && $prc <= 50) {
-                                            $bg = 'bg-info';
-                                        } elseif ($prc >= 51 && $prc <= 75) {
-                                            $bg = 'bg-warning';
-                                        } elseif ($prc >= 76 && $prc <= 100) {
-                                            $bg = 'bg-danger';
-                                        }
-                                    ?>
-                                        <tr>
-                                            <td><?= $no++; ?></td>
-                                            <td><a href="<?= base_url('lembaga/cekRealis/' . $r1->kode) ?>"><?= $r1->kode ?></a>
-                                            </td>
-                                            <td><?= $r1->nama ?></td>
-                                            <td><?= bulan($r1->rencana) ?></td>
-                                            <td><?= $r1->jenis ?></td>
-                                            <td><?= rupiah($r1->total) ?></td>
-                                            <td><?= rupiah($rs->nom) ?></td>
-                                            <td><?= rupiah($sisa) ?></td>
-                                            <td>
-                                                <div class="progress">
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated <?= $bg ?>" role="progressbar" style="width: <?= $prc ?>%" aria-valuenow="<?= $prc ?>" aria-valuemin="0" aria-valuemax="100">
-                                                        <?= $prc ?>%</div>
-                                                </div>
-                                            </td>
+                                <table id="example2" class="table table-striped table-bordered">
+                                    <thead>
+                                        <tr style="color: white; background-color: #17A2B8; font-weight: bold;">
+                                            <th>No</th>
+                                            <th>Kode Pengajuan</th>
+                                            <th>Bulan Pengajuan</th>
+                                            <th>Kode Kegiatan</th>
+                                            <th>Status Pengajuan</th>
+                                            <th>Jumlah Realisasi</th>
+                                            <th>Aksi</th>
                                         </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $no = 1;
+                                        foreach ($pengajuan as $pj) {
+                                            $kd_pj = $pj->kode_pengajuan;
+                                            
+                                            // jumlah realisasi
+                                            $tblselect = $pj->cair == 1 ? 'realis' : 'real_sm';
+                                            $nom = $this->db->query("SELECT SUM(nominal) as total FROM $tblselect WHERE kode_pengajuan = '$kd_pj'")->row('total');
+                                            
+                                            // get kode kegiatan (id_dppk) from realis_detail
+                                            $kegiatans = $this->db->query("SELECT DISTINCT kode_program FROM realis_detail rd JOIN $tblselect rs ON rd.id_detail = rs.id_realis WHERE rs.kode_pengajuan = '$kd_pj'")->result();
+                                            $kode_kegiatan_arr = [];
+                                            foreach($kegiatans as $kg) {
+                                                if (!empty($kg->kode_program)) {
+                                                    $kode_kegiatan_arr[] = $kg->kode_program;
+                                                }
+                                            }
+                                            $kode_kegiatan_str = !empty($kode_kegiatan_arr) ? implode(', ', $kode_kegiatan_arr) : '-';
+                                            
+                                            // status
+                                            if ($pj->cair == 1) {
+                                                $stts_badge = '<span class="badge bg-success">Cair</span>';
+                                            } else if ($pj->stts == 'yes') {
+                                                $stts_badge = '<span class="badge bg-primary">Diajukan</span>';
+                                            } else {
+                                                $stts_badge = '<span class="badge bg-warning text-dark">Belum Diajukan</span>';
+                                            }
+                                        ?>
+                                            <tr>
+                                                <td><?= $no++; ?></td>
+                                                <td><?= $kd_pj ?></td>
+                                                <td><?= (function_exists('bulan') ? bulan($pj->bulan) : $pj->bulan) . ' ' . $pj->tahun ?></td>
+                                                <td><?= $kode_kegiatan_str ?></td>
+                                                <td><?= $stts_badge ?></td>
+                                                <td><?= rupiah($nom ?? 0) ?></td>
+                                                <td>
+                                                    <a href="<?= base_url('lembaga/pengajuanDetail/' . $kd_pj) ?>" class="btn btn-sm btn-info text-white"><i class="bx bx-info-circle"></i> Detail</a>
+                                                </td>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
                         </div>
                     </div>
                 </div>

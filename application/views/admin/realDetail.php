@@ -122,7 +122,7 @@
                                     $no = 1;
                                     foreach ($rabA as $r1) {
                                         $kd = $r1->kode;
-                                        $rs = $this->db->query("SELECT IFNULL(SUM(nominal),0) as nom FROM realis WHERE kode = '$kd' ")->row();
+                                        $rs = $this->db->query("SELECT IFNULL(SUM(nominal),0) as nom FROM realis WHERE kode = '$kd' AND tahun = '$tahun' ")->row();
                                         $sisa = $r1->total - $rs->nom;
                                         $prc = round(($rs->nom / $r1->total) * 100, 0);
                                         if ($prc >= 0 && $prc <= 25) {

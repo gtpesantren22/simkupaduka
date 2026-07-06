@@ -98,11 +98,11 @@ if ($pesern >= 0 && $pesern <= 25) {
                                     <tr>
                                         <th>No</th>
                                         <th>Program</th>
-                                        <th>Rencana Waktu</th>
+                                        <th>Kegiatan</th>
+                                        <!-- <th>Rencana Waktu</th> -->
                                         <th>Total RAB</th>
-                                        <?php if ($user->level == 'admin') {
-                                            echo "<th>Sisa</th>";
-                                        } ?>
+                                        <th>Sisa</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -111,17 +111,19 @@ if ($pesern >= 0 && $pesern <= 25) {
                                     foreach ($program as $a) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><?= $a['program'] ?></td>
+                                            <td><?= $a['kode_program'] . '. ' . $a['program'] ?></td>
+                                            <td><?= $a['kegiatan'] ?></td>
                                             <!-- <td><?= bulan($a['bulan']) ?></td> -->
-                                            <td><?php
-                                                $input_bulan = array_map('intval', explode(',', $a['bulan']));
-                                                $output = array_map('bulan', $input_bulan);
-                                                echo implode(', ', $output);
-                                                ?></td>
+                                            <!-- <td><?php
+                                                        $input_bulan = array_map('intval', explode(',', $a['bulan']));
+                                                        $output = array_map('bulan', $input_bulan);
+                                                        echo implode(', ', $output);
+                                                        ?></td> -->
                                             <td><?= rupiah($a['total']) ?></td>
-                                            <?php if ($user->level == 'admin') {
-                                                echo '<td>' . rupiah($a['sisa']) . '</td>';
-                                            } ?>
+                                            <td><?= rupiah($a['sisa']) ?></td>
+                                            <td>
+                                                <a href="<?= base_url('rab/kegiatanDetail/' . $a['id_dppk']) ?>" class="btn btn-sm btn-info text-white"><i class="bx bx-info-circle"></i> Detail</a>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

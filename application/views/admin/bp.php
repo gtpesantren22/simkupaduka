@@ -28,7 +28,7 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                            <table id="table-bp-ajax" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -40,23 +40,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
-                                    $no = 1;
-                                    foreach ($bp as $a) : ?>
-                                        <tr>
-                                            <td><?= $no++ ?></td>
-                                            <td><?= $a->nama ?></td>
-                                            <td><?= $a->briva ?></td>
-                                            <td>Rp. <?= number_format($a->total, 0, '.', '.') ?></td>
-                                            <td><?= $a->tahun ?></td>
-                                            <td>
-                                                <!-- <a data-toggle="modal" data-target="#modal_edit<?= $a->id_tangg; ?>" href="#"><i class="fa fa-cog"></i> Edit</a> | -->
-                                                <a href="<?= base_url('admin/bpDetail/') . $a->id_tangg; ?>"><i class='bx bx-message-square-edit mr-1'></i></a> |
-                                                <a href="<?= base_url('admin/delBp/') . $a->id_tangg; ?>" class="tombol-hapus"><i class='bx bx-trash mr-1'></i></a>
-                                            </td>
-
-                                        </tr>
-                                    <?php endforeach; ?>
                                 </tbody>
                             </table>
                         </div>
@@ -76,22 +59,64 @@
                 <h5 class="modal-title" id="exampleModalLabel">Upload Biaya Pendidikan Baru</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open_multipart('admin/process_upload'); ?>
+            <?= form_open_multipart('admin/process_upload', ['id' => 'form-upload-bp']); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Pilih Berkas</label>
                     <input type="file" name="uploadFile" class="form-control" required>
-                    <small class="text-danger">* File yang diupload tidak merubah apapun dari tempalte yang di
-                        download</small>
                 </div>
-                <a href="<?= base_url('admin/downBpTmp'); ?>"><i class="bx bx-download"></i> Donload Template Format
-                    Upload Tanggungan Disini!</a>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Upload Tanggungan</button>
+                <button type="submit" id="btn-submit-upload" class="btn btn-primary">Upload Tanggungan</button>
             </div>
             <?= form_close(); ?>
         </div>
     </div>
 </div>
+
+<script>
+    window.addEventListener('load', function() {
+        $('#table-bp-ajax').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "<?= base_url('admin/bp_ajax') ?>",
+                "type": "POST"
+            },
+            "columns": [
+                { "data": "no", "orderable": false },
+                { "data": "nama" },
+                { "data": "briva" },
+                { "data": "nominal" },
+                { "data": "tahun" },
+                { "data": "aksi", "orderable": false }
+            ]
+        });
+
+        // SweetAlert confirm deletion event delegation
+        $(document).on('click', '.tombol-hapus', function(e) {
+            e.preventDefault();
+            const href = $(this).attr('href');
+            Swal.fire({
+                title: 'Apakah anda yakin?',
+                text: "data akan dihapus",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Hapus Data!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.location.href = href;
+                }
+            });
+        });
+
+        // Form upload loader
+        $('#form-upload-bp').on('submit', function() {
+            var btn = $('#btn-submit-upload');
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Mengupload...');
+        });
+    });
+</script>

@@ -206,25 +206,27 @@ class Kasir extends CI_Controller
             $this->model->delete('real_sm', 'id_realis', $id_pnj);
         }
 
-        $psn = '
-*INFORMASI PENCAIRAN PENGAJUAN*
+        $psn = '💵 *[PENCAIRAN PENGAJUAN]*
 
-Pencairan pengajuan dari :
-    
-Lembaga : ' . $lembaga->nama . '
-Kode Pengajuan : ' . $kd_pnj . '
-Pada : ' . $tgl_cair . '
-Nominal : ' . rupiah($jml->nom_serap) . '
-Penerima : ' . $penerima . '
+Informasi pencairan dana pengajuan sebagai berikut:
 
-*_telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : ' . $lembaga->nama . '
+🔖 *Kode Peng.*  : ' . $kd_pnj . '
+📅 *Tanggal*     : ' . $tgl_cair . '
+💰 *Nominal*     : ' . rupiah($jml->nom_serap) . '
+👤 *Penerima*    : ' . $penerima . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Dana telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
+
+Terima kasih.';
 
         if ($this->db->affected_rows() > 0) {
-            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // // kirim_person($this->apiKey, '082264061060', $psn);
-            // kirim_person($this->apiKey, '085236924510', $psn);
+            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+            kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pengajuan sudah dicairkan');
             redirect('kasir/cairProses/' . $kd_pnj);
@@ -340,16 +342,73 @@ Terimakasih';
         $data['tahun'] = $this->tahun;
         $data['bulan'] = $this->bulan;
 
-        $data['data'] = $this->model->getByJoin('tangg', 'tb_santri', 'nis', 'nis', 'tangg.tahun', $this->tahun)->result();
+        $data['data'] = $this->db->select('tb_santri.nama, tb_santri.nis, tanggungan.briva, SUM(tanggungan.nominal) AS total, tanggungan.tahun, tanggungan.nis AS id_tangg')
+            ->from('tanggungan')
+            ->join('tb_santri', 'tanggungan.nis = tb_santri.nis')
+            ->where('tanggungan.tahun', $this->tahun)
+            ->group_by(['tanggungan.nis', 'tb_santri.nama', 'tanggungan.briva', 'tanggungan.tahun'])
+            ->get()
+            ->result();
 
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/tanggungan', $data);
         $this->load->view('kasir/foot');
     }
 
-    public function delTanggungan($id)
+    public function santri_ajax()
     {
-        $this->model->delete('tanggungan', 'id_tanggungan', $id);
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = isset($this->input->post('search')['value']) ? $this->input->post('search')['value'] : '';
+
+        $length = $length > 0 ? $length : 10;
+        $start = $start >= 0 ? $start : 0;
+
+        $this->db->select('nis, nama, k_formal, t_formal, k_madin, r_madin');
+        $this->db->from('tb_santri');
+
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('nis', $search_value);
+            $this->db->or_like('nama', $search_value);
+            $this->db->or_like('t_formal', $search_value);
+            $this->db->group_end();
+        }
+
+        $total_records = $this->db->count_all_results('', false);
+
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = [];
+
+        foreach ($query->result() as $row) {
+            $data[] = [
+                'nis' => $row->nis,
+                'nama' => $row->nama,
+                'kelas' => $row->k_formal . ' ' . $row->t_formal,
+                'madin' => $row->k_madin . ' ' . $row->r_madin,
+                'action' => '<a href="' . base_url('kasir/discrb/' . $row->nis) . '" class="btn btn-primary btn-sm">Pilih</a>'
+            ];
+        }
+
+        $output = [
+            "draw" => $draw,
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_records,
+            "data" => $data
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode($output);
+    }
+
+    public function delTanggungan($nis)
+    {
+        $this->db->where('nis', $nis);
+        $this->db->where('tahun', $this->tahun);
+        $this->db->delete('tanggungan');
+
         if ($this->db->affected_rows() > 0) {
             $this->session->set_flashdata('ok', 'Tanggungan berhasil dihapus');
             redirect('kasir/tanggungan');
@@ -387,13 +446,50 @@ Terimakasih';
         $data['bulan'] = $this->bulan;
 
         $data['sn'] = $this->model->getBy('tb_santri', 'nis', $nis)->row();
-        $data['tgn'] = $this->model->getBy2('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
-        $data['masuk'] = $this->db->query("SELECT SUM(nominal) AS jml FROM pembayaran WHERE nis = '$nis' AND tahun = '$this->tahun' GROUP BY nis ")->row();
+
+        // Get total tanggungan sum for this student
+        $tgn_row = $this->db->select('SUM(nominal) AS total')
+            ->from('tanggungan')
+            ->where('nis', $nis)
+            ->where('tahun', $this->tahun)
+            ->get()
+            ->row();
+        if (!$tgn_row) {
+            $tgn_row = (object)['total' => 0];
+        }
+        $data['tgn'] = $tgn_row;
+
+        // Get total pembayaran sum for this student
+        $masuk_row = $this->db->select('SUM(nominal) AS jml')
+            ->from('pembayaran')
+            ->where('nis', $nis)
+            ->where('tahun', $this->tahun)
+            ->get()
+            ->row();
+        if (!$masuk_row) {
+            $masuk_row = (object)['jml' => 0];
+        }
+        if (empty($masuk_row->jml)) {
+            $masuk_row->jml = 0;
+        }
+        $data['masuk'] = $masuk_row;
+
         $data['bayar'] = $this->model->getBy2('pembayaran', 'nis', $nis, 'tahun', $this->tahun)->result();
+
+        // Get monthly breakdown map from tanggungan
+        $tanggungan_list = $this->db->get_where('tanggungan', [
+            'nis' => $nis,
+            'tahun' => $this->tahun
+        ])->result();
+
+        $tanggungan_map = [];
+        foreach ($tanggungan_list as $t) {
+            $tanggungan_map[$t->bulan] = $t->nominal;
+        }
+        $data['months_map'] = $tanggungan_map;
 
         $data['tmpKos'] = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum");
         $data['kter'] = ["Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti"];
-
 
         $this->load->view('kasir/head', $data);
         $this->load->view('kasir/discrb', $data);
@@ -406,20 +502,18 @@ Terimakasih';
 
         $nominal = rmRp($this->input->post('nominal', true));
         $tgl = $this->input->post('tgl', true);
-        $kasir = $user->nama;
+        $kasir = $user ? $user->nama : 'Testing';
         $nama = $this->input->post('nama', true);
         $nis = $this->input->post('nis', true);
         $tahun = $this->tahun;
-        $dekos = $this->input->post('dekos', true);
         $bulan_bayar = $this->input->post('bulan', true);
 
         $dp = $this->model->getBy('tb_santri', 'nis', $nis)->row();
-        $dpBr = $this->model->getBy2('tangg', 'nis', $nis, 'tahun', $this->tahun)->row();
+        $dpBr = $this->db->get_where('tanggungan', ['nis' => $nis, 'tahun' => $this->tahun])->row();
+        $briva_code = $dpBr ? $dpBr->briva : '-';
 
-        $by = $nominal + $this->input->post('masuk', true);
-        $ttl = $this->input->post('ttl', true);
-        $alm = $dp->desa . '-' . $dp->kec . '-' . $dp->kab;
-        $hpNo = $dp->hp;
+        $alm = $dp ? ($dp->desa . '-' . $dp->kec . '-' . $dp->kab) : '-';
+        $hpNo = $dp ? $dp->hp : '';
         $hpNo2 = '085236924510';
 
         $data = [
@@ -431,23 +525,13 @@ Terimakasih';
             'tahun' => $tahun,
             'kasir' => $kasir,
         ];
-        $data2 = [
-            'nis' => $nis,
-            'nominal' => 300000,
-            'bulan' => $bulan_bayar,
-            'tahun' => $tahun,
-            'tgl' => $tgl,
-            'penerima' => $kasir,
-            'stts' => 1,
-            'waktu' => date('Y-m-d H:i'),
-        ];
 
         $pesan = '
 *KWITANSI PEMBAYARAN ELEKTRONIK*
 *PP DARUL LUGHAH WAL KAROMAH*
 Bendahara Pondok Pesantren Darul Lughah Wal Karomah telah menerima pembayaran BP dari wali santri berikut :
     
-No. BRIVA : *' . $dpBr->briva . '*
+No. BRIVA : *' . $briva_code . '*
 Nama : *' . $nama . '*
 Alamat : *' . $alm . '* 
 Nominal Pembayaran: *' . rupiah($nominal) . '*
@@ -461,40 +545,41 @@ Bukti Penerimaan ini *DISIMPAN* oleh wali santri sebagai bukti pembayaran Biaya 
 
 Terimakasih';
 
-        if ($by > $ttl) {
-            $this->session->set_flashdata('error', 'Maaf pembayaran melebihi');
+        // Check student billing for this specific month
+        $tanggungan_row = $this->db->get_where('tanggungan', [
+            'nis' => $nis,
+            'bulan' => $bulan_bayar,
+            'tahun' => $tahun
+        ])->row();
+        $billing_amount = $tanggungan_row ? floatval($tanggungan_row->nominal) : 0;
+
+        // Check total payment amount already paid for this month
+        $paid_row = $this->db->select('SUM(nominal) AS total_paid')
+            ->from('pembayaran')
+            ->where([
+                'nis' => $nis,
+                'bulan' => $bulan_bayar,
+                'tahun' => $tahun
+            ])
+            ->get()
+            ->row();
+        $already_paid = $paid_row ? floatval($paid_row->total_paid) : 0;
+
+        $max_allowed = $billing_amount - $already_paid;
+
+        if ($nominal > $max_allowed) {
+            $this->session->set_flashdata('error', 'Maaf pembayaran melebihi! Sisa tanggungan bulan ini adalah ' . rupiah($max_allowed));
             redirect('kasir/discrb/' . $nis);
         } else {
-            $cek = $this->db->query("SELECT * FROM pembayaran WHERE nis = '$nis' AND bulan = '$bulan_bayar' AND tahun = '$tahun' ")->num_rows();
-            if ($cek < 1) {
-                if ($dekos == 'Y') {
-                    $this->model->inputDb2('kos', $data2);
-                    $this->model->input('pembayaran', $data);
+            $this->model->input('pembayaran', $data);
 
-                    if ($this->db->affected_rows() > 0) {
-                        // kirim_person($this->apiKey, $hpNo, $pesan);
-                        // kirim_person($this->apiKey, $hpNo2, $pesan);
-                        $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
-                        redirect('kasir/discrb/' . $nis);
-                    } else {
-                        $this->session->set_flashdata('error', 'Tanggungan tidak berhasil diinput');
-                        redirect('kasir/discrb/' . $nis);
-                    }
-                } else {
-                    $this->model->input('pembayaran', $data);
-
-                    if ($this->db->affected_rows() > 0) {
-                        // kirim_person($this->apiKey, $hpNo, $pesan);
-                        // kirim_person($this->apiKey, $hpNo2, $pesan);
-                        $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
-                        redirect('kasir/discrb/' . $nis);
-                    } else {
-                        $this->session->set_flashdata('error', 'Tanggungan tidak berhasil diinput');
-                        redirect('kasir/discrb/' . $nis);
-                    }
-                }
+            if ($this->db->affected_rows() > 0) {
+                // kirim_person($this->apiKey, $hpNo, $pesan);
+                // kirim_person($this->apiKey, $hpNo2, $pesan);
+                $this->session->set_flashdata('ok', 'Tanggungan berhasil diinput');
+                redirect('kasir/discrb/' . $nis);
             } else {
-                $this->session->set_flashdata('error', 'Maaf pembayaran ini bulan ini sudah ada');
+                $this->session->set_flashdata('error', 'Tanggungan tidak berhasil diinput');
                 redirect('kasir/discrb/' . $nis);
             }
         }
@@ -815,17 +900,20 @@ Terimakasih';
         $this->model->updateDb3('mutasi', ['status' => 1], 'nis', $mutasi->nis);
         $this->model->updateDb4('mutasi', ['status' => 1], 'nis', $mutasi->nis);
         $hpNo = '085236924510';
-        $psn = '*INFORMASI MUTASI*
+        $psn = '✅ *[VERIFIKASI MUTASI - SURAT BERHENTI]*
 
-*PENERBITAN SURAT BERHENTI*
-    
-Nama : ' . $dts->nama . '
-Alamat : ' . $dts->desa . '-' . $dts->kec . '-' . $dts->kab . '
-Sekolah : ' . $dts->k_formal . ' ' . $dts->t_formal . '
-Tgl Mutasi : ' .  $mutasi->tgl_mutasi . '
+Informasi verifikasi mutasi santri sebagai berikut:
 
-*_telah diverifikasi oleh BENDAHARA PESANTREN. Untuk selanjutnya surat mutasi sudah bisa diterbitkan oleh SEKRETARIAT_*
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+👤 *Nama*       : ' . $dts->nama . '
+📍 *Alamat*     : ' . $dts->desa . ', ' . $dts->kec . ', ' . $dts->kab . '
+🏫 *Sekolah*    : ' . $dts->k_formal . ' ' . $dts->t_formal . '
+📅 *Tgl Mutasi* : ' . $mutasi->tgl_mutasi . '
+━━━━━━━━━━━━━━━━━━━━
+
+_*Telah diverifikasi oleh Bendahara Pesantren. Surat mutasi selanjutnya dapat diterbitkan oleh Sekretariat._*
+
+Terima kasih.';
 
         if ($this->db->affected_rows() > 0) {
             kirim_group($this->apiKey, '120363028015516743@g.us', $psn);
@@ -1491,17 +1579,32 @@ _Jika sudah melakukan pelunasan abaikan pesan ini_';
         $data['bulan_cal'] = $this->bulan;
 
         for ($i = 1; $i <= 12; $i++) {
-            $i !== 5 && $i !== 6 ? $field = 'ju_ap' : $field = 'me_ju';
+            $tangg_perbulan = $this->db->select('SUM(nominal) AS jml')
+                ->from('tanggungan')
+                ->where('tahun', $this->tahun)
+                ->where('bulan', $i)
+                ->get()
+                ->row();
 
-            $tangg_perbulan = $this->model->getBySum('tangg', 'tahun', $this->tahun, $field)->row();
             $bayar_perbulan = $this->model->getBySum2('pembayaran', 'tahun', $this->tahun, 'bulan', $i, 'nominal')->row();
+
+            $tangg_jml = !empty($tangg_perbulan->jml) ? floatval($tangg_perbulan->jml) : 0;
+            $bayar_jml = !empty($bayar_perbulan->jml) ? floatval($bayar_perbulan->jml) : 0;
+
+            $bayar_prsn = 0;
+            $kurang_prsn = 0;
+            if ($tangg_jml > 0) {
+                $bayar_prsn = ($bayar_jml / $tangg_jml) * 100;
+                $kurang_prsn = (($tangg_jml - $bayar_jml) / $tangg_jml) * 100;
+            }
+
             $jml_tangg[] = array(
                 'bulan' => $i,
-                'tangg' => $tangg_perbulan->jml,
-                'bayar' => $bayar_perbulan->jml,
-                'bayar_prsn' => $bayar_perbulan->jml / $tangg_perbulan->jml * 100,
-                'kurang' => $tangg_perbulan->jml - $bayar_perbulan->jml,
-                'kurang_prsn' => ($tangg_perbulan->jml - $bayar_perbulan->jml) / $tangg_perbulan->jml * 100,
+                'tangg' => $tangg_jml,
+                'bayar' => $bayar_jml,
+                'bayar_prsn' => $bayar_prsn,
+                'kurang' => $tangg_jml - $bayar_jml,
+                'kurang_prsn' => $kurang_prsn,
             );
         }
 
@@ -1780,29 +1883,31 @@ Bendahara PPDWK
         $dataPj = $this->model->getBy('sarpras', 'kode_pengajuan', $kd_pnj)->row();
         $dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM sarpras_detail WHERE kode_pengajuan = '$kd_pnj' ")->row();
 
-        $psn = '*INFORMASI PENCAIRAN PENGAJUAN SARPRAS*
+        $psn = '💵 *[PENCAIRAN PENGAJUAN SARPRAS]*
 
-pengajuan dari :
-    
-Lembaga : Biro Umum - Sarpras
-Kode Pengajuan : ' . $kd_pnj . '
-Nominal : _*' . rupiah($dataSum->jml) . '*_
-Penerima : ' . $penerima . '
-*telah dicairkan pada ' . $tgl_cair . '*
+Informasi pencairan dana pengajuan sarpras sebagai berikut:
 
-*_dimohon kepada KPA untuk menyelesaikan SPJ untuk melakukan pengajuan berikutnya_*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : Biro Umum - Sarpras
+🔖 *Kode Peng.*  : ' . $kd_pnj . '
+💰 *Nominal*     : ' . rupiah($dataSum->jml) . '
+👤 *Penerima*    : ' . $penerima . '
+📅 *Tgl Cair*    : ' . $tgl_cair . '
+━━━━━━━━━━━━━━━━━━━━
 
-Terimakasih';
+_*Dana telah dicairkan. Dimohon kepada KPA untuk segera menyelesaikan SPJ sebelum melakukan pengajuan berikutnya._*
+
+Terima kasih.';
 
         $data = ['status' => 'dicairkan'];
 
         $this->model->update('sarpras', $data, 'kode_pengajuan', $kd_pnj);
 
         if ($this->db->affected_rows() > 0) {
-            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // // kirim_person($this->apiKey, '085235583647', $psn);
-            // kirim_person($this->apiKey, '085236924510', $psn);
+            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+            kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pencairan Pengajuan berhasil');
             redirect('kasir/sarpras');
@@ -2343,18 +2448,21 @@ Terimakasih';
             $rt = '';
         }
 
-        $psn = '*INFORMASI VERIFIKASI BERKAS SPJ* ' . $rt . '
+        $psn = '✅ *[VERIFIKASI BERKAS SPJ]* ' . $rt . '
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : ' . $lmb->nama . '
-Kode Pengajuan : ' . $kode . '
-Pada : ' . date('d-m-Y H:i:s') . '
+Informasi pelaporan SPJ dari lembaga sebagai berikut:
 
-*_Hard copy SPJ dan sisa belanja anggaran telah disetor kepada KASIR. Untuk pengajuan berikutnya sudah bisa dilakukan._*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : ' . $lmb->nama . '
+🔖 *Kode Peng.*  : ' . $kode . '
+📅 *Waktu*       : ' . date('d-m-Y H:i:s') . '
+━━━━━━━━━━━━━━━━━━━━
 
-Terimakasih
-https://simkupaduka.ppdwk.com/';
+_*Hard copy SPJ dan sisa belanja anggaran telah disetor kepada KASIR. Untuk pengajuan berikutnya sudah bisa dilakukan._*
+
+🔗 https://simkupaduka.ppdwk.com
+
+Terima kasih.';
 
         $data1 = ['stts' => '3'];
         $data2 = ['spj' => '3'];
@@ -2366,10 +2474,11 @@ https://simkupaduka.ppdwk.com/';
             $this->model->update('spj', $data1, 'kode_pengajuan', $kode);
             $this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
-            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
             // // kirim_person($this->apiKey, $hp, $psn);
-            // kirim_person($this->apiKey, '085236924510', $psn);
+
+            kirim_person($this->apiKey, '085236924510', $psn);
             $this->session->set_flashdata('ok', 'Update data sukses');
             redirect('kasir/sisa');
         } else {
@@ -2419,7 +2528,7 @@ https://simkupaduka.ppdwk.com/';
         $result = $this->model->input('rekom', $data);
 
         if ($result) {
-            echo "Data berhasil ditambahkan." ;
+            echo "Data berhasil ditambahkan.";
         } else {
             echo "Terjadi kesalahan saat menambahkan data.";
         }
@@ -2570,29 +2679,31 @@ https://simkupaduka.ppdwk.com/';
         $dataPj = $this->model->getBy('haflah', 'kode_pengajuan', $kd_pnj)->row();
         $dataSum = $this->db->query("SELECT SUM(qty * harga_satuan) AS jml FROM haflah_detail WHERE kode_pengajuan = '$kd_pnj' ")->row();
 
-        $psn = '*INFORMASI PENCAIRAN PENGAJUAN HAFLAH*
+        $psn = '💵 *[PENCAIRAN PENGAJUAN HAFLAH]*
 
-pengajuan dari :
-    
-Lembaga : Haflah Pesantren
-Kode Pengajuan : ' . $kd_pnj . '
-Nominal : _*' . rupiah($dataSum->jml) . '*_
-Penerima : ' . $penerima . '
-*telah dicairkan pada ' . $tgl_cair . '*
+Informasi pencairan dana pengajuan haflah sebagai berikut:
 
-*_dimohon kepada KPA untuk menyelesaikan SPJ untuk melakukan pengajuan berikutnya_*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*     : Haflah Pesantren
+🔖 *Kode Peng.*  : ' . $kd_pnj . '
+💰 *Nominal*     : ' . rupiah($dataSum->jml) . '
+👤 *Penerima*    : ' . $penerima . '
+📅 *Tgl Cair*    : ' . $tgl_cair . '
+━━━━━━━━━━━━━━━━━━━━
 
-Terimakasih';
+_*Dana telah dicairkan. Dimohon kepada KPA untuk segera menyelesaikan SPJ sebelum melakukan pengajuan berikutnya._*
+
+Terima kasih.';
 
         $data = ['status' => 'dicairkan'];
 
         $this->model->update('haflah', $data, 'kode_pengajuan', $kd_pnj);
 
         if ($this->db->affected_rows() > 0) {
-            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-            // // kirim_person($this->apiKey, '085235583647', $psn);
-            // kirim_person($this->apiKey, '085236924510', $psn);
+            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+            kirim_person($this->apiKey, '085236924510', $psn);
 
             $this->session->set_flashdata('ok', 'Pencairan Pengajuan berhasil');
             redirect('kasir/haflah');
@@ -2673,13 +2784,17 @@ Terimakasih';
             'last' => date('Y-m-d H:i:s')
         ];
 
-        $psn = '*Update Saldo Cash Pesantren*
+        $psn = '💵 *[UPDATE SALDO CASH PESANTREN]*
 
-Nominal : RP. ' . $this->input->post('nominal', true) . '
-Tgl Update : ' . date('Y-m-d H:i:s') . '
-Updater : ' . $this->user . '
+Informasi pembaruan saldo cash pesantren sebagai berikut:
 
-*Terimkasih*';
+━━━━━━━━━━━━━━━━━━━━
+💰 *Nominal*    : Rp. ' . $this->input->post('nominal', true) . '
+📅 *Tgl Update* : ' . date('d-m-Y H:i:s') . '
+👤 *Updater*    : ' . $this->user . '
+━━━━━━━━━━━━━━━━━━━━
+
+Terima kasih.';
 
         $this->model->update('saldo', $saldo, 'name', 'cash', 'tahun', $this->tahun);
         if ($this->db->affected_rows() > 0) {

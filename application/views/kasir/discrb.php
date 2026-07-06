@@ -13,6 +13,11 @@
                     </ol>
                 </nav>
             </div>
+            <div class="ms-auto">
+                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalCariSantri">
+                    <i class="bx bx-search"></i> Cari Santri
+                </button>
+            </div>
         </div>
         <!--end breadcrumb-->
         <div class="row">
@@ -54,11 +59,11 @@
                                         </tr>
                                         <tr>
                                             <th>Tempat Kos</th>
-                                            <th>: <?= $tmpKos[$sn->t_kos] ?></th>
+                                            <th>: <?= isset($tmpKos[$sn->t_kos]) ? $tmpKos[$sn->t_kos] : ($sn->t_kos ?? '-') ?></th>
                                         </tr>
                                         <tr>
                                             <th>Keterangan</th>
-                                            <th>: <?= $kter[$sn->ket] ?></th>
+                                            <th>: <?= isset($kter[$sn->ket]) ? $kter[$sn->ket] : ($sn->ket ?? '-') ?></th>
                                         </tr>
                                     </table>
                                 </div>
@@ -71,7 +76,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <div>
                                                         <p class="mb-0 text-secondary">Tanggungan</p>
-                                                        <h4 class="my-1 text-info"><?= rupiah($tgn->total) ?></h4>
+                                                        <h4 class="my-1 text-info"><?= rupiah($tgn->total ?? 0) ?></h4>
                                                         <p class="mb-0 font-13">Jumlah Tanggunagn dalam 1 tahun</p>
                                                     </div>
                                                     <div class="widgets-icons-2 rounded-circle bg-gradient-scooter text-white ms-auto">
@@ -88,7 +93,7 @@
                                                     <div>
                                                         <p class="mb-0 text-secondary">Belum Bayar</p>
                                                         <h4 class="my-1 text-danger">
-                                                            <?= rupiah($tgn->total - $masuk->jml) ?></h4>
+                                                            <?= rupiah(($tgn->total ?? 0) - ($masuk->jml ?? 0)) ?></h4>
                                                         <p class="mb-0 font-13">Sisa tanggungan yang belum lunas</p>
                                                     </div>
                                                     <div class="widgets-icons-2 rounded-circle bg-gradient-bloody text-white ms-auto">
@@ -104,7 +109,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <div>
                                                         <p class="mb-0 text-secondary">Pembayaran</p>
-                                                        <h4 class="my-1 text-success"><?= rupiah($masuk->jml) ?></h4>
+                                                        <h4 class="my-1 text-success"><?= rupiah($masuk->jml ?? 0) ?></h4>
                                                         <p class="mb-0 font-13">Jumlah yang sudah dibayar</p>
                                                     </div>
                                                     <div class="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
@@ -121,12 +126,7 @@
                                     <table class="table table-striped">
                                         <?php
                                         for ($i = 1; $i <= 12; $i++) {
-                                            $tnn = $tgn->ju_ap;
-                                            if ($i == 6) {
-                                                $tnnOk = $tgn->me_ju;
-                                            } else {
-                                                $tnnOk = $tnn;
-                                            }
+                                            $tnnOk = isset($months_map[$i]) ? $months_map[$i] : 0;
                                         ?>
                                             <tr>
                                                 <th><?= $bulan[$i]; ?></th>
@@ -176,8 +176,8 @@
                                 <form action="<?= base_url('kasir/addbayar') ?>" method="POST">
                                     <input type="hidden" name="nis" value="<?= $sn->nis; ?>">
                                     <input type="hidden" name="nama" value="<?= $sn->nama; ?>">
-                                    <input type="hidden" name="ttl" value="<?= $tgn->total; ?>">
-                                    <input type="hidden" name="masuk" value="<?= $masuk->jml; ?>">
+                                    <input type="hidden" name="ttl" value="<?= $tgn->total ?? 0; ?>">
+                                    <input type="hidden" name="masuk" value="<?= $masuk->jml ?? 0; ?>">
                                     <div class="box-body">
                                         <div class="form-group mb-2">
                                             <label for="exampleInputEmail1">Nominal Pembyaran</label>
@@ -187,21 +187,30 @@
                                             <label for="exampleInputPassword1">Tanggal</label>
                                             <input type="text" id="date" name="tgl" class="form-control form-control-sm" id="exampleInputPassword1" placeholder="Password" required>
                                         </div>
-                                        <div class="form-group mb-2">
-                                            <label for="exampleInputPassword1">Dekosan</label><br>
-                                            <input type="radio" name="dekos" value="Y" required> Ya
-                                            <input type="radio" name="dekos" value="T" required> Tidak
-                                        </div>
-                                        <div class="form-group mb-2">
-                                            <label for="exampleInputPassword1">Bulan Dekosan</label>
-                                            <select name="bulan" class="form-control form-control-sm">
-                                                <option value=""> -pilih bulan- </option>
-                                                <?php
-                                                for ($i = 1; $i <= 12; $i++) { ?>
-                                                    <option value="<?= $i; ?>"><?= $bulan[$i]; ?></option>
-                                                <?php } ?>
-                                            </select>
-                                        </div>
+                                         <div class="form-group mb-2">
+                                             <label for="exampleInputPassword1">Bulan Tanggungan BP</label>
+                                             <select name="bulan" class="form-control form-control-sm" required>
+                                                 <option value=""> -pilih bulan tanggungan- </option>
+                                                 <?php
+                                                 $months_list = [
+                                                     7 => 'Juli',
+                                                     8 => 'Agustus',
+                                                     9 => 'September',
+                                                     10 => 'Oktober',
+                                                     11 => 'November',
+                                                     12 => 'Desember',
+                                                     1 => 'Januari',
+                                                     2 => 'Februari',
+                                                     3 => 'Maret',
+                                                     4 => 'April',
+                                                     5 => 'Mei',
+                                                     6 => 'Juni'
+                                                 ];
+                                                 foreach ($months_list as $num => $name) { ?>
+                                                     <option value="<?= $num; ?>"><?= $name; ?></option>
+                                                 <?php } ?>
+                                             </select>
+                                         </div>
                                         <div class="form-group mb-2">
                                             <button type="submit" class="btn btn-primary btn-sm"><i class="bx bx-save"></i> Simpan</button>
                                         </div>
@@ -218,3 +227,57 @@
     </div>
 </div>
 <!--end page wrapper -->
+
+<!-- Modal Cari Santri -->
+<div class="modal fade" id="modalCariSantri" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cari Data Santri</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="table-cari-santri" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>NIS</th>
+                                <th>Nama</th>
+                                <th>Formal</th>
+                                <th>Madin</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var tableCari = $('#table-cari-santri').DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            "url": "<?= base_url('kasir/santri_ajax') ?>",
+            "type": "POST"
+        },
+        "columns": [
+            { "data": "nis" },
+            { "data": "nama" },
+            { "data": "kelas" },
+            { "data": "madin" },
+            { "data": "action", "orderable": false }
+        ]
+    });
+
+    // Re-draw table when modal is shown to fix alignment
+    $('#modalCariSantri').on('shown.bs.modal', function () {
+        tableCari.columns.adjust().draw();
+    });
+});
+</script>

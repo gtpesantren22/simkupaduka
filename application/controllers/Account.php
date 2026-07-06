@@ -293,7 +293,7 @@ class Account extends CI_Controller
 		// $data['data'] = $this->model->getBy2('rab', 'lembaga', $kode, 'tahun', $this->tahun)->result();
 		$data['data'] = $this->db->query("SELECT rab.*, rab_sm24.kegiatan, dppk.program FROM rab JOIN rab_sm24 ON rab.kode=rab_sm24.kode JOIN dppk ON rab_sm24.kode_pak=dppk.id_dppk WHERE rab.lembaga = '$kode' AND rab.tahun = '$this->tahun' ")->result();
 
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $kode)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $kode, 'tahun', $this->tahun)->row();
 
 		// $data['sumA'] = $this->model->getTotalRabJenis('A', $kode, $this->tahun)->row();
 		// $data['sumB'] = $this->model->getTotalRabJenis('B', $kode, $this->tahun)->row();
@@ -347,7 +347,7 @@ class Account extends CI_Controller
 			$this->session->set_flashdata('error', 'Maaf. RAB ini sudah atau sedang diajukan');
 			redirect('account/rabDetail/' . $data->lembaga);
 		} else {
-			$this->model->delete('rab', $id);
+			$this->model->delete('rab', 'id_rab', $id);
 			if ($this->db->affected_rows() > 0) {
 				$this->session->set_flashdata('ok', 'Item RAB berhasil dihapus');
 				redirect('account/rabDetail/' . $data->lembaga);
@@ -487,26 +487,30 @@ class Account extends CI_Controller
 
 		$data2 = ['status' => 'ditolak'];
 
-		$psn = '*INFORMASI PENOLAKAN PAK*
+		$psn = '⚠️ *[PENOLAKAN PENGAJUAN PAK]*
 
-pengajuan dari :
-    
-Lembaga : ' . $lembaga . '
-Kode PAK : ' . $kode . '
-*DITOLAK Oleh Sub Bagian Accounting pada ' . $tgl . '*
-dengan catatan : _*' . $pesan . '*_
+Pengajuan PAK berikut telah ditolak oleh Sub Bagian Accounting:
 
-*_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada di https://simkupaduka.ppdwk.com/_*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lembaga . '
+🔖 *Kode PAK*  : ' . $kode . '
+📅 *Tanggal*   : ' . $tgl . '
+━━━━━━━━━━━━━━━━━━━━
+📝 *Catatan*:
+_*"' . $pesan . '"*_
 
-Terimakasih';
+Dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai catatan di atas melalui link berikut:
+🔗 https://simkupaduka.ppdwk.com
+
+Terima kasih.';
 
 		$this->model->update('pak', $data2, 'kode_pak', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil ditolak');
 			redirect('account/pakDetail/' . $kode);
@@ -525,25 +529,28 @@ Terimakasih';
 
 		$data2 = ['status' => 'disetujui'];
 
-		$psn = '*INFORMASI PERSETUJUAN PAK*
+		$psn = '✅ *[PERSETUJUAN PENGAJUAN PAK]*
 
-pengajuan dari :
-    
-Lembaga : ' . $lembaga->nama . '
-Kode PAK : ' . $kode . '
-*DISETUJUI Oleh Sub Bagian Accounting pada ' . $tgl . '*
+Pengajuan PAK berikut telah disetujui oleh Sub Bagian Accounting:
 
-*_PAK akan segera di Upload oleh Bendahara. Selanjutnya RAB baru akan bisa digunakan_*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lembaga->nama . '
+🔖 *Kode PAK*  : ' . $kode . '
+📅 *Tanggal*   : ' . $tgl . '
+━━━━━━━━━━━━━━━━━━━━
 
-Terimakasih';
+ℹ️ *Status Selanjutnya*:
+_PAK akan segera diunggah oleh Bendahara. Selanjutnya RAB baru dapat digunakan._
+
+Terima kasih.';
 
 		$this->model->update('pak', $data2, 'kode_pak', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan PAK berhasil disetujui');
 			redirect('account/pakDetail/' . $kode);
@@ -571,7 +578,7 @@ Terimakasih';
 	{
 		$data['data'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
 		$data['tahun_ajaran'] = $this->tahun;
-		$data['lembaga'] = $this->model->getBy('lembaga', 'kode', $lembaga)->row();
+		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $lembaga, 'tahun', $this->tahun)->row();
 
 		$data['totalRab'] = $this->model->getBySum2('rab', 'lembaga', $lembaga, 'tahun', $this->tahun, 'total')->row();
 		$data['totalReal'] = $this->model->getBySum2('realis', 'lembaga', $lembaga, 'tahun', $this->tahun, 'nominal')->row();
@@ -609,11 +616,11 @@ Terimakasih';
 
 	public function cekRealis($kode)
 	{
-		$data['rab'] = $this->model->getBy('rab', 'kode', $kode)->row();
+		$data['rab'] = $this->model->getBy2('rab', 'kode', $kode, 'tahun', $this->tahun)->row();
 		$data['lem'] = $this->model->getBy2('lembaga', 'kode', $data['rab']->lembaga, 'tahun', $this->tahun)->row();
 		$data['tahun_ajaran'] = $this->tahun;
-		$data['rel'] = $this->model->getBySum('realis', 'kode', $kode, 'nominal')->row();
-		$data['relData'] = $this->model->getBy('realis', 'kode', $kode)->result();
+		$data['rel'] = $this->model->getBySum2('realis', 'kode', $kode, 'tahun', $this->tahun, 'nominal')->row();
+		$data['relData'] = $this->model->getBy2('realis', 'kode', $kode, 'tahun', $this->tahun)->result();
 		$data['user'] = $this->Auth_model->current_user();
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
@@ -688,11 +695,19 @@ Terimakasih';
 
 		$data_all = [];
 		foreach ($data_cek as $dts) {
-			$kode_rinci = explode('-', $dts->kode);
-			$program = $this->model->getBy2('dppk', 'id_dppk', $kode_rinci[1], 'tahun', $this->tahun)->row();
-			$coa = $this->model->getBy2('coa', 'kode', $kode_rinci[2], 'tahun', $this->tahun)->row();
-			$ssh = $this->model->getBy('ssh', 'kode', $kode_rinci[3])->row();
 			$rlsdtl = $this->model->getBy('realis_detail', 'id_detail', $dts->id_realis)->row();
+
+			$delimiter = (strpos($dts->kode, '-') !== false) ? '-' : '_';
+			$kode_rinci = explode($delimiter, $dts->kode);
+
+			$prog_id = ($rlsdtl && $rlsdtl->kode_program) ? $rlsdtl->kode_program : (isset($kode_rinci[1]) ? $kode_rinci[1] : '');
+			$coa_id = ($rlsdtl && $rlsdtl->kode_coa) ? $rlsdtl->kode_coa : (isset($kode_rinci[2]) ? $kode_rinci[2] : '');
+			$ssh_id = ($rlsdtl && $rlsdtl->kode_ssh) ? $rlsdtl->kode_ssh : (isset($kode_rinci[3]) ? $kode_rinci[3] : '');
+
+			$program = $prog_id ? $this->model->getBy2('dppk', 'id_dppk', $prog_id, 'tahun', $this->tahun)->row() : null;
+			$coa = $coa_id ? $this->model->getBy2('coa', 'kode', $coa_id, 'tahun', $this->tahun)->row() : null;
+			$ssh = $ssh_id ? $this->model->getBy('ssh', 'kode', $ssh_id)->row() : null;
+
 			$stn = explode(" ", $dts->ket);
 			$data_all[] = [
 				'id' => $dts->id_realis,
@@ -705,10 +720,10 @@ Terimakasih';
 				'satuan' => preg_match('/@ \d+\s+(\w+)/', $dts->ket, $match) ? $match[1] : '',
 				'qty' => $dts->vol,
 				'ket' => $dts->ket,
-				'program' => $program->program,
+				'program' => $program ? $program->program : '',
 				'ssh' => $ssh ? $ssh->nama : '',
-				'coa' => $coa->nama,
-				'kegiatan' => $rlsdtl->kegiatan,
+				'coa' => $coa ? $coa->nama : '',
+				'kegiatan' => $rlsdtl ? $rlsdtl->kegiatan : '',
 			];
 		}
 
@@ -805,25 +820,29 @@ Terimakasih';
 		}
 		$bwh = $pjData->apr == 1 ? 'Pengajuan sudah bisa dicairkan. Dimohon kepada KPA Lembaga Terkait untuk menghubungi Admin Pencairan.' : 'Selanjutnya Pengajuan menunggu verifikasi dari perencanaan';
 
-		$psn = '*INFORMASI VERIFIKASI PENGAJUAN* ' . $rt . '
+		$psn = '✅ *[VERIFIKASI PENGAJUAN' . ($rt ? ' - ' . $rt : '') . ']*
 
-pengajuan dari :
+Pengajuan dana berikut telah diverifikasi dan divalidasi oleh Sub Bagian Accounting:
 
-Lembaga : ' . $lembaga->nama . '
-Kode Pengajuan : ' . $kode . '
-Nominal : ' . rupiah($total->jml) . '
-*Telah di Verifikasi dan Validasi Oleh Sub Bagian Accounting pada ' . date('Y-m-d') . '*
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lembaga->nama . '
+🔖 *Kode*      : ' . $kode . '
+💵 *Nominal*   : *' . rupiah($total->jml) . '*
+📅 *Tanggal*   : ' . date('d-m-Y') . '
+━━━━━━━━━━━━━━━━━━━━
 
-*_' . $bwh . '_*
-Terimakasih';
+ℹ️ *Status Selanjutnya*:
+_' . $bwh . '_
+
+Terima kasih atas kerjasamanya.';
 
 		$this->model->input('history', $history);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '082264061060', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan berhasil diverval');
@@ -846,7 +865,7 @@ Terimakasih';
 
 		$history = [
 			'kode_pengajuan' => $kode,
-			'lembaga' => $dtPj->lembaga,
+			'lembaga' => $pjData->lembaga,
 			'tgl_verval' => date('Y-m-d H:i:s'),
 			'user' => $this->user,
 			'stts' => 'verifikasi',
@@ -861,31 +880,32 @@ Terimakasih';
 			$rt = '';
 		}
 
+		$psn = '⚠️ *[PENOLAKAN PENGAJUAN' . ($rt ? ' - ' . $rt : '') . ']*
 
+Pengajuan dana berikut telah ditolak oleh Sub Bagian Accounting:
 
-		$psn = '
-*INFORMASI PENOLAKAN PENGAJUAN* ' . $rt . '
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $lembaga->nama . '
+🔖 *Kode*      : ' . $kode . '
+💵 *Nominal*   : *' . rupiah($total->jml) . '*
+📅 *Tanggal*   : ' . $tgl . '
+━━━━━━━━━━━━━━━━━━━━
+📝 *Catatan*:
+_*"' . $pesan . '"*_
 
-pengajuan dari :
+Dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai catatan di atas melalui link berikut:
+🔗 https://simkupaduka.ppdwk.com
 
-Lembaga : ' . $lembaga->nama . '
-Kode Pengajuan : ' . $kode . '
-Nominal : ' . rupiah($total->jml) . '
-*DITOLAK Oleh Sub Bagian Accounting pada ' . $tgl . '*
-dengan catatan : _*' . $pesan . '*_
-
-*_dimohon kepada KPA lembaga terkait untuk segera melakukan revisi sesuai dengan catatan yang ada di https://simkupaduka.ppdwk.com/_*
-
-Terimakasih';
+Terima kasih.';
 
 		$this->model->input('history', $history);
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '082264061060', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan berhasil ditolak');
 			redirect('account/pengajuanDtl/' . $pjData->kode_pengajuan);
@@ -927,18 +947,22 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+		$psn = '⚠️ *[PENOLAKAN LAPORAN SPJ' . ($rt ? ' - ' . $rt : '') . ']*
 
-Ada Penolakan SPJ dari :
-    
-Lembaga : ' . $nm_lm . '
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+Laporan SPJ berikut telah ditolak oleh Sub Bagian Accounting:
 
-*_SPJ DITOLAK oleh TIM ACCOUNTING. dengan catatan ' . $isi . '_*
-Mohon kepada lembaga terkait untuk segera memperbaikinya dan mengupload ulang SPJ yang sudah diperbaiki di https://simkupaduka.ppdwk.com/.
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $nm_lm . '
+🔖 *Kode*      : ' . $kode . '
+📅 *Tanggal*   : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
+📝 *Catatan*:
+_*"' . $isi . '"*_
+
+Mohon kepada lembaga terkait untuk segera melakukan perbaikan dan mengunggah ulang dokumen SPJ yang telah direvisi melalui link berikut:
+🔗 https://simkupaduka.ppdwk.com
+
+Terima kasih.';
 
 		$data1 = ['stts' => '0'];
 		$data2 = ['spj' => '0'];
@@ -957,10 +981,10 @@ Terimakasih';
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, $hp, $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, $hp, $psn);
+			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'SPJ berhasil ditolak');
 			redirect('account/spj');
@@ -1001,21 +1025,25 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+		$dtPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : ' . $nm_lm . '
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+		$psn = '✅ *[PERSETUJUAN LAPORAN SPJ' . ($rt ? ' - ' . $rt : '') . ']*
 
-*_SPJ telah disetujui oleh SUB BAGIAN ACCOUNTING. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran kepada KASIR. Untuk bisa melakukan pengajuan berikutnya._*
+Laporan SPJ berikut telah disetujui oleh Sub Bagian Accounting:
 
-Terimakasih';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $nm_lm . '
+🔖 *Kode*      : ' . $kode . '
+📅 *Tanggal*   : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
 
-		$data1 = ['stts' => '2'];
-		$data2 = ['spj' => '2', 'bendahara' => 1];
+ℹ *Status Selanjutnya*:
+_SPJ telah disetujui oleh Sub Bagian Accounting. Dimohon kepada KPA untuk segera menyerahkan hard copy SPJ dan sisa belanja anggaran kepada KASIR agar dapat melakukan pengajuan berikutnya._
+
+Terima kasih.';
+
+		$data1 = ['stts' => '2', 'bendahara' => 1];
+		$data2 = ['spj' => '2'];
 
 		$history = [
 			'kode_pengajuan' => $kode,
@@ -1033,9 +1061,9 @@ Terimakasih';
 		$this->model->input('real_sisasm', $data3);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, $hp, $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'SPJ berhasil disetujui');
@@ -1078,19 +1106,22 @@ Terimakasih';
 			$rt = '';
 		}
 
-		$psn = '
-*INFORMASI VERIFIKASI SPJ* ' . $rt . '
+		$dtPj = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
 
-Ada pelaporan SPJ dari :
-    
-Lembaga : ' . $nm_lm . '
-Kode Pengajuan : ' . $kode . '
-Pada : ' . $at . '
+		$psn = '✅ *[VERIFIKASI SPJ HARDCOPY' . ($rt ? ' - ' . $rt : '') . ']*
 
-*_Hard copy SPJ dan sisa belanja anggaran telah disetor kepada SUB BAGIAN ACCOUNTING. Untuk pengajuan berikutnya sudah bisa dilakukan._*
+Laporan hardcopy SPJ dan sisa belanja anggaran telah diverifikasi oleh Sub Bagian Accounting:
 
-Terimakasih
-https://simkupaduka.ppdwk.com/';
+━━━━━━━━━━━━━━━━━━━━
+🏫 *Lembaga*   : ' . $nm_lm . '
+🔖 *Kode*      : ' . $kode . '
+📅 *Tanggal*   : ' . $at . '
+━━━━━━━━━━━━━━━━━━━━
+
+ℹ *Status Selanjutnya*:
+_Hard copy SPJ dan sisa belanja anggaran telah disetor kepada Sub Bagian Accounting. Pengajuan berikutnya sudah dapat dilakukan._
+
+Terima kasih.';
 
 		$data1 = ['stts' => '3'];
 		$data2 = ['spj' => '3'];
@@ -1106,7 +1137,7 @@ https://simkupaduka.ppdwk.com/';
 
 		$history = [
 			'kode_pengajuan' => $kode,
-			'lembaga' => $file->lembaga,
+			'lembaga' => $dtPj->lembaga,
 			'tgl_verval' => date('Y-m-d H:i:s'),
 			'user' => $this->user,
 			'stts' => 'spj',
@@ -1119,9 +1150,11 @@ https://simkupaduka.ppdwk.com/';
 		$this->model->input('real_sisa', $data3);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			kirim_person($this->apiKey, $hp, $psn);
+
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			// kirim_person($this->apiKey, $hp, $psn);
+
 			// kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'SPJ berhasil disetujui');
@@ -1704,10 +1737,10 @@ Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'RAB sudah di setujui');
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '082302301003', $psn);
-			// kirim_person($this->apiKey, '085236924510', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
+			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('account/rab24');
 		} else {
 			$this->session->set_flashdata('error', 'Hapus data gagal');
@@ -1740,9 +1773,9 @@ Terimakasih';
 		$this->model->update('rab_list', $data2, 'lembaga', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');
@@ -1839,9 +1872,9 @@ dengan catatan : _*' . $pesan . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');
@@ -1874,9 +1907,9 @@ Nominal : _*' . rupiah($dataSum->jml) . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');
@@ -2480,9 +2513,9 @@ dengan catatan : _*' . $pesan . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');
@@ -2515,9 +2548,9 @@ Nominal : _*' . rupiah($dataSum->jml) . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
-			// kirim_person($this->apiKey, '085235583647', $psn);
+			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'Pengajuan RAB berhasil ditolak');

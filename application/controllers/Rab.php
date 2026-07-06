@@ -49,9 +49,12 @@ class Rab extends CI_Controller
 			$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
 			$program[] = [
 				'program' => $dtpr->program,
-				'bulan' => $dtpr->bulan,
-				'total' => $total->total,
-				'sisa' => $sisa,
+				'kode_program' => $dtpr->kode_program,
+				'kegiatan' => $dtpr->kegiatan,
+				// 'bulan' => $dtpr->bulan,
+				'total' => $total ? $total->total : 0,
+				'sisa' => $sisa ? $sisa : 0,
+				'id_dppk' => $dtpr->id_dppk,
 			];
 		}
 		$data['program'] = $program;
@@ -101,5 +104,34 @@ class Rab extends CI_Controller
 		$data['relData'] = $this->model->getBy('realis', 'kode', $kode)->result();
 
 		$this->load->view('cekRab', $data);
+	}
+
+	public function kegiatanDetail($id_dppk)
+	{
+		$lembaga = $this->lembaga;
+		$tahun = $this->tahun;
+
+		// 1. Program details
+		$data['dppk'] = $this->model->getBy('dppk', 'id_dppk', $id_dppk)->row();
+
+		// 2. RAB details
+		$data['rab'] = $this->model->getBy2('rab', 'id_dppk', $id_dppk, 'tahun', $tahun)->result();
+		$data['totalRab'] = $this->db->query("SELECT SUM(total) as total FROM rab WHERE id_dppk = '$id_dppk' AND tahun = '$tahun'")->row();
+
+		// 3. Usage details (pemakaian)
+		$data['realis'] = $this->db->query("SELECT * FROM realis WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$tahun'")->result();
+		$data['real_sm'] = $this->db->query("SELECT * FROM real_sm WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$tahun'")->result();
+
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$tahun' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$tahun' ")->row();
+
+		$data['totalPakai'] = ($nomPakai->total ?? 0) + ($nomSm->total ?? 0);
+
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$this->load->view('lembaga/head', $data);
+		$this->load->view('lembaga/kegiatanDetail', $data);
+		$this->load->view('lembaga/foot');
 	}
 }

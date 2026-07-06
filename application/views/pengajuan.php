@@ -25,7 +25,7 @@ include 'lembaga/head.php';
                 <div class="card radius-10">
                     <div class="card-body">
 
-                        <button class="btn btn-success btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="bx bx-plus-circle"></i> Buat Pengajuan Baru</button>
+                        <button class="btn btn-success btn-sm px-3 mb-3 d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#exampleModal" style="border-radius: 6px;"><i class="bx bx-plus-circle"></i> Buat Pengajuan Baru</button>
                         <div class="table-responsive">
                             <table id="table1" class="table table-hover align-middle table-nowrap mb-0">
                                 <thead>
@@ -59,9 +59,13 @@ include 'lembaga/head.php';
                                                 <?= $a->cair == 1 ? "<span class='badge bg-success'><i class='bx bx-check'></i> sudah</span>" : "<span class='badge bg-danger'><i class='bx bx-no-entry'></i> belum</span>"; ?>
                                             </td>
                                             <td>
-                                                <?php if ($a->spj == 0 && $a->file_spj == '') { ?>
+                                                <?php 
+                                                $spj_info = $this->db->query("SELECT file_spj FROM spj WHERE kode_pengajuan = '$a->kode_pengajuan'")->row();
+                                                $file_spj = $spj_info ? $spj_info->file_spj : '';
+                                                
+                                                if ($a->spj == 0 && $file_spj == '') { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-no-entry"></i> belum upload</span>
-                                                <?php } else if ($a->spj == 0 && $a->file_spj != '') { ?>
+                                                <?php } else if ($a->spj == 0 && $file_spj != '') { ?>
                                                     <span class="badge bg-danger"><i class="bx bx-x"></i> ditolak</span>
                                                 <?php } else if ($a->spj == 1) { ?>
                                                     <span class="badge bg-warning"><i class="bx bx-recycle"></i>
@@ -74,7 +78,7 @@ include 'lembaga/head.php';
                                                 <?php } ?>
                                             </td>
                                             <td>
-                                                <button onclick="window.location='<?= base_url('pengajuan/detail/' . $a->kode_pengajuan) ?>'" type="button" class="btn btn-success btn-label waves-effect waves-light btn-sm"> Detail</button>
+                                                <a href="<?= base_url('pengajuan/detail/' . $a->kode_pengajuan) ?>" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" style="border-radius: 6px;"><i class="bx bx-show-alt"></i> Detail</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

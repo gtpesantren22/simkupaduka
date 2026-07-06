@@ -30,7 +30,7 @@
                 <div class="card radius-10">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="example" class="table table-hover table-bordered" style="width:100%">
+                            <table id="" class="table table-hover table-bordered" style="width:100%">
                                 <thead>
                                     <tr>
                                         <!-- <th>No</th> -->
@@ -40,6 +40,7 @@
                                         <th>Keterangan</th>
                                         <th>Uraian</th>
                                         <th>Cair</th>
+                                        <th>Tahun</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -136,15 +137,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <?= form_open('admin/addCoaNext'); ?>
+            <input type="hidden" name="tahun" value="<?= $tahun ?>">
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Pilih akun induk</label>
-                    <select name="nama" id="" class="form-select" required>
+                    <select name="parrent" id="" class="form-select" required>
                         <option value="">pilih akun</option>
                         <?php foreach ($coa as $item): ?>
                             <option value="<?= $item->kode; ?>"><?= $item->kode . ' - ' . $item->nama; ?></option>
                         <?php endforeach ?>
                     </select>
+                </div>
+                <div class="form-group mb-2">
+                    <label for="">Kode Akun</label>
+                    <input type="text" name="kode" class="form-control" required>
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Nama Akun</label>

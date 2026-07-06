@@ -49,7 +49,6 @@ class AppModel extends CI_Model
 
     function getBySumPsb($table, $where, $dtwhere, $sum)
     {
-        $this->db6->select('*');
         $this->db6->select_sum($sum, 'jml');
         $this->db6->where($where, $dtwhere);
         return $this->db6->get($table);
