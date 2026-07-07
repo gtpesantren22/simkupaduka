@@ -1707,13 +1707,22 @@ Bendahara PPDWK
         $data['user'] = $this->Auth_model->current_user();
         $data['tahun'] = $this->tahun;
 
-        $data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga=lembaga.kode JOIN bidang ON pengeluaran_rutin.lembaga=bidang.kode WHERE pengeluaran_rutin.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ORDER BY pengeluaran_rutin.tanggal DESC ")->result();
+        $data['data'] = $this->db->query("SELECT DISTINCT pengeluaran_rutin.*, 
+       lembaga.nama AS nmLembaga, 
+       bidang.nama AS nmBidang 
+FROM lembaga 
+JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga = lembaga.kode 
+JOIN bidang ON pengeluaran_rutin.bidang = bidang.kode
+WHERE pengeluaran_rutin.tahun = '$this->tahun' 
+AND lembaga.tahun = '$this->tahun' 
+AND bidang.tahun = '$this->tahun' 
+ORDER BY pengeluaran_rutin.tanggal DESC;")->result();
 
-        $data['sumData'] = $this->model->getBySum('pengeluaran_rutin', 'tahun', $data['tahun'], 'nominal')->row();
+        $data['sumData'] = $this->model->getBySum('pengeluaran_rutin', 'tahun', $this->tahun, 'nominal')->row();
 
-        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
-        $data['lembaga2'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
-        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $data['tahun'])->result();
+        $data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['lembaga2'] = $this->model->getBy('lembaga', 'tahun', $this->tahun)->result();
+        $data['bidang'] = $this->model->getBy('bidang', 'tahun', $this->tahun)->result();
 
 
         $this->load->view('kasir/head', $data);
