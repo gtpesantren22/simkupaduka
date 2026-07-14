@@ -151,6 +151,21 @@
                     </ul>
                 </li>
 
+                <li class="menu-label">Master Data</li>
+                <li>
+                    <a href="<?= base_url('kasir/santri'); ?>">
+                        <div class="parent-icon"><i class='bx bx-user'></i>
+                        </div>
+                        <div class="menu-title">Data Santri</div>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?= base_url('kasir/dekos'); ?>">
+                        <div class="parent-icon"><i class='bx bx-home'></i>
+                        </div>
+                        <div class="menu-title">Dekosan</div>
+                    </a>
+                </li>
 
                 <li class="menu-label">AddOn</li>
                 <li>

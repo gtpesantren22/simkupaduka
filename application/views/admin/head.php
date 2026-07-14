@@ -75,6 +75,8 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li> <a href="<?= base_url('admin/santri'); ?>"><i class="bx bx-right-arrow-alt"></i>Data
                                 Santri</a>
                         </li>
+                        <li> <a href="<?= base_url('admin/dekos'); ?>"><i class="bx bx-right-arrow-alt"></i>Data Dekosan</a>
+                        </li>
                         <li> <a href="<?= base_url('admin/bp'); ?>"><i class="bx bx-right-arrow-alt"></i>Biaya
                                 Pendidikan</a>
                         </li>
