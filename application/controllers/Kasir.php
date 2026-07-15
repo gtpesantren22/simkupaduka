@@ -3914,7 +3914,7 @@ Terima kasih.';
 			'nis' => $nis,
 			't_kos' => $t_kos,
 			'masuk' => $tanggal_pindah,
-			'keluar' => null
+			'keluar' => '0000-00-00'
 		];
 		$this->db->insert('dekos', $data);
 
@@ -3946,8 +3946,8 @@ Terima kasih.';
 
 		$data = [
 			't_kos' => $t_kos,
-			'masuk' => $masuk ?: null,
-			'keluar' => $keluar ?: null
+			'masuk' => $masuk ?: '0000-00-00',
+			'keluar' => $keluar ?: '0000-00-00'
 		];
 
 		$this->db->where('id_dekos', $id_dekos);
