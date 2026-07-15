@@ -328,7 +328,7 @@ class Admin extends CI_Controller
 			'nis' => $nis,
 			't_kos' => $t_kos,
 			'masuk' => $tanggal_pindah,
-			'keluar' => null
+			'keluar' => '0000-00-00'
 		];
 		$this->db->insert('dekos', $data);
 
