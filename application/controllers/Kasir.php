@@ -3750,10 +3750,20 @@ Terima kasih.';
 		$status_dekos = $upsert_to_db($db_dekos, $chunk, $fields_dekos, TRUE);
 
 		if ($status_kasir === FALSE || $status_dekos === FALSE) {
+			$err_kasir = $db_kasir->error();
+			$err_dekos = $db_dekos->error();
+			$details = '';
+			if ($status_kasir === FALSE) {
+				$details .= 'Kasir DB Error: [' . ($err_kasir['code'] ?? '') . '] ' . ($err_kasir['message'] ?? '') . '; ';
+			}
+			if ($status_dekos === FALSE) {
+				$details .= 'Dekos DB Error: [' . ($err_dekos['code'] ?? '') . '] ' . ($err_dekos['message'] ?? '') . '; ';
+			}
+
 			header('Content-Type: application/json');
 			echo json_encode([
 				'status' => 'error',
-				'message' => 'Gagal menulis data ke database Kasir atau Dekos.'
+				'message' => 'Gagal menulis data ke database Kasir atau Dekos. Detail: ' . trim($details)
 			]);
 			exit;
 		}
