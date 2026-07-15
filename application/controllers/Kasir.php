@@ -3656,7 +3656,7 @@ Terima kasih.';
 		$fields_dekos = $db_dekos->list_fields('tb_santri');
 
 		// Helper function to upsert a chunk into a target database object with column filtering
-		$upsert_to_db = function($db_conn, $data_chunk, $target_fields, $is_dekos = FALSE) {
+		$upsert_to_db = function($db_conn, $data_chunk, $target_fields) {
 			$db_conn->trans_start();
 
 			// Filter columns
@@ -3665,11 +3665,7 @@ Terima kasih.';
 				$filtered_row = [];
 				foreach ($target_fields as $field) {
 					if ($field === 'id_santri') {
-						if ($is_dekos) {
-							// For dekos, id_santri is the UUID primary key (which is stored in santri_id locally)
-							$filtered_row['id_santri'] = $row['santri_id'];
-						}
-						continue; // skip auto_increment primary key for others
+						continue; // skip auto_increment primary key for both target databases
 					}
 					if (array_key_exists($field, $row)) {
 						$filtered_row[$field] = $row[$field];
@@ -3685,79 +3681,66 @@ Terima kasih.';
 				return TRUE;
 			}
 
-			if ($is_dekos) {
-				// For dekos, match by primary key id_santri (which is UUID)
-				$id_list = array_filter(array_column($filtered_chunk, 'id_santri'));
-				$existing_ids = [];
-				if (!empty($id_list)) {
-					$existing = $db_conn->select('id_santri')
-						->where_in('id_santri', $id_list)
-						->get('tb_santri')
-						->result_array();
-					$existing_ids = array_column($existing, 'id_santri');
-				}
+			// For both, match by nis
+			$nis_list = array_column($filtered_chunk, 'nis');
+			$existing_nis = [];
+			if (!empty($nis_list)) {
+				$existing = $db_conn->select('nis')
+					->where_in('nis', $nis_list)
+					->get('tb_santri')
+					->result_array();
+				$existing_nis = array_column($existing, 'nis');
+			}
 
-				$inserts = [];
-				$updates = [];
-				foreach ($filtered_chunk as $row) {
-					if (in_array($row['id_santri'], $existing_ids)) {
-						$updates[] = $row;
-					} else {
-						$inserts[] = $row;
-					}
+			$inserts = [];
+			$updates = [];
+			foreach ($filtered_chunk as $row) {
+				if (empty($row['nis'])) {
+					continue; // Skip student record if NIS is empty
 				}
-			} else {
-				// For others, match by nis
-				$nis_list = array_column($filtered_chunk, 'nis');
-				$existing_nis = [];
-				if (!empty($nis_list)) {
-					$existing = $db_conn->select('nis')
-						->where_in('nis', $nis_list)
-						->get('tb_santri')
-						->result_array();
-					$existing_nis = array_column($existing, 'nis');
-				}
-
-				$inserts = [];
-				$updates = [];
-				foreach ($filtered_chunk as $row) {
-					if (in_array($row['nis'], $existing_nis)) {
-						$updates[] = $row;
-					} else {
-						$inserts[] = $row;
-					}
+				if (in_array($row['nis'], $existing_nis)) {
+					$updates[] = $row;
+				} else {
+					$inserts[] = $row;
 				}
 			}
 
 			if (!empty($inserts)) {
-				$db_conn->insert_batch('tb_santri', $inserts);
+				$res = $db_conn->insert_batch('tb_santri', $inserts);
+				if ($res === FALSE || $db_conn->trans_status() === FALSE) {
+					$err = $db_conn->error();
+					$db_conn->trans_complete();
+					return $err;
+				}
 			}
 			if (!empty($updates)) {
-				if ($is_dekos) {
-					$db_conn->update_batch('tb_santri', $updates, 'id_santri');
-				} else {
-					$db_conn->update_batch('tb_santri', $updates, 'nis');
+				$res = $db_conn->update_batch('tb_santri', $updates, 'nis');
+				if ($res === FALSE || $db_conn->trans_status() === FALSE) {
+					$err = $db_conn->error();
+					$db_conn->trans_complete();
+					return $err;
 				}
 			}
 
 			$db_conn->trans_complete();
-			return $db_conn->trans_status();
+			if ($db_conn->trans_status() === FALSE) {
+				return $db_conn->error();
+			}
+			return TRUE;
 		};
 
 		// Run upsert for Kasir
-		$status_kasir = $upsert_to_db($db_kasir, $chunk, $fields_kasir, FALSE);
+		$status_kasir = $upsert_to_db($db_kasir, $chunk, $fields_kasir);
 		// Run upsert for Dekos
-		$status_dekos = $upsert_to_db($db_dekos, $chunk, $fields_dekos, TRUE);
+		$status_dekos = $upsert_to_db($db_dekos, $chunk, $fields_dekos);
 
-		if ($status_kasir === FALSE || $status_dekos === FALSE) {
-			$err_kasir = $db_kasir->error();
-			$err_dekos = $db_dekos->error();
+		if ($status_kasir !== TRUE || $status_dekos !== TRUE) {
 			$details = '';
-			if ($status_kasir === FALSE) {
-				$details .= 'Kasir DB Error: [' . ($err_kasir['code'] ?? '') . '] ' . ($err_kasir['message'] ?? '') . '; ';
+			if ($status_kasir !== TRUE) {
+				$details .= 'Kasir DB Error: [' . ($status_kasir['code'] ?? '') . '] ' . ($status_kasir['message'] ?? '') . '; ';
 			}
-			if ($status_dekos === FALSE) {
-				$details .= 'Dekos DB Error: [' . ($err_dekos['code'] ?? '') . '] ' . ($err_dekos['message'] ?? '') . '; ';
+			if ($status_dekos !== TRUE) {
+				$details .= 'Dekos DB Error: [' . ($status_dekos['code'] ?? '') . '] ' . ($status_dekos['message'] ?? '') . '; ';
 			}
 
 			header('Content-Type: application/json');
