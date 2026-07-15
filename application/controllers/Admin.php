@@ -360,8 +360,8 @@ class Admin extends CI_Controller
 
 		$data = [
 			't_kos' => $t_kos,
-			'masuk' => $masuk ?: null,
-			'keluar' => $keluar ?: null
+			'masuk' => $masuk ?: '0000-00-00',
+			'keluar' => $keluar ?: '0000-00-00'
 		];
 
 		$this->db->where('id_dekos', $id_dekos);
@@ -842,10 +842,10 @@ class Admin extends CI_Controller
 
 						$pend_a = is_array($result['pendidikan_ayah'] ?? null) ? ($result['pendidikan_ayah']['nama'] ?? '') : ($result['jenjang_pendidikan_ayah'] ?? '');
 						$pkj_a  = is_array($result['pekerjaan_ayah'] ?? null) ? ($result['pekerjaan_ayah']['nama'] ?? '') : ($result['pekerjaan_id_ayah'] ?? '');
-						
+
 						$pend_i = is_array($result['pendidikan_ibu'] ?? null) ? ($result['pendidikan_ibu']['nama'] ?? '') : ($result['jenjang_pendidikan_ibu'] ?? '');
 						$pkj_i  = is_array($result['pekerjaan_ibu'] ?? null) ? ($result['pekerjaan_ibu']['nama'] ?? '') : ($result['pekerjaan_id_ibu'] ?? '');
-						
+
 						$pend_w = is_array($result['pendidikan_wali'] ?? null) ? ($result['pendidikan_wali']['nama'] ?? '') : ($result['jenjang_pendidikan_wali'] ?? '');
 						$pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
 
@@ -972,10 +972,10 @@ class Admin extends CI_Controller
 
 					$pend_a = is_array($result['pendidikan_ayah'] ?? null) ? ($result['pendidikan_ayah']['nama'] ?? '') : ($result['jenjang_pendidikan_ayah'] ?? '');
 					$pkj_a  = is_array($result['pekerjaan_ayah'] ?? null) ? ($result['pekerjaan_ayah']['nama'] ?? '') : ($result['pekerjaan_id_ayah'] ?? '');
-					
+
 					$pend_i = is_array($result['pendidikan_ibu'] ?? null) ? ($result['pendidikan_ibu']['nama'] ?? '') : ($result['jenjang_pendidikan_ibu'] ?? '');
 					$pkj_i  = is_array($result['pekerjaan_ibu'] ?? null) ? ($result['pekerjaan_ibu']['nama'] ?? '') : ($result['pekerjaan_id_ibu'] ?? '');
-					
+
 					$pend_w = is_array($result['pendidikan_wali'] ?? null) ? ($result['pendidikan_wali']['nama'] ?? '') : ($result['jenjang_pendidikan_wali'] ?? '');
 					$pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
 
