@@ -656,11 +656,8 @@ class Admin extends CI_Controller
 			];
 
 			$existing = null;
-			if (!empty($item['nik'])) {
-				$existing = $this->db->get_where('tb_santri', ['nik' => $item['nik']])->row();
-			}
-			if (!$existing && !empty($item['nisn'])) {
-				$existing = $this->db->get_where('tb_santri', ['nisn' => $item['nisn']])->row();
+			if (!empty($item['peserta_didik_id'])) {
+				$existing = $this->db->get_where('tb_santri', ['santri_id' => $item['peserta_didik_id']])->row();
 			}
 			if (!$existing && !empty($item['nis'])) {
 				$existing = $this->db->get_where('tb_santri', ['nis' => $item['nis']])->row();
