@@ -471,11 +471,25 @@
                             // Fetch next page
                             syncPage(response.page + 1);
                         } else {
-                            // Completed!
-                            $('#sync-status').text('Sinkronisasi selesai! Merefresh halaman...');
-                            setTimeout(function() {
-                                window.location.reload();
-                            }, 1500);
+                            // Clean up local database (soft delete removed central records)
+                            $('#sync-status').text('Melakukan pembersihan data lokal...');
+                            $.ajax({
+                                url: '<?= base_url(($controller ?? "admin") . "/clean_up_local_database") ?>',
+                                type: 'GET',
+                                dataType: 'json',
+                                success: function(cleanRes) {
+                                    $('#sync-status').text('Sinkronisasi selesai! Merefresh halaman...');
+                                    setTimeout(function() {
+                                        window.location.reload();
+                                    }, 1500);
+                                },
+                                error: function() {
+                                    $('#sync-status').text('Gagal membersihkan data lokal, tetapi sinkron selesai.');
+                                    setTimeout(function() {
+                                        window.location.reload();
+                                    }, 2000);
+                                }
+                            });
                         }
                     } else {
                         // Error returned by API/server

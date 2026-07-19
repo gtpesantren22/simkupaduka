@@ -588,6 +588,9 @@ class Admin extends CI_Controller
 		$token = $token_row ? $token_row->val : '';
 
 		$page = intval($this->input->get('page') ?? 1);
+		if ($page === 1) {
+			$this->session->unset_userdata('synced_uuids');
+		}
 		$per_page = 500; // Batch size
 
 		$url = "https://data.ppdwk.com/api/datatables?data=referensi-peserta-didik"
@@ -629,6 +632,15 @@ class Admin extends CI_Controller
 		$items = $result['data']['data'];
 		$total_records = intval($result['data']['total'] ?? 0);
 		$last_page = intval($result['data']['last_page'] ?? 1);
+
+		// Store processed UUIDs in session for final cleanup
+		$synced_uuids = $this->session->userdata('synced_uuids') ?: [];
+		foreach ($items as $item) {
+			if (!empty($item['peserta_didik_id'])) {
+				$synced_uuids[] = $item['peserta_didik_id'];
+			}
+		}
+		$this->session->set_userdata('synced_uuids', $synced_uuids);
 
 		$processed = 0;
 		foreach ($items as $item) {
@@ -680,6 +692,23 @@ class Admin extends CI_Controller
 			'processed' => $processed,
 			'total' => $total_records
 		]);
+		exit;
+	}
+
+	public function clean_up_local_database()
+	{
+		$synced_uuids = $this->session->userdata('synced_uuids');
+		if (!empty($synced_uuids)) {
+			// Mark students as inactive if they have a UUID (santri_id) but are not in the synced list
+			$this->db->where('santri_id IS NOT NULL');
+			$this->db->where('santri_id !=', '');
+			$this->db->where_not_in('santri_id', $synced_uuids);
+			$this->db->update('tb_santri', ['aktif' => 'N']);
+		}
+		$this->session->unset_userdata('synced_uuids');
+
+		header('Content-Type: application/json');
+		echo json_encode(['status' => 'success', 'message' => 'Pembersihan data lokal berhasil.']);
 		exit;
 	}
 
@@ -4251,13 +4280,13 @@ Update data pertanggal
 		$db_kasir = $this->load->database('kasir', TRUE);
 		$db_dekos = $this->load->database('dekos', TRUE);
 
-		// Safe delete using chunks of where_not_in
+		// Safe soft delete using chunks of where_not_in
 		$db_kasir->trans_start();
-		$db_kasir->where_not_in('nis', $local_nis_list)->delete('tb_santri');
+		$db_kasir->where_not_in('nis', $local_nis_list)->update('tb_santri', ['aktif' => 'N']);
 		$db_kasir->trans_complete();
 
 		$db_dekos->trans_start();
-		$db_dekos->where_not_in('nis', $local_nis_list)->delete('tb_santri');
+		$db_dekos->where_not_in('nis', $local_nis_list)->update('tb_santri', ['aktif' => 'N']);
 		$db_dekos->trans_complete();
 
 		header('Content-Type: application/json');
