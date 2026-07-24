@@ -3412,7 +3412,18 @@ Updater : ' . $this->user . '
 		$data['tahun'] = $this->tahun;
 		$data['bulan'] = $this->bulan;
 
-		$data['data'] = $this->db->query("SELECT * FROM rab_list JOIN lembaga ON lembaga.kode=rab_list.lembaga WHERE rab_list.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun'  AND rab_list.status = 'disetujui' ")->result();
+		$data['data'] = $this->db->query("
+			SELECT 
+				l.kode AS lembaga,
+				l.nama AS nama,
+				l.pagu AS pagu,
+				l.tahun AS tahun,
+				rl.status AS status
+			FROM lembaga l
+			LEFT JOIN rab_list rl ON l.kode = rl.lembaga AND rl.tahun = l.tahun
+			WHERE l.tahun = '$this->tahun'
+			ORDER BY l.kode ASC
+		")->result();
 
 		$this->load->view('admin/head', $data);
 		$this->load->view('admin/rab24', $data);
@@ -3465,6 +3476,11 @@ Updater : ' . $this->user . '
 			$this->session->set_flashdata('error', 'Maaf. Tidak ada RAB yang akan diuload / RAB sudah disinkronkan');
 			redirect('admin/rab24detail/' . $kode);
 		} else {
+			// Ensure coa column exists in main rab table
+			if (!$this->db->field_exists('coa', 'rab')) {
+				$this->db->query("ALTER TABLE rab ADD COLUMN coa VARCHAR(50) DEFAULT NULL");
+			}
+
 			foreach ($data as $key) {
 				$ins = [
 					'id_rab' => $key->id_rab,
@@ -3479,7 +3495,9 @@ Updater : ' . $this->user . '
 					'harga_satuan' => $key->harga_satuan,
 					'total' => $key->total,
 					'tahun' => $key->tahun,
-					'at' => $key->at
+					'id_dppk'=> $key->id_dppk,
+					'at' => $key->at,
+					'coa' => isset($key->coa) ? $key->coa : NULL
 				];
 
 				$up = ['snc' => 'sudah'];
@@ -3488,8 +3506,22 @@ Updater : ' . $this->user . '
 				$this->model->update('rab_sm24', $up, 'id_rab', $key->id_rab);
 			}
 
+			// Automatically set the status in rab_list to 'selesai'
+			$check_list = $this->db->get_where('rab_list', ['lembaga' => $kode, 'tahun' => $this->tahun])->row();
+			if (!$check_list) {
+				$this->db->insert('rab_list', [
+					'lembaga' => $kode,
+					'tahun' => $this->tahun,
+					'status' => 'selesai'
+				]);
+			} else {
+				$this->db->where('lembaga', $kode);
+				$this->db->where('tahun', $this->tahun);
+				$this->db->update('rab_list', ['status' => 'selesai']);
+			}
+
 			if ($this->db->affected_rows() > 0) {
-				$this->session->set_flashdata('ok', 'Upload RAB Lembaga Berhasil');
+				$this->session->set_flashdata('ok', 'Upload RAB Lembaga Berhasil dan Status Pengajuan Selesai');
 				redirect('admin/rab24detail/' . $kode);
 			} else {
 				$this->session->set_flashdata('error', 'Upload RAB Lembaga Gagal');
@@ -3530,6 +3562,332 @@ Terimakasih';
 		} else {
 			$this->session->set_flashdata('error', 'Pengajuan RAB tidak bisa disetujui');
 			redirect('admin/rab24');
+		}
+	}
+
+	public function downRabTmp24()
+	{
+		force_download('vertical/assets/templates/Template_Upload_RAB_24.xls', NULL);
+	}
+
+	public function kosongiRab24($kode)
+	{
+		$this->db->where('lembaga', $kode);
+		$this->db->where('tahun', $this->tahun);
+		$this->db->delete('rab_sm24');
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Draf RAB berhasil dikosongkan.');
+		} else {
+			$this->session->set_flashdata('error', 'Gagal atau draf sudah kosong.');
+		}
+		redirect('admin/rab24detail/' . $kode);
+	}
+
+	public function uploadDppk24($kode)
+	{
+		// Load library and helper
+		$this->load->helper('file');
+
+		// Upload config
+		$config['upload_path'] = 'vertical/assets/uploads/';
+		$config['allowed_types'] = 'xls|xlsx';
+		$config['max_size'] = 10240;
+
+		// Ensure directory exists
+		if (!is_dir($config['upload_path'])) {
+			mkdir($config['upload_path'], 0777, TRUE);
+		}
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('uploadFile')) {
+			$error = $this->upload->display_errors('', '');
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode([
+					'status' => 'error',
+					'message' => 'Upload Gagal: ' . $error
+				]));
+		} else {
+			$upload_data = $this->upload->data();
+			$file_path = $upload_data['full_path'];
+			
+			// Detect Excel extension and use proper reader
+			$ext = pathinfo($file_path, PATHINFO_EXTENSION);
+			if (strtolower($ext) === 'xls') {
+				$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+			} else {
+				$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+			}
+
+			try {
+				$objPHPExcel = $reader->load($file_path);
+				$worksheet = $objPHPExcel->getActiveSheet();
+				$highestRow = $worksheet->getHighestDataRow();
+
+				$dppk_count = 0;
+				$inserted_in_memory = [];
+
+				for ($row = 2; $row <= $highestRow; $row++) {
+					$raw_prog = $worksheet->getCell('B' . $row)->getValue();
+					$raw_keg = $worksheet->getCell('D' . $row)->getValue();
+
+					// Skip empty rows
+					if ($raw_prog === null || $raw_prog === '' || $raw_keg === null || $raw_keg === '') {
+						continue;
+					}
+
+					// Remove leading zeros
+					$kode_program = ltrim(trim(strval($raw_prog)), '0');
+					if ($kode_program === '') {
+						$kode_program = '0';
+					}
+
+					$kode_kegiatan = ltrim(trim(strval($raw_keg)), '0');
+					if ($kode_kegiatan === '') {
+						$kode_kegiatan = '0';
+					}
+
+					$program_name = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('C' . $row)->getValue()));
+					$kegiatan_name = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('E' . $row)->getValue()));
+					$bulan = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('F' . $row)->getValue()));
+
+					$id_dppk = $kode_kegiatan; // id_dppk is activity code
+
+					// Check in-memory duplicates first
+					$cache_key = $id_dppk . '|' . $kode . '|' . $this->tahun;
+					if (in_array($cache_key, $inserted_in_memory)) {
+						continue;
+					}
+
+					$cek = $this->db->query("SELECT id_dppk FROM dppk WHERE id_dppk = '$id_dppk' AND lembaga = '$kode' AND tahun = '$this->tahun' ")->num_rows();
+					if ($cek < 1) {
+						$data_dppk = [
+							'id_dppk' => $id_dppk,
+							'lembaga' => $kode,
+							'program' => $program_name,
+							'kegiatan' => $kegiatan_name,
+							'indikator' => '',
+							'tahun' => $this->tahun,
+							'bulan' => $bulan,
+							'kode_program' => $kode_program,
+							'kode_kegiatan' => $kode_kegiatan
+						];
+						$this->model->input('dppk', $data_dppk);
+						$dppk_count++;
+						$inserted_in_memory[] = $cache_key;
+					}
+				}
+
+				delete_files($file_path);
+				$this->output
+					->set_content_type('application/json')
+					->set_output(json_encode([
+						'status' => 'success',
+						'message' => 'Import DPPK Berhasil. Memproses ' . $dppk_count . ' program baru.'
+					]));
+			} catch (\Exception $e) {
+				$this->output
+					->set_content_type('application/json')
+					->set_output(json_encode([
+						'status' => 'error',
+						'message' => 'Error membaca Excel: ' . $e->getMessage()
+					]));
+			}
+		}
+	}
+
+	public function deleteDppk24($id_dppk, $lembaga_kode)
+	{
+		$this->db->where('id_dppk', $id_dppk);
+		$this->db->where('lembaga', $lembaga_kode);
+		$this->db->where('tahun', $this->tahun);
+		$this->db->delete('dppk');
+
+		$this->session->set_flashdata('ok', 'Data DPPK berhasil dihapus.');
+		redirect('admin/rab24detail/' . $lembaga_kode);
+	}
+
+	public function clearDppk24($lembaga_kode)
+	{
+		$this->db->where('lembaga', $lembaga_kode);
+		$this->db->where('tahun', $this->tahun);
+		$this->db->delete('dppk');
+
+		$this->session->set_flashdata('ok', 'Seluruh DPPK untuk lembaga ini berhasil dikosongkan.');
+		redirect('admin/rab24detail/' . $lembaga_kode);
+	}
+
+	public function uploadRab24($kode)
+	{
+		// Load library and helper
+		$this->load->helper('file');
+
+		// Upload config
+		$config['upload_path'] = 'vertical/assets/uploads/';
+		$config['allowed_types'] = 'xls|xlsx';
+		$config['max_size'] = 10240;
+
+		// Ensure directory exists
+		if (!is_dir($config['upload_path'])) {
+			mkdir($config['upload_path'], 0777, TRUE);
+		}
+
+		$this->load->library('upload', $config);
+
+		if (!$this->upload->do_upload('uploadFile')) {
+			$error = $this->upload->display_errors('', '');
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode([
+					'status' => 'error',
+					'message' => 'Upload Gagal: ' . $error
+				]));
+		} else {
+			$upload_data = $this->upload->data();
+			$file_path = $upload_data['full_path'];
+			
+			// Detect Excel extension and use proper reader
+			$ext = pathinfo($file_path, PATHINFO_EXTENSION);
+			if (strtolower($ext) === 'xls') {
+				$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+			} else {
+				$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+			}
+			
+			try {
+				$objPHPExcel = $reader->load($file_path);
+				$worksheet = $objPHPExcel->getActiveSheet();
+				$highestRow = $worksheet->getHighestDataRow();
+
+				// Check and add COA column if not exists
+				if (!$this->db->field_exists('coa', 'rab_sm24')) {
+					$this->db->query("ALTER TABLE rab_sm24 ADD COLUMN coa VARCHAR(50) DEFAULT NULL");
+				}
+				if (!$this->db->field_exists('coa', 'rab')) {
+					$this->db->query("ALTER TABLE rab ADD COLUMN coa VARCHAR(50) DEFAULT NULL");
+				}
+
+				// Check and add id_dppk column if not exists
+				if (!$this->db->field_exists('id_dppk', 'rab_sm24')) {
+					$this->db->query("ALTER TABLE rab_sm24 ADD COLUMN id_dppk VARCHAR(50) DEFAULT NULL");
+				}
+				if (!$this->db->field_exists('id_dppk', 'rab')) {
+					$this->db->query("ALTER TABLE rab ADD COLUMN id_dppk VARCHAR(50) DEFAULT NULL");
+				}
+
+				// Pre-fetch all DPPK records for this institution and year to avoid query in loop
+				$dppk_list = $this->db->get_where('dppk', ['lembaga' => $kode, 'tahun' => $this->tahun])->result();
+				$dppk_map = [];
+				foreach ($dppk_list as $d) {
+					$dppk_map[$d->id_dppk] = $d->kegiatan;
+				}
+
+				// Delete existing draft (rab_sm24) for this institution & year to overwrite
+				$this->db->where('lembaga', $kode);
+				$this->db->where('tahun', $this->tahun);
+				$this->db->delete('rab_sm24');
+
+				$insert_batch = [];
+				$max_codes = [];
+				$items_count = 0;
+
+				for ($row = 2; $row <= $highestRow; $row++) {
+					$raw_prog = $worksheet->getCell('B' . $row)->getValue();
+					$raw_keg = $worksheet->getCell('D' . $row)->getValue();
+					$raw_nama = $worksheet->getCell('I' . $row)->getValue();
+
+					// Skip empty rows (if B, D, or I is empty)
+					if ($raw_prog === null || $raw_prog === '' || $raw_keg === null || $raw_keg === '' || $raw_nama === null || $raw_nama === '') {
+						continue;
+					}
+
+					// Remove leading zeros for id_dppk lookup
+					$id_dppk = ltrim(trim(strval($raw_keg)), '0');
+					if ($id_dppk === '') {
+						$id_dppk = '0';
+					}
+
+					// Get kegiatan name from memory map or Excel fallback
+					$kegiatan = isset($dppk_map[$id_dppk]) ? $dppk_map[$id_dppk] : preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('E' . $row)->getValue()));
+
+					// Auto-generate the item code in memory
+					if (!isset($max_codes[$id_dppk])) {
+						$max_codes[$id_dppk] = 0;
+					}
+					$max_codes[$id_dppk]++;
+					$kodeBarang = sprintf("%03s", $max_codes[$id_dppk]);
+
+					$coa_val = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('G' . $row)->getValue()));
+					$nama_val = preg_replace('/[^\x20-\x7E]/', '', strval($raw_nama));
+					
+					// Sanitize numeric inputs (remove thousands separators if any)
+					$raw_qty = strval($worksheet->getCell('J' . $row)->getValue());
+					$qty_val = (float) preg_replace('/[^\x20-\x7E]/', '', $raw_qty);
+					
+					$satuan_val = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('K' . $row)->getValue()));
+					
+					$raw_harga = strval($worksheet->getCell('L' . $row)->getValue());
+					$harga_satuan_val = (float) preg_replace('/[^\x20-\x7E]/', '', $raw_harga);
+
+					$insert_batch[] = [
+						'id_rab' => $this->uuid->v4(),
+						'lembaga' => $kode,
+						'bidang' => '',
+						'jenis' => '',
+						'kode' => $kode . '...' . $id_dppk . '-' . $kodeBarang,
+						'nama' => $nama_val,
+						'rencana' => '',
+						'qty' => $qty_val,
+						'satuan' => $satuan_val,
+						'total' => $qty_val * $harga_satuan_val,
+						'harga_satuan' => $harga_satuan_val,
+						'tahun' => $this->tahun,
+						'at' => date('Y-m-d H:i'),
+						'snc' => 'belum',
+						'kode_pak' => $id_dppk,
+						'kegiatan' => $kegiatan,
+						'coa' => $coa_val,
+						'id_dppk' => $id_dppk
+					];
+					
+					$items_count++;
+				}
+
+				if (count($insert_batch) > 0) {
+					$this->db->insert_batch('rab_sm24', $insert_batch);
+				}
+
+				// Also ensure the status in rab_list is set to 'proses' so it shows up in the workflow
+				$check_list = $this->db->get_where('rab_list', ['lembaga' => $kode, 'tahun' => $this->tahun])->row();
+				if (!$check_list) {
+					$this->db->insert('rab_list', [
+						'lembaga' => $kode,
+						'tahun' => $this->tahun,
+						'status' => 'proses'
+					]);
+				} else {
+					$this->db->where('lembaga', $kode);
+					$this->db->where('tahun', $this->tahun);
+					$this->db->update('rab_list', ['status' => 'proses']);
+				}
+
+				delete_files($file_path);
+				$this->output
+					->set_content_type('application/json')
+					->set_output(json_encode([
+						'status' => 'success',
+						'message' => 'Import Excel Berhasil. Berhasil memproses ' . $items_count . ' item.'
+					]));
+			} catch (\Exception $e) {
+				$this->output
+					->set_content_type('application/json')
+					->set_output(json_encode([
+						'status' => 'error',
+						'message' => 'Error membaca Excel: ' . $e->getMessage()
+					]));
+			}
 		}
 	}
 

@@ -386,7 +386,7 @@ class AdminModel extends CI_Model
 
     public function getRabByDppk($lembaga, $tahun)
     {
-        $this->db->select('*');
+        $this->db->select('kode_pak');
         $this->db->from('rab_sm24');
         $this->db->where('lembaga', $lembaga);
         $this->db->where('tahun', $tahun);
