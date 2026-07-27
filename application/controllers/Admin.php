@@ -184,6 +184,11 @@ class Admin extends CI_Controller
 						data-id="' . $row->id_santri . '">
 					<i class="bx bx-sync"></i> Sync
 				</button>
+				<a href="' . base_url('admin/delete_santri/' . $row->id_santri) . '" 
+				   class="btn btn-sm btn-outline-danger btn-delete-santri" 
+				   data-nama="' . $escaped_nama . '">
+					<i class="bx bx-trash"></i> Hapus
+				</a>
 			</div>';
 
 			$output[] = [
@@ -755,6 +760,19 @@ class Admin extends CI_Controller
 		redirect('admin/santri');
 	}
 
+	public function delete_santri($id_santri)
+	{
+		$this->db->where('id_santri', $id_santri);
+		$this->db->delete('tb_santri');
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Data Santri berhasil dihapus');
+		} else {
+			$this->session->set_flashdata('error', 'Gagal menghapus data santri');
+		}
+		redirect('admin/santri');
+	}
+
 	public function sinkron_lembaga_batch()
 	{
 		// Fetch bearer token from settings
@@ -1006,6 +1024,17 @@ class Admin extends CI_Controller
 					$pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
 
 					$update_data = [
+						'nama'      => $result['nama'] ?? null,
+						'nisn'      => $result['nisn'] ?? null,
+						'nik'       => $result['nik'] ?? null,
+						'no_kk'     => $result['no_kk'] ?? null,
+						'jkl'       => $result['jenis_kelamin'] ?? null,
+						'tempat'    => $result['tempat_lahir'] ?? null,
+						'tanggal'   => $result['tanggal_lahir'] ?? null,
+						'anak_ke'   => !empty($result['anak_ke']) ? intval($result['anak_ke']) : null,
+						'jml_sdr'   => !empty($result['jml_sdr']) ? intval($result['jml_sdr']) : null,
+						'nis'       => $result['nis'] ?? null,
+						'aktif'     => 'Y',
 						't_formal'  => $lembaga_nama,
 						'jln'       => $result['alamat'] ?? null,
 						'rt'        => $result['rt'] ?? null,

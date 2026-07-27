@@ -59,23 +59,68 @@
                             </div>
                         </div>
 
+                        <style>
+                            .cursor-pointer {
+                                cursor: pointer;
+                            }
+                            .sortable:hover {
+                                background-color: rgba(0, 0, 0, 0.05);
+                            }
+                        </style>
+
+                        <!-- Top Controls: Per Page and Search -->
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-12 col-md-6 d-flex align-items-center gap-2 mb-2 mb-md-0">
+                                <span>Tampilkan</span>
+                                <select id="custom-per-page" class="form-select form-select-sm" style="width: 80px;">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                                <span>data</span>
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-md-end mb-2 mb-md-0">
+                                <div class="input-group input-group-sm" style="max-width: 300px;">
+                                    <span class="input-group-text bg-transparent"><i class="bx bx-search"></i></span>
+                                    <input type="text" id="custom-search" class="form-control" placeholder="Cari santri...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
                         <div class="table-responsive">
-                            <table id="example-santri" class="table table-striped table-bordered" style="width:100%">
-                                <thead>
+                            <table class="table table-striped table-bordered table-hover align-middle" style="width:100%" id="custom-santri-table">
+                                <thead class="table-light">
                                     <tr>
-                                        <th>No</th>
-                                        <th>NIS</th>
-                                        <th>Customer ID</th>
-                                        <th>Nama</th>
-                                        <th>Kelas Formal</th>
+                                        <th style="width: 50px;">No</th>
+                                        <th class="sortable cursor-pointer" data-column="1">NIS <i class="bx bx-sort text-muted"></i></th>
+                                        <th class="sortable cursor-pointer" data-column="2">Customer ID <i class="bx bx-sort text-muted"></i></th>
+                                        <th class="sortable cursor-pointer" data-column="3">Nama <i class="bx bx-sort-up text-dark"></i></th>
+                                        <th class="sortable cursor-pointer" data-column="4">Kelas Formal <i class="bx bx-sort text-muted"></i></th>
                                         <th>Tempat Kos</th>
                                         <th>Keterangan</th>
-                                        <th>Aksi</th>
+                                        <th style="width: 250px;">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="custom-santri-tbody">
+                                    <!-- Dynamic rows loaded here -->
                                 </tbody>
                             </table>
+                        </div>
+
+                        <!-- Bottom Controls: Info and Pagination -->
+                        <div class="row mt-3 align-items-center">
+                            <div class="col-12 col-md-6 text-center text-md-start mb-2 mb-md-0 text-muted small" id="custom-table-info">
+                                Menampilkan 0 sampai 0 dari 0 data
+                            </div>
+                            <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm mb-0" id="custom-pagination">
+                                        <!-- Dynamic pagination links loaded here -->
+                                    </ul>
+                                </nav>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -299,34 +344,210 @@
         var myKirimModal = new bootstrap.Modal(document.getElementById('modalKirimSantri'));
         var detailModal = new bootstrap.Modal(document.getElementById('modalDetailSantri'));
 
-        // Initialize Server-Side DataTable
-        $('#example-santri').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "<?= base_url(($controller ?? 'admin') . '/santri_list_ajax') ?>",
-                "type": "POST",
-                "data": function(d) {
-                    d.filter_lembaga = $('#filter-lembaga').val();
-                    d.filter_cost = $('#filter-cost').val();
-                    d.filter_keterangan = $('#filter-keterangan').val();
+        var currentPage = 1;
+        var perPage = 10;
+        var sortColumn = 3; // Default Sort: Nama
+        var sortDir = 'asc'; // Default Sort Dir: asc
+        var searchQuery = '';
+
+        function loadSantriData() {
+            var filterLembaga = $('#filter-lembaga').val();
+            var filterCost = $('#filter-cost').val();
+            var filterKeterangan = $('#filter-keterangan').val();
+            
+            var start = (currentPage - 1) * perPage;
+
+            var postData = {
+                draw: 1,
+                start: start,
+                length: perPage,
+                search: {
+                    value: searchQuery
+                },
+                order: [
+                    {
+                        column: sortColumn,
+                        dir: sortDir
+                    }
+                ],
+                filter_lembaga: filterLembaga,
+                filter_cost: filterCost,
+                filter_keterangan: filterKeterangan
+            };
+
+            $('#custom-santri-tbody').html(`
+                <tr>
+                    <td colspan="8" class="text-center py-4">
+                        <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
+                        <span class="ms-2">Memuat data...</span>
+                    </td>
+                </tr>
+            `);
+
+            $.ajax({
+                url: "<?= base_url(($controller ?? 'admin') . '/santri_list_ajax') ?>",
+                type: "POST",
+                data: postData,
+                dataType: "json",
+                success: function(response) {
+                    var tbody = $('#custom-santri-tbody');
+                    tbody.empty();
+
+                    if (!response.data || response.data.length === 0) {
+                        tbody.html(`
+                            <tr>
+                                <td colspan="8" class="text-center text-muted py-4">Tidak ada data santri yang ditemukan.</td>
+                            </tr>
+                        `);
+                        $('#custom-table-info').text('Menampilkan 0 sampai 0 dari 0 data');
+                        $('#custom-pagination').empty();
+                        return;
+                    }
+
+                    response.data.forEach(function(row) {
+                        tbody.append(`
+                            <tr>
+                                <td>${row.no}</td>
+                                <td class="font-monospace">${row.nis}</td>
+                                <td class="font-monospace">${row.cost_id}</td>
+                                <td class="fw-bold">${row.nama}</td>
+                                <td>${row.kelas_formal}</td>
+                                <td>${row.tempat_kos}</td>
+                                <td>${row.status_ket}</td>
+                                <td>${row.aksi}</td>
+                            </tr>
+                        `);
+                    });
+
+                    var from = start + 1;
+                    var to = start + response.data.length;
+                    var total = response.recordsFiltered;
+                    $('#custom-table-info').text(`Menampilkan ${from} sampai ${to} dari ${total} data (disaring dari ${response.recordsTotal} total data)`);
+
+                    renderPagination(total);
+                },
+                error: function() {
+                    $('#custom-santri-tbody').html(`
+                        <tr>
+                            <td colspan="8" class="text-center text-danger py-4">
+                                <i class="bx bx-error-circle fs-4"></i><br>
+                                Gagal memuat data dari server.
+                            </td>
+                        </tr>
+                    `);
                 }
-            },
-            "columns": [
-                { "data": "no", "orderable": false },
-                { "data": "nis" },
-                { "data": "cost_id" },
-                { "data": "nama" },
-                { "data": "kelas_formal" },
-                { "data": "tempat_kos" },
-                { "data": "status_ket" },
-                { "data": "aksi", "orderable": false }
-            ]
+            });
+        }
+
+        function renderPagination(totalRecords) {
+            var totalPages = Math.ceil(totalRecords / perPage);
+            var pagination = $('#custom-pagination');
+            pagination.empty();
+
+            if (totalPages <= 1) return;
+
+            var prevClass = (currentPage === 1) ? 'disabled' : '';
+            pagination.append(`
+                <li class="page-item ${prevClass}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage - 1})">Prev</a>
+                </li>
+            `);
+
+            var startPage = Math.max(1, currentPage - 2);
+            var endPage = Math.min(totalPages, currentPage + 2);
+
+            if (startPage > 1) {
+                pagination.append(`
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(1)">1</a>
+                    </li>
+                `);
+                if (startPage > 2) {
+                    pagination.append(`<li class="page-item disabled"><span class="page-link">...</span></li>`);
+                }
+            }
+
+            for (var i = startPage; i <= endPage; i++) {
+                var activeClass = (i === currentPage) ? 'active' : '';
+                pagination.append(`
+                    <li class="page-item ${activeClass}">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${i})">${i}</a>
+                    </li>
+                `);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    pagination.append(`<li class="page-item disabled"><span class="page-link">...</span></li>`);
+                }
+                pagination.append(`
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="changePage(${totalPages})">${totalPages}</a>
+                    </li>
+                `);
+            }
+
+            var nextClass = (currentPage === totalPages) ? 'disabled' : '';
+            pagination.append(`
+                <li class="page-item ${nextClass}">
+                    <a class="page-link" href="javascript:void(0)" onclick="changePage(${currentPage + 1})">Next</a>
+                </li>
+            `);
+        }
+
+        window.changePage = function(page) {
+            currentPage = page;
+            loadSantriData();
+        };
+
+        // Load initially
+        loadSantriData();
+
+        // Sort behavior
+        $('#custom-santri-table th.sortable').on('click', function() {
+            var col = $(this).data('column');
+            if (sortColumn === col) {
+                sortDir = (sortDir === 'asc') ? 'desc' : 'asc';
+            } else {
+                sortColumn = col;
+                sortDir = 'asc';
+            }
+
+            $('#custom-santri-table th.sortable').each(function() {
+                var c = $(this).data('column');
+                var icon = $(this).find('i');
+                icon.removeClass('bx-sort-up bx-sort-down text-dark').addClass('bx-sort text-muted');
+                if (c === sortColumn) {
+                    icon.removeClass('bx-sort text-muted').addClass(sortDir === 'asc' ? 'bx-sort-up text-dark' : 'bx-sort-down text-dark');
+                }
+            });
+
+            currentPage = 1;
+            loadSantriData();
         });
 
-        // Trigger redraw on filter change
+        // Search Input (with debounce)
+        var searchTimeout = null;
+        $('#custom-search').on('input', function() {
+            clearTimeout(searchTimeout);
+            searchQuery = $(this).val();
+            searchTimeout = setTimeout(function() {
+                currentPage = 1;
+                loadSantriData();
+            }, 400);
+        });
+
+        // Per Page Change
+        $('#custom-per-page').on('change', function() {
+            perPage = parseInt($(this).val());
+            currentPage = 1;
+            loadSantriData();
+        });
+
+        // Filters
         $('#filter-lembaga, #filter-cost, #filter-keterangan').on('change', function() {
-            $('#example-santri').DataTable().draw();
+            currentPage = 1;
+            loadSantriData();
         });
 
         // Event delegation to handle click edit cost_id dynamically loaded
@@ -356,7 +577,7 @@
                 success: function(response) {
                     if (response.status === 'success') {
                         alert(response.message);
-                        $('#example-santri').DataTable().draw(false);
+                        loadSantriData();
                     } else {
                         alert('Gagal: ' + response.message);
                         btn.prop('disabled', false).html('<i class="bx bx-sync"></i> Sync');
@@ -365,6 +586,27 @@
                 error: function() {
                     alert('Terjadi kesalahan server.');
                     btn.prop('disabled', false).html('<i class="bx bx-sync"></i> Sync');
+                }
+            });
+        });
+
+        // Event delegation to handle delete confirmation safely
+        $(document).on('click', '.btn-delete-santri', function(e) {
+            e.preventDefault();
+            var href = $(this).attr('href');
+            var name = $(this).data('nama');
+            Swal.fire({
+                title: 'Yakin ingin menghapus ?',
+                text: 'Data santri "' + name + '" akan dihapus secara permanen dari sistem.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = href;
                 }
             });
         });
