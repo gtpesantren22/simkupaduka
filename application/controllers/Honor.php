@@ -468,18 +468,20 @@ class Honor extends CI_Controller
         // 2. AMBIL DATA DARI DATABASE (FINAL FIX)
         // ======================================================
 
-        $this->flat->select('
+        $this->flat->select("
             g.guru_id as ptk_id,
             g.nama,
             g.sik as status_pegawai,
             g.kriteria as jenis_kesantrian,
             s.id as lembaga_id,
-            s.nama as nama_lembaga
-        ');
+            s.nama as nama_lembaga,
+            h.id as honor_row_id
+        ");
 
         $this->flat->from('guru g');
         $this->flat->join('registrasi r', 'r.id_guru = g.guru_id', 'left');
         $this->flat->join('satminkal s', 's.id = r.id_lembaga', 'left');
+        $this->flat->join('honor h', "h.guru_id = g.guru_id AND h.honor_id = '$honorID' AND h.lembaga = '$satminkal_terpilih'", 'left');
 
         // SEARCH
         if (!empty($search)) {
@@ -513,8 +515,13 @@ class Honor extends CI_Controller
                     'nama' => $q['nama'],
                     'status_pegawai' => $q['status_pegawai'], // dari sik
                     'jenis_kesantrian' => $q['jenis_kesantrian'],
+                    'honor_row_id' => $q['honor_row_id'] ?? null,
                     'registrasi_ptk' => []
                 ];
+            } else {
+                if (!empty($q['honor_row_id'])) {
+                    $temp[$ptk_id]['honor_row_id'] = $q['honor_row_id'];
+                }
             }
 
             if (!empty($q['lembaga_id'])) {
@@ -537,29 +544,49 @@ class Honor extends CI_Controller
 
         foreach ($rawData as $row) {
 
-            if (($row['status_pegawai'] ?? '') !== 'PTTY') {
-                continue;
+            // If not in honor table, check status_pegawai === PTTY
+            if (empty($row['honor_row_id'])) {
+                if (($row['status_pegawai'] ?? '') !== 'PTTY') {
+                    continue;
+                }
             }
 
             $match = false;
             $satminkal = '-';
             $satminkalId = null;
 
-            foreach ($row['registrasi_ptk'] ?? [] as $r) {
-
-                $lembagaId = $r['lembaga']['lembaga_id'] ?? null;
-
-                if ($satminkalId === null) {
-                    $satminkal = $r['lembaga']['nama'] ?? '-';
-                    $satminkalId = $lembagaId;
+            if (!empty($row['honor_row_id'])) {
+                $match = true;
+                foreach ($row['registrasi_ptk'] ?? [] as $r) {
+                    if ($r['lembaga']['lembaga_id'] == $satminkal_terpilih) {
+                        $satminkal = $r['lembaga']['nama'] ?? '-';
+                        $satminkalId = $r['lembaga']['lembaga_id'];
+                        break;
+                    }
                 }
+                if ($satminkal === '-') {
+                    if (!empty($row['registrasi_ptk'])) {
+                        $satminkal = $row['registrasi_ptk'][0]['lembaga']['nama'] ?? '-';
+                        $satminkalId = $row['registrasi_ptk'][0]['lembaga']['lembaga_id'];
+                    }
+                }
+            } else {
+                foreach ($row['registrasi_ptk'] ?? [] as $r) {
 
-                // FIX FILTER DISINI
-                if ($lembagaId == $satminkal_terpilih) {
-                    $match = true;
-                    $satminkal = $r['lembaga']['nama'] ?? '-';
-                    $satminkalId = $lembagaId;
-                    break;
+                    $lembagaId = $r['lembaga']['lembaga_id'] ?? null;
+
+                    if ($satminkalId === null) {
+                        $satminkal = $r['lembaga']['nama'] ?? '-';
+                        $satminkalId = $lembagaId;
+                    }
+
+                    // FIX FILTER DISINI
+                    if ($lembagaId == $satminkal_terpilih) {
+                        $match = true;
+                        $satminkal = $r['lembaga']['nama'] ?? '-';
+                        $satminkalId = $lembagaId;
+                        break;
+                    }
                 }
             }
 
@@ -576,7 +603,7 @@ class Honor extends CI_Controller
         // ======================================================
 
         $totalTendik = count($filtered);
-        $lastPage = $perPage > 0 ? ceil($totalTendik / $perPage) : 0;
+        $lastPage = $perPage > 0 ? (int) ceil($totalTendik / $perPage) : 0;
 
         $offset = ($page - 1) * $perPage;
         $pagedData = array_slice($filtered, $offset, $perPage);

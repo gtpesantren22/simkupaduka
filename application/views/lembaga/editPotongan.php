@@ -241,8 +241,8 @@
 
         const ul = pag.querySelector('ul');
 
-        const current = meta.page;
-        const last = meta.lastPage;
+        const current = Number(meta.page);
+        const last = Number(meta.lastPage);
         const delta = 1;
 
         function addButton(label, page = null, active = false, disabled = false) {
