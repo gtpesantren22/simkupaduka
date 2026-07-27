@@ -1315,7 +1315,7 @@ class Admin extends CI_Controller
 			'tahun' => $this->tahun
 		];
 
-		$cek = $this->model->getBy('lembaga', 'kode', $kode)->num_rows();
+		$cek = $this->model->getBy2('lembaga', 'kode', $kode, 'tahun', $this->tahun)->num_rows();
 		if ($cek > 0) {
 			$this->session->set_flashdata('error', 'Maaf Kode Sudah dipakai');
 			redirect('admin/kode');
@@ -3530,7 +3530,7 @@ Updater : ' . $this->user . '
 					'harga_satuan' => $key->harga_satuan,
 					'total' => $key->total,
 					'tahun' => $key->tahun,
-					'id_dppk'=> $key->id_dppk,
+					'id_dppk' => $key->id_dppk,
 					'at' => $key->at,
 					'coa' => isset($key->coa) ? $key->coa : NULL
 				];
@@ -3647,7 +3647,7 @@ Terimakasih';
 		} else {
 			$upload_data = $this->upload->data();
 			$file_path = $upload_data['full_path'];
-			
+
 			// Detect Excel extension and use proper reader
 			$ext = pathinfo($file_path, PATHINFO_EXTENSION);
 			if (strtolower($ext) === 'xls') {
@@ -3782,7 +3782,7 @@ Terimakasih';
 		} else {
 			$upload_data = $this->upload->data();
 			$file_path = $upload_data['full_path'];
-			
+
 			// Detect Excel extension and use proper reader
 			$ext = pathinfo($file_path, PATHINFO_EXTENSION);
 			if (strtolower($ext) === 'xls') {
@@ -3790,7 +3790,7 @@ Terimakasih';
 			} else {
 				$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
 			}
-			
+
 			try {
 				$objPHPExcel = $reader->load($file_path);
 				$worksheet = $objPHPExcel->getActiveSheet();
@@ -3856,13 +3856,13 @@ Terimakasih';
 
 					$coa_val = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('G' . $row)->getValue()));
 					$nama_val = preg_replace('/[^\x20-\x7E]/', '', strval($raw_nama));
-					
+
 					// Sanitize numeric inputs (remove thousands separators if any)
 					$raw_qty = strval($worksheet->getCell('J' . $row)->getValue());
 					$qty_val = (float) preg_replace('/[^\x20-\x7E]/', '', $raw_qty);
-					
+
 					$satuan_val = preg_replace('/[^\x20-\x7E]/', '', strval($worksheet->getCell('K' . $row)->getValue()));
-					
+
 					$raw_harga = strval($worksheet->getCell('L' . $row)->getValue());
 					$harga_satuan_val = (float) preg_replace('/[^\x20-\x7E]/', '', $raw_harga);
 
@@ -3886,7 +3886,7 @@ Terimakasih';
 						'coa' => $coa_val,
 						'id_dppk' => $id_dppk
 					];
-					
+
 					$items_count++;
 				}
 
