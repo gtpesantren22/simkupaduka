@@ -1331,6 +1331,41 @@ class Admin extends CI_Controller
 		}
 	}
 
+	public function lembagaEdit()
+	{
+		$id_lembaga = $this->input->post('id_lembaga', true);
+		$data = [
+			'kode' => $this->input->post('kode', true),
+			'nama' => $this->input->post('nama', true),
+			'pj' => $this->input->post('pj', true),
+			'hp' => $this->input->post('hp', true),
+			'hp_kep' => $this->input->post('hp_kep', true),
+			'waktu' => $this->input->post('waktu', true),
+			'lv' => $this->input->post('lv', true)
+		];
+
+		$this->model->update('lembaga', $data, 'id_lembaga', $id_lembaga);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Data Lembaga berhasil diperbarui');
+		} else {
+			$this->session->set_flashdata('error', 'Tidak ada perubahan data');
+		}
+		redirect('admin/kode');
+	}
+
+	public function lembagaDelete($id_lembaga)
+	{
+		$this->db->where('id_lembaga', $id_lembaga);
+		$this->db->delete('lembaga');
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Data Lembaga berhasil dihapus');
+		} else {
+			$this->session->set_flashdata('error', 'Data Lembaga gagal dihapus');
+		}
+		redirect('admin/kode');
+	}
+
 	public function bidangAdd()
 	{
 		$kode = $this->input->post('kode', true);

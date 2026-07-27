@@ -42,13 +42,13 @@
                             <h6 class="mb-3 text-center">Daftar Kode Lembaga</h6>
                         </div>
                         <div class="table-responsive">
-                            <table id="example" class="table table-striped table-bordered" style="width:100%">
+                            <table id="example" class="table table-striped table-bordered align-middle" style="width:100%">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Kode</th>
                                         <th>Nama Lembaga</th>
-                                        <!-- <th>Act</th> -->
+                                        <th>Act</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -57,15 +57,67 @@
                                     foreach ($lembaga as $a) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><?= $a->kode ?></td>
-                                            <td><?= $a->nama ?></td>
-                                            <!-- <td>
-                                            <a data-toggle="modal" data-target="#modal_del<?= $a->id_lembaga; ?>"
-                                                href="#"><i class="bx bx-trash"></i> </a> |
-                                            <a data-toggle="modal" data-target="#m<?= $a->id_lembaga; ?>" href="#"><i
-                                                    class="bx bx-edit"></i> </a>
-                                        </td> -->
+                                            <td><?= htmlspecialchars($a->kode) ?></td>
+                                            <td><?= htmlspecialchars($a->nama) ?></td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <a href="#" class="btn btn-warning btn-sm text-dark" data-bs-toggle="modal" data-bs-target="#editLembaga<?= $a->id_lembaga ?>"><i class="bx bx-edit"></i> Edit</a>
+                                                    <a href="<?= base_url('admin/lembagaDelete/' . $a->id_lembaga) ?>" class="btn btn-danger btn-sm tbl-confirm" value="Hapus data lembaga ini?"><i class="bx bx-trash"></i> Hapus</a>
+                                                </div>
+                                            </td>
                                         </tr>
+
+                                        <!-- Modal Edit Lembaga -->
+                                        <div class="modal fade" id="editLembaga<?= $a->id_lembaga ?>" tabindex="-1" aria-labelledby="editLembagaLabel<?= $a->id_lembaga ?>" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
+                                                <div class="modal-content text-start">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editLembagaLabel<?= $a->id_lembaga ?>">Edit Data Lembaga: <?= htmlspecialchars($a->nama) ?></h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <?= form_open_multipart('admin/lembagaEdit'); ?>
+                                                    <input type="hidden" name="id_lembaga" value="<?= $a->id_lembaga ?>">
+                                                    <div class="modal-body">
+                                                        <div class="form-group mb-2">
+                                                            <label for="">Kode</label>
+                                                            <input type="text" name="kode" class="form-control" value="<?= htmlspecialchars($a->kode) ?>" required>
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="">Nama Lembaga</label>
+                                                            <input type="text" name="nama" class="form-control" value="<?= htmlspecialchars($a->nama) ?>" required>
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="">Penanggungjawab</label>
+                                                            <input type="text" name="pj" class="form-control" value="<?= htmlspecialchars($a->pj) ?>" required>
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="">No. HP KPA</label>
+                                                            <input type="number" name="hp" class="form-control" value="<?= htmlspecialchars($a->hp) ?>" required>
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="">No. HP Kepala</label>
+                                                            <input type="number" name="hp_kep" class="form-control" value="<?= htmlspecialchars($a->hp_kep) ?>" required>
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="">Waktu Pelaksaan</label>
+                                                            <input type="text" name="waktu" class="form-control" value="<?= htmlspecialchars($a->waktu) ?>" required>
+                                                        </div>
+                                                        <div class="form-group mb-2">
+                                                            <label for="">Level</label>
+                                                            <select name="lv" class="form-control" required>
+                                                                <option value="ps" <?= $a->lv === 'ps' ? 'selected' : '' ?>>Pesantren</option>
+                                                                <option value="lf" <?= $a->lv === 'lf' ? 'selected' : '' ?>>Lembaga Formal</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Perbarui Data</button>
+                                                    </div>
+                                                    <?= form_close(); ?>
+                                                </div>
+                                            </div>
+                                        </div>
                                     <?php endforeach; ?>
                                 </tbody>
                             </table>

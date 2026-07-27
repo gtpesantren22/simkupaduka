@@ -43,9 +43,9 @@ class Rab extends CI_Controller
 		foreach ($dataprogram as $dtpr) {
 			$total = $this->db->query("SELECT SUM(total) as total FROM rab WHERE lembaga = '$kode' AND tahun = '$this->tahun' AND id_dppk = '$dtpr->id_dppk' GROUP BY id_dppk ")->row();
 			$kdprog = $dtpr->id_dppk;
-			$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kdprog' AND tahun = '$this->tahun' ")->row();
-			$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' ")->row();
-			$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' ")->row();
+			$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kdprog' AND tahun = '$this->tahun' AND lembaga = '$kode' ")->row();
+			$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' AND lembaga = '$kode' ")->row();
+			$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' AND lembaga = '$kode' ")->row();
 			$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
 			$program[] = [
 				'program' => $dtpr->program,
