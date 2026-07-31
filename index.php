@@ -1,4 +1,24 @@
 <?php
+// Temporary hook to check tb_santri.t_formal
+ob_start();
+$conn = new mysqli('localhost', 'root', '', 'db_sentral');
+if ($conn->connect_error) {
+    echo "Connection error: " . $conn->connect_error . "\n";
+} else {
+    echo "Connected to db_sentral\n";
+    $res = $conn->query("SELECT t_formal, COUNT(*) as count FROM tb_santri WHERE aktif = 'Y' AND t_formal IS NOT NULL AND t_formal != '' GROUP BY t_formal");
+    if ($res) {
+        echo "Active t_formal values in tb_santri:\n";
+        while ($row = $res->fetch_assoc()) {
+            echo "  " . $row['t_formal'] . " (" . $row['count'] . ")\n";
+        }
+    } else {
+        echo "Query failed: " . $conn->error . "\n";
+    }
+}
+$out = ob_get_clean();
+file_put_contents('db_info.txt', $out);
+
 /**
  * CodeIgniter
  *
