@@ -62,47 +62,39 @@
                     <div class="card-body">
                         <form action="" id="search-form">
                             <div class="row">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="">Jenjang</label>
-                                        <select name="t_formal" id="t_formal" class="form-control" required>
-                                            <option value="">Pilih Lembaga</option>
-                                            <?php foreach ($lmbFr as $kl) { ?>
-                                                <option value="<?= $kl->nama ?>"><?= $kl->nama ?>
-                                                </option>
-                                            <?php } ?>
-                                            <option value="MAHASISWA">Mahasiswa</option>
-                                        </select>
-                                    </div><!-- /.input group -->
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label for="">Kelas</label>
-                                        <select name="k_formal" id="k_formal" class="form-control">
-                                            <option value="">- pilih kelas -</option>
-                                        </select>
-                                    </div><!-- /.input group -->
-                                </div>
+                                 <div class="col-md-5">
+                                     <div class="form-group">
+                                         <label for="">Jenjang</label>
+                                         <select name="t_formal" id="t_formal" class="form-control" required>
+                                             <option value="">Pilih Lembaga</option>
+                                             <?php foreach ($lmbFr as $kl) { ?>
+                                                 <option value="<?= $kl->nama ?>"><?= $kl->nama ?>
+                                                 </option>
+                                             <?php } ?>
+                                             <option value="MAHASISWA">Mahasiswa</option>
+                                         </select>
+                                     </div><!-- /.input group -->
+                                 </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="">Tahun</label>
-                                        <select name="tahun" id="tahun" class="form-control" required>
-                                            <option value=""> --pilih tahun-- </option>
-                                            <?php foreach ($tahunData as $thn) { ?>
-                                                <option value="<?= $thn->nama_tahun ?>"><?= $thn->nama_tahun ?></option>
-                                            <?php } ?>
-                                        </select>
-                                    </div><!-- /.input group -->
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-group">
-                                        <label for="">&nbsp;</label><br>
-                                        <button type="submit" class="btn btn-block btn-success"><span class="fa fa-search">Cek</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
+                                 <div class="col-md-5">
+                                     <div class="form-group">
+                                         <label for="">Tahun</label>
+                                         <select name="tahun" id="tahun" class="form-control" required>
+                                             <option value=""> --pilih tahun-- </option>
+                                             <?php foreach ($tahunData as $thn) { ?>
+                                                 <option value="<?= $thn->nama_tahun ?>"><?= $thn->nama_tahun ?></option>
+                                             <?php } ?>
+                                         </select>
+                                     </div><!-- /.input group -->
+                                 </div>
+                                 <div class="col-md-2">
+                                     <div class="form-group">
+                                         <label for="">&nbsp;</label><br>
+                                         <button type="submit" class="btn btn-block btn-success" style="width: 100%;"><span class="fa fa-search">Cek</span></button>
+                                     </div>
+                                 </div>
+                             </div>
+                         </form>
                         <hr>
                         <div id="search-results"></div>
                     </div>
@@ -130,13 +122,11 @@
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
                     showLoadingIndicator();
-                    var k_formal = document.getElementById('k_formal').value;
                     var t_formal = document.getElementById('t_formal').value;
                     var tahun = document.getElementById('tahun').value;
 
                     var formData = new FormData();
                     formData.append('t_formal', t_formal);
-                    formData.append('k_formal', k_formal);
                     formData.append('tahun', tahun);
 
                     fetch("<?= base_url('kasir/cekKelas'); ?>", {
