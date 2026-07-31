@@ -2659,6 +2659,45 @@ https://simkupaduka.ppdwk.com/';
 		}
 	}
 
+	public function addUser()
+	{
+		$nama = strtoupper($this->input->post('nama', true));
+		$username = $this->input->post('username', true);
+		$password = $this->input->post('password', true);
+		$lembaga = $this->input->post('lembaga', true);
+		$aktif = $this->input->post('aktif', true);
+		$level = $this->input->post('level', true);
+
+		// Check if username already exists
+		$existing = $this->db->get_where('user', ['username' => $username])->row();
+		if ($existing) {
+			$this->session->set_flashdata('error', 'Username sudah terdaftar! Gunakan username lain.');
+			redirect('admin/akun');
+		}
+
+		$data = [
+			'id_user' => $this->uuid->v4(),
+			'nama' => $nama,
+			'username' => $username,
+			'password' => password_hash($password, PASSWORD_BCRYPT),
+			'level' => $level,
+			'aktif' => $aktif,
+			'lembaga' => $lembaga,
+			'surat' => '',
+			'foto' => '',
+		];
+
+		$this->db->insert('user', $data);
+
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Akun berhasil ditambahkan');
+			redirect('admin/akun');
+		} else {
+			$this->session->set_flashdata('error', 'Gagal menambahkan akun');
+			redirect('admin/akun');
+		}
+	}
+
 	public function delUser($id)
 	{
 		$this->model->delete('user', 'id_user', $id);

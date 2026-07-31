@@ -22,6 +22,103 @@
             <div class="col-12 col-lg-12">
                 <div class="card radius-10">
                     <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div>
+                                <button type="button" class="btn btn-primary btn-sm radius-30 px-4" data-bs-toggle="modal" data-bs-target="#tambahUser"><i class="bx bx-plus-circle"></i> Tambah User</button>
+                            </div>
+                        </div>
+
+                        <!-- Modal Tambah User -->
+                        <div class="modal fade" id="tambahUser" tabindex="-1" role="dialog" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Tambah User Baru</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <form action="<?= base_url('admin/addUser'); ?>" method="post">
+                                        <div class="modal-body">
+                                            <div class="item form-group mb-3 row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align">Nama Lengkap <span class="required">*</span></label>
+                                                <div class="col-md-9 col-sm-9">
+                                                    <input type="text" name="nama" class="form-control" placeholder="Nama Lengkap" required>
+                                                </div>
+                                            </div>
+                                            <div class="item form-group mb-3 row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align">Username <span class="required">*</span></label>
+                                                <div class="col-md-9 col-sm-9">
+                                                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                                                </div>
+                                            </div>
+                                            <div class="item form-group mb-3 row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align">Password <span class="required">*</span></label>
+                                                <div class="col-md-9 col-sm-9">
+                                                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                                                </div>
+                                            </div>
+                                            <div class="item form-group mb-3 row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align">Pilih Lembaga <span class="required">*</span></label>
+                                                <div class="col-md-9 col-sm-9">
+                                                    <select name="lembaga" class="form-control text-dark" required>
+                                                        <option value=""> -pilih lembaga- </option>
+                                                        <?php foreach ($lembaga as $a2) { ?>
+                                                            <option value="<?= $a2->kode ?>"><?= $a2->kode ?>. <?= $a2->nama ?></option>
+                                                        <?php } ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="item form-group mb-3 row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align">Aktivasi akun <span class="required">*</span></label>
+                                                <div class="col-md-9 col-sm-9">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="aktif" id="aktifY" value="Y" checked>
+                                                        <label class="form-check-label" for="aktifY">Aktif</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="aktif" id="aktifT" value="T">
+                                                        <label class="form-check-label" for="aktifT">Tidak</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="item form-group mb-3 row">
+                                                <label class="col-form-label col-md-3 col-sm-3 label-align">Level akun <span class="required">*</span></label>
+                                                <div class="col-md-9 col-sm-9">
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="level" id="levelAdmin" value="admin">
+                                                        <label class="form-check-label" for="levelAdmin">Admin Utama</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="level" id="levelLembaga" value="lembaga" checked>
+                                                        <label class="form-check-label" for="levelLembaga">Admin Lembaga</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="level" id="levelKasir" value="kasir">
+                                                        <label class="form-check-label" for="levelKasir">Kasir/Teller</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="level" id="levelKepala" value="kepala">
+                                                        <label class="form-check-label" for="levelKepala">Kepala Pesantren</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="level" id="levelAccount" value="account">
+                                                        <label class="form-check-label" for="levelAccount">Accounting</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="level" id="levelBunda" value="bunda">
+                                                        <label class="form-check-label" for="levelBunda">Bendahara Utama</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Simpan data</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
                             <table id="example" class="table table-striped table-bordered" style="width:100%">
                                 <thead>
