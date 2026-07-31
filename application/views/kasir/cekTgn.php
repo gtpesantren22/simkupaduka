@@ -114,39 +114,58 @@
 </div>
 <!--end page wrapper -->
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     function showLoadingIndicator() {
         document.getElementById('loading-indicator').style.display = 'block';
     }
 
-    // Menyembunyikan indikator loading setelah proses Ajax selesai
     function hideLoadingIndicator() {
         document.getElementById('loading-indicator').style.display = 'none';
     }
 
-    $(document).ready(function() {
-        $('#search-form').submit(function(e) {
-            e.preventDefault();
-            showLoadingIndicator();
-            var k_formal = $('#k_formal').val();
-            var t_formal = $('#t_formal').val();
-            var tahun = $('#tahun').val();
+    (function() {
+        function initSearchForm() {
+            var form = document.getElementById('search-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    showLoadingIndicator();
+                    var k_formal = document.getElementById('k_formal').value;
+                    var t_formal = document.getElementById('t_formal').value;
+                    var tahun = document.getElementById('tahun').value;
 
-            $.ajax({
-                url: "<?= base_url('kasir/cekKelas'); ?>",
-                type: "POST",
-                data: {
-                    t_formal: t_formal,
-                    k_formal: k_formal,
-                    tahun: tahun
-                },
-                dataType: "html",
-                success: function(response) {
-                    $('#search-results').html(response);
-                    hideLoadingIndicator()
-                }
-            });
-        });
-    });
+                    var formData = new FormData();
+                    formData.append('t_formal', t_formal);
+                    formData.append('k_formal', k_formal);
+                    formData.append('tahun', tahun);
+
+                    fetch("<?= base_url('kasir/cekKelas'); ?>", {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(function(response) {
+                        return response.text();
+                    })
+                    .then(function(html) {
+                        if (window.jQuery) {
+                            window.jQuery('#search-results').html(html);
+                        } else {
+                            document.getElementById('search-results').innerHTML = html;
+                        }
+                        hideLoadingIndicator();
+                    })
+                    .catch(function(err) {
+                        console.error(err);
+                        hideLoadingIndicator();
+                    });
+                });
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSearchForm);
+        } else {
+            initSearchForm();
+        }
+    })();
 </script>
