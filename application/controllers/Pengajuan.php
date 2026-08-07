@@ -138,13 +138,14 @@ class Pengajuan extends CI_Controller
 			FROM rab 
 			LEFT JOIN rab_sm24 ON rab.kode = rab_sm24.kode AND rab_sm24.tahun = '$this->tahun'
 			WHERE rab.id_dppk = '$id_dppk' 
+			AND rab.lembaga = '$this->lembaga'
 			AND rab.tahun = '$this->tahun'
 		")->result();
 
 		// Calculate sisa for this program
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$id_dppk' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$id_dppk' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$id_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
 		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
 		echo json_encode([
@@ -179,9 +180,9 @@ class Pengajuan extends CI_Controller
 
 		$dataSsh = $this->model->getBy('ssh', 'kode', $ssh)->row();
 
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
 		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
 		if (($vol * $dataSsh->harga) > $sisa) {
@@ -267,9 +268,9 @@ class Pengajuan extends CI_Controller
 			redirect('pengajuan/detail/' . $kode_pengajuan);
 		}
 
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
 		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
 		if (($vol * $harga_satuan) > $sisa) {
@@ -355,9 +356,9 @@ class Pengajuan extends CI_Controller
 			exit();
 		}
 
-		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' ")->row();
-		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
-		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' ")->row();
+		$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kegiatan_dppk' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
+		$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kegiatan_dppk-%' AND tahun = '$this->tahun' AND lembaga = '$this->lembaga' ")->row();
 		$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
 
 		if (($vol * $harga) > $sisa) {
