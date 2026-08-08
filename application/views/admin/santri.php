@@ -28,7 +28,7 @@
                     <div class="card-body">
                         <!-- Filters -->
                         <div class="row g-3 mb-4">
-                            <div class="col-12 col-md-4 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-3">
                                 <label class="form-label font-weight-bold">Filter Lembaga</label>
                                 <select id="filter-lembaga" class="form-select form-select-sm">
                                     <option value="">Semua Lembaga</option>
@@ -37,7 +37,7 @@
                                     <?php endforeach; ?>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-4 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-2">
                                 <label class="form-label font-weight-bold">Filter Customer ID</label>
                                 <select id="filter-cost" class="form-select form-select-sm">
                                     <option value="">Semua Status</option>
@@ -45,7 +45,7 @@
                                     <option value="tidak">Tidak Ada Customer ID</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-4 col-lg-3">
+                            <div class="col-12 col-md-6 col-lg-3">
                                 <label class="form-label font-weight-bold">Filter Keterangan</label>
                                 <select id="filter-keterangan" class="form-select form-select-sm">
                                     <option value="">Semua Status</option>
@@ -55,6 +55,14 @@
                                     <option value="3">Gratis</option>
                                     <option value="4">Berhenti</option>
                                     <option value="5">Sakit</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6 col-lg-2">
+                                <label class="form-label font-weight-bold">Filter Keaktifan</label>
+                                <select id="filter-status" class="form-select form-select-sm">
+                                    <option value="Y">Aktif</option>
+                                    <option value="N">Non-Aktif</option>
+                                    <option value="all">Semua</option>
                                 </select>
                             </div>
                         </div>
@@ -354,6 +362,7 @@
             var filterLembaga = $('#filter-lembaga').val();
             var filterCost = $('#filter-cost').val();
             var filterKeterangan = $('#filter-keterangan').val();
+            var filterStatus = $('#filter-status').val();
             
             var start = (currentPage - 1) * perPage;
 
@@ -372,7 +381,8 @@
                 ],
                 filter_lembaga: filterLembaga,
                 filter_cost: filterCost,
-                filter_keterangan: filterKeterangan
+                filter_keterangan: filterKeterangan,
+                filter_status: filterStatus
             };
 
             $('#custom-santri-tbody').html(`
@@ -545,7 +555,7 @@
         });
 
         // Filters
-        $('#filter-lembaga, #filter-cost, #filter-keterangan').on('change', function() {
+        $('#filter-lembaga, #filter-cost, #filter-keterangan, #filter-status').on('change', function() {
             currentPage = 1;
             loadSantriData();
         });
@@ -586,6 +596,61 @@
                 error: function() {
                     alert('Terjadi kesalahan server.');
                     btn.prop('disabled', false).html('<i class="bx bx-sync"></i> Sync');
+                }
+            });
+        });
+
+        // Event delegation to handle click btn-toggle-status dynamically loaded
+        $(document).on('click', '.btn-toggle-status', function() {
+            var btn = $(this);
+            var idSantri = btn.data('id');
+            var status = btn.data('status');
+            var nama = btn.data('nama');
+            var label = (status === 'Y') ? 'mengaktifkan kembali' : 'menonaktifkan';
+
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Anda akan ' + label + ' santri "' + nama + '".',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Lanjutkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed || result.value) {
+                    btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+                    $.ajax({
+                        url: '<?= base_url(($controller ?? "admin") . "/toggle_santri_status") ?>',
+                        type: 'POST',
+                        data: { id_santri: idSantri, status: status },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire(
+                                    'Berhasil!',
+                                    response.message,
+                                    'success'
+                                );
+                                loadSantriData();
+                            } else {
+                                Swal.fire(
+                                    'Gagal!',
+                                    response.message,
+                                    'error'
+                                );
+                                loadSantriData();
+                            }
+                        },
+                        error: function() {
+                            Swal.fire(
+                                'Error!',
+                                'Terjadi kesalahan server.',
+                                'error'
+                            );
+                            loadSantriData();
+                        }
+                    });
                 }
             });
         });

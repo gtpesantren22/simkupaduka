@@ -3007,7 +3007,6 @@ Terima kasih.';
 		// Get unique formal class/lembaga values for filtering
 		$data['lembaga_list'] = $this->db->select('t_formal')
 			->from('tb_santri')
-			->where('aktif', 'Y')
 			->where('t_formal IS NOT NULL')
 			->where('t_formal !=', '')
 			->group_by('t_formal')
@@ -3029,6 +3028,7 @@ Terima kasih.';
 		$filter_lembaga = $this->input->post('filter_lembaga');
 		$filter_cost = $this->input->post('filter_cost');
 		$filter_keterangan = $this->input->post('filter_keterangan');
+		$filter_status = $this->input->post('filter_status') ?? 'Y';
 
 		// Column mapping for ordering
 		$columns = [
@@ -3044,7 +3044,10 @@ Terima kasih.';
 		$this->db->select('tb_santri.*, cost.cost_id');
 		$this->db->from('tb_santri');
 		$this->db->join('cost', 'tb_santri.nis = cost.nis', 'left');
-		$this->db->where('tb_santri.aktif', 'Y');
+		
+		if ($filter_status !== 'all') {
+			$this->db->where('tb_santri.aktif', $filter_status);
+		}
 
 		// Apply Lembaga filter
 		if (!empty($filter_lembaga)) {
@@ -3101,7 +3104,7 @@ Terima kasih.';
 		$data = $query->result();
 
 		// Total records count (unfiltered)
-		$recordsTotal = $this->db->where('aktif', 'Y')->count_all_results('tb_santri');
+		$recordsTotal = $this->db->count_all_results('tb_santri');
 
 		// Format output for DataTables
 		$tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
@@ -3110,7 +3113,26 @@ Terima kasih.';
 		$output = [];
 		$no = $start + 1;
 		foreach ($data as $row) {
-			$escaped_nama = htmlspecialchars($row->nama, ENT_QUOTES);
+			$escaped_nama_pure = htmlspecialchars($row->nama, ENT_QUOTES);
+			$status_badge = ($row->aktif === 'Y') 
+				? ' <span class="badge bg-success small">Aktif</span>' 
+				: ' <span class="badge bg-secondary small">Non-Aktif</span>';
+			$display_nama = $escaped_nama_pure . $status_badge;
+
+			if ($row->aktif === 'Y') {
+				$toggle_btn = '
+				<button type="button" class="btn btn-sm btn-outline-warning btn-toggle-status" 
+						data-id="' . $row->id_santri . '" data-status="N" data-nama="' . $escaped_nama_pure . '">
+					<i class="bx bx-power-off"></i> Nonaktifkan
+				</button>';
+			} else {
+				$toggle_btn = '
+				<button type="button" class="btn btn-sm btn-outline-success btn-toggle-status" 
+						data-id="' . $row->id_santri . '" data-status="Y" data-nama="' . $escaped_nama_pure . '">
+					<i class="bx bx-check-circle"></i> Aktifkan
+				</button>';
+			}
+
 			$aksi_buttons = '
 			<div class="d-flex align-items-center gap-2">
 				<button type="button" class="btn btn-sm btn-outline-info btn-detail-siswa" 
@@ -3119,7 +3141,7 @@ Terima kasih.';
 				</button>
 				<button type="button" class="btn btn-sm btn-outline-primary btn-edit-cost" 
 						data-nis="' . $row->nis . '" 
-						data-nama="' . $escaped_nama . '" 
+						data-nama="' . $escaped_nama_pure . '" 
 						data-costid="' . ($row->cost_id ?? '') . '">
 					<i class="bx bx-edit-alt"></i> Edit Cust
 				</button>
@@ -3127,9 +3149,10 @@ Terima kasih.';
 						data-id="' . $row->id_santri . '">
 					<i class="bx bx-sync"></i> Sync
 				</button>
+				' . $toggle_btn . '
 				<a href="' . base_url('kasir/delete_santri/' . $row->id_santri) . '" 
 				   class="btn btn-sm btn-outline-danger btn-delete-santri" 
-				   data-nama="' . $escaped_nama . '">
+				   data-nama="' . $escaped_nama_pure . '">
 					<i class="bx bx-trash"></i> Hapus
 				</a>
 			</div>';
@@ -3138,7 +3161,7 @@ Terima kasih.';
 				'no' => $no++,
 				'nis' => $row->nis ?? '-',
 				'cost_id' => $row->cost_id ?? '-',
-				'nama' => $row->nama,
+				'nama' => $display_nama,
 				'kelas_formal' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
 				'tempat_kos' => $tmpKos[$row->t_kos] ?? '-',
 				'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
@@ -3581,7 +3604,6 @@ Terima kasih.';
 						'anak_ke'   => !empty($result['anak_ke']) ? intval($result['anak_ke']) : null,
 						'jml_sdr'   => !empty($result['jml_sdr']) ? intval($result['jml_sdr']) : null,
 						'nis'       => $result['nis'] ?? null,
-						'aktif'     => 'Y',
 						't_formal'  => $lembaga_nama,
 						'jln'       => $result['alamat'] ?? null,
 						'rt'        => $result['rt'] ?? null,
@@ -3620,10 +3642,39 @@ Terima kasih.';
 					exit;
 				}
 			}
+		} elseif ($httpCode === 404) {
+			$this->db->where('id_santri', $id_santri);
+			$this->db->update('tb_santri', ['aktif' => 'N']);
+			header('Content-Type: application/json');
+			echo json_encode(['status' => 'success', 'message' => 'Santri tidak ditemukan di pusat (404), dinonaktifkan secara lokal']);
+			exit;
 		}
 
 		header('Content-Type: application/json');
 		echo json_encode(['status' => 'error', 'message' => 'Gagal mengambil data dari API (HTTP ' . $httpCode . ')']);
+		exit;
+	}
+
+	public function toggle_santri_status()
+	{
+		$id_santri = intval($this->input->post('id_santri'));
+		$status = $this->input->post('status');
+
+		if (!$id_santri || !in_array($status, ['Y', 'N'])) {
+			header('Content-Type: application/json');
+			echo json_encode(['status' => 'error', 'message' => 'Data input tidak valid.']);
+			exit;
+		}
+
+		$this->db->where('id_santri', $id_santri);
+		$this->db->update('tb_santri', ['aktif' => $status]);
+
+		header('Content-Type: application/json');
+		if ($this->db->affected_rows() > 0) {
+			echo json_encode(['status' => 'success', 'message' => 'Status santri berhasil diubah.']);
+		} else {
+			echo json_encode(['status' => 'error', 'message' => 'Gagal mengubah status santri atau status tidak berubah.']);
+		}
 		exit;
 	}
 
@@ -3664,7 +3715,7 @@ Terima kasih.';
 
 	public function get_total_active_santri()
 	{
-		$total = $this->db->where('aktif', 'Y')->count_all_results('tb_santri');
+		$total = $this->db->count_all_results('tb_santri');
 		header('Content-Type: application/json');
 		echo json_encode(['total' => $total]);
 		exit;
@@ -3675,10 +3726,9 @@ Terima kasih.';
 		$offset = intval($this->input->get('offset') ?? 0);
 		$limit = 200;
 
-		// Fetch a batch of active students from local database (db_sentral)
+		// Fetch a batch of all students from local database (db_sentral)
 		$this->db->select('*');
 		$this->db->from('tb_santri');
-		$this->db->where('aktif', 'Y');
 		$this->db->order_by('id_santri', 'ASC');
 		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
