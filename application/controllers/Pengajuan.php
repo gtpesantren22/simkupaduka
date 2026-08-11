@@ -815,4 +815,3 @@ Terima kasih.';
 		}
 	}
 }
-g
