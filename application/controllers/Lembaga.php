@@ -168,6 +168,14 @@ class Lembaga extends CI_Controller
 			'tahun' => $this->tahun,
 			'no_urut' => $urut
 		];
+		if ($jenis !== 'disposisi') {
+			$cek_exist = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' AND bulan = '$bln' AND kode_pengajuan NOT LIKE '%DISP.%'")->num_rows();
+			if ($cek_exist > 0) {
+				$this->session->set_flashdata('error', 'Maaf. Pengajuan untuk bulan tersebut sudah ada');
+				redirect($rdrc);
+				exit;
+			}
+		}
 
 		$cek = $this->db->query("SELECT * FROM pengajuan WHERE kode_pengajuan = '$kd_pjn' AND tahun = '$tahun' ")->num_rows();
 		if ($cek < 1) {
@@ -460,8 +468,8 @@ Terima kasih.';
 			$this->model->update('pengajuan', $data, 'kode_pengajuan', $kode);
 			if ($this->db->affected_rows() > 0) {
 
-				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 				kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -597,8 +605,8 @@ Terima kasih.';
 
 			if ($this->db->affected_rows() > 0) {
 
-				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
@@ -999,8 +1007,8 @@ Terima kasih.';
 		$this->model->update('pak', $data, 'kode_pak', $kode);
 		if ($this->db->affected_rows() > 0) {
 
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -1406,8 +1414,8 @@ Terima kasih.';
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'RAB berhasil di ajukan');
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('lembaga/rab24');
@@ -1579,8 +1587,8 @@ Terima kasih.';
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Pengajuan sudah diteruskan');
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('lembaga/sarprasDetail/' . $kode);
@@ -1672,8 +1680,8 @@ Terima kasih.';
 
 			if ($this->db->affected_rows() > 0) {
 
-				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
@@ -1851,8 +1859,8 @@ Terima kasih.';
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'Pengajuan sudah diteruskan');
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('lembaga/haflahDetail/' . $kode);
@@ -1965,8 +1973,8 @@ Terima kasih.';
 
 			if ($this->db->affected_rows() > 0) {
 
-				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Bukti SPJ berhasil diupload');
@@ -2086,8 +2094,8 @@ Terima kasih.';
 		$this->model->update('spj', ['perencanaan' => 1], 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 
 			$this->session->set_flashdata('ok', 'SPJ berhasil disetujui');

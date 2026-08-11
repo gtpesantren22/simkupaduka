@@ -223,8 +223,8 @@ _*Dana telah dicairkan oleh Bendahara Bag. Admin Pencairan._*
 Terima kasih.';
 
         if ($this->db->affected_rows() > 0) {
-            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
             kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -1914,8 +1914,8 @@ Terima kasih.';
         $this->model->update('sarpras', $data, 'kode_pengajuan', $kd_pnj);
 
         if ($this->db->affected_rows() > 0) {
-            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
             kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -2476,8 +2476,8 @@ Terima kasih.';
             $this->model->update('spj', $data1, 'kode_pengajuan', $kode);
             $this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
-            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
             // // kirim_person($this->apiKey, $hp, $psn);
 
             kirim_person($this->apiKey, '085236924510', $psn);
@@ -2702,8 +2702,8 @@ Terima kasih.';
         $this->model->update('haflah', $data, 'kode_pengajuan', $kd_pnj);
 
         if ($this->db->affected_rows() > 0) {
-            // kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-            // kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+            kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+            kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
             kirim_person($this->apiKey, '085236924510', $psn);
 

@@ -507,8 +507,8 @@ Terima kasih.';
 		$this->model->update('pak', $data2, 'kode_pak', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -547,8 +547,8 @@ Terima kasih.';
 		$this->model->update('pak', $data2, 'kode_pak', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -840,8 +840,8 @@ Terima kasih atas kerjasamanya.';
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -902,8 +902,8 @@ Terima kasih.';
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -981,8 +981,8 @@ Terima kasih.';
 		$this->model->update('pengajuan', $data2, 'kode_pengajuan', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			// kirim_person($this->apiKey, $hp, $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -1061,8 +1061,8 @@ Terima kasih.';
 		$this->model->input('real_sisasm', $data3);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -1151,8 +1151,8 @@ Terima kasih.';
 
 		if ($this->db->affected_rows() > 0) {
 
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			// kirim_person($this->apiKey, $hp, $psn);
 
 			// kirim_person($this->apiKey, '085236924510', $psn);
@@ -1737,8 +1737,8 @@ Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
 			$this->session->set_flashdata('ok', 'RAB sudah di setujui');
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 			redirect('account/rab24');
@@ -1773,8 +1773,8 @@ Terimakasih';
 		$this->model->update('rab_list', $data2, 'lembaga', $kode);
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -1872,8 +1872,8 @@ dengan catatan : _*' . $pesan . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -1907,8 +1907,8 @@ Nominal : _*' . rupiah($dataSum->jml) . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -2513,8 +2513,8 @@ dengan catatan : _*' . $pesan . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 
@@ -2548,8 +2548,8 @@ Nominal : _*' . rupiah($dataSum->jml) . '*_
 Terimakasih';
 
 		if ($this->db->affected_rows() > 0) {
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 
 			kirim_person($this->apiKey, '085236924510', $psn);
 

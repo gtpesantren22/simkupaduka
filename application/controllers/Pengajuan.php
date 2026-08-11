@@ -484,11 +484,13 @@ class Pengajuan extends CI_Controller
 			exit;
 		}
 
-		$cek1 = $this->model->getBy3('pengajuan', 'tahun', $tahun, 'lembaga', $lembaga, 'bulan', $bln)->row();
-		if ($cek1) {
-			$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
-			redirect('pengajuan');
-			exit;
+		if ($jenis !== 'disposisi') {
+			$cek1 = $this->db->query("SELECT * FROM pengajuan WHERE lembaga = '$lembaga' AND tahun = '$tahun' AND bulan = '$bln' AND kode_pengajuan NOT LIKE '%DISP.%'")->row();
+			if ($cek1) {
+				$this->session->set_flashdata('error', 'Pengajuan bulan ' . bulan($bln) . ' sudah ada');
+				redirect('pengajuan');
+				exit;
+			}
 		}
 
 		$pj = $this->db->query("SELECT MAX(no_urut) as nu FROM pengajuan WHERE tahun = '$tahun'")->row();
@@ -648,8 +650,8 @@ Terima kasih atas perhatian dan kerjasamanya.';
 			$this->model->input('history', $history);
 			if ($this->db->affected_rows() > 0) {
 
-				// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-				// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+				kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+				kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 				kirim_person($this->apiKey, '085236924510', $psn);
 
 				$this->session->set_flashdata('ok', 'Pengajuan berhasil diajukan kepada Bendahara');
@@ -751,8 +753,8 @@ Pengajuan dana berikut telah diverifikasi dan divalidasi oleh Bagian Perencanaan
 _' . $bwh . '_
 
 Terima kasih atas kerjasamanya.';
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 			$this->session->set_flashdata('ok', 'Verifikasi berhasil');
 			redirect('pengajuan/rencana');
@@ -802,8 +804,8 @@ _*"' . $alasan . '"*_
 Kepada KPA lembaga terkait diharapkan segera melakukan revisi sesuai catatan di atas.
 
 Terima kasih.';
-			// kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
-			// kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
+			kirim_group($this->apiKey, '120363040973404347@g.us', $psn);
+			kirim_group($this->apiKey, '120363042148360147@g.us', $psn);
 			kirim_person($this->apiKey, '085236924510', $psn);
 			$this->session->set_flashdata('ok', 'Penolakan berhasil');
 			redirect('pengajuan/rencana');
@@ -813,3 +815,4 @@ Terima kasih.';
 		}
 	}
 }
+g
