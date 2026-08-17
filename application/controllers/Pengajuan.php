@@ -690,7 +690,7 @@ Terima kasih atas perhatian dan kerjasamanya.';
 
 		$pejn = $this->model->getBy('pengajuan', 'kode_pengajuan', $kode)->row();
 		$bulan_pj = (int)$pejn->bulan;
-		$data['dppk'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($bulan_pj, REPLACE(bulan, ' ', '')) AND tahun = '$this->tahun' AND lembaga = '$pejn->lembaga' ")->result();
+		$data['dppk'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($bulan_pj, REPLACE(bulan, ' ', '')) AND tahun = '$pejn->tahun' AND lembaga = '$pejn->lembaga' ")->result();
 
 		$dataKirim = [];
 		$dataSQL = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
@@ -709,7 +709,7 @@ Terima kasih atas perhatian dan kerjasamanya.';
 				$kodefull = explode($delimiter, $value->kode);
 				$prog_id = isset($kodefull[1]) ? $kodefull[1] : '';
 			}
-			$program = $prog_id ? $this->model->getBy2('dppk', 'id_dppk', $prog_id, 'tahun', $this->tahun)->row() : null;
+			$program = $prog_id ? $this->model->getBy2('dppk', 'id_dppk', $prog_id, 'tahun', $pejn->tahun)->row() : null;
 			$dataKirim[] = [
 				'id_realis' => $value->id_realis,
 				'kode' => $program ? $program->id_dppk : '',
