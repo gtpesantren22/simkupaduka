@@ -92,14 +92,31 @@ if ($pesern >= 0 && $pesern <= 25) {
                 </div>
                 <div class="card radius-10">
                     <div class="card-body">
+                        <!-- Dropdown filter bulan di atas tabel -->
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-auto">
+                                <label for="filterBulan" class="form-label mb-0 fw-bold"><i class="bx bx-calendar"></i> Filter Bulan:</label>
+                            </div>
+                            <div class="col-auto">
+                                <form method="get" action="">
+                                    <select name="bulan" id="filterBulan" class="form-select form-select-sm" onchange="this.form.submit()">
+                                        <option value="">-- Semua Bulan --</option>
+                                        <?php for ($m = 1; $m <= 12; $m++): ?>
+                                            <option value="<?= $m ?>" <?= (isset($selected_bulan) && $selected_bulan == $m) ? 'selected' : '' ?>><?= bulan($m) ?></option>
+                                        <?php endfor; ?>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+
                         <div class="table-responsive">
-                            <table id="example2" class="table table-striped table-bordered">
+                            <table id="example2" class="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Program</th>
                                         <th>Kegiatan</th>
-                                        <!-- <th>Rencana Waktu</th> -->
+                                        <th>Jadwal Bulan</th>
                                         <th>Total RAB</th>
                                         <th>Sisa</th>
                                         <th>Aksi</th>
@@ -108,26 +125,64 @@ if ($pesern >= 0 && $pesern <= 25) {
                                 <tbody>
                                     <?php
                                     $no = 1;
-                                    foreach ($program as $a) : ?>
-                                        <tr>
+                                    foreach ($program as $index => $a) : ?>
+                                        <!-- Baris utama program. Dapat di-klik untuk toggle rincian. -->
+                                        <tr data-bs-toggle="collapse" data-bs-target="#rincian-<?= $index ?>" style="cursor: pointer;">
                                             <td><?= $no++ ?></td>
-                                            <td><?= $a['kode_program'] . '. ' . $a['program'] ?></td>
+                                            <td>
+                                                <i class="bx bx-plus-circle text-primary me-1"></i>
+                                                <?= $a['kode_program'] . '. ' . $a['program'] ?>
+                                            </td>
                                             <td><?= $a['kegiatan'] ?></td>
-                                            <!-- <td><?= bulan($a['bulan']) ?></td> -->
-                                            <!-- <td><?php
-                                                        $input_bulan = array_map('intval', explode(',', $a['bulan']));
-                                                        $output = array_map('bulan', $input_bulan);
-                                                        echo implode(', ', $output);
-                                                        ?></td> -->
+                                            <td><?= !empty($a['bulan']) ? $a['bulan'] : '-' ?></td>
                                             <td><?= rupiah($a['total']) ?></td>
                                             <td><?= rupiah($a['sisa']) ?></td>
                                             <td>
-                                                <a href="<?= base_url('rab/kegiatanDetail/' . $a['id_dppk']) ?>" class="btn btn-sm btn-info text-white"><i class="bx bx-info-circle"></i> Detail</a>
+                                                <a href="<?= base_url('rab/kegiatanDetail/' . $a['id_dppk']) ?>" class="btn btn-sm btn-info text-white" onclick="event.stopPropagation()"><i class="bx bx-info-circle"></i> Detail</a>
+                                            </td>
+                                        </tr>
+                                        <!-- Baris rincian item belanja collapsible -->
+                                        <tr class="collapse" id="rincian-<?= $index ?>">
+                                            <td colspan="7" class="bg-light p-3">
+                                                <div class="card card-body bg-white mb-0 shadow-none border">
+                                                    <h6 class="fw-bold mb-3 text-dark"><i class="bx bx-list-ul"></i> Rincian Item Belanja Kegiatan</h6>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-bordered table-sm bg-white mb-0 text-center">
+                                                            <thead class="bg-light">
+                                                                <tr>
+                                                                    <th width="5%">No</th>
+                                                                    <th>Nama Barang/Jasa</th>
+                                                                    <th>Volume</th>
+                                                                    <th>Satuan</th>
+                                                                    <th>Harga Satuan</th>
+                                                                    <th>Total</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <?php if (empty($a['rab_items'])) : ?>
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-muted py-3">Rincian item belanja belum diisi.</td>
+                                                                    </tr>
+                                                                <?php else : ?>
+                                                                    <?php $subNo = 1; foreach ($a['rab_items'] as $item) : ?>
+                                                                        <tr>
+                                                                            <td><?= $subNo++ ?></td>
+                                                                            <td class="text-start"><?= $item->nama ?></td>
+                                                                            <td><?= $item->qty ?></td>
+                                                                            <td><?= $item->satuan ?></td>
+                                                                            <td><?= rupiah($item->harga_satuan) ?></td>
+                                                                            <td><?= rupiah($item->total) ?></td>
+                                                                        </tr>
+                                                                    <?php endforeach; ?>
+                                                                <?php endif; ?>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
-
                             </table>
                         </div>
                     </div>

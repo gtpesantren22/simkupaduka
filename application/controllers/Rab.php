@@ -38,23 +38,36 @@ class Rab extends CI_Controller
 			$data['rabJml'][$kodeJenis] = $this->model->getBySum3('rab', 'lembaga', $kode, 'tahun', $this->tahun, 'jenis', $kodeJenis, 'total')->row();
 		}
 
+		$selected_bulan = $this->input->get('bulan', true);
+		$data['selected_bulan'] = $selected_bulan;
+
 		$program = [];
-		$dataprogram = $this->model->getBy2('dppk', 'lembaga', $kode, 'tahun', $this->tahun)->result();
+		$this->db->where('lembaga', $kode);
+		$this->db->where('tahun', $this->tahun);
+		if (!empty($selected_bulan)) {
+			$this->db->where("FIND_IN_SET(" . intval($selected_bulan) . ", REPLACE(bulan, ' ', '')) >", 0);
+		}
+		$dataprogram = $this->db->get('dppk')->result();
+
 		foreach ($dataprogram as $dtpr) {
 			$total = $this->db->query("SELECT SUM(total) as total FROM rab WHERE lembaga = '$kode' AND tahun = '$this->tahun' AND id_dppk = '$dtpr->id_dppk' GROUP BY id_dppk ")->row();
 			$kdprog = $dtpr->id_dppk;
 			$nomProg = $this->db->query("SELECT SUM(total) AS total FROM rab WHERE id_dppk = '$kdprog' AND tahun = '$this->tahun' AND lembaga = '$kode' ")->row();
 			$nomPakai = $this->db->query("SELECT SUM(nominal) AS total FROM realis WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' AND lembaga = '$kode' ")->row();
 			$nomSm = $this->db->query("SELECT SUM(nominal) AS total FROM real_sm WHERE kode LIKE '%-$kdprog-%' AND tahun = '$this->tahun' AND lembaga = '$kode' ")->row();
-			$sisa = $nomProg->total - ($nomPakai->total + $nomSm->total);
+			$sisa = ($nomProg->total ?? 0) - (($nomPakai->total ?? 0) + ($nomSm->total ?? 0));
+
+			$rab_items = $this->model->getBy3('rab', 'id_dppk', $dtpr->id_dppk, 'tahun', $this->tahun, 'lembaga', $kode)->result();
+
 			$program[] = [
 				'program' => $dtpr->program,
 				'kode_program' => $dtpr->kode_program,
 				'kegiatan' => $dtpr->kegiatan,
-				// 'bulan' => $dtpr->bulan,
+				'bulan' => $dtpr->bulan,
 				'total' => $total ? $total->total : 0,
 				'sisa' => $sisa ? $sisa : 0,
 				'id_dppk' => $dtpr->id_dppk,
+				'rab_items' => $rab_items
 			];
 		}
 		$data['program'] = $program;
