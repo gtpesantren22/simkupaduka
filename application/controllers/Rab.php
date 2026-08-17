@@ -112,7 +112,7 @@ class Rab extends CI_Controller
 		$tahun = $this->tahun;
 
 		// 1. Program details
-		$data['dppk'] = $this->model->getBy('dppk', 'id_dppk', $id_dppk)->row();
+		$data['dppk'] = $this->model->getBy3('dppk', 'id_dppk', $id_dppk, 'tahun', $tahun, 'lembaga', $lembaga)->row();
 
 		// 2. RAB details
 		$data['rab'] = $this->model->getBy3('rab', 'id_dppk', $id_dppk, 'tahun', $tahun, 'lembaga', $lembaga)->result();

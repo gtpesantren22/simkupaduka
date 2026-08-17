@@ -90,6 +90,7 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                         <th scope="col">No</th>
                                         <th scope="col">Kode</th>
                                         <th scope="col">Program</th>
+                                        <th scope="col">Kegiatan</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -101,6 +102,7 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                             <td scope="row"><?= $no++ ?></td>
                                             <td><?= $d->id_dppk ?></td>
                                             <td><?= $d->program ?></td>
+                                            <td><?= $d->kegiatan ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -122,6 +124,7 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                         <th scope="col">No</th>
                                         <th scope="col">Kode</th>
                                         <th scope="col">Program</th>
+                                        <th scope="col">Kegiatan</th>
                                         <th scope="col">Bulan</th>
                                         <th scope="col">Rincian Belanja</th>
                                         <th scope="col">Nominal</th>
@@ -137,6 +140,7 @@ $lembg = $this->db->query("SELECT * FROM lembaga WHERE kode = '$pengajuan->lemba
                                             <td scope="row"><?= $no++ ?></td>
                                             <td><?= $a['kode'] ?></td>
                                             <td><?= $a['program'] ?></td>
+                                            <td><?= $a['kegiatan'] ?></td>
                                             <td>
                                                 <?php
                                                 foreach (explode(',', $a['bulan']) as $b) {

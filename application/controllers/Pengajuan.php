@@ -695,14 +695,26 @@ Terima kasih atas perhatian dan kerjasamanya.';
 		$dataKirim = [];
 		$dataSQL = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
 		foreach ($dataSQL as $key => $value) {
-			$delimiter = (strpos($value->kode, '-') !== false) ? '-' : '_';
-			$kodefull = explode($delimiter, $value->kode);
-			$prog_id = isset($kodefull[1]) ? $kodefull[1] : '';
+			$prog_id = '';
+			if (strpos($value->kode, '-') !== false) {
+				$parts = explode('.', $value->kode);
+				$last_part = end($parts);
+				$sub_parts = explode('-', $last_part);
+				if (count($sub_parts) >= 2) {
+					$prog_id = $sub_parts[0] . '-' . $sub_parts[1];
+				}
+			}
+			if (empty($prog_id)) {
+				$delimiter = (strpos($value->kode, '-') !== false) ? '-' : '_';
+				$kodefull = explode($delimiter, $value->kode);
+				$prog_id = isset($kodefull[1]) ? $kodefull[1] : '';
+			}
 			$program = $prog_id ? $this->model->getBy2('dppk', 'id_dppk', $prog_id, 'tahun', $this->tahun)->row() : null;
 			$dataKirim[] = [
 				'id_realis' => $value->id_realis,
 				'kode' => $program ? $program->id_dppk : '',
 				'program' => $program ? $program->program : '',
+				'kegiatan' => $program ? $program->kegiatan : '',
 				'bulan' => $program ? $program->bulan : '',
 				'rincian' => $value->ket,
 				'nominal' => $value->nominal,
