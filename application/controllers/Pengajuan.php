@@ -693,23 +693,16 @@ Terima kasih atas perhatian dan kerjasamanya.';
 		$data['dppk'] = $this->db->query("SELECT * FROM dppk WHERE FIND_IN_SET($bulan_pj, REPLACE(bulan, ' ', '')) AND tahun = '$pejn->tahun' AND lembaga = '$pejn->lembaga' ")->result();
 
 		$dataKirim = [];
-		$dataSQL = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
+		if ($pejn->cair == 1) {
+			$dataSQL = $this->db->query("SELECT * FROM realis WHERE kode_pengajuan = '$kode' ")->result();
+		} else {
+			$dataSQL = $this->db->query("SELECT * FROM real_sm WHERE kode_pengajuan = '$kode' ")->result();
+		}
+
 		foreach ($dataSQL as $key => $value) {
-			$prog_id = '';
-			if (strpos($value->kode, '-') !== false) {
-				$parts = explode('.', $value->kode);
-				$last_part = end($parts);
-				$sub_parts = explode('-', $last_part);
-				if (count($sub_parts) >= 2) {
-					$prog_id = $sub_parts[0] . '-' . $sub_parts[1];
-				}
-			}
-			if (empty($prog_id)) {
-				$delimiter = (strpos($value->kode, '-') !== false) ? '-' : '_';
-				$kodefull = explode($delimiter, $value->kode);
-				$prog_id = isset($kodefull[1]) ? $kodefull[1] : '';
-			}
-			$program = $prog_id ? $this->model->getBy2('dppk', 'id_dppk', $prog_id, 'tahun', $pejn->tahun)->row() : null;
+			$prog_id = $this->db->query("SELECT * FROM realis_detail WHERE id_detail = '$value->id_realis' ")->row('kode_program');
+
+			$program = $prog_id ? $this->model->getBy3('dppk', 'id_dppk', $prog_id, 'tahun', $pejn->tahun, 'lembaga', $pejn->lembaga)->row() : null;
 			$dataKirim[] = [
 				'id_realis' => $value->id_realis,
 				'kode' => $program ? $program->id_dppk : '',
