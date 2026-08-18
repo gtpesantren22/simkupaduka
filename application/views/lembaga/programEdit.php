@@ -24,13 +24,14 @@
                     <div class="card-body">
                         <form action="<?= base_url('programs/ubah') ?>" method="post">
                             <input type="hidden" name="id" value="<?= $dt->id ?>">
+                            <input type="hidden" name="program" value="<?= $dt->program ?>">
                             <div class="form-group mb-2">
-                                <label for="">Kode Program</label>
-                                <input type="text" class="form-control" value="<?= $dt->id_dppk ?>" readonly>
+                                <label for="">Program</label>
+                                <input type="text" class="form-control" value="<?= $dt->kode_program . ' - ' . $dt->program ?>" readonly>
                             </div>
                             <div class="form-group mb-2">
-                                <label for="">Nama Program</label>
-                                <input type="text" class="form-control" name="program" value="<?= $dt->program ?>" required>
+                                <label for="">Kegiatan</label>
+                                <input type="text" class="form-control" value="<?= $dt->kode_kegiatan . ' - ' . $dt->kegiatan ?>" readonly>
                             </div>
                             <div class="form-group mb-2">
                                 <label for="">Bulan</label>

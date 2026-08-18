@@ -28,8 +28,8 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Lembaga</th>
-                                        <th>Kode Program</th>
                                         <th>Nama Program</th>
+                                        <th>Nama Kegiatan</th>
                                         <th>Bulan</th>
                                         <th>tahun</th>
                                         <th></th>
@@ -42,8 +42,8 @@
                                         <tr>
                                             <td><?= $no++ ?></td>
                                             <td><?= $lm->nama ?></td>
-                                            <td><?= $a->id_dppk ?></td>
-                                            <td><?= $a->program ?></td>
+                                            <td><?= $a->kode_program . ' - ' . $a->program ?></td>
+                                            <td><?= $a->kode_kegiatan . ' - ' . $a->kegiatan ?></td>
                                             <td><?= $a->bulan ?></td>
                                             <td><?= $a->tahun ?></td>
                                             <td>
