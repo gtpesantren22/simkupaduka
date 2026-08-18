@@ -22,6 +22,12 @@ class Kasir extends CI_Controller
         $this->db3 = $this->load->database('sekretaris', true);
         $this->db4 = $this->load->database('santri', true);
 
+        $method = $this->router->fetch_method();
+        if ($method === 'checkRekomApi') {
+            $this->tahun = '';
+            return;
+        }
+
         $user = $this->Auth_model->current_user();
         $this->tahun = $this->session->userdata('tahun');
         // $this->jenis = ['A. Belanja Barang', 'B. Langganan & Jasa', 'Belanja Kegiatan', 'D. Umum'];
@@ -2543,6 +2549,97 @@ Terima kasih.';
             echo "Data berhasil dihapus.";
         } else {
             echo "Terjadi kesalahan saat menghapus data.";
+        }
+    }
+
+    public function checkRekomApi()
+    {
+        // 1. Validate Bearer Token
+        $headers = $this->input->get_request_header('Authorization');
+        if (empty($headers)) {
+            $headers = $this->input->get_request_header('authorization');
+        }
+        if (empty($headers) && isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $headers = $_SERVER['HTTP_AUTHORIZATION'];
+        }
+        if (empty($headers) && isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $headers = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        }
+
+        $token = '';
+        if (!empty($headers)) {
+            $token = str_replace('Bearer ', '', $headers);
+        }
+
+        $token_row = $this->db->where('name', 'api_key_rekom')->get('settings')->row();
+        $expected_token = $token_row ? $token_row->val : '';
+
+        if (empty($token) || $token !== $expected_token) {
+            $this->output
+                ->set_status_header(401)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Unauthorized'
+                ]));
+            return;
+        }
+
+        // 2. Read parameters from JSON body or POST parameters
+        $raw_input = file_get_contents('php://input');
+        $data = json_decode($raw_input, true);
+        if (empty($data)) {
+            $data = [
+                'nis' => $this->input->post('nis', true),
+                'ket' => $this->input->post('ket', true),
+                'tahun' => $this->input->post('tahun', true)
+            ];
+        }
+
+        $nis = isset($data['nis']) ? trim($data['nis']) : '';
+        $ket = isset($data['ket']) ? trim($data['ket']) : '';
+        $tahun = isset($data['tahun']) ? trim($data['tahun']) : '';
+
+        if (empty($nis) || empty($ket) || empty($tahun)) {
+            $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'nis, ket, and tahun parameters are required'
+                ]));
+            return;
+        }
+
+        // 3. Query rekom table
+        $rekom = $this->db->where('nis', $nis)
+                          ->where('ket', $ket)
+                          ->where('tahun', $tahun)
+                          ->get('rekom')
+                          ->row();
+
+        if ($rekom) {
+            $this->output
+                ->set_status_header(200)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'success',
+                    'has_rekom' => true,
+                    'data' => [
+                        'nis' => $rekom->nis,
+                        'ket' => $rekom->ket,
+                        'tahun' => $rekom->tahun
+                    ]
+                ]));
+        } else {
+            $this->output
+                ->set_status_header(200)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'success',
+                    'has_rekom' => false,
+                    'data' => null
+                ]));
         }
     }
 
