@@ -5,11 +5,9 @@
 // $total = $sumA1->total + $sumB1->total + $sumC1->total + $sumA2->total + $sumB2->total + $sumC2->total;
 // $pakai = $pakaiA1->nominal + $pakaiB1->nominal + $pakaiC1->nominal  + $pakaiA2->nominal + $pakaiB2->nominal + $pakaiC2->nominal;
 
-try {
-    //code...
-    $pesern = round(($totalReal->jml / $totalRab->jml) * 100, 0);
-} catch (DivisionByZeroError $th) {
-    //throw $th;
+if (!empty($totalRab->jml) && $totalRab->jml > 0) {
+    $pesern = round((($totalReal->jml ?? 0) / $totalRab->jml) * 100, 0);
+} else {
     $pesern = 0;
 }
 if ($pesern >= 0 && $pesern <= 25) {
