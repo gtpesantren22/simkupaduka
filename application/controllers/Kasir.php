@@ -2355,9 +2355,7 @@ Terimakasih';
         } else {
             if ($level === 'lembaga') {
                 $this->model->update('user', ['lembaga' => $lembaga], 'id_user', $id);
-                if ($this->db->affected_rows() > 0) {
-                    redirect('lembaga');
-                }
+                redirect('lembaga');
             } else {
                 redirect($level);
             }
@@ -2522,7 +2520,7 @@ Terima kasih.';
     {
         $data = array(
             'nis' => $this->input->post('nis'),
-            'ket' => 'ramadhan',
+            'ket' => 'maulid',
             // 'ket' => 'ramadhan',
             'tahun' => $this->tahun,
         );
