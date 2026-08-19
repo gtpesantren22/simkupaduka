@@ -2415,7 +2415,7 @@ Terimakasih';
         $data['dt1'] = $this->db->query("SELECT * FROM pembayaran a JOIN tb_santri b ON a.nis=b.nis WHERE b.t_formal = '$t_formal' AND a.tahun = '$tahun' AND b.aktif = 'Y' GROUP BY a.nis ORDER BY b.nama")->result();
 
         $data['dt_null'] = $this->db->query("SELECT * FROM tb_santri WHERE t_formal = '$t_formal' AND aktif = 'Y' AND  NOT EXISTS (SELECT * FROM pembayaran WHERE tb_santri.nis = pembayaran.nis AND tahun = '$tahun') ")->result();
-        
+
         $this->load->view('kasir/hasilCekKelas', $data);
     }
 
@@ -2507,17 +2507,17 @@ Terima kasih.';
 
     public function loadSantri()
     {
-        // $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'ramadhan') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        // $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'maulid') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
-        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'ramadhan') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $data['santri'] = $this->db->query("SELECT * FROM tb_santri WHERE NOT EXISTS (SELECT * FROM rekom WHERE tb_santri.nis=rekom.nis AND rekom.tahun = '$this->tahun' AND rekom.ket = 'maulid') AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
         $this->load->view('kasir/loadSantri', $data);
     }
     public function loadRekom()
     {
-        // $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'ramadhan' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        // $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'maulid' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
-        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'ramadhan' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
+        $data['data'] = $this->db->query("SELECT * FROM rekom JOIN tb_santri ON rekom.nis=tb_santri.nis WHERE rekom.ket = 'maulid' AND rekom.tahun = '$this->tahun' AND aktif = 'Y' ORDER BY t_formal DESC, k_formal ASC, nama ASC ")->result();
 
         $this->load->view('kasir/loadRekom', $data);
     }
@@ -2527,7 +2527,7 @@ Terima kasih.';
         $data = array(
             'nis' => $this->input->post('nis'),
             'ket' => 'maulid',
-            // 'ket' => 'ramadhan',
+            // 'ket' => 'maulid',
             'tahun' => $this->tahun,
         );
 
@@ -2613,10 +2613,10 @@ Terima kasih.';
 
         // 3. Query rekom table
         $rekom = $this->db->where('nis', $nis)
-                          ->where('ket', $ket)
-                          ->where('tahun', $tahun)
-                          ->get('rekom')
-                          ->row();
+            ->where('ket', $ket)
+            ->where('tahun', $tahun)
+            ->get('rekom')
+            ->row();
 
         if ($rekom) {
             $this->output
@@ -3093,142 +3093,142 @@ Terima kasih.';
         ]);
     }
 
-	public function santri()
-	{
-		$data['user'] = $this->Auth_model->current_user();
-		$data['tahun'] = $this->tahun;
-		$data['controller'] = 'kasir';
+    public function santri()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['controller'] = 'kasir';
 
-		// Get unique formal class/lembaga values for filtering
-		$data['lembaga_list'] = $this->db->select('t_formal')
-			->from('tb_santri')
-			->where('t_formal IS NOT NULL')
-			->where('t_formal !=', '')
-			->group_by('t_formal')
-			->get()
-			->result();
+        // Get unique formal class/lembaga values for filtering
+        $data['lembaga_list'] = $this->db->select('t_formal')
+            ->from('tb_santri')
+            ->where('t_formal IS NOT NULL')
+            ->where('t_formal !=', '')
+            ->group_by('t_formal')
+            ->get()
+            ->result();
 
-		$this->load->view('kasir/head', $data);
-		$this->load->view('admin/santri', $data);
-		$this->load->view('kasir/foot');
-	}
+        $this->load->view('kasir/head', $data);
+        $this->load->view('admin/santri', $data);
+        $this->load->view('kasir/foot');
+    }
 
-	public function santri_list_ajax()
-	{
-		$draw = intval($this->input->post('draw'));
-		$start = intval($this->input->post('start'));
-		$length = intval($this->input->post('length'));
-		$search_value = $this->input->post('search')['value'] ?? '';
-		$order = $this->input->post('order');
-		$filter_lembaga = $this->input->post('filter_lembaga');
-		$filter_cost = $this->input->post('filter_cost');
-		$filter_keterangan = $this->input->post('filter_keterangan');
-		$filter_status = $this->input->post('filter_status') ?? 'Y';
+    public function santri_list_ajax()
+    {
+        $draw = intval($this->input->post('draw'));
+        $start = intval($this->input->post('start'));
+        $length = intval($this->input->post('length'));
+        $search_value = $this->input->post('search')['value'] ?? '';
+        $order = $this->input->post('order');
+        $filter_lembaga = $this->input->post('filter_lembaga');
+        $filter_cost = $this->input->post('filter_cost');
+        $filter_keterangan = $this->input->post('filter_keterangan');
+        $filter_status = $this->input->post('filter_status') ?? 'Y';
 
-		// Column mapping for ordering
-		$columns = [
-			0 => 'id_santri', // not sorted
-			1 => 'tb_santri.nis',
-			2 => 'cost.cost_id',
-			3 => 'tb_santri.nama',
-			4 => 'tb_santri.t_formal',
-			5 => 'id_santri' // Aksi
-		];
+        // Column mapping for ordering
+        $columns = [
+            0 => 'id_santri', // not sorted
+            1 => 'tb_santri.nis',
+            2 => 'cost.cost_id',
+            3 => 'tb_santri.nama',
+            4 => 'tb_santri.t_formal',
+            5 => 'id_santri' // Aksi
+        ];
 
-		// Base query configuration
-		$this->db->select('tb_santri.*, cost.cost_id');
-		$this->db->from('tb_santri');
-		$this->db->join('cost', 'tb_santri.nis = cost.nis', 'left');
-		
-		if ($filter_status !== 'all') {
-			$this->db->where('tb_santri.aktif', $filter_status);
-		}
+        // Base query configuration
+        $this->db->select('tb_santri.*, cost.cost_id');
+        $this->db->from('tb_santri');
+        $this->db->join('cost', 'tb_santri.nis = cost.nis', 'left');
 
-		// Apply Lembaga filter
-		if (!empty($filter_lembaga)) {
-			$this->db->where('tb_santri.t_formal', $filter_lembaga);
-		}
+        if ($filter_status !== 'all') {
+            $this->db->where('tb_santri.aktif', $filter_status);
+        }
 
-		// Apply Keterangan filter
-		if ($filter_keterangan !== null && $filter_keterangan !== '') {
-			$this->db->where('tb_santri.ket', $filter_keterangan);
-		}
+        // Apply Lembaga filter
+        if (!empty($filter_lembaga)) {
+            $this->db->where('tb_santri.t_formal', $filter_lembaga);
+        }
 
-		// Apply Customer ID filter
-		if ($filter_cost === 'ada') {
-			$this->db->where('cost.cost_id IS NOT NULL');
-			$this->db->where('cost.cost_id !=', '');
-		} elseif ($filter_cost === 'tidak') {
-			$this->db->group_start();
-			$this->db->where('cost.cost_id IS NULL');
-			$this->db->or_where('cost.cost_id', '');
-			$this->db->group_end();
-		}
+        // Apply Keterangan filter
+        if ($filter_keterangan !== null && $filter_keterangan !== '') {
+            $this->db->where('tb_santri.ket', $filter_keterangan);
+        }
 
-		// Handle search filter
-		if (!empty($search_value)) {
-			$this->db->group_start();
-			$this->db->like('tb_santri.nis', $search_value);
-			$this->db->or_like('tb_santri.nama', $search_value);
-			$this->db->or_like('cost.cost_id', $search_value);
-			$this->db->or_like('tb_santri.t_formal', $search_value);
-			$this->db->or_like('tb_santri.k_formal', $search_value);
-			$this->db->group_end();
-		}
+        // Apply Customer ID filter
+        if ($filter_cost === 'ada') {
+            $this->db->where('cost.cost_id IS NOT NULL');
+            $this->db->where('cost.cost_id !=', '');
+        } elseif ($filter_cost === 'tidak') {
+            $this->db->group_start();
+            $this->db->where('cost.cost_id IS NULL');
+            $this->db->or_where('cost.cost_id', '');
+            $this->db->group_end();
+        }
 
-		// Handle ordering
-		if (isset($order[0]['column']) && isset($columns[$order[0]['column']])) {
-			$col_idx = intval($order[0]['column']);
-			$dir = ($order[0]['dir'] === 'desc') ? 'desc' : 'asc';
-			if ($col_idx > 0 && $col_idx < 5) {
-				$this->db->order_by($columns[$col_idx], $dir);
-			} else {
-				$this->db->order_by('tb_santri.nama', 'asc');
-			}
-		} else {
-			$this->db->order_by('tb_santri.nama', 'asc');
-		}
+        // Handle search filter
+        if (!empty($search_value)) {
+            $this->db->group_start();
+            $this->db->like('tb_santri.nis', $search_value);
+            $this->db->or_like('tb_santri.nama', $search_value);
+            $this->db->or_like('cost.cost_id', $search_value);
+            $this->db->or_like('tb_santri.t_formal', $search_value);
+            $this->db->or_like('tb_santri.k_formal', $search_value);
+            $this->db->group_end();
+        }
 
-		// Save query state for data count
-		$temp_db = clone $this->db;
-		$recordsFiltered = $temp_db->count_all_results();
+        // Handle ordering
+        if (isset($order[0]['column']) && isset($columns[$order[0]['column']])) {
+            $col_idx = intval($order[0]['column']);
+            $dir = ($order[0]['dir'] === 'desc') ? 'desc' : 'asc';
+            if ($col_idx > 0 && $col_idx < 5) {
+                $this->db->order_by($columns[$col_idx], $dir);
+            } else {
+                $this->db->order_by('tb_santri.nama', 'asc');
+            }
+        } else {
+            $this->db->order_by('tb_santri.nama', 'asc');
+        }
 
-		// Apply pagination
-		$this->db->limit($length, $start);
-		$query = $this->db->get();
-		$data = $query->result();
+        // Save query state for data count
+        $temp_db = clone $this->db;
+        $recordsFiltered = $temp_db->count_all_results();
 
-		// Total records count (unfiltered)
-		$recordsTotal = $this->db->count_all_results('tb_santri');
+        // Apply pagination
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = $query->result();
 
-		// Format output for DataTables
-		$tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
-		$ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
+        // Total records count (unfiltered)
+        $recordsTotal = $this->db->count_all_results('tb_santri');
 
-		$output = [];
-		$no = $start + 1;
-		foreach ($data as $row) {
-			$escaped_nama_pure = htmlspecialchars($row->nama, ENT_QUOTES);
-			$status_badge = ($row->aktif === 'Y') 
-				? ' <span class="badge bg-success small">Aktif</span>' 
-				: ' <span class="badge bg-secondary small">Non-Aktif</span>';
-			$display_nama = $escaped_nama_pure . $status_badge;
+        // Format output for DataTables
+        $tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
+        $ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
 
-			if ($row->aktif === 'Y') {
-				$toggle_btn = '
+        $output = [];
+        $no = $start + 1;
+        foreach ($data as $row) {
+            $escaped_nama_pure = htmlspecialchars($row->nama, ENT_QUOTES);
+            $status_badge = ($row->aktif === 'Y')
+                ? ' <span class="badge bg-success small">Aktif</span>'
+                : ' <span class="badge bg-secondary small">Non-Aktif</span>';
+            $display_nama = $escaped_nama_pure . $status_badge;
+
+            if ($row->aktif === 'Y') {
+                $toggle_btn = '
 				<button type="button" class="btn btn-sm btn-outline-warning btn-toggle-status" 
 						data-id="' . $row->id_santri . '" data-status="N" data-nama="' . $escaped_nama_pure . '">
 					<i class="bx bx-power-off"></i> Nonaktifkan
 				</button>';
-			} else {
-				$toggle_btn = '
+            } else {
+                $toggle_btn = '
 				<button type="button" class="btn btn-sm btn-outline-success btn-toggle-status" 
 						data-id="' . $row->id_santri . '" data-status="Y" data-nama="' . $escaped_nama_pure . '">
 					<i class="bx bx-check-circle"></i> Aktifkan
 				</button>';
-			}
+            }
 
-			$aksi_buttons = '
+            $aksi_buttons = '
 			<div class="d-flex align-items-center gap-2">
 				<button type="button" class="btn btn-sm btn-outline-info btn-detail-siswa" 
 						data-id="' . $row->id_santri . '">
@@ -3252,800 +3252,800 @@ Terima kasih.';
 				</a>
 			</div>';
 
-			$output[] = [
-				'no' => $no++,
-				'nis' => $row->nis ?? '-',
-				'cost_id' => $row->cost_id ?? '-',
-				'nama' => $display_nama,
-				'kelas_formal' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
-				'tempat_kos' => $tmpKos[$row->t_kos] ?? '-',
-				'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
-				'aksi' => $aksi_buttons
-			];
-		}
-
-		header('Content-Type: application/json');
-		echo json_encode([
-			'draw' => $draw,
-			'recordsTotal' => $recordsTotal,
-			'recordsFiltered' => $recordsFiltered,
-			'data' => $output
-		]);
-		exit;
-	}
-
-	public function update_cost_id()
-	{
-		$nis = $this->input->post('nis', true);
-		$cost_id = $this->input->post('cost_id', true);
-
-		// Fetch student name to keep cost_name consistent
-		$santri = $this->db->get_where('tb_santri', ['nis' => $nis])->row();
-		$nama = $santri ? $santri->nama : '';
-
-		// Check if record exists in cost table
-		$existing = $this->db->get_where('cost', ['nis' => $nis])->row();
-
-		if ($existing) {
-			$this->db->where('nis', $nis);
-			$this->db->update('cost', [
-				'cost_id' => $cost_id,
-				'cost_name' => $nama
-			]);
-		} else {
-			$this->db->insert('cost', [
-				'nis' => $nis,
-				'cost_id' => $cost_id,
-				'cost_name' => $nama
-			]);
-		}
-
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Customer ID berhasil diperbarui');
-		} else {
-			$this->session->set_flashdata('error', 'Gagal memperbarui Customer ID');
-		}
-
-		redirect('kasir/santri');
-	}
-
-	public function sinkron_batch()
-	{
-		$token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
-		$token = $token_row ? $token_row->val : '';
-
-		$page = intval($this->input->get('page') ?? 1);
-		if ($page === 1) {
-			$this->session->unset_userdata('synced_uuids');
-		}
-		$per_page = 500; // Batch size
-
-		$url = "https://data.ppdwk.com/api/datatables?data=referensi-peserta-didik"
-			. "&page=" . $page
-			. "&per_page=" . $per_page
-			. "&sortby=nama"
-			. "&sortbydesc=ASC";
-
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-			'Authorization: Bearer ' . $token,
-			'Accept: application/json'
-		]);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		$response = curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-
-		if ($httpCode !== 200) {
-			header('Content-Type: application/json');
-			echo json_encode([
-				'status' => 'error',
-				'message' => 'API request failed with HTTP code ' . $httpCode
-			]);
-			exit;
-		}
-
-		$result = json_decode($response, true);
-		if (!$result || !isset($result['data']['data'])) {
-			header('Content-Type: application/json');
-			echo json_encode([
-				'status' => 'error',
-				'message' => 'Invalid response structure from API'
-			]);
-			exit;
-		}
-
-		$items = $result['data']['data'];
-		$total_records = intval($result['data']['total'] ?? 0);
-		$last_page = intval($result['data']['last_page'] ?? 1);
-
-		// Store processed UUIDs in session for final cleanup
-		$synced_uuids = $this->session->userdata('synced_uuids') ?: [];
-		foreach ($items as $item) {
-			if (!empty($item['peserta_didik_id'])) {
-				$synced_uuids[] = $item['peserta_didik_id'];
-			}
-		}
-		$this->session->set_userdata('synced_uuids', $synced_uuids);
-
-		$processed = 0;
-		foreach ($items as $item) {
-			$data = [
-				'santri_id' => $item['peserta_didik_id'] ?? null,
-				'nama' => $item['nama'] ?? null,
-				'nisn' => $item['nisn'] ?? null,
-				'nik' => $item['nik'] ?? null,
-				'no_kk' => $item['no_kk'] ?? null,
-				'jkl' => $item['jenis_kelamin'] ?? null,
-				'tempat' => $item['tempat_lahir'] ?? null,
-				'tanggal' => $item['tanggal_lahir'] ?? null,
-				'anak_ke' => !empty($item['anak_ke']) ? intval($item['anak_ke']) : null,
-				'jml_sdr' => !empty($item['jml_sdr']) ? intval($item['jml_sdr']) : null,
-				'jln' => $item['alamat'] ?? null,
-				'rt' => $item['rt'] ?? null,
-				'rw' => $item['rw'] ?? null,
-				'desa' => $item['desa'] ?? null,
-				'kec' => $item['kec'] ?? null,
-				'kab' => $item['kab'] ?? null,
-				'prov' => $item['prov'] ?? null,
-				'kd_pos' => !empty($item['kode_pos']) ? intval($item['kode_pos']) : null,
-				'nis' => $item['nis'] ?? null,
-				'aktif' => 'Y'
-			];
-
-			$existing = null;
-			if (!empty($item['peserta_didik_id'])) {
-				$existing = $this->db->get_where('tb_santri', ['santri_id' => $item['peserta_didik_id']])->row();
-			}
-			if (!$existing && !empty($item['nis'])) {
-				$existing = $this->db->get_where('tb_santri', ['nis' => $item['nis']])->row();
-			}
-
-			if ($existing) {
-				$this->db->where('id_santri', $existing->id_santri);
-				$this->db->update('tb_santri', $data);
-			} else {
-				$this->db->insert('tb_santri', $data);
-			}
-			$processed++;
-		}
-
-		header('Content-Type: application/json');
-		echo json_encode([
-			'status' => 'success',
-			'page' => $page,
-			'last_page' => $last_page,
-			'processed' => $processed,
-			'total' => $total_records
-		]);
-		exit;
-	}
-
-	public function clean_up_local_database()
-	{
-		$synced_uuids = $this->session->userdata('synced_uuids');
-		if (!empty($synced_uuids)) {
-			// Mark students as inactive if they have a UUID (santri_id) but are not in the synced list
-			$this->db->where('santri_id IS NOT NULL');
-			$this->db->where('santri_id !=', '');
-			$this->db->where_not_in('santri_id', $synced_uuids);
-			$this->db->update('tb_santri', ['aktif' => 'N']);
-		}
-		$this->session->unset_userdata('synced_uuids');
-
-		header('Content-Type: application/json');
-		echo json_encode(['status' => 'success', 'message' => 'Pembersihan data lokal berhasil.']);
-		exit;
-	}
-
-	public function sinkron_lembaga_batch()
-	{
-		$token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
-		$token = $token_row ? $token_row->val : '';
-
-		$offset = intval($this->input->get('offset') ?? 0);
-		$limit = 50; // Parallel request batch limit
-
-		$students = $this->db->select('id_santri, santri_id')
-			->from('tb_santri')
-			->where('aktif', 'Y')
-			->where('santri_id IS NOT NULL')
-			->where('santri_id !=', '')
-			->limit($limit, $offset)
-			->get()
-			->result();
-
-		$total_students = $this->db->where('aktif', 'Y')
-			->where('santri_id IS NOT NULL')
-			->where('santri_id !=', '')
-			->count_all_results('tb_santri');
-
-		if (empty($students)) {
-			header('Content-Type: application/json');
-			echo json_encode([
-				'status' => 'success',
-				'offset' => $offset,
-				'processed' => 0,
-				'total' => $total_students
-			]);
-			exit;
-		}
-
-		$mh = curl_multi_init();
-		$curls = [];
-
-		foreach ($students as $student) {
-			$uuid = $student->santri_id;
-			$url = "https://data.ppdwk.com/api/pd/show/" . $uuid;
-
-			$ch = curl_init($url);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, [
-				'Authorization: Bearer ' . $token,
-				'Accept: application/json'
-			]);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-
-			curl_multi_add_handle($mh, $ch);
-			$curls[$student->id_santri] = $ch;
-		}
-
-		$running = null;
-		do {
-			curl_multi_exec($mh, $running);
-		} while ($running);
-
-		$processed = 0;
-		foreach ($curls as $id_santri => $ch) {
-			$response = curl_multi_getcontent($ch);
-			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			curl_multi_remove_handle($mh, $ch);
-			curl_close($ch);
-
-			if ($httpCode === 200) {
-				$result = json_decode($response, true);
-				if ($result && isset($result['registrasi_pd'])) {
-					$lembaga_nama = '';
-					foreach ($result['registrasi_pd'] as $reg) {
-						if (empty($reg['tanggal_keluar'])) {
-							if (isset($reg['lembaga']['nama'])) {
-								$lembaga_nama = $reg['lembaga']['nama'];
-								break;
-							}
-						}
-					}
-
-					if (empty($lembaga_nama) && !empty($result['registrasi_pd'])) {
-						$first_reg = $result['registrasi_pd'][0];
-						if (isset($first_reg['lembaga']['nama'])) {
-							$lembaga_nama = $first_reg['lembaga']['nama'];
-						}
-					}
-
-					if (!empty($lembaga_nama)) {
-						$desa = null;
-						$kec = null;
-						$kab = null;
-						$prov = null;
-
-						if (!empty($result['wilayah'])) {
-							$w = $result['wilayah'];
-							if ($w['level_wilayah'] == 4) {
-								$desa = $w['nama'];
-								$w = $w['parrent_recursive'] ?? null;
-							}
-							if ($w && $w['level_wilayah'] == 3) {
-								$kec = $w['nama'];
-								$w = $w['parrent_recursive'] ?? null;
-							}
-							if ($w && $w['level_wilayah'] == 2) {
-								$kab = $w['nama'];
-								$w = $w['parrent_recursive'] ?? null;
-							}
-							if ($w && $w['level_wilayah'] == 1) {
-								$prov = $w['nama'];
-							}
-						}
-
-						$pend_a = is_array($result['pendidikan_ayah'] ?? null) ? ($result['pendidikan_ayah']['nama'] ?? '') : ($result['jenjang_pendidikan_ayah'] ?? '');
-						$pkj_a  = is_array($result['pekerjaan_ayah'] ?? null) ? ($result['pekerjaan_ayah']['nama'] ?? '') : ($result['pekerjaan_id_ayah'] ?? '');
-						
-						$pend_i = is_array($result['pendidikan_ibu'] ?? null) ? ($result['pendidikan_ibu']['nama'] ?? '') : ($result['jenjang_pendidikan_ibu'] ?? '');
-						$pkj_i  = is_array($result['pekerjaan_ibu'] ?? null) ? ($result['pekerjaan_ibu']['nama'] ?? '') : ($result['pekerjaan_id_ibu'] ?? '');
-						
-						$pend_w = is_array($result['pendidikan_wali'] ?? null) ? ($result['pendidikan_wali']['nama'] ?? '') : ($result['jenjang_pendidikan_wali'] ?? '');
-						$pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
-
-						$update_data = [
-							't_formal'  => $lembaga_nama,
-							'jln'       => $result['alamat'] ?? null,
-							'rt'        => $result['rt'] ?? null,
-							'rw'        => $result['rw'] ?? null,
-							'desa'      => $desa,
-							'kec'       => $kec,
-							'kab'       => $kab,
-							'prov'      => $prov,
-							'kd_pos'    => !empty($result['kodepos']) ? intval($result['kodepos']) : null,
-							'hp'        => $result['telpon'] ?? null,
-							'email'     => $result['email'] ?? null,
-							'bapak'     => $result['nama_ayah'] ?? null,
-							'nik_a'     => $result['nik_a'] ?? ($result['nik_ayah'] ?? null),
-							'tempat_a'  => $result['tempat_lahir_ayah'] ?? null,
-							'tanggal_a' => $result['tanggal_lahir_ayah'] ?? null,
-							'pend_a'    => $pend_a,
-							'pkj_a'     => $pkj_a,
-							'ibu'       => $result['nama_ibu'] ?? null,
-							'nik_i'     => $result['nik_i'] ?? ($result['nik_ibu'] ?? null),
-							'tempat_i'  => $result['tempat_lahir_ibu'] ?? null,
-							'tanggal_i' => $result['tanggal_lahir_ibu'] ?? null,
-							'pend_i'    => $pend_i,
-							'pkj_i'     => $pkj_i,
-							'wali'      => $result['nama_wali'] ?? null,
-							'nik_w'     => $result['nik_w'] ?? ($result['nik_wali'] ?? null),
-							'tempat_w'  => $result['tempat_lahir_wali'] ?? null,
-							'tanggal_w' => $result['tanggal_lahir_wali'] ?? null,
-							'pend_w'    => $pend_w,
-							'pkj_w'     => $pkj_w
-						];
-
-						$this->db->where('id_santri', $id_santri);
-						$this->db->update('tb_santri', $update_data);
-					}
-				}
-			}
-			$processed++;
-		}
-		curl_multi_close($mh);
-
-		header('Content-Type: application/json');
-		echo json_encode([
-			'status' => 'success',
-			'offset' => $offset + $processed,
-			'processed' => $processed,
-			'total' => $total_students
-		]);
-		exit;
-	}
-
-	public function sinkron_siswa_single()
-	{
-		$id_santri = intval($this->input->get('id_santri'));
-		$santri = $this->db->get_where('tb_santri', ['id_santri' => $id_santri])->row();
-		if (!$santri || empty($santri->santri_id)) {
-			header('Content-Type: application/json');
-			echo json_encode(['status' => 'error', 'message' => 'Siswa tidak ditemukan atau UUID kosong']);
-			exit;
-		}
-
-		$token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
-		$token = $token_row ? $token_row->val : '';
-
-		$url = "https://data.ppdwk.com/api/pd/show/" . $santri->santri_id;
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-			'Authorization: Bearer ' . $token,
-			'Accept: application/json'
-		]);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-		$response = curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-
-		if ($httpCode === 200) {
-			$result = json_decode($response, true);
-			if ($result && isset($result['registrasi_pd'])) {
-				$lembaga_nama = '';
-				foreach ($result['registrasi_pd'] as $reg) {
-					if (empty($reg['tanggal_keluar'])) {
-						if (isset($reg['lembaga']['nama'])) {
-							$lembaga_nama = $reg['lembaga']['nama'];
-							break;
-						}
-					}
-				}
-				if (empty($lembaga_nama) && !empty($result['registrasi_pd'])) {
-					$first_reg = $result['registrasi_pd'][0];
-					if (isset($first_reg['lembaga']['nama'])) {
-						$lembaga_nama = $first_reg['lembaga']['nama'];
-					}
-				}
-
-				if (!empty($lembaga_nama)) {
-					$desa = null;
-					$kec = null;
-					$kab = null;
-					$prov = null;
-
-					if (!empty($result['wilayah'])) {
-						$w = $result['wilayah'];
-						if ($w['level_wilayah'] == 4) {
-							$desa = $w['nama'];
-							$w = $w['parrent_recursive'] ?? null;
-						}
-						if ($w && $w['level_wilayah'] == 3) {
-							$kec = $w['nama'];
-							$w = $w['parrent_recursive'] ?? null;
-						}
-						if ($w && $w['level_wilayah'] == 2) {
-							$kab = $w['nama'];
-							$w = $w['parrent_recursive'] ?? null;
-						}
-						if ($w && $w['level_wilayah'] == 1) {
-							$prov = $w['nama'];
-						}
-					}
-
-					$pend_a = is_array($result['pendidikan_ayah'] ?? null) ? ($result['pendidikan_ayah']['nama'] ?? '') : ($result['jenjang_pendidikan_ayah'] ?? '');
-					$pkj_a  = is_array($result['pekerjaan_ayah'] ?? null) ? ($result['pekerjaan_ayah']['nama'] ?? '') : ($result['pekerjaan_id_ayah'] ?? '');
-					
-					$pend_i = is_array($result['pendidikan_ibu'] ?? null) ? ($result['pendidikan_ibu']['nama'] ?? '') : ($result['jenjang_pendidikan_ibu'] ?? '');
-					$pkj_i  = is_array($result['pekerjaan_ibu'] ?? null) ? ($result['pekerjaan_ibu']['nama'] ?? '') : ($result['pekerjaan_id_ibu'] ?? '');
-					
-					$pend_w = is_array($result['pendidikan_wali'] ?? null) ? ($result['pendidikan_wali']['nama'] ?? '') : ($result['jenjang_pendidikan_wali'] ?? '');
-					$pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
-
-					$update_data = [
-						'nama'      => $result['nama'] ?? null,
-						'nisn'      => $result['nisn'] ?? null,
-						'nik'       => $result['nik'] ?? null,
-						'no_kk'     => $result['no_kk'] ?? null,
-						'jkl'       => $result['jenis_kelamin'] ?? null,
-						'tempat'    => $result['tempat_lahir'] ?? null,
-						'tanggal'   => $result['tanggal_lahir'] ?? null,
-						'anak_ke'   => !empty($result['anak_ke']) ? intval($result['anak_ke']) : null,
-						'jml_sdr'   => !empty($result['jml_sdr']) ? intval($result['jml_sdr']) : null,
-						'nis'       => $result['nis'] ?? null,
-						't_formal'  => $lembaga_nama,
-						'jln'       => $result['alamat'] ?? null,
-						'rt'        => $result['rt'] ?? null,
-						'rw'        => $result['rw'] ?? null,
-						'desa'      => $desa,
-						'kec'       => $kec,
-						'kab'       => $kab,
-						'prov'      => $prov,
-						'kd_pos'    => !empty($result['kodepos']) ? intval($result['kodepos']) : null,
-						'hp'        => $result['telpon'] ?? null,
-						'email'     => $result['email'] ?? null,
-						'bapak'     => $result['nama_ayah'] ?? null,
-						'nik_a'     => $result['nik_a'] ?? ($result['nik_ayah'] ?? null),
-						'tempat_a'  => $result['tempat_lahir_ayah'] ?? null,
-						'tanggal_a' => $result['tanggal_lahir_ayah'] ?? null,
-						'pend_a'    => $pend_a,
-						'pkj_a'     => $pkj_a,
-						'ibu'       => $result['nama_ibu'] ?? null,
-						'nik_i'     => $result['nik_i'] ?? ($result['nik_ibu'] ?? null),
-						'tempat_i'  => $result['tempat_lahir_ibu'] ?? null,
-						'tanggal_i' => $result['tanggal_lahir_ibu'] ?? null,
-						'pend_i'    => $pend_i,
-						'pkj_i'     => $pkj_i,
-						'wali'      => $result['nama_wali'] ?? null,
-						'nik_w'     => $result['nik_w'] ?? ($result['nik_wali'] ?? null),
-						'tempat_w'  => $result['tempat_lahir_wali'] ?? null,
-						'tanggal_w' => $result['tanggal_lahir_wali'] ?? null,
-						'pend_w'    => $pend_w,
-						'pkj_w'     => $pkj_w
-					];
-
-					$this->db->where('id_santri', $id_santri);
-					$this->db->update('tb_santri', $update_data);
-					header('Content-Type: application/json');
-					echo json_encode(['status' => 'success', 'message' => 'Lembaga dan profil berhasil disinkronkan', 'lembaga' => $lembaga_nama]);
-					exit;
-				}
-			}
-		} elseif ($httpCode === 404) {
-			$this->db->where('id_santri', $id_santri);
-			$this->db->update('tb_santri', ['aktif' => 'N']);
-			header('Content-Type: application/json');
-			echo json_encode(['status' => 'success', 'message' => 'Santri tidak ditemukan di pusat (404), dinonaktifkan secara lokal']);
-			exit;
-		}
-
-		header('Content-Type: application/json');
-		echo json_encode(['status' => 'error', 'message' => 'Gagal mengambil data dari API (HTTP ' . $httpCode . ')']);
-		exit;
-	}
-
-	public function toggle_santri_status()
-	{
-		$id_santri = intval($this->input->post('id_santri'));
-		$status = $this->input->post('status');
-
-		if (!$id_santri || !in_array($status, ['Y', 'N'])) {
-			header('Content-Type: application/json');
-			echo json_encode(['status' => 'error', 'message' => 'Data input tidak valid.']);
-			exit;
-		}
-
-		$this->db->where('id_santri', $id_santri);
-		$this->db->update('tb_santri', ['aktif' => $status]);
-
-		header('Content-Type: application/json');
-		if ($this->db->affected_rows() > 0) {
-			echo json_encode(['status' => 'success', 'message' => 'Status santri berhasil diubah.']);
-		} else {
-			echo json_encode(['status' => 'error', 'message' => 'Gagal mengubah status santri atau status tidak berubah.']);
-		}
-		exit;
-	}
-
-	public function delete_santri($id_santri)
-	{
-		$this->db->where('id_santri', $id_santri);
-		$this->db->delete('tb_santri');
-
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Data Santri berhasil dihapus');
-		} else {
-			$this->session->set_flashdata('error', 'Gagal menghapus data santri');
-		}
-		redirect('kasir/santri');
-	}
-
-	public function get_student_detail_ajax($id_santri)
-	{
-		$id_santri = intval($id_santri);
-		$santri = $this->db->get_where('tb_santri', ['id_santri' => $id_santri])->row_array();
-		if (!$santri) {
-			header('Content-Type: application/json');
-			echo json_encode(['status' => 'error', 'message' => 'Santri tidak ditemukan']);
-			exit;
-		}
-
-		// Map kos and keterangan names
-		$tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
-		$ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
-
-		$santri['tempat_kos_name'] = $tmpKos[$santri['t_kos']] ?? '-';
-		$santri['status_ket_name'] = (isset($santri['ket']) && is_numeric($santri['ket']) && isset($ket_map[$santri['ket']])) ? $ket_map[$santri['ket']] : '-';
-
-		header('Content-Type: application/json');
-		echo json_encode(['status' => 'success', 'data' => $santri]);
-		exit;
-	}
-
-	public function get_total_active_santri()
-	{
-		$total = $this->db->count_all_results('tb_santri');
-		header('Content-Type: application/json');
-		echo json_encode(['total' => $total]);
-		exit;
-	}
-
-	public function kirim_data_santri_batch()
-	{
-		$offset = intval($this->input->get('offset') ?? 0);
-		$limit = 200;
-
-		// Fetch a batch of all students from local database (db_sentral)
-		$this->db->select('*');
-		$this->db->from('tb_santri');
-		$this->db->order_by('id_santri', 'ASC');
-		$this->db->limit($limit, $offset);
-		$query = $this->db->get();
-		$chunk = $query->result_array();
-
-		if (empty($chunk)) {
-			header('Content-Type: application/json');
-			echo json_encode([
-				'status' => 'success',
-				'processed' => 0,
-				'offset' => $offset,
-				'message' => 'Selesai.'
-			]);
-			exit;
-		}
-
-		// Load both target databases
-		$db_kasir = $this->load->database('kasir', TRUE);
-		$db_dekos = $this->load->database('dekos', TRUE);
-
-		// Get target columns dynamically to prevent "unknown column" errors
-		$fields_kasir = $db_kasir->list_fields('tb_santri');
-		$fields_dekos = $db_dekos->list_fields('tb_santri');
-
-		// Helper function to upsert a chunk into a target database object with column filtering
-		$upsert_to_db = function($db_conn, $data_chunk, $target_fields) {
-			$db_conn->trans_start();
-
-			// Filter columns
-			$filtered_chunk = [];
-			foreach ($data_chunk as $row) {
-				$filtered_row = [];
-				foreach ($target_fields as $field) {
-					if ($field === 'id_santri') {
-						continue; // skip auto_increment primary key for both target databases
-					}
-					if (array_key_exists($field, $row)) {
-						$filtered_row[$field] = $row[$field];
-					}
-				}
-				if (!empty($filtered_row)) {
-					$filtered_chunk[] = $filtered_row;
-				}
-			}
-
-			if (empty($filtered_chunk)) {
-				$db_conn->trans_complete();
-				return TRUE;
-			}
-
-			// For both, match by nis
-			$nis_list = array_column($filtered_chunk, 'nis');
-			$existing_nis = [];
-			if (!empty($nis_list)) {
-				$existing = $db_conn->select('nis')
-					->where_in('nis', $nis_list)
-					->get('tb_santri')
-					->result_array();
-				$existing_nis = array_column($existing, 'nis');
-			}
-
-			$inserts = [];
-			$updates = [];
-			foreach ($filtered_chunk as $row) {
-				if (empty($row['nis'])) {
-					continue; // Skip student record if NIS is empty
-				}
-				if (in_array($row['nis'], $existing_nis)) {
-					$updates[] = $row;
-				} else {
-					$inserts[] = $row;
-				}
-			}
-
-			if (!empty($inserts)) {
-				$res = $db_conn->insert_batch('tb_santri', $inserts);
-				if ($res === FALSE || $db_conn->trans_status() === FALSE) {
-					$err = $db_conn->error();
-					$db_conn->trans_complete();
-					return $err;
-				}
-			}
-			if (!empty($updates)) {
-				$res = $db_conn->update_batch('tb_santri', $updates, 'nis');
-				if ($res === FALSE || $db_conn->trans_status() === FALSE) {
-					$err = $db_conn->error();
-					$db_conn->trans_complete();
-					return $err;
-				}
-			}
-
-			$db_conn->trans_complete();
-			if ($db_conn->trans_status() === FALSE) {
-				return $db_conn->error();
-			}
-			return TRUE;
-		};
-
-		// Run upsert for Kasir
-		$status_kasir = $upsert_to_db($db_kasir, $chunk, $fields_kasir);
-		// Run upsert for Dekos
-		$status_dekos = $upsert_to_db($db_dekos, $chunk, $fields_dekos);
-
-		if ($status_kasir !== TRUE || $status_dekos !== TRUE) {
-			$details = '';
-			if ($status_kasir !== TRUE) {
-				$details .= 'Kasir DB Error: [' . ($status_kasir['code'] ?? '') . '] ' . ($status_kasir['message'] ?? '') . '; ';
-			}
-			if ($status_dekos !== TRUE) {
-				$details .= 'Dekos DB Error: [' . ($status_dekos['code'] ?? '') . '] ' . ($status_dekos['message'] ?? '') . '; ';
-			}
-
-			header('Content-Type: application/json');
-			echo json_encode([
-				'status' => 'error',
-				'message' => 'Gagal menulis data ke database Kasir atau Dekos. Detail: ' . trim($details)
-			]);
-			exit;
-		}
-
-		header('Content-Type: application/json');
-		echo json_encode([
-			'status' => 'success',
-			'processed' => count($chunk),
-			'offset' => $offset + count($chunk)
-		]);
-		exit;
-	}
-
-	public function clean_up_target_databases()
-	{
-		// Fetch all active NIS from local database
-		$all_active_local = $this->db->select('nis')
-			->where('aktif', 'Y')
-			->get('tb_santri')
-			->result_array();
-		$local_nis_list = array_column($all_active_local, 'nis');
-
-		if (empty($local_nis_list)) {
-			header('Content-Type: application/json');
-			echo json_encode(['status' => 'success', 'message' => 'Tidak ada data dibersihkan.']);
-			exit;
-		}
-
-		// Load databases
-		$db_kasir = $this->load->database('kasir', TRUE);
-		$db_dekos = $this->load->database('dekos', TRUE);
-
-		// Safe soft delete using chunks of where_not_in
-		$db_kasir->trans_start();
-		$db_kasir->where_not_in('nis', $local_nis_list)->update('tb_santri', ['aktif' => 'N']);
-		$db_kasir->trans_complete();
-
-		$db_dekos->trans_start();
-		$db_dekos->where_not_in('nis', $local_nis_list)->update('tb_santri', ['aktif' => 'N']);
-		$db_dekos->trans_complete();
-
-		header('Content-Type: application/json');
-		echo json_encode(['status' => 'success', 'message' => 'Pembersihan data selesai.']);
-		exit;
-	}
-
-	public function dekos()
-	{
-		$data['user'] = $this->Auth_model->current_user();
-		$data['tahun'] = $this->tahun;
-		$data['bulan_cal'] = $this->bulan;
-		$data['controller'] = 'kasir';
-
-		// Boarding houses array
-		$data['tmpKos'] = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
-
-		// Get lembaga list
-		$data['lembaga'] = $this->db->get_where('lembaga', ['tahun' => $this->tahun])->result();
-
-		// Query count of active students for each t_kos index
-		$counts = $this->db->select('t_kos, COUNT(*) as total')
-			->from('tb_santri')
-			->where('aktif', 'Y')
-			->group_by('t_kos')
-			->get()
-			->result_array();
-
-		$rekap = array_fill(0, count($data['tmpKos']), 0);
-		foreach ($counts as $row) {
-			$t_kos = (int)$row['t_kos'];
-			if (isset($rekap[$t_kos])) {
-				$rekap[$t_kos] = (int)$row['total'];
-			}
-		}
-		$data['rekap'] = $rekap;
-
-		$this->load->view('kasir/head', $data);
-		$this->load->view('admin/dekos', $data);
-		$this->load->view('kasir/foot');
-	}
-
-	public function dekos_history_ajax($nis)
-	{
-		$this->db->select('dekos.*, tb_santri.nama');
-		$this->db->from('dekos');
-		$this->db->join('tb_santri', 'dekos.nis = tb_santri.nis', 'left');
-		$this->db->where('dekos.nis', $nis);
-		$this->db->order_by('dekos.masuk', 'asc');
-		$query = $this->db->get();
-		$data = $query->result();
-
-		$tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
-
-		$output = [];
-		$no = 1;
-		foreach ($data as $row) {
-			$nama_kos = $tmpKos[$row->t_kos] ?? ('Kos ' . $row->t_kos);
-			$output[] = [
-				'no' => $no++,
-				'id_dekos' => $row->id_dekos,
-				'nis' => $row->nis,
-				'masuk' => $row->masuk ?? '-',
-				'keluar' => $row->keluar ?? '-',
-				't_kos' => $row->t_kos,
-				'tempat_kos' => $nama_kos,
-				'aksi' => '
+            $output[] = [
+                'no' => $no++,
+                'nis' => $row->nis ?? '-',
+                'cost_id' => $row->cost_id ?? '-',
+                'nama' => $display_nama,
+                'kelas_formal' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
+                'tempat_kos' => $tmpKos[$row->t_kos] ?? '-',
+                'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
+                'aksi' => $aksi_buttons
+            ];
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $output
+        ]);
+        exit;
+    }
+
+    public function update_cost_id()
+    {
+        $nis = $this->input->post('nis', true);
+        $cost_id = $this->input->post('cost_id', true);
+
+        // Fetch student name to keep cost_name consistent
+        $santri = $this->db->get_where('tb_santri', ['nis' => $nis])->row();
+        $nama = $santri ? $santri->nama : '';
+
+        // Check if record exists in cost table
+        $existing = $this->db->get_where('cost', ['nis' => $nis])->row();
+
+        if ($existing) {
+            $this->db->where('nis', $nis);
+            $this->db->update('cost', [
+                'cost_id' => $cost_id,
+                'cost_name' => $nama
+            ]);
+        } else {
+            $this->db->insert('cost', [
+                'nis' => $nis,
+                'cost_id' => $cost_id,
+                'cost_name' => $nama
+            ]);
+        }
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Customer ID berhasil diperbarui');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal memperbarui Customer ID');
+        }
+
+        redirect('kasir/santri');
+    }
+
+    public function sinkron_batch()
+    {
+        $token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
+        $token = $token_row ? $token_row->val : '';
+
+        $page = intval($this->input->get('page') ?? 1);
+        if ($page === 1) {
+            $this->session->unset_userdata('synced_uuids');
+        }
+        $per_page = 500; // Batch size
+
+        $url = "https://data.ppdwk.com/api/datatables?data=referensi-peserta-didik"
+            . "&page=" . $page
+            . "&per_page=" . $per_page
+            . "&sortby=nama"
+            . "&sortbydesc=ASC";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token,
+            'Accept: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'API request failed with HTTP code ' . $httpCode
+            ]);
+            exit;
+        }
+
+        $result = json_decode($response, true);
+        if (!$result || !isset($result['data']['data'])) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Invalid response structure from API'
+            ]);
+            exit;
+        }
+
+        $items = $result['data']['data'];
+        $total_records = intval($result['data']['total'] ?? 0);
+        $last_page = intval($result['data']['last_page'] ?? 1);
+
+        // Store processed UUIDs in session for final cleanup
+        $synced_uuids = $this->session->userdata('synced_uuids') ?: [];
+        foreach ($items as $item) {
+            if (!empty($item['peserta_didik_id'])) {
+                $synced_uuids[] = $item['peserta_didik_id'];
+            }
+        }
+        $this->session->set_userdata('synced_uuids', $synced_uuids);
+
+        $processed = 0;
+        foreach ($items as $item) {
+            $data = [
+                'santri_id' => $item['peserta_didik_id'] ?? null,
+                'nama' => $item['nama'] ?? null,
+                'nisn' => $item['nisn'] ?? null,
+                'nik' => $item['nik'] ?? null,
+                'no_kk' => $item['no_kk'] ?? null,
+                'jkl' => $item['jenis_kelamin'] ?? null,
+                'tempat' => $item['tempat_lahir'] ?? null,
+                'tanggal' => $item['tanggal_lahir'] ?? null,
+                'anak_ke' => !empty($item['anak_ke']) ? intval($item['anak_ke']) : null,
+                'jml_sdr' => !empty($item['jml_sdr']) ? intval($item['jml_sdr']) : null,
+                'jln' => $item['alamat'] ?? null,
+                'rt' => $item['rt'] ?? null,
+                'rw' => $item['rw'] ?? null,
+                'desa' => $item['desa'] ?? null,
+                'kec' => $item['kec'] ?? null,
+                'kab' => $item['kab'] ?? null,
+                'prov' => $item['prov'] ?? null,
+                'kd_pos' => !empty($item['kode_pos']) ? intval($item['kode_pos']) : null,
+                'nis' => $item['nis'] ?? null,
+                'aktif' => 'Y'
+            ];
+
+            $existing = null;
+            if (!empty($item['peserta_didik_id'])) {
+                $existing = $this->db->get_where('tb_santri', ['santri_id' => $item['peserta_didik_id']])->row();
+            }
+            if (!$existing && !empty($item['nis'])) {
+                $existing = $this->db->get_where('tb_santri', ['nis' => $item['nis']])->row();
+            }
+
+            if ($existing) {
+                $this->db->where('id_santri', $existing->id_santri);
+                $this->db->update('tb_santri', $data);
+            } else {
+                $this->db->insert('tb_santri', $data);
+            }
+            $processed++;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => 'success',
+            'page' => $page,
+            'last_page' => $last_page,
+            'processed' => $processed,
+            'total' => $total_records
+        ]);
+        exit;
+    }
+
+    public function clean_up_local_database()
+    {
+        $synced_uuids = $this->session->userdata('synced_uuids');
+        if (!empty($synced_uuids)) {
+            // Mark students as inactive if they have a UUID (santri_id) but are not in the synced list
+            $this->db->where('santri_id IS NOT NULL');
+            $this->db->where('santri_id !=', '');
+            $this->db->where_not_in('santri_id', $synced_uuids);
+            $this->db->update('tb_santri', ['aktif' => 'N']);
+        }
+        $this->session->unset_userdata('synced_uuids');
+
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'success', 'message' => 'Pembersihan data lokal berhasil.']);
+        exit;
+    }
+
+    public function sinkron_lembaga_batch()
+    {
+        $token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
+        $token = $token_row ? $token_row->val : '';
+
+        $offset = intval($this->input->get('offset') ?? 0);
+        $limit = 50; // Parallel request batch limit
+
+        $students = $this->db->select('id_santri, santri_id')
+            ->from('tb_santri')
+            ->where('aktif', 'Y')
+            ->where('santri_id IS NOT NULL')
+            ->where('santri_id !=', '')
+            ->limit($limit, $offset)
+            ->get()
+            ->result();
+
+        $total_students = $this->db->where('aktif', 'Y')
+            ->where('santri_id IS NOT NULL')
+            ->where('santri_id !=', '')
+            ->count_all_results('tb_santri');
+
+        if (empty($students)) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'success',
+                'offset' => $offset,
+                'processed' => 0,
+                'total' => $total_students
+            ]);
+            exit;
+        }
+
+        $mh = curl_multi_init();
+        $curls = [];
+
+        foreach ($students as $student) {
+            $uuid = $student->santri_id;
+            $url = "https://data.ppdwk.com/api/pd/show/" . $uuid;
+
+            $ch = curl_init($url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer ' . $token,
+                'Accept: application/json'
+            ]);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+
+            curl_multi_add_handle($mh, $ch);
+            $curls[$student->id_santri] = $ch;
+        }
+
+        $running = null;
+        do {
+            curl_multi_exec($mh, $running);
+        } while ($running);
+
+        $processed = 0;
+        foreach ($curls as $id_santri => $ch) {
+            $response = curl_multi_getcontent($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_multi_remove_handle($mh, $ch);
+            curl_close($ch);
+
+            if ($httpCode === 200) {
+                $result = json_decode($response, true);
+                if ($result && isset($result['registrasi_pd'])) {
+                    $lembaga_nama = '';
+                    foreach ($result['registrasi_pd'] as $reg) {
+                        if (empty($reg['tanggal_keluar'])) {
+                            if (isset($reg['lembaga']['nama'])) {
+                                $lembaga_nama = $reg['lembaga']['nama'];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (empty($lembaga_nama) && !empty($result['registrasi_pd'])) {
+                        $first_reg = $result['registrasi_pd'][0];
+                        if (isset($first_reg['lembaga']['nama'])) {
+                            $lembaga_nama = $first_reg['lembaga']['nama'];
+                        }
+                    }
+
+                    if (!empty($lembaga_nama)) {
+                        $desa = null;
+                        $kec = null;
+                        $kab = null;
+                        $prov = null;
+
+                        if (!empty($result['wilayah'])) {
+                            $w = $result['wilayah'];
+                            if ($w['level_wilayah'] == 4) {
+                                $desa = $w['nama'];
+                                $w = $w['parrent_recursive'] ?? null;
+                            }
+                            if ($w && $w['level_wilayah'] == 3) {
+                                $kec = $w['nama'];
+                                $w = $w['parrent_recursive'] ?? null;
+                            }
+                            if ($w && $w['level_wilayah'] == 2) {
+                                $kab = $w['nama'];
+                                $w = $w['parrent_recursive'] ?? null;
+                            }
+                            if ($w && $w['level_wilayah'] == 1) {
+                                $prov = $w['nama'];
+                            }
+                        }
+
+                        $pend_a = is_array($result['pendidikan_ayah'] ?? null) ? ($result['pendidikan_ayah']['nama'] ?? '') : ($result['jenjang_pendidikan_ayah'] ?? '');
+                        $pkj_a  = is_array($result['pekerjaan_ayah'] ?? null) ? ($result['pekerjaan_ayah']['nama'] ?? '') : ($result['pekerjaan_id_ayah'] ?? '');
+
+                        $pend_i = is_array($result['pendidikan_ibu'] ?? null) ? ($result['pendidikan_ibu']['nama'] ?? '') : ($result['jenjang_pendidikan_ibu'] ?? '');
+                        $pkj_i  = is_array($result['pekerjaan_ibu'] ?? null) ? ($result['pekerjaan_ibu']['nama'] ?? '') : ($result['pekerjaan_id_ibu'] ?? '');
+
+                        $pend_w = is_array($result['pendidikan_wali'] ?? null) ? ($result['pendidikan_wali']['nama'] ?? '') : ($result['jenjang_pendidikan_wali'] ?? '');
+                        $pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
+
+                        $update_data = [
+                            't_formal'  => $lembaga_nama,
+                            'jln'       => $result['alamat'] ?? null,
+                            'rt'        => $result['rt'] ?? null,
+                            'rw'        => $result['rw'] ?? null,
+                            'desa'      => $desa,
+                            'kec'       => $kec,
+                            'kab'       => $kab,
+                            'prov'      => $prov,
+                            'kd_pos'    => !empty($result['kodepos']) ? intval($result['kodepos']) : null,
+                            'hp'        => $result['telpon'] ?? null,
+                            'email'     => $result['email'] ?? null,
+                            'bapak'     => $result['nama_ayah'] ?? null,
+                            'nik_a'     => $result['nik_a'] ?? ($result['nik_ayah'] ?? null),
+                            'tempat_a'  => $result['tempat_lahir_ayah'] ?? null,
+                            'tanggal_a' => $result['tanggal_lahir_ayah'] ?? null,
+                            'pend_a'    => $pend_a,
+                            'pkj_a'     => $pkj_a,
+                            'ibu'       => $result['nama_ibu'] ?? null,
+                            'nik_i'     => $result['nik_i'] ?? ($result['nik_ibu'] ?? null),
+                            'tempat_i'  => $result['tempat_lahir_ibu'] ?? null,
+                            'tanggal_i' => $result['tanggal_lahir_ibu'] ?? null,
+                            'pend_i'    => $pend_i,
+                            'pkj_i'     => $pkj_i,
+                            'wali'      => $result['nama_wali'] ?? null,
+                            'nik_w'     => $result['nik_w'] ?? ($result['nik_wali'] ?? null),
+                            'tempat_w'  => $result['tempat_lahir_wali'] ?? null,
+                            'tanggal_w' => $result['tanggal_lahir_wali'] ?? null,
+                            'pend_w'    => $pend_w,
+                            'pkj_w'     => $pkj_w
+                        ];
+
+                        $this->db->where('id_santri', $id_santri);
+                        $this->db->update('tb_santri', $update_data);
+                    }
+                }
+            }
+            $processed++;
+        }
+        curl_multi_close($mh);
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => 'success',
+            'offset' => $offset + $processed,
+            'processed' => $processed,
+            'total' => $total_students
+        ]);
+        exit;
+    }
+
+    public function sinkron_siswa_single()
+    {
+        $id_santri = intval($this->input->get('id_santri'));
+        $santri = $this->db->get_where('tb_santri', ['id_santri' => $id_santri])->row();
+        if (!$santri || empty($santri->santri_id)) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Siswa tidak ditemukan atau UUID kosong']);
+            exit;
+        }
+
+        $token_row = $this->db->where('name', 'token_bearer')->get('settings')->row();
+        $token = $token_row ? $token_row->val : '';
+
+        $url = "https://data.ppdwk.com/api/pd/show/" . $santri->santri_id;
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token,
+            'Accept: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200) {
+            $result = json_decode($response, true);
+            if ($result && isset($result['registrasi_pd'])) {
+                $lembaga_nama = '';
+                foreach ($result['registrasi_pd'] as $reg) {
+                    if (empty($reg['tanggal_keluar'])) {
+                        if (isset($reg['lembaga']['nama'])) {
+                            $lembaga_nama = $reg['lembaga']['nama'];
+                            break;
+                        }
+                    }
+                }
+                if (empty($lembaga_nama) && !empty($result['registrasi_pd'])) {
+                    $first_reg = $result['registrasi_pd'][0];
+                    if (isset($first_reg['lembaga']['nama'])) {
+                        $lembaga_nama = $first_reg['lembaga']['nama'];
+                    }
+                }
+
+                if (!empty($lembaga_nama)) {
+                    $desa = null;
+                    $kec = null;
+                    $kab = null;
+                    $prov = null;
+
+                    if (!empty($result['wilayah'])) {
+                        $w = $result['wilayah'];
+                        if ($w['level_wilayah'] == 4) {
+                            $desa = $w['nama'];
+                            $w = $w['parrent_recursive'] ?? null;
+                        }
+                        if ($w && $w['level_wilayah'] == 3) {
+                            $kec = $w['nama'];
+                            $w = $w['parrent_recursive'] ?? null;
+                        }
+                        if ($w && $w['level_wilayah'] == 2) {
+                            $kab = $w['nama'];
+                            $w = $w['parrent_recursive'] ?? null;
+                        }
+                        if ($w && $w['level_wilayah'] == 1) {
+                            $prov = $w['nama'];
+                        }
+                    }
+
+                    $pend_a = is_array($result['pendidikan_ayah'] ?? null) ? ($result['pendidikan_ayah']['nama'] ?? '') : ($result['jenjang_pendidikan_ayah'] ?? '');
+                    $pkj_a  = is_array($result['pekerjaan_ayah'] ?? null) ? ($result['pekerjaan_ayah']['nama'] ?? '') : ($result['pekerjaan_id_ayah'] ?? '');
+
+                    $pend_i = is_array($result['pendidikan_ibu'] ?? null) ? ($result['pendidikan_ibu']['nama'] ?? '') : ($result['jenjang_pendidikan_ibu'] ?? '');
+                    $pkj_i  = is_array($result['pekerjaan_ibu'] ?? null) ? ($result['pekerjaan_ibu']['nama'] ?? '') : ($result['pekerjaan_id_ibu'] ?? '');
+
+                    $pend_w = is_array($result['pendidikan_wali'] ?? null) ? ($result['pendidikan_wali']['nama'] ?? '') : ($result['jenjang_pendidikan_wali'] ?? '');
+                    $pkj_w  = is_array($result['pekerjaan_wali'] ?? null) ? ($result['pekerjaan_wali']['nama'] ?? '') : ($result['pekerjaan_id_wali'] ?? '');
+
+                    $update_data = [
+                        'nama'      => $result['nama'] ?? null,
+                        'nisn'      => $result['nisn'] ?? null,
+                        'nik'       => $result['nik'] ?? null,
+                        'no_kk'     => $result['no_kk'] ?? null,
+                        'jkl'       => $result['jenis_kelamin'] ?? null,
+                        'tempat'    => $result['tempat_lahir'] ?? null,
+                        'tanggal'   => $result['tanggal_lahir'] ?? null,
+                        'anak_ke'   => !empty($result['anak_ke']) ? intval($result['anak_ke']) : null,
+                        'jml_sdr'   => !empty($result['jml_sdr']) ? intval($result['jml_sdr']) : null,
+                        'nis'       => $result['nis'] ?? null,
+                        't_formal'  => $lembaga_nama,
+                        'jln'       => $result['alamat'] ?? null,
+                        'rt'        => $result['rt'] ?? null,
+                        'rw'        => $result['rw'] ?? null,
+                        'desa'      => $desa,
+                        'kec'       => $kec,
+                        'kab'       => $kab,
+                        'prov'      => $prov,
+                        'kd_pos'    => !empty($result['kodepos']) ? intval($result['kodepos']) : null,
+                        'hp'        => $result['telpon'] ?? null,
+                        'email'     => $result['email'] ?? null,
+                        'bapak'     => $result['nama_ayah'] ?? null,
+                        'nik_a'     => $result['nik_a'] ?? ($result['nik_ayah'] ?? null),
+                        'tempat_a'  => $result['tempat_lahir_ayah'] ?? null,
+                        'tanggal_a' => $result['tanggal_lahir_ayah'] ?? null,
+                        'pend_a'    => $pend_a,
+                        'pkj_a'     => $pkj_a,
+                        'ibu'       => $result['nama_ibu'] ?? null,
+                        'nik_i'     => $result['nik_i'] ?? ($result['nik_ibu'] ?? null),
+                        'tempat_i'  => $result['tempat_lahir_ibu'] ?? null,
+                        'tanggal_i' => $result['tanggal_lahir_ibu'] ?? null,
+                        'pend_i'    => $pend_i,
+                        'pkj_i'     => $pkj_i,
+                        'wali'      => $result['nama_wali'] ?? null,
+                        'nik_w'     => $result['nik_w'] ?? ($result['nik_wali'] ?? null),
+                        'tempat_w'  => $result['tempat_lahir_wali'] ?? null,
+                        'tanggal_w' => $result['tanggal_lahir_wali'] ?? null,
+                        'pend_w'    => $pend_w,
+                        'pkj_w'     => $pkj_w
+                    ];
+
+                    $this->db->where('id_santri', $id_santri);
+                    $this->db->update('tb_santri', $update_data);
+                    header('Content-Type: application/json');
+                    echo json_encode(['status' => 'success', 'message' => 'Lembaga dan profil berhasil disinkronkan', 'lembaga' => $lembaga_nama]);
+                    exit;
+                }
+            }
+        } elseif ($httpCode === 404) {
+            $this->db->where('id_santri', $id_santri);
+            $this->db->update('tb_santri', ['aktif' => 'N']);
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'success', 'message' => 'Santri tidak ditemukan di pusat (404), dinonaktifkan secara lokal']);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'error', 'message' => 'Gagal mengambil data dari API (HTTP ' . $httpCode . ')']);
+        exit;
+    }
+
+    public function toggle_santri_status()
+    {
+        $id_santri = intval($this->input->post('id_santri'));
+        $status = $this->input->post('status');
+
+        if (!$id_santri || !in_array($status, ['Y', 'N'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Data input tidak valid.']);
+            exit;
+        }
+
+        $this->db->where('id_santri', $id_santri);
+        $this->db->update('tb_santri', ['aktif' => $status]);
+
+        header('Content-Type: application/json');
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Status santri berhasil diubah.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengubah status santri atau status tidak berubah.']);
+        }
+        exit;
+    }
+
+    public function delete_santri($id_santri)
+    {
+        $this->db->where('id_santri', $id_santri);
+        $this->db->delete('tb_santri');
+
+        if ($this->db->affected_rows() > 0) {
+            $this->session->set_flashdata('ok', 'Data Santri berhasil dihapus');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menghapus data santri');
+        }
+        redirect('kasir/santri');
+    }
+
+    public function get_student_detail_ajax($id_santri)
+    {
+        $id_santri = intval($id_santri);
+        $santri = $this->db->get_where('tb_santri', ['id_santri' => $id_santri])->row_array();
+        if (!$santri) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'error', 'message' => 'Santri tidak ditemukan']);
+            exit;
+        }
+
+        // Map kos and keterangan names
+        $tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
+        $ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
+
+        $santri['tempat_kos_name'] = $tmpKos[$santri['t_kos']] ?? '-';
+        $santri['status_ket_name'] = (isset($santri['ket']) && is_numeric($santri['ket']) && isset($ket_map[$santri['ket']])) ? $ket_map[$santri['ket']] : '-';
+
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'success', 'data' => $santri]);
+        exit;
+    }
+
+    public function get_total_active_santri()
+    {
+        $total = $this->db->count_all_results('tb_santri');
+        header('Content-Type: application/json');
+        echo json_encode(['total' => $total]);
+        exit;
+    }
+
+    public function kirim_data_santri_batch()
+    {
+        $offset = intval($this->input->get('offset') ?? 0);
+        $limit = 200;
+
+        // Fetch a batch of all students from local database (db_sentral)
+        $this->db->select('*');
+        $this->db->from('tb_santri');
+        $this->db->order_by('id_santri', 'ASC');
+        $this->db->limit($limit, $offset);
+        $query = $this->db->get();
+        $chunk = $query->result_array();
+
+        if (empty($chunk)) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'success',
+                'processed' => 0,
+                'offset' => $offset,
+                'message' => 'Selesai.'
+            ]);
+            exit;
+        }
+
+        // Load both target databases
+        $db_kasir = $this->load->database('kasir', TRUE);
+        $db_dekos = $this->load->database('dekos', TRUE);
+
+        // Get target columns dynamically to prevent "unknown column" errors
+        $fields_kasir = $db_kasir->list_fields('tb_santri');
+        $fields_dekos = $db_dekos->list_fields('tb_santri');
+
+        // Helper function to upsert a chunk into a target database object with column filtering
+        $upsert_to_db = function ($db_conn, $data_chunk, $target_fields) {
+            $db_conn->trans_start();
+
+            // Filter columns
+            $filtered_chunk = [];
+            foreach ($data_chunk as $row) {
+                $filtered_row = [];
+                foreach ($target_fields as $field) {
+                    if ($field === 'id_santri') {
+                        continue; // skip auto_increment primary key for both target databases
+                    }
+                    if (array_key_exists($field, $row)) {
+                        $filtered_row[$field] = $row[$field];
+                    }
+                }
+                if (!empty($filtered_row)) {
+                    $filtered_chunk[] = $filtered_row;
+                }
+            }
+
+            if (empty($filtered_chunk)) {
+                $db_conn->trans_complete();
+                return TRUE;
+            }
+
+            // For both, match by nis
+            $nis_list = array_column($filtered_chunk, 'nis');
+            $existing_nis = [];
+            if (!empty($nis_list)) {
+                $existing = $db_conn->select('nis')
+                    ->where_in('nis', $nis_list)
+                    ->get('tb_santri')
+                    ->result_array();
+                $existing_nis = array_column($existing, 'nis');
+            }
+
+            $inserts = [];
+            $updates = [];
+            foreach ($filtered_chunk as $row) {
+                if (empty($row['nis'])) {
+                    continue; // Skip student record if NIS is empty
+                }
+                if (in_array($row['nis'], $existing_nis)) {
+                    $updates[] = $row;
+                } else {
+                    $inserts[] = $row;
+                }
+            }
+
+            if (!empty($inserts)) {
+                $res = $db_conn->insert_batch('tb_santri', $inserts);
+                if ($res === FALSE || $db_conn->trans_status() === FALSE) {
+                    $err = $db_conn->error();
+                    $db_conn->trans_complete();
+                    return $err;
+                }
+            }
+            if (!empty($updates)) {
+                $res = $db_conn->update_batch('tb_santri', $updates, 'nis');
+                if ($res === FALSE || $db_conn->trans_status() === FALSE) {
+                    $err = $db_conn->error();
+                    $db_conn->trans_complete();
+                    return $err;
+                }
+            }
+
+            $db_conn->trans_complete();
+            if ($db_conn->trans_status() === FALSE) {
+                return $db_conn->error();
+            }
+            return TRUE;
+        };
+
+        // Run upsert for Kasir
+        $status_kasir = $upsert_to_db($db_kasir, $chunk, $fields_kasir);
+        // Run upsert for Dekos
+        $status_dekos = $upsert_to_db($db_dekos, $chunk, $fields_dekos);
+
+        if ($status_kasir !== TRUE || $status_dekos !== TRUE) {
+            $details = '';
+            if ($status_kasir !== TRUE) {
+                $details .= 'Kasir DB Error: [' . ($status_kasir['code'] ?? '') . '] ' . ($status_kasir['message'] ?? '') . '; ';
+            }
+            if ($status_dekos !== TRUE) {
+                $details .= 'Dekos DB Error: [' . ($status_dekos['code'] ?? '') . '] ' . ($status_dekos['message'] ?? '') . '; ';
+            }
+
+            header('Content-Type: application/json');
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Gagal menulis data ke database Kasir atau Dekos. Detail: ' . trim($details)
+            ]);
+            exit;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'status' => 'success',
+            'processed' => count($chunk),
+            'offset' => $offset + count($chunk)
+        ]);
+        exit;
+    }
+
+    public function clean_up_target_databases()
+    {
+        // Fetch all active NIS from local database
+        $all_active_local = $this->db->select('nis')
+            ->where('aktif', 'Y')
+            ->get('tb_santri')
+            ->result_array();
+        $local_nis_list = array_column($all_active_local, 'nis');
+
+        if (empty($local_nis_list)) {
+            header('Content-Type: application/json');
+            echo json_encode(['status' => 'success', 'message' => 'Tidak ada data dibersihkan.']);
+            exit;
+        }
+
+        // Load databases
+        $db_kasir = $this->load->database('kasir', TRUE);
+        $db_dekos = $this->load->database('dekos', TRUE);
+
+        // Safe soft delete using chunks of where_not_in
+        $db_kasir->trans_start();
+        $db_kasir->where_not_in('nis', $local_nis_list)->update('tb_santri', ['aktif' => 'N']);
+        $db_kasir->trans_complete();
+
+        $db_dekos->trans_start();
+        $db_dekos->where_not_in('nis', $local_nis_list)->update('tb_santri', ['aktif' => 'N']);
+        $db_dekos->trans_complete();
+
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'success', 'message' => 'Pembersihan data selesai.']);
+        exit;
+    }
+
+    public function dekos()
+    {
+        $data['user'] = $this->Auth_model->current_user();
+        $data['tahun'] = $this->tahun;
+        $data['bulan_cal'] = $this->bulan;
+        $data['controller'] = 'kasir';
+
+        // Boarding houses array
+        $data['tmpKos'] = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
+
+        // Get lembaga list
+        $data['lembaga'] = $this->db->get_where('lembaga', ['tahun' => $this->tahun])->result();
+
+        // Query count of active students for each t_kos index
+        $counts = $this->db->select('t_kos, COUNT(*) as total')
+            ->from('tb_santri')
+            ->where('aktif', 'Y')
+            ->group_by('t_kos')
+            ->get()
+            ->result_array();
+
+        $rekap = array_fill(0, count($data['tmpKos']), 0);
+        foreach ($counts as $row) {
+            $t_kos = (int)$row['t_kos'];
+            if (isset($rekap[$t_kos])) {
+                $rekap[$t_kos] = (int)$row['total'];
+            }
+        }
+        $data['rekap'] = $rekap;
+
+        $this->load->view('kasir/head', $data);
+        $this->load->view('admin/dekos', $data);
+        $this->load->view('kasir/foot');
+    }
+
+    public function dekos_history_ajax($nis)
+    {
+        $this->db->select('dekos.*, tb_santri.nama');
+        $this->db->from('dekos');
+        $this->db->join('tb_santri', 'dekos.nis = tb_santri.nis', 'left');
+        $this->db->where('dekos.nis', $nis);
+        $this->db->order_by('dekos.masuk', 'asc');
+        $query = $this->db->get();
+        $data = $query->result();
+
+        $tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
+
+        $output = [];
+        $no = 1;
+        foreach ($data as $row) {
+            $nama_kos = $tmpKos[$row->t_kos] ?? ('Kos ' . $row->t_kos);
+            $output[] = [
+                'no' => $no++,
+                'id_dekos' => $row->id_dekos,
+                'nis' => $row->nis,
+                'masuk' => $row->masuk ?? '-',
+                'keluar' => $row->keluar ?? '-',
+                't_kos' => $row->t_kos,
+                'tempat_kos' => $nama_kos,
+                'aksi' => '
 				<div class="d-flex align-items-center gap-2">
 					<button type="button" class="btn btn-sm btn-outline-warning btn-edit-dekos" 
 							data-id="' . $row->id_dekos . '" 
@@ -4058,304 +4058,304 @@ Terima kasih.';
 						<i class="bx bx-trash"></i> Hapus
 					</button>
 				</div>'
-			];
-		}
+            ];
+        }
 
-		header('Content-Type: application/json');
-		echo json_encode(['data' => $output]);
-		exit;
-	}
+        header('Content-Type: application/json');
+        echo json_encode(['data' => $output]);
+        exit;
+    }
 
-	public function get_student_info_ajax($nis)
-	{
-		$student = $this->db->get_where('tb_santri', ['nis' => $nis])->row();
-		header('Content-Type: application/json');
-		echo json_encode($student);
-		exit;
-	}
+    public function get_student_info_ajax($nis)
+    {
+        $student = $this->db->get_where('tb_santri', ['nis' => $nis])->row();
+        header('Content-Type: application/json');
+        echo json_encode($student);
+        exit;
+    }
 
-	public function add_dekos()
-	{
-		$nis = $this->input->post('nis', true);
-		$t_kos = $this->input->post('t_kos', true);
-		$tanggal_pindah = $this->input->post('tanggal_pindah', true);
+    public function add_dekos()
+    {
+        $nis = $this->input->post('nis', true);
+        $t_kos = $this->input->post('t_kos', true);
+        $tanggal_pindah = $this->input->post('tanggal_pindah', true);
 
-		if (empty($nis) || empty($t_kos) || empty($tanggal_pindah)) {
-			echo json_encode(['status' => 'error', 'message' => 'NIS, Tempat Kos Baru, dan Tanggal Pindah tidak boleh kosong']);
-			exit;
-		}
+        if (empty($nis) || empty($t_kos) || empty($tanggal_pindah)) {
+            echo json_encode(['status' => 'error', 'message' => 'NIS, Tempat Kos Baru, dan Tanggal Pindah tidak boleh kosong']);
+            exit;
+        }
 
-		$this->db->trans_start();
+        $this->db->trans_start();
 
-		// Find the latest boarding record for this student
-		$latest = $this->db->select('*')
-			->from('dekos')
-			->where('nis', $nis)
-			->order_by('id_dekos', 'DESC')
-			->limit(1)
-			->get()
-			->row();
+        // Find the latest boarding record for this student
+        $latest = $this->db->select('*')
+            ->from('dekos')
+            ->where('nis', $nis)
+            ->order_by('id_dekos', 'DESC')
+            ->limit(1)
+            ->get()
+            ->row();
 
-		if ($latest) {
-			// Update previous record's exit date to the relocation date
-			$this->db->where('id_dekos', $latest->id_dekos);
-			$this->db->update('dekos', ['keluar' => $tanggal_pindah]);
-		}
+        if ($latest) {
+            // Update previous record's exit date to the relocation date
+            $this->db->where('id_dekos', $latest->id_dekos);
+            $this->db->update('dekos', ['keluar' => $tanggal_pindah]);
+        }
 
-		// Insert new record
-		$data = [
-			'nis' => $nis,
-			't_kos' => $t_kos,
-			'masuk' => $tanggal_pindah,
-			'keluar' => '0000-00-00'
-		];
-		$this->db->insert('dekos', $data);
+        // Insert new record
+        $data = [
+            'nis' => $nis,
+            't_kos' => $t_kos,
+            'masuk' => $tanggal_pindah,
+            'keluar' => '0000-00-00'
+        ];
+        $this->db->insert('dekos', $data);
 
-		// Update current boarding house in student master table
-		$this->db->where('nis', $nis);
-		$this->db->update('tb_santri', ['t_kos' => $t_kos]);
+        // Update current boarding house in student master table
+        $this->db->where('nis', $nis);
+        $this->db->update('tb_santri', ['t_kos' => $t_kos]);
 
-		$this->db->trans_complete();
+        $this->db->trans_complete();
 
-		if ($this->db->trans_status() === FALSE) {
-			echo json_encode(['status' => 'error', 'message' => 'Gagal memproses pemindahan tempat dekos']);
-		} else {
-			echo json_encode(['status' => 'success', 'message' => 'Proses pemindahan tempat dekos berhasil disimpan']);
-		}
-		exit;
-	}
+        if ($this->db->trans_status() === FALSE) {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal memproses pemindahan tempat dekos']);
+        } else {
+            echo json_encode(['status' => 'success', 'message' => 'Proses pemindahan tempat dekos berhasil disimpan']);
+        }
+        exit;
+    }
 
-	public function edit_dekos()
-	{
-		$id_dekos = $this->input->post('id_dekos', true);
-		$t_kos = $this->input->post('t_kos', true);
-		$masuk = $this->input->post('masuk', true);
-		$keluar = $this->input->post('keluar', true);
+    public function edit_dekos()
+    {
+        $id_dekos = $this->input->post('id_dekos', true);
+        $t_kos = $this->input->post('t_kos', true);
+        $masuk = $this->input->post('masuk', true);
+        $keluar = $this->input->post('keluar', true);
 
-		if (empty($id_dekos) || empty($t_kos)) {
-			echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
-			exit;
-		}
+        if (empty($id_dekos) || empty($t_kos)) {
+            echo json_encode(['status' => 'error', 'message' => 'Data tidak lengkap']);
+            exit;
+        }
 
-		$data = [
-			't_kos' => $t_kos,
-			'masuk' => $masuk ?: '0000-00-00',
-			'keluar' => $keluar ?: '0000-00-00'
-		];
+        $data = [
+            't_kos' => $t_kos,
+            'masuk' => $masuk ?: '0000-00-00',
+            'keluar' => $keluar ?: '0000-00-00'
+        ];
 
-		$this->db->where('id_dekos', $id_dekos);
-		$this->db->update('dekos', $data);
+        $this->db->where('id_dekos', $id_dekos);
+        $this->db->update('dekos', $data);
 
-		echo json_encode(['status' => 'success', 'message' => 'Riwayat dekosan berhasil diperbaharui']);
-		exit;
-	}
+        echo json_encode(['status' => 'success', 'message' => 'Riwayat dekosan berhasil diperbaharui']);
+        exit;
+    }
 
-	public function delete_dekos($id_dekos)
-	{
-		$this->db->where('id_dekos', $id_dekos);
-		$this->db->delete('dekos');
+    public function delete_dekos($id_dekos)
+    {
+        $this->db->where('id_dekos', $id_dekos);
+        $this->db->delete('dekos');
 
-		if ($this->db->affected_rows() > 0) {
-			echo json_encode(['status' => 'success', 'message' => 'Riwayat dekosan berhasil dihapus']);
-		} else {
-			echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus riwayat dekosan']);
-		}
-		exit;
-	}
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Riwayat dekosan berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus riwayat dekosan']);
+        }
+        exit;
+    }
 
-	public function select2_santri_ajax()
-	{
-		$search = $this->input->get('q', true) ?? '';
+    public function select2_santri_ajax()
+    {
+        $search = $this->input->get('q', true) ?? '';
 
-		$this->db->select('nis, nama, k_formal, t_formal, k_madin, r_madin, komplek, kamar, ket');
-		$this->db->from('tb_santri');
-		$this->db->where('aktif', 'Y');
+        $this->db->select('nis, nama, k_formal, t_formal, k_madin, r_madin, komplek, kamar, ket');
+        $this->db->from('tb_santri');
+        $this->db->where('aktif', 'Y');
 
-		if (!empty($search)) {
-			$this->db->group_start();
-			$this->db->like('nis', $search);
-			$this->db->or_like('nama', $search);
-			$this->db->group_end();
-		}
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('nis', $search);
+            $this->db->or_like('nama', $search);
+            $this->db->group_end();
+        }
 
-		$this->db->limit(30);
-		$query = $this->db->get();
-		$results = [];
+        $this->db->limit(30);
+        $query = $this->db->get();
+        $results = [];
 
-		foreach ($query->result() as $row) {
-			$results[] = [
-				'id' => $row->nis,
-				'text' => $row->nis . ' - ' . $row->nama,
-				'nama' => $row->nama,
-				'kelas_formal' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
-				'k_madin' => $row->k_madin ?? '',
-				'r_madin' => $row->r_madin ?? '',
-				'kamar' => $row->kamar ?? '-',
-				'komplek' => $row->komplek ?? '-',
-				'ket' => $row->ket ?? '0'
-			];
-		}
+        foreach ($query->result() as $row) {
+            $results[] = [
+                'id' => $row->nis,
+                'text' => $row->nis . ' - ' . $row->nama,
+                'nama' => $row->nama,
+                'kelas_formal' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
+                'k_madin' => $row->k_madin ?? '',
+                'r_madin' => $row->r_madin ?? '',
+                'kamar' => $row->kamar ?? '-',
+                'komplek' => $row->komplek ?? '-',
+                'ket' => $row->ket ?? '0'
+            ];
+        }
 
-		header('Content-Type: application/json');
-		echo json_encode(['results' => $results]);
-		exit;
-	}
+        header('Content-Type: application/json');
+        echo json_encode(['results' => $results]);
+        exit;
+    }
 
-	public function update_student_ket_ajax()
-	{
-		$nis = $this->input->post('nis', true);
-		$ket = $this->input->post('ket', true);
+    public function update_student_ket_ajax()
+    {
+        $nis = $this->input->post('nis', true);
+        $ket = $this->input->post('ket', true);
 
-		if (empty($nis) || $ket === null || $ket === '') {
-			echo json_encode(['status' => 'error', 'message' => 'NIS dan Keterangan tidak boleh kosong']);
-			exit;
-		}
+        if (empty($nis) || $ket === null || $ket === '') {
+            echo json_encode(['status' => 'error', 'message' => 'NIS dan Keterangan tidak boleh kosong']);
+            exit;
+        }
 
-		$this->db->where('nis', $nis);
-		$this->db->update('tb_santri', ['ket' => $ket]);
+        $this->db->where('nis', $nis);
+        $this->db->update('tb_santri', ['ket' => $ket]);
 
-		if ($this->db->affected_rows() >= 0) {
-			echo json_encode(['status' => 'success', 'message' => 'Status keterangan santri berhasil diperbaharui']);
-		} else {
-			echo json_encode(['status' => 'error', 'message' => 'Gagal memperbaharui status keterangan santri']);
-		}
-		exit;
-	}
+        if ($this->db->affected_rows() >= 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Status keterangan santri berhasil diperbaharui']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal memperbaharui status keterangan santri']);
+        }
+        exit;
+    }
 
-	public function dekos_santri_ajax()
-	{
-		$is_loaded = intval($this->input->post('is_loaded', true));
-		$draw = intval($this->input->post('draw', true));
+    public function dekos_santri_ajax()
+    {
+        $is_loaded = intval($this->input->post('is_loaded', true));
+        $draw = intval($this->input->post('draw', true));
 
-		if ($is_loaded !== 1) {
-			header('Content-Type: application/json');
-			echo json_encode([
-				'draw' => $draw,
-				'recordsTotal' => 0,
-				'recordsFiltered' => 0,
-				'data' => []
-			]);
-			exit;
-		}
+        if ($is_loaded !== 1) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'draw' => $draw,
+                'recordsTotal' => 0,
+                'recordsFiltered' => 0,
+                'data' => []
+            ]);
+            exit;
+        }
 
-		$start = intval($this->input->post('start', true));
-		$length = intval($this->input->post('length', true));
-		$search = $this->input->post('search', true)['value'] ?? '';
+        $start = intval($this->input->post('start', true));
+        $length = intval($this->input->post('length', true));
+        $search = $this->input->post('search', true)['value'] ?? '';
 
-		$filter_t_kos = $this->input->post('t_kos', true);
-		$filter_keterangan = $this->input->post('keterangan', true);
+        $filter_t_kos = $this->input->post('t_kos', true);
+        $filter_keterangan = $this->input->post('keterangan', true);
 
-		$this->db->select('tb_santri.*');
-		$this->db->from('tb_santri');
-		$this->db->where('tb_santri.aktif', 'Y');
+        $this->db->select('tb_santri.*');
+        $this->db->from('tb_santri');
+        $this->db->where('tb_santri.aktif', 'Y');
 
-		// Apply filters
-		if ($filter_t_kos !== null && $filter_t_kos !== '') {
-			$this->db->where('tb_santri.t_kos', $filter_t_kos);
-		}
-		if ($filter_keterangan !== null && $filter_keterangan !== '') {
-			$this->db->where('tb_santri.ket', $filter_keterangan);
-		}
+        // Apply filters
+        if ($filter_t_kos !== null && $filter_t_kos !== '') {
+            $this->db->where('tb_santri.t_kos', $filter_t_kos);
+        }
+        if ($filter_keterangan !== null && $filter_keterangan !== '') {
+            $this->db->where('tb_santri.ket', $filter_keterangan);
+        }
 
-		if (!empty($search)) {
-			$this->db->group_start();
-			$this->db->like('tb_santri.nis', $search);
-			$this->db->or_like('tb_santri.nama', $search);
-			$this->db->group_end();
-		}
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('tb_santri.nis', $search);
+            $this->db->or_like('tb_santri.nama', $search);
+            $this->db->group_end();
+        }
 
-		// Count filtered records
-		$temp_db = clone $this->db;
-		$recordsFiltered = $temp_db->count_all_results();
+        // Count filtered records
+        $temp_db = clone $this->db;
+        $recordsFiltered = $temp_db->count_all_results();
 
-		// Apply pagination
-		$this->db->limit($length, $start);
-		$query = $this->db->get();
-		$data = $query->result();
+        // Apply pagination
+        $this->db->limit($length, $start);
+        $query = $this->db->get();
+        $data = $query->result();
 
-		// Total records count (unfiltered)
-		$recordsTotal = $this->db->where('aktif', 'Y')->count_all_results('tb_santri');
+        // Total records count (unfiltered)
+        $recordsTotal = $this->db->where('aktif', 'Y')->count_all_results('tb_santri');
 
-		// Mappings
-		$tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
-		$ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
+        // Mappings
+        $tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
+        $ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
 
-		$output = [];
-		$no = $start + 1;
-		foreach ($data as $row) {
-			$escaped_nama = htmlspecialchars($row->nama, ENT_QUOTES);
-			$output[] = [
-				'no' => $no++,
-				'nis' => $row->nis ?? '-',
-				'nama' => $row->nama,
-				'lembaga' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
-				'tempat_kos' => $tmpKos[$row->t_kos] ?? '-',
-				'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
-				'aksi' => '<button type="button" class="btn btn-xs btn-primary btn-pilih-santri-dekos" data-nis="' . $row->nis . '" data-nama="' . $escaped_nama . '"><i class="bx bx-check"></i> Pilih</button>'
-			];
-		}
+        $output = [];
+        $no = $start + 1;
+        foreach ($data as $row) {
+            $escaped_nama = htmlspecialchars($row->nama, ENT_QUOTES);
+            $output[] = [
+                'no' => $no++,
+                'nis' => $row->nis ?? '-',
+                'nama' => $row->nama,
+                'lembaga' => ($row->k_formal ?? '') . ' ' . ($row->t_formal ?? ''),
+                'tempat_kos' => $tmpKos[$row->t_kos] ?? '-',
+                'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
+                'aksi' => '<button type="button" class="btn btn-xs btn-primary btn-pilih-santri-dekos" data-nis="' . $row->nis . '" data-nama="' . $escaped_nama . '"><i class="bx bx-check"></i> Pilih</button>'
+            ];
+        }
 
-		header('Content-Type: application/json');
-		echo json_encode([
-			'draw' => $draw,
-			'recordsTotal' => $recordsTotal,
-			'recordsFiltered' => $recordsFiltered,
-			'data' => $output
-		]);
-		exit;
-	}
+        header('Content-Type: application/json');
+        echo json_encode([
+            'draw' => $draw,
+            'recordsTotal' => $recordsTotal,
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $output
+        ]);
+        exit;
+    }
 
-	public function get_rekap_dekos_ajax()
-	{
-		$tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
-		$counts = $this->db->select('t_kos, COUNT(*) as total')
-			->from('tb_santri')
-			->where('aktif', 'Y')
-			->group_by('t_kos')
-			->get()
-			->result_array();
+    public function get_rekap_dekos_ajax()
+    {
+        $tmpKos = array("", "Ny. Jamilah", "Gus Zaini", "Ny. Farihah", "Ny. Zahro", "Ny. Sa'adah", "Ny. Mamjudah", "Ny. Naily Z.", "Ny. Lathifah", "Ny. Ummi Kultsum", "K. Abdul Mukti");
+        $counts = $this->db->select('t_kos, COUNT(*) as total')
+            ->from('tb_santri')
+            ->where('aktif', 'Y')
+            ->group_by('t_kos')
+            ->get()
+            ->result_array();
 
-		$rekap = array_fill(0, count($tmpKos), 0);
-		foreach ($counts as $row) {
-			$t_kos = (int)$row['t_kos'];
-			if (isset($rekap[$t_kos])) {
-				$rekap[$t_kos] = (int)$row['total'];
-			}
-		}
+        $rekap = array_fill(0, count($tmpKos), 0);
+        foreach ($counts as $row) {
+            $t_kos = (int)$row['t_kos'];
+            if (isset($rekap[$t_kos])) {
+                $rekap[$t_kos] = (int)$row['total'];
+            }
+        }
 
-		header('Content-Type: application/json');
-		echo json_encode(['rekap' => $rekap]);
-		exit;
-	}
+        header('Content-Type: application/json');
+        echo json_encode(['rekap' => $rekap]);
+        exit;
+    }
 
-	public function get_kos_students_ajax($t_kos)
-	{
-		$t_kos = intval($t_kos);
-		$this->db->select('nis, nama, t_kos, ket, k_formal, t_formal');
-		$this->db->from('tb_santri');
-		$this->db->where('aktif', 'Y');
-		$this->db->where('t_kos', $t_kos);
-		$query = $this->db->get();
-		$data = $query->result();
+    public function get_kos_students_ajax($t_kos)
+    {
+        $t_kos = intval($t_kos);
+        $this->db->select('nis, nama, t_kos, ket, k_formal, t_formal');
+        $this->db->from('tb_santri');
+        $this->db->where('aktif', 'Y');
+        $this->db->where('t_kos', $t_kos);
+        $query = $this->db->get();
+        $data = $query->result();
 
-		$ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
+        $ket_map = array("Bayar", "Ust/Usdtz", "Khaddam", "Gratis", "Berhenti", "Sakit");
 
-		$output = [];
-		$no = 1;
-		foreach ($data as $row) {
-			$escaped_nama = htmlspecialchars($row->nama, ENT_QUOTES);
-			$output[] = [
-				'no' => $no++,
-				'nis' => $row->nis ?? '-',
-				'nama' => htmlspecialchars($row->nama),
-				'lembaga' => htmlspecialchars(($row->k_formal ?? '') . ' ' . ($row->t_formal ?? '')),
-				'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
-				'aksi' => '<button type="button" class="btn btn-xs btn-primary btn-pilih-dari-rekap" data-nis="' . $row->nis . '" data-nama="' . $escaped_nama . '"><i class="bx bx-check"></i> Pilih</button>'
-			];
-		}
+        $output = [];
+        $no = 1;
+        foreach ($data as $row) {
+            $escaped_nama = htmlspecialchars($row->nama, ENT_QUOTES);
+            $output[] = [
+                'no' => $no++,
+                'nis' => $row->nis ?? '-',
+                'nama' => htmlspecialchars($row->nama),
+                'lembaga' => htmlspecialchars(($row->k_formal ?? '') . ' ' . ($row->t_formal ?? '')),
+                'status_ket' => (isset($row->ket) && is_numeric($row->ket) && isset($ket_map[$row->ket])) ? $ket_map[$row->ket] : '-',
+                'aksi' => '<button type="button" class="btn btn-xs btn-primary btn-pilih-dari-rekap" data-nis="' . $row->nis . '" data-nama="' . $escaped_nama . '"><i class="bx bx-check"></i> Pilih</button>'
+            ];
+        }
 
-		header('Content-Type: application/json');
-		echo json_encode(['data' => $output]);
-		exit;
-	}
+        header('Content-Type: application/json');
+        echo json_encode(['data' => $output]);
+        exit;
+    }
 }
