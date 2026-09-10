@@ -22,8 +22,11 @@ class Kasir extends CI_Controller
         $this->db3 = $this->load->database('sekretaris', true);
         $this->db4 = $this->load->database('santri', true);
 
+        $this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
         $method = $this->router->fetch_method();
-        if ($method === 'checkRekomApi') {
+        $api_methods = ['checkRekomApi', 'tanggunganSantriApi', 'tanggunganApi', 'cekTanggunganApi'];
+        if (in_array($method, $api_methods)) {
             $this->tahun = '';
             return;
         }
@@ -31,7 +34,6 @@ class Kasir extends CI_Controller
         $user = $this->Auth_model->current_user();
         $this->tahun = $this->session->userdata('tahun');
         // $this->jenis = ['A. Belanja Barang', 'B. Langganan & Jasa', 'Belanja Kegiatan', 'D. Umum'];
-        $this->bulan = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
         $api = $this->model->apiKey()->row();
         $this->apiKey = $api->nama_key;
@@ -2641,6 +2643,284 @@ Terima kasih.';
                     'data' => null
                 ]));
         }
+    }
+
+    public function tanggunganApi()
+    {
+        $this->tanggunganSantriApi();
+    }
+
+    public function tanggunganSantriApi()
+    {
+        // 1. Extract Token from Authorization header, JSON body, or POST/GET
+        $headers = $this->input->get_request_header('Authorization');
+        if (empty($headers)) {
+            $headers = $this->input->get_request_header('authorization');
+        }
+        if (empty($headers) && isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $headers = $_SERVER['HTTP_AUTHORIZATION'];
+        }
+        if (empty($headers) && isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $headers = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        }
+
+        $token = '';
+        if (!empty($headers)) {
+            $token = trim(str_ireplace('Bearer ', '', $headers));
+        }
+
+        // 2. Read parameters from JSON body or POST/GET
+        $raw_input = file_get_contents('php://input');
+        $data = json_decode($raw_input, true);
+        if (empty($data)) {
+            $data = [
+                'token' => $this->input->post('token', true) ?? $this->input->get('token', true),
+                'nis' => $this->input->post('nis', true) ?? $this->input->get('nis', true),
+                'tahun' => $this->input->post('tahun', true) ?? $this->input->get('tahun', true)
+            ];
+        }
+
+        if (empty($token) && !empty($data['token'])) {
+            $token = trim($data['token']);
+        }
+
+        $nis = isset($data['nis']) ? trim($data['nis']) : '';
+        $tahun_req = isset($data['tahun']) ? trim($data['tahun']) : '';
+
+        if (empty($token) || empty($nis)) {
+            $this->output
+                ->set_status_header(400)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Token dan NIS wajib dikirim'
+                ]));
+            return;
+        }
+
+        // 3. Akses API luar: https://data.ppdwk.com/api/dashboard/wali
+        $ch = curl_init('https://data.ppdwk.com/api/dashboard/wali');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $token,
+            'Accept: application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+        $curl_response = curl_exec($ch);
+        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curl_error = curl_error($ch);
+        curl_close($ch);
+
+        // 4. Cek jika unauthorized dari API luar
+        if ($http_code === 401 || $http_code === 403) {
+            $this->output
+                ->set_status_header(401)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Unauthorized'
+                ]));
+            return;
+        }
+
+        $wali_data = json_decode($curl_response, true);
+
+        // Cek response JSON unauthorized
+        if (
+            (isset($wali_data['status']) && ($wali_data['status'] === 401 || $wali_data['status'] === 'unauthorized')) ||
+            (isset($wali_data['message']) && stripos($wali_data['message'], 'unauthorized') !== false)
+        ) {
+            $this->output
+                ->set_status_header(401)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Unauthorized'
+                ]));
+            return;
+        }
+
+        // Jika API error lain (misal 500 / timeout)
+        if ($http_code !== 200 || empty($wali_data)) {
+            $this->output
+                ->set_status_header(502)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Gagal memverifikasi akun wali ke pusat data'
+                ]));
+            return;
+        }
+
+        // 5. Verifikasi apakah NIS ada di dalam response data wali
+        $nis_found = $this->_find_nis_in_data($wali_data, $nis);
+        if (!$nis_found) {
+            $this->output
+                ->set_status_header(404)
+                ->set_content_type('application/json', 'utf-8')
+                ->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Santri tidak terdaftar'
+                ]));
+            return;
+        }
+
+        // 6. Siapkan Daftar Tahun dan Tentukan Tahun Terpilih (Default Tahun Terbaru)
+        $all_tahun_rows = $this->db->order_by('nama_tahun', 'DESC')->get('tahun')->result();
+        $daftar_tahun = [];
+        foreach ($all_tahun_rows as $t_row) {
+            if (!empty($t_row->nama_tahun) && !in_array($t_row->nama_tahun, $daftar_tahun)) {
+                $daftar_tahun[] = $t_row->nama_tahun;
+            }
+        }
+
+        // Gabungkan juga tahun dari tanggungan & pembayaran santri ini jika ada
+        $tgn_tahun_rows = $this->db->select('tahun')->where('nis', $nis)->group_by('tahun')->get('tanggungan')->result();
+        foreach ($tgn_tahun_rows as $tt) {
+            if (!empty($tt->tahun) && !in_array($tt->tahun, $daftar_tahun)) {
+                $daftar_tahun[] = $tt->tahun;
+            }
+        }
+        $byr_tahun_rows = $this->db->select('tahun')->where('nis', $nis)->group_by('tahun')->get('pembayaran')->result();
+        foreach ($byr_tahun_rows as $bt) {
+            if (!empty($bt->tahun) && !in_array($bt->tahun, $daftar_tahun)) {
+                $daftar_tahun[] = $bt->tahun;
+            }
+        }
+        rsort($daftar_tahun);
+
+        // Tentukan tahun terpilih: jika user kirim tahun, pakai itu; jika tidak, cari tahun terbaru santri atau tahun terbaru sistem
+        $tahun_terpilih = '';
+        if (!empty($tahun_req)) {
+            $tahun_terpilih = $tahun_req;
+        } else {
+            // Prioritas 1: Ambil tahun terbaru yang dimiliki santri pada data tanggungan
+            $latest_tgn = $this->db->select('tahun')
+                ->where('nis', $nis)
+                ->order_by('tahun', 'DESC')
+                ->limit(1)
+                ->get('tanggungan')
+                ->row();
+
+            if ($latest_tgn && !empty($latest_tgn->tahun)) {
+                $tahun_terpilih = $latest_tgn->tahun;
+            } elseif (!empty($daftar_tahun)) {
+                $tahun_terpilih = $daftar_tahun[0];
+            }
+        }
+
+        // 7. Ambil data santri, tanggungan, dan pembayaran
+        $santri = $this->db->where('nis', $nis)->get('tb_santri')->row();
+
+        // Query Tanggungan berdasarkan tahun terpilih
+        $this->db->where('nis', $nis);
+        if (!empty($tahun_terpilih)) {
+            $this->db->where('tahun', $tahun_terpilih);
+        }
+        $this->db->order_by('bulan', 'ASC');
+        $tanggungan_list = $this->db->get('tanggungan')->result();
+
+        // Query Pembayaran berdasarkan tahun terpilih
+        $this->db->where('nis', $nis);
+        if (!empty($tahun_terpilih)) {
+            $this->db->where('tahun', $tahun_terpilih);
+        }
+        $this->db->order_by('tgl', 'DESC');
+        $pembayaran_list = $this->db->get('pembayaran')->result();
+
+        $total_tanggungan = 0;
+        $formatted_tanggungan = [];
+        foreach ($tanggungan_list as $t) {
+            $nom = (int)$t->nominal;
+            $total_tanggungan += $nom;
+            $bulan_idx = (int)$t->bulan;
+            $formatted_tanggungan[] = [
+                'id' => isset($t->id_tangg) ? $t->id_tangg : ($t->id ?? null),
+                'nis' => $t->nis,
+                'bulan' => $bulan_idx,
+                'nama_bulan' => isset($this->bulan[$bulan_idx]) ? $this->bulan[$bulan_idx] : (string)$t->bulan,
+                'tahun' => $t->tahun,
+                'nominal' => $nom,
+                'nominal_format' => 'Rp ' . number_format($nom, 0, ',', '.'),
+                'briva' => $t->briva ?? '-'
+            ];
+        }
+
+        $total_pembayaran = 0;
+        $formatted_pembayaran = [];
+        foreach ($pembayaran_list as $p) {
+            $nom = (int)$p->nominal;
+            $total_pembayaran += $nom;
+            $bulan_idx = (int)$p->bulan;
+            $formatted_pembayaran[] = [
+                'id' => $p->id,
+                'nis' => $p->nis,
+                'nama' => $p->nama,
+                'tgl' => $p->tgl,
+                'nominal' => $nom,
+                'nominal_format' => 'Rp ' . number_format($nom, 0, ',', '.'),
+                'bulan' => $bulan_idx,
+                'nama_bulan' => isset($this->bulan[$bulan_idx]) ? $this->bulan[$bulan_idx] : (string)$p->bulan,
+                'tahun' => $p->tahun,
+                'kasir' => $p->kasir ?? '-'
+            ];
+        }
+
+        $sisa_tanggungan = max(0, $total_tanggungan - $total_pembayaran);
+
+        $this->output
+            ->set_status_header(200)
+            ->set_content_type('application/json', 'utf-8')
+            ->set_output(json_encode([
+                'status' => 'success',
+                'message' => 'Data tanggungan dan pembayaran berhasil dimuat',
+                'data' => [
+                    'tahun_terpilih' => $tahun_terpilih,
+                    'daftar_tahun' => $daftar_tahun,
+                    'santri' => $santri ? [
+                        'nis' => $santri->nis,
+                        'nama' => $santri->nama,
+                        'aktif' => $santri->aktif ?? ''
+                    ] : ['nis' => $nis],
+                    'summary' => [
+                        'total_tanggungan' => $total_tanggungan,
+                        'total_tanggungan_format' => 'Rp ' . number_format($total_tanggungan, 0, ',', '.'),
+                        'total_pembayaran' => $total_pembayaran,
+                        'total_pembayaran_format' => 'Rp ' . number_format($total_pembayaran, 0, ',', '.'),
+                        'sisa_tanggungan' => $sisa_tanggungan,
+                        'sisa_tanggungan_format' => 'Rp ' . number_format($sisa_tanggungan, 0, ',', '.')
+                    ],
+                    'tanggungan' => $formatted_tanggungan,
+                    'pembayaran' => $formatted_pembayaran
+                ]
+            ]));
+    }
+
+    private function _find_nis_in_data($data, $targetNis)
+    {
+        if (!is_array($data)) {
+            return false;
+        }
+
+        $targetNis = trim((string)$targetNis);
+
+        if (isset($data['nis']) && trim((string)$data['nis']) === $targetNis) {
+            return true;
+        }
+        if (isset($data['santri_nis']) && trim((string)$data['santri_nis']) === $targetNis) {
+            return true;
+        }
+
+        foreach ($data as $key => $val) {
+            if (is_array($val)) {
+                if ($this->_find_nis_in_data($val, $targetNis)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public function cadangan()

@@ -54,3 +54,6 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['admin/uploadBp']      = 'Admin/uploadBp';
 $route['save_image'] = 'Save_image/index';
+$route['api/check-rekom'] = 'Kasir/checkRekomApi';
+$route['api/tanggungan-santri'] = 'Kasir/tanggunganSantriApi';
+$route['api/tanggungan'] = 'Kasir/tanggunganSantriApi';
