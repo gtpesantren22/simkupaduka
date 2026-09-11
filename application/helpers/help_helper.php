@@ -65,46 +65,91 @@ function tanggalIndo($tanggal)
     return $tanggal;
 }
 
-function kirim_person($key, $no_hp, $pesan)
+function get_wa_config()
 {
-    $curl2 = curl_init();
-    curl_setopt_array(
-        $curl2,
-        array(
-            CURLOPT_URL => 'http://103.49.238.29:3000/api/sendMessage',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'apiKey=' . $key . '&phone=' . $no_hp . '&message=' . $pesan,
-        )
-    );
-    $response = curl_exec($curl2);
-    curl_close($curl2);
+    $CI = &get_instance();
+    // 1. Ambil apiKey (nama = 'apiKey' atau fallback nama = 'Bendahara')
+    $apiKeyRow = $CI->db->where('nama', 'apiKey')->get('api')->row();
+    if (!$apiKeyRow) {
+        $apiKeyRow = $CI->db->where('nama', 'Bendahara')->get('api')->row();
+    }
+    $apiKey = $apiKeyRow ? $apiKeyRow->nama_key : '';
+
+    // 2. Ambil sessionId (nama = 'sessionId' atau 'session_id')
+    $sessionRow = $CI->db->where('nama', 'sessionId')->get('api')->row();
+    if (!$sessionRow) {
+        $sessionRow = $CI->db->where('nama', 'session_id')->get('api')->row();
+    }
+    $sessionId = ($sessionRow && !empty($sessionRow->nama_key)) ? $sessionRow->nama_key : 'default';
+
+    return [
+        'apiKey' => $apiKey,
+        'sessionId' => $sessionId
+    ];
 }
 
-function kirim_group($key, $id_group, $pesan)
+function kirim_person($key = null, $no_hp = '', $pesan = '', $sessionId = null)
 {
-    $curl2 = curl_init();
-    curl_setopt_array(
-        $curl2,
-        array(
-            CURLOPT_URL => 'http://103.49.238.29:3000/api/sendMessageGroup',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => 'apiKey=' . $key . '&id_group=' . $id_group . '&message=' . $pesan,
-        )
-    );
-    $response = curl_exec($curl2);
-    curl_close($curl2);
+    $config = get_wa_config();
+    if (empty($key)) {
+        $key = $config['apiKey'];
+    }
+    if (empty($sessionId)) {
+        $sessionId = $config['sessionId'];
+    }
+
+    $payload = json_encode([
+        'apiKey' => (string)$key,
+        'number' => (string)$no_hp,
+        'message' => (string)$pesan,
+        'sessionId' => (string)$sessionId
+    ]);
+
+    $ch = curl_init('https://wadwk.ppdwk.site/send-personal');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Accept: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
+function kirim_group($key = null, $id_group = '', $pesan = '', $sessionId = null)
+{
+    $config = get_wa_config();
+    if (empty($key)) {
+        $key = $config['apiKey'];
+    }
+    if (empty($sessionId)) {
+        $sessionId = $config['sessionId'];
+    }
+
+    $payload = json_encode([
+        'apiKey' => (string)$key,
+        'groupId' => (string)$id_group,
+        'message' => (string)$pesan,
+        'sessionId' => (string)$sessionId
+    ]);
+
+    $ch = curl_init('https://wadwk.ppdwk.site/send-group');
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Content-Type: application/json',
+        'Accept: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
 }
 
 function kirim_tmp($key, $no_hp, $pesan, $tmp, $link_logo)
@@ -149,32 +194,34 @@ function kirim_nota($key, $no_hp, $url_file, $as_document, $caption)
     curl_close($curl2);
 }
 
-function cekStatusWA($apiKey)
+function cekStatusWA($sessionId = null)
 {
-    $ch = curl_init();
+    if (empty($sessionId) || strlen($sessionId) > 30) {
+        $config = get_wa_config();
+        $sessionId = $config['sessionId'];
+    }
 
-    $query = http_build_query(['apiKey' => $apiKey]);
-    curl_setopt($ch, CURLOPT_URL, 'http://103.49.238.29:3000/api/getState?' . $query);
-
-
+    $ch = curl_init('https://wadwk.ppdwk.site/sessions/' . urlencode($sessionId) . '/status');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
     $response = curl_exec($ch);
 
     if (curl_errno($ch)) {
         $error = curl_error($ch);
         curl_close($ch);
         return [
-            'status' => 'error',
-            'message' => $error
+            'status' => false,
+            'message' => $error,
+            'data' => [
+                'connected' => false
+            ]
         ];
     }
 
     curl_close($ch);
-
-    // Jika JSON decode otomatis
     $decoded = json_decode($response, true);
-    return $decoded ?: $response;
+    return is_array($decoded) ? $decoded : ['status' => false, 'data' => ['connected' => false]];
 }
 
 function gel($gel)

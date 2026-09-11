@@ -267,7 +267,7 @@ require 'lembaga/head.php';
                                     <div class="vr bg-light opacity-50" style="height: 35px;"></div>
                                     <div>
                                         <small class="text-muted d-block fw-bold text-uppercase fs-11 mb-1">WA Gateway</small>
-                                        <?= $statusWA['results']['state'] == 'CONNECTED' ? "<span class='badge bg-success px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-wifi me-1'></i> Online</span>" : "<span class='badge bg-danger px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-wifi-off me-1'></i> Terputus</span>" ?>
+                                        <?= (isset($statusWA['data']['connected']) && $statusWA['data']['connected'] === true) || (isset($statusWA['results']['state']) && $statusWA['results']['state'] == 'CONNECTED') ? "<span class='badge bg-success px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-wifi me-1'></i> Online</span>" : "<span class='badge bg-danger px-3 py-2 fs-13' style='border-radius: 6px;'><i class='bx bx-wifi-off me-1'></i> Terputus</span>" ?>
                                     </div>
                                     <div class="vr bg-light opacity-50" style="height: 35px;"></div>
                                     <div>

@@ -17,7 +17,10 @@ class KasirModel extends CI_Model
     {
         $this->db->select('*');
         $this->db->from('api');
-        $this->db->where('nama', 'Bendahara');
+        $this->db->group_start();
+        $this->db->where('nama', 'apiKey');
+        $this->db->or_where('nama', 'Bendahara');
+        $this->db->group_end();
         return $this->db->get();
     }
 
