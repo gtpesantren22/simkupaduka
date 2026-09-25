@@ -107,18 +107,6 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                         <li> <a href="<?= base_url('account/rab'); ?>"><i class="bx bx-right-arrow-alt"></i>RAB
                                 Lembaga</a>
                         </li>
-                        <li>
-                            <a href="<?= base_url('account/pak'); ?>"><i class="bx bx-right-arrow-alt"></i>PAK</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript:;" class="has-arrow">
-                        <div class="parent-icon"><i class='bx bx-wallet'></i>
-                        </div>
-                        <div class="menu-title">Realisasi</div>
-                    </a>
-                    <ul>
                         <li> <a href="<?= base_url('account/realis'); ?>"><i class="bx bx-right-arrow-alt"></i>Data</a>
                         </li>
                         <li>
@@ -128,13 +116,31 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                             <a href="<?= base_url('account/spj'); ?>"><i class="bx bx-right-arrow-alt"></i>SPJ</a>
                         </li>
                         <li>
+                            <a href="<?= base_url('account/pak'); ?>"><i class="bx bx-right-arrow-alt"></i>PAK</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:;" class="has-arrow">
+                        <div class="parent-icon"><i class='bx bx-wallet'></i>
+                        </div>
+                        <div class="menu-title">Pengeluaran</div>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="<?= base_url('account/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('account/outProg'); ?>"><i class="bx bx-right-arrow-alt"></i>Program & Pengembangan</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('account/outTerikat'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Terikat</a>
+                        </li>
+                        <li>
                             <a href="<?= base_url('account/lain'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Lain</a>
                         </li>
                         <li>
                             <a href="<?= base_url('account/pinjam'); ?>"><i class="bx bx-right-arrow-alt"></i>Peminjaman</a>
-                        </li>
-                        <li>
-                            <a href="<?= base_url('account/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a>
                         </li>
                         <li>
                             <a href="<?= base_url('account/panjar'); ?>"><i class="bx bx-right-arrow-alt"></i>Panjar</a>

@@ -162,7 +162,7 @@
                 <h5 class="modal-title text-white" id="modalSettingAnggaranLabel"><i class="bx bx-slider-alt me-1"></i> Atur Limit & Kategori Rutin (Tahun <?= $tahun ?>)</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/saveAnggaranRutin'); ?>
+            <?= form_open('admin/saveAnggaranRutin'); ?>
             <div class="modal-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle mb-3">
@@ -191,7 +191,7 @@
                                         </td>
                                         <td class="text-center">
                                             <?php if (!empty($tr['id'])) : ?>
-                                                <a href="<?= base_url('account/delPosRutin/' . $tr['id']) ?>" class="btn btn-outline-danger btn-sm p-1 tombol-hapus" title="Hapus Pos"><i class="bx bx-trash"></i></a>
+                                                <a href="<?= base_url('admin/delPosRutin/' . $tr['id']) ?>" class="btn btn-outline-danger btn-sm p-1 tombol-hapus" title="Hapus Pos"><i class="bx bx-trash"></i></a>
                                             <?php else : ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
@@ -239,7 +239,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Tambah Pengeluaran Rutin</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/saveOutRutin'); ?>
+            <?= form_open('admin/saveOutRutin'); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
                     <label for="">Langganan / Kategori Rutin</label>
@@ -281,7 +281,7 @@
                 <h5 class="modal-title" id="exampleModalLabel">Edit Pengeluaran Rutin</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/editOutRutin'); ?>
+            <?= form_open('admin/editOutRutin'); ?>
             <input type="hidden" id="id" name="id_out">
             <div class="modal-body">
                 <div class="form-group mb-2">

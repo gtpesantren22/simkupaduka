@@ -103,11 +103,13 @@ class AppModel extends CI_Model
         $pengajuanPsb = $this->pengajuanPsb();
 
         $outRutin = $this->getBySum('pengeluaran_rutin', 'tahun', $tahun, 'nominal')->row();
+        $outProg = $this->getBySum('pengeluaran_prog', 'tahun', $tahun, 'nominal')->row();
+        $outTerikat = $this->getBySum('pengeluaran_terikat', 'tahun', $tahun, 'nominal')->row();
         $sarpras = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
         $haflah = $this->db->query("SELECT SUM(qty*harga_satuan) as jml FROM haflah_detail JOIN sarpras ON haflah_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE haflah_detail.tahun = '$tahun' AND sarpras.status = 'dicairkan' ")->row();
         $keluarPsb = $this->getBySumPsb('keluar', 'nominal <>', '', 'nominal')->row();
 
-        $keluar = $kebijakan->jml + $realis->jml + $dekos->nominal + $nikmus->nom_kriteria + $nikmus->transport + $nikmus->sopir + $keluarLain->jml + $sumPinjam->jml + $panjar->jml + $pengajuanPsb + $outRutin->jml + $sarpras->jml + $keluarPsb->jml;
+        $keluar = ($kebijakan->jml ?? 0) + ($realis->jml ?? 0) + ($dekos->nominal ?? 0) + ($nikmus->nom_kriteria ?? 0) + ($nikmus->transport ?? 0) + ($nikmus->sopir ?? 0) + ($keluarLain->jml ?? 0) + ($sumPinjam->jml ?? 0) + ($panjar->jml ?? 0) + ($pengajuanPsb ?? 0) + ($outRutin->jml ?? 0) + ($outProg->jml ?? 0) + ($outTerikat->jml ?? 0) + ($sarpras->jml ?? 0) + ($keluarPsb->jml ?? 0);
 
         return $keluar;
     }

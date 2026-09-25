@@ -6,11 +6,11 @@
     <div class="page-content">
         <!--breadcrumb-->
         <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-            <div class="breadcrumb-title pe-3">Pengeluaran Rutin</div>
+            <div class="breadcrumb-title pe-3">Dana Terikat</div>
             <div class="ps-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb mb-0 p-0">
-                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-hdd"></i></a>
+                        <li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-lock-alt"></i></a>
                         </li>
                         <li class="breadcrumb-item active" aria-current="page">Pengeluaran</li>
                     </ol>
@@ -26,7 +26,7 @@
                     <div class="card-body p-3">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                             <div>
-                                <h6 class="mb-0 fw-bold"><i class="bx bx-hdd text-primary me-1"></i> Pengeluaran Rutin (Tahun <?= $tahun ?>)</h6>
+                                <h6 class="mb-0 fw-bold"><i class="bx bx-lock-alt text-primary me-1"></i> Dana Terikat (Tahun <?= $tahun ?>)</h6>
                                 <small class="text-muted">Total Realisasi Terpakai: <strong class="text-danger"><?= rupiah($sumData->jml ?? 0); ?></strong></small>
                             </div>
                             <div class="d-flex gap-2 flex-wrap">
@@ -36,38 +36,38 @@
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                                         <li>
-                                            <a class="dropdown-item" href="javascript:;" data-bs-toggle="collapse" data-bs-target="#collapseTracking" aria-expanded="false" aria-controls="collapseTracking">
+                                            <a class="dropdown-item" href="javascript:;" data-bs-toggle="collapse" data-bs-target="#collapseTrackingTerikat" aria-expanded="false" aria-controls="collapseTrackingTerikat">
                                                 <i class="bx bx-chart me-2 text-primary"></i> Tracking Limit Anggaran
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#modalSettingAnggaran">
+                                            <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#modalSettingAnggaranTerikat">
                                                 <i class="bx bx-cog me-2 text-primary"></i> Atur Limit & Kategori
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addPes">
+                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addTerikatModal">
                                     <i class="bx bx-plus-circle me-1"></i> Tambah Pengeluaran
                                 </button>
                             </div>
                         </div>
 
                         <!-- Collapsible Progress Cards Grid (Hidden by default) -->
-                        <div class="collapse mt-3" id="collapseTracking">
+                        <div class="collapse mt-3" id="collapseTrackingTerikat">
                             <div class="p-3 border radius-10 bg-light">
                                 <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <h6 class="mb-0 fw-bold fs-13 text-uppercase text-muted"><i class="bx bx-tachometer text-primary me-1"></i> Status Realisasi per Kategori (Tahun <?= $tahun ?>)</h6>
+                                    <h6 class="mb-0 fw-bold fs-13 text-uppercase text-muted"><i class="bx bx-tachometer text-primary me-1"></i> Status Realisasi per Pos Dana Terikat (Tahun <?= $tahun ?>)</h6>
                                     <div class="d-flex align-items-center gap-1">
-                                        <span class="badge bg-primary fs-11"><?= count($tracking_rutin['items'] ?? []) ?> Kategori</span>
-                                        <a href="javascript:;" class="badge bg-secondary text-white text-decoration-none fs-11" data-bs-toggle="collapse" data-bs-target="#collapseTracking" title="Tutup Tracking">
+                                        <span class="badge bg-primary fs-11"><?= count($tracking_terikat['items'] ?? []) ?> Pos Terikat</span>
+                                        <a href="javascript:;" class="badge bg-secondary text-white text-decoration-none fs-11" data-bs-toggle="collapse" data-bs-target="#collapseTrackingTerikat" title="Tutup Tracking">
                                             <i class="bx bx-x me-1"></i>Tutup
                                         </a>
                                     </div>
                                 </div>
                                 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3">
-                                    <?php if (!empty($tracking_rutin['items'])) : ?>
-                                        <?php foreach ($tracking_rutin['items'] as $item) : ?>
+                                    <?php if (!empty($tracking_terikat['items'])) : ?>
+                                        <?php foreach ($tracking_terikat['items'] as $item) : ?>
                                             <div class="col">
                                                 <div class="card radius-10 border shadow-sm h-100 mb-0 bg-white">
                                                     <div class="card-body p-3">
@@ -107,7 +107,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div>
-                                <h6 class="mb-0 fw-bold"><i class="bx bx-list-ul me-1"></i> Data Riwayat Pengeluaran Rutin</h6>
+                                <h6 class="mb-0 fw-bold"><i class="bx bx-list-ul me-1"></i> Data Riwayat Pengeluaran Dana Terikat</h6>
                             </div>
                             <div>
                                 <span class="badge bg-danger fs-13 px-3 py-2">Total Terpakai: <?= rupiah($sumData->jml ?? 0); ?></span>
@@ -119,7 +119,7 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Langganan</th>
+                                        <th>Kategori / Pos Dana Terikat</th>
                                         <th>Tanggal</th>
                                         <th>Nominal</th>
                                         <th>Ket</th>
@@ -132,13 +132,13 @@
                                     foreach ($data as $a) : ?>
                                         <tr>
                                             <td><?= $no++ ?></td>
-                                            <td><span class="badge bg-dark"><?= $a->langganan ?></span></td>
+                                            <td><span class="badge bg-dark"><?= $a->nama_pos ?></span></td>
                                             <td><?= $a->tanggal ?></td>
                                             <td class="fw-bold"><?= rupiah($a->nominal) ?></td>
                                             <td><?= $a->ket ?></td>
                                             <td>
-                                                <a href="<?= 'delOutRutin/' . $a->id_pengeluaran_rutin; ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
-                                                <button data-id="<?= $a->id_pengeluaran_rutin ?>" data-langganan="<?= $a->langganan ?>" data-tanggal="<?= $a->tanggal ?>" data-nominal="<?= $a->nominal ?>" data-ket="<?= $a->ket ?>" class="btn btn-warning btn-sm btn-edit"><i class="bx bx-edit"></i></button>
+                                                <a href="<?= base_url('account/delOutTerikat/' . $a->id_pengeluaran_terikat); ?>" class="btn btn-danger btn-sm tombol-hapus"><i class="bx bx-trash"></i></a>
+                                                <button data-id="<?= $a->id_pengeluaran_terikat ?>" data-pos="<?= $a->nama_pos ?>" data-tanggal="<?= $a->tanggal ?>" data-nominal="<?= $a->nominal ?>" data-ket="<?= $a->ket ?>" class="btn btn-warning btn-sm btn-edit-terikat"><i class="bx bx-edit"></i></button>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -154,29 +154,29 @@
 </div>
 <!--end page wrapper -->
 
-<!-- Modal Setting Limit & Kategori Anggaran Rutin -->
-<div class="modal fade" id="modalSettingAnggaran" tabindex="-1" aria-labelledby="modalSettingAnggaranLabel" aria-hidden="true">
+<!-- Modal Setting Limit & Kategori Anggaran Dana Terikat -->
+<div class="modal fade" id="modalSettingAnggaranTerikat" tabindex="-1" aria-labelledby="modalSettingAnggaranTerikatLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title text-white" id="modalSettingAnggaranLabel"><i class="bx bx-slider-alt me-1"></i> Atur Limit & Kategori Rutin (Tahun <?= $tahun ?>)</h5>
+                <h5 class="modal-title text-white" id="modalSettingAnggaranTerikatLabel"><i class="bx bx-slider-alt me-1"></i> Atur Limit & Pos Dana Terikat (Tahun <?= $tahun ?>)</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/saveAnggaranRutin'); ?>
+            <?= form_open('account/saveAnggaranTerikat'); ?>
             <div class="modal-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle mb-3">
                         <thead class="table-light">
                             <tr class="text-center">
                                 <th style="width: 5%;">No</th>
-                                <th>Nama Pos / Kategori</th>
+                                <th>Nama Pos / Dana Terikat</th>
                                 <th style="width: 45%;">Batas Limit Nominal</th>
                                 <th style="width: 10%;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($tracking_rutin['items'])) : ?>
-                                <?php $no = 1; foreach ($tracking_rutin['items'] as $code => $tr) : ?>
+                            <?php if (!empty($tracking_terikat['items'])) : ?>
+                                <?php $no = 1; foreach ($tracking_terikat['items'] as $code => $tr) : ?>
                                     <tr>
                                         <td class="text-center"><?= $no++ ?></td>
                                         <td>
@@ -191,7 +191,7 @@
                                         </td>
                                         <td class="text-center">
                                             <?php if (!empty($tr['id'])) : ?>
-                                                <a href="<?= base_url('account/delPosRutin/' . $tr['id']) ?>" class="btn btn-outline-danger btn-sm p-1 tombol-hapus" title="Hapus Pos"><i class="bx bx-trash"></i></a>
+                                                <a href="<?= base_url('account/delPosTerikat/' . $tr['id']) ?>" class="btn btn-outline-danger btn-sm p-1 tombol-hapus" title="Hapus Pos"><i class="bx bx-trash"></i></a>
                                             <?php else : ?>
                                                 <span class="text-muted">-</span>
                                             <?php endif; ?>
@@ -207,11 +207,11 @@
                     <div class="card-body p-2">
                         <div class="d-flex align-items-center mb-2">
                             <i class="bx bx-plus-circle text-primary me-1"></i>
-                            <span class="fw-bold fs-12 text-primary">Tambah Pos / Kategori Baru</span>
+                            <span class="fw-bold fs-12 text-primary">Tambah Pos Dana Terikat Baru</span>
                         </div>
                         <div class="row g-2">
                             <div class="col-md-7">
-                                <input type="text" name="new_pos" class="form-control form-control-sm text-uppercase" placeholder="Nama Pos Baru">
+                                <input type="text" name="new_pos" class="form-control form-control-sm text-uppercase" placeholder="Nama Pos Dana Terikat Baru">
                             </div>
                             <div class="col-md-5">
                                 <div class="input-group input-group-sm">
@@ -232,21 +232,22 @@
     </div>
 </div>
 
-<div class="modal fade" id="addPes" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Tambah Pengeluaran Dana Terikat -->
+<div class="modal fade" id="addTerikatModal" tabindex="-1" aria-labelledby="addTerikatModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Pengeluaran Rutin</h5>
+                <h5 class="modal-title" id="addTerikatModalLabel">Tambah Pengeluaran Dana Terikat</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/saveOutRutin'); ?>
+            <?= form_open('account/saveOutTerikat'); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
-                    <label for="">Langganan / Kategori Rutin</label>
-                    <select name="langganan" class="form-select" required>
-                        <option value="">-- Pilih Langganan / Pos Rutin --</option>
-                        <?php if (!empty($tracking_rutin['items'])) : ?>
-                            <?php foreach ($tracking_rutin['items'] as $code => $tr) : ?>
+                    <label for="">Kategori / Pos Dana Terikat</label>
+                    <select name="nama_pos" class="form-select" required>
+                        <option value="">-- Pilih Pos Dana Terikat --</option>
+                        <?php if (!empty($tracking_terikat['items'])) : ?>
+                            <?php foreach ($tracking_terikat['items'] as $code => $tr) : ?>
                                 <option value="<?= $code ?>"><?= $tr['nama'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -274,22 +275,23 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal Edit Pengeluaran Dana Terikat -->
+<div class="modal fade" id="modal-edit-terikat" tabindex="-1" aria-labelledby="modalEditTerikatLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Pengeluaran Rutin</h5>
+                <h5 class="modal-title" id="modalEditTerikatLabel">Edit Pengeluaran Dana Terikat</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/editOutRutin'); ?>
-            <input type="hidden" id="id" name="id_out">
+            <?= form_open('account/editOutTerikat'); ?>
+            <input type="hidden" id="id_terikat_edit" name="id_pengeluaran_terikat">
             <div class="modal-body">
                 <div class="form-group mb-2">
-                    <label for="">Langganan / Kategori Rutin</label>
-                    <select name="langganan" id="langganan" class="form-select" required>
-                        <option value="">-- Pilih Langganan / Pos Rutin --</option>
-                        <?php if (!empty($tracking_rutin['items'])) : ?>
-                            <?php foreach ($tracking_rutin['items'] as $code => $tr) : ?>
+                    <label for="">Kategori / Pos Dana Terikat</label>
+                    <select name="nama_pos" id="pos_terikat_edit" class="form-select" required>
+                        <option value="">-- Pilih Pos Dana Terikat --</option>
+                        <?php if (!empty($tracking_terikat['items'])) : ?>
+                            <?php foreach ($tracking_terikat['items'] as $code => $tr) : ?>
                                 <option value="<?= $code ?>"><?= $tr['nama'] ?></option>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -297,15 +299,15 @@
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Tanggal</label>
-                    <input type="text" name="tanggal" id="date" class="form-control tanggal-edit" required>
+                    <input type="text" name="tanggal" class="form-control tanggal-edit-terikat" required>
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Nominal</label>
-                    <input type="text" name="nominal" id="nominal" class="form-control uang" required>
+                    <input type="text" name="nominal" id="nominal_terikat_edit" class="form-control uang" required>
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Ket</label>
-                    <input type="text" name="ket" id="ket" class="form-control" required>
+                    <input type="text" name="ket" id="ket_terikat_edit" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
@@ -320,19 +322,19 @@
 <script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
 
 <script>
-    $('.btn-edit').on('click', function(e) {
+    $('.btn-edit-terikat').on('click', function(e) {
         var id = $(this).data('id');
-        var langganan = $(this).data('langganan');
+        var pos = $(this).data('pos');
         var tanggal = $(this).data('tanggal');
         var nominal = $(this).data('nominal');
         var ket = $(this).data('ket');
 
-        $('#id').val(id);
-        $('#langganan').val(langganan).change();
-        $('.tanggal-edit').val(tanggal);
-        $('#nominal').val(nominal);
-        $('#ket').val(ket);
+        $('#id_terikat_edit').val(id);
+        $('#pos_terikat_edit').val(pos).change();
+        $('.tanggal-edit-terikat').val(tanggal);
+        $('#nominal_terikat_edit').val(nominal);
+        $('#ket_terikat_edit').val(ket);
 
-        $('#modal-edit').modal('show');
+        $('#modal-edit-terikat').modal('show');
     });
 </script>

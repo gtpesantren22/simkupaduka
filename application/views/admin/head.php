@@ -126,6 +126,14 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                             <a href="<?= base_url('admin/rab_kbj'); ?>"><i class="bx bx-right-arrow-alt"></i>RAB
                                 Kebijakan</a>
                         </li>
+                        <li> <a href="<?= base_url('admin/realis'); ?>"><i class="bx bx-right-arrow-alt"></i>Data</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('admin/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan</a>
+                        </li>
+                        <li>
+                            <a href="<?= base_url('admin/spj'); ?>"><i class="bx bx-right-arrow-alt"></i>SPJ</a>
+                        </li>
                         <li>
                             <a href="<?= base_url('admin/pak'); ?>"><i class="bx bx-right-arrow-alt"></i>PAK</a>
                         </li>
@@ -141,16 +149,17 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     <a href="javascript:;" class="has-arrow">
                         <div class="parent-icon"><i class='bx bx-wallet'></i>
                         </div>
-                        <div class="menu-title">Realisasi</div>
+                        <div class="menu-title">Pengeluaran</div>
                     </a>
                     <ul>
-                        <li> <a href="<?= base_url('admin/realis'); ?>"><i class="bx bx-right-arrow-alt"></i>Data</a>
+                        <li>
+                            <a href="<?= base_url('admin/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a>
                         </li>
                         <li>
-                            <a href="<?= base_url('admin/pengajuan'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengajuan</a>
+                            <a href="<?= base_url('admin/outProg'); ?>"><i class="bx bx-right-arrow-alt"></i>Program & Pengembangan</a>
                         </li>
                         <li>
-                            <a href="<?= base_url('admin/spj'); ?>"><i class="bx bx-right-arrow-alt"></i>SPJ</a>
+                            <a href="<?= base_url('admin/outTerikat'); ?>"><i class="bx bx-right-arrow-alt"></i>Dana Terikat</a>
                         </li>
                         <li>
                             <a href="<?= base_url('admin/lain'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Lain</a>

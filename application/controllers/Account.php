@@ -1947,28 +1947,226 @@ Terimakasih';
 		$data['pjnData'] = $this->model->getBy2('pengajuan', 'tahun', $this->tahun, 'verval', 0);
 		$data['spjData'] = $this->db->query("SELECT * FROM spj WHERE stts = 1 OR stts = 2 AND tahun = '$this->tahun' ");
 
-		$data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, lembaga.nama AS nmLembaga, bidang.nama AS nmBidang FROM lembaga JOIN pengeluaran_rutin ON pengeluaran_rutin.lembaga=lembaga.kode JOIN bidang ON pengeluaran_rutin.lembaga=bidang.kode WHERE pengeluaran_rutin.tahun = '$this->tahun' AND lembaga.tahun = '$this->tahun' AND bidang.tahun = '$this->tahun' ORDER BY pengeluaran_rutin.tanggal DESC ")->result();
+		$data['data'] = $this->db->query("SELECT pengeluaran_rutin.*, 
+			lembaga.nama AS nmLembaga, 
+			bidang.nama AS nmBidang 
+		FROM pengeluaran_rutin 
+		LEFT JOIN lembaga ON pengeluaran_rutin.lembaga = lembaga.kode AND lembaga.tahun = '$this->tahun' 
+		LEFT JOIN bidang ON pengeluaran_rutin.bidang = bidang.kode AND bidang.tahun = '$this->tahun' 
+		WHERE pengeluaran_rutin.tahun = '$this->tahun' 
+		ORDER BY pengeluaran_rutin.tanggal DESC ")->result();
 
 		$data['sumData'] = $this->model->getBySum('pengeluaran_rutin', 'tahun', $data['tahun'], 'nominal')->row();
 
 		$data['lembaga'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
+		$data['lembaga2'] = $this->model->getBy('lembaga', 'tahun', $data['tahun'])->result();
 		$data['bidang'] = $this->model->getBy('bidang', 'tahun', $data['tahun'])->result();
 
+
+		$data['tracking_rutin'] = $this->_getTrackingRutin($data['tahun']);
 
 		$this->load->view('account/head', $data);
 		$this->load->view('account/outRutin', $data);
 		$this->load->view('account/foot');
 	}
 
+	public function saveAnggaranRutin()
+	{
+		$limits = $this->input->post('limit', true);
+		$new_pos = trim($this->input->post('new_pos', true));
+		$new_limit = (float)rmRp($this->input->post('new_limit', true));
+		$tahun = $this->tahun;
+
+		if (is_array($limits)) {
+			foreach ($limits as $langganan => $nominal_raw) {
+				$nom = (int)rmRp($nominal_raw);
+				$cek = $this->db->get_where('anggaran_rutin', [
+					'tahun' => $tahun,
+					'langganan' => $langganan
+				])->row();
+
+				if ($cek) {
+					$this->db->where('id', $cek->id)->update('anggaran_rutin', [
+						'nominal_limit' => $nom,
+						'updated_at' => date('Y-m-d H:i:s')
+					]);
+				} else {
+					$this->db->insert('anggaran_rutin', [
+						'tahun' => $tahun,
+						'langganan' => $langganan,
+						'nominal_limit' => $nom,
+						'updated_at' => date('Y-m-d H:i:s')
+					]);
+				}
+			}
+		}
+
+		if (!empty($new_pos)) {
+			$new_pos = strtoupper($new_pos);
+			$cek = $this->db->get_where('anggaran_rutin', [
+				'tahun' => $tahun,
+				'langganan' => $new_pos
+			])->row();
+
+			if (!$cek) {
+				$this->db->insert('anggaran_rutin', [
+					'tahun' => $tahun,
+					'langganan' => $new_pos,
+					'nominal_limit' => $new_limit,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		$this->session->set_flashdata('ok', 'Limit Anggaran Rutin berhasil disimpan');
+		redirect('account/outRutin');
+	}
+
+	public function delPosRutin($id)
+	{
+		$ang = $this->db->get_where('anggaran_rutin', ['id' => $id])->row();
+		if ($ang) {
+			$cek_pakai = $this->db->where('tahun', $ang->tahun)->where('langganan', $ang->langganan)->count_all_results('pengeluaran_rutin');
+			if ($cek_pakai > 0) {
+				$this->session->set_flashdata('error', 'Kategori tidak dapat dihapus karena sudah ada data transaksi terkait');
+			} else {
+				$this->db->where('id', $id)->delete('anggaran_rutin');
+				$this->session->set_flashdata('ok', 'Kategori berhasil dihapus');
+			}
+		}
+		redirect('account/outRutin');
+	}
+
+	private function _getTrackingRutin($tahun)
+	{
+		$this->db->query("CREATE TABLE IF NOT EXISTS `anggaran_rutin` (
+			`id` INT AUTO_INCREMENT PRIMARY KEY,
+			`tahun` VARCHAR(20) NOT NULL,
+			`langganan` VARCHAR(100) NOT NULL,
+			`nominal_limit` BIGINT NOT NULL DEFAULT 0,
+			`ket` TEXT NULL,
+			`updated_at` DATETIME NULL,
+			`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE KEY `uniq_tahun_langganan` (`tahun`, `langganan`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+		$count = $this->db->where('tahun', $tahun)->count_all_results('anggaran_rutin');
+		if ($count == 0) {
+			$default_kategori = [
+				'LISTRIK', 'INTERNET', 'HONOR', 'BPJS', 'SAMPAH', 'KORAN', 'PAJAK TANAH', 'PAJAK KENDARAAN'
+			];
+			foreach ($default_kategori as $dk) {
+				$this->db->insert('anggaran_rutin', [
+					'tahun' => $tahun,
+					'langganan' => $dk,
+					'nominal_limit' => 0,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		$anggaran_list = $this->db->where('tahun', $tahun)->order_by('id', 'ASC')->get('anggaran_rutin')->result();
+
+		$tracking = [];
+		$total_limit_semua = 0;
+		$total_pakai_semua = 0;
+
+		foreach ($anggaran_list as $ang) {
+			$kode = $ang->langganan;
+			$nama = $ang->langganan;
+			$limit = (float)$ang->nominal_limit;
+
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_rutin')
+				->where('tahun', $tahun)
+				->where('langganan', $kode)
+				->get()
+				->row();
+
+			$pakai = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa = $limit - $pakai;
+			$persen = $limit > 0 ? round(($pakai / $limit) * 100, 1) : 0;
+
+			if ($limit <= 0) {
+				$status = 'Belum Diatur';
+				$badge_class = 'bg-secondary';
+				$bar_class = 'bg-secondary';
+			} elseif ($pakai > $limit) {
+				$status = 'Overbudget';
+				$badge_class = 'bg-danger';
+				$bar_class = 'bg-danger';
+			} elseif ($persen >= 85) {
+				$status = 'Waspada (' . $persen . '%)';
+				$badge_class = 'bg-warning text-dark';
+				$bar_class = 'bg-warning';
+			} else {
+				$status = 'Normal (' . $persen . '%)';
+				$badge_class = 'bg-success';
+				$bar_class = 'bg-success';
+			}
+
+			$tracking[$kode] = [
+				'id' => $ang->id,
+				'kode' => $kode,
+				'nama' => $nama,
+				'limit' => $limit,
+				'pakai' => $pakai,
+				'sisa' => $sisa,
+				'persen' => $persen,
+				'status' => $status,
+				'badge_class' => $badge_class,
+				'bar_class' => $bar_class
+			];
+
+			$total_limit_semua += $limit;
+			$total_pakai_semua += $pakai;
+		}
+
+		return [
+			'items' => $tracking,
+			'total_limit' => $total_limit_semua,
+			'total_pakai' => $total_pakai_semua,
+			'total_sisa' => $total_limit_semua - $total_pakai_semua,
+			'total_persen' => $total_limit_semua > 0 ? round(($total_pakai_semua / $total_limit_semua) * 100, 1) : 0
+		];
+	}
+
 	public function saveOutRutin()
 	{
+		$langganan = $this->input->post('langganan', true);
+		$nominal = (float)rmRp($this->input->post('nominal', true));
+		$tahun = $this->tahun;
+
+		// Cek limit anggaran jika sudah diatur
+		$anggaran = $this->db->get_where('anggaran_rutin', [
+			'tahun' => $tahun,
+			'langganan' => $langganan
+		])->row();
+
+		if ($anggaran && $anggaran->nominal_limit > 0) {
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_rutin')
+				->where('tahun', $tahun)
+				->where('langganan', $langganan)
+				->get()
+				->row();
+			$pakai_saat_ini = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_limit = (float)$anggaran->nominal_limit - $pakai_saat_ini;
+
+			if ($nominal > $sisa_limit) {
+				$this->session->set_flashdata('error', 'Pengeluaran Ditolak! Nominal (' . rupiah($nominal) . ') melebihi sisa limit ' . $langganan . ' (Sisa: ' . rupiah($sisa_limit) . ', Limit: ' . rupiah($anggaran->nominal_limit) . ')');
+				redirect('account/outRutin');
+				return;
+			}
+		}
+
 		$data = [
 			"id_pengeluaran_rutin" => $this->uuid->v4(),
-			"langganan" => $this->input->post('langganan', true),
-			"lembaga" => $this->input->post('lembaga', true),
-			"bidang" => $this->input->post('bidang', true),
+			"langganan" => $langganan,
+			"lembaga" => $this->input->post('lembaga', true) ? $this->input->post('lembaga', true) : '',
+			"bidang" => $this->input->post('bidang', true) ? $this->input->post('bidang', true) : '',
 			"ket" => $this->input->post('ket', true),
-			"nominal" => rmRp($this->input->post('nominal', true)),
+			"nominal" => $nominal,
 			"tanggal" => $this->input->post('tanggal', true),
 			"kasir" => $this->user,
 			"tahun" => $this->tahun,
@@ -1985,6 +2183,61 @@ Terimakasih';
 		}
 	}
 
+	public function editOutRutin()
+	{
+		$id = $this->input->post('id_out', 'true');
+		$langganan = $this->input->post('langganan', true);
+		$nominal = (float)rmRp($this->input->post('nominal', true));
+		$tahun = $this->tahun;
+
+		// Cek limit anggaran jika sudah diatur
+		$anggaran = $this->db->get_where('anggaran_rutin', [
+			'tahun' => $tahun,
+			'langganan' => $langganan
+		])->row();
+
+		if ($anggaran && $anggaran->nominal_limit > 0) {
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_rutin')
+				->where('tahun', $tahun)
+				->where('langganan', $langganan)
+				->where('id_pengeluaran_rutin !=', $id)
+				->get()
+				->row();
+			$pakai_saat_ini = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_limit = (float)$anggaran->nominal_limit - $pakai_saat_ini;
+
+			if ($nominal > $sisa_limit) {
+				$this->session->set_flashdata('error', 'Edit Ditolak! Nominal (' . rupiah($nominal) . ') melebihi sisa limit ' . $langganan . ' (Sisa: ' . rupiah($sisa_limit) . ', Limit: ' . rupiah($anggaran->nominal_limit) . ')');
+				redirect('account/outRutin');
+				return;
+			}
+		}
+
+		$data = [
+			"langganan" => $langganan,
+			"ket" => $this->input->post('ket', true),
+			"nominal" => $nominal,
+			"tanggal" => $this->input->post('tanggal', true),
+		];
+
+		if ($this->input->post('lembaga', true)) {
+			$data["lembaga"] = $this->input->post('lembaga', true);
+		}
+		if ($this->input->post('bidang', true)) {
+			$data["bidang"] = $this->input->post('bidang', true);
+		}
+
+		$this->model->update('pengeluaran_rutin', $data, 'id_pengeluaran_rutin', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Update data sukses');
+			redirect('account/outRutin');
+		} else {
+			$this->session->set_flashdata('error', 'Update data gagal');
+			redirect('account/outRutin');
+		}
+	}
+
 	public function delOutRutin($id)
 	{
 		$this->model->delete('pengeluaran_rutin', 'id_pengeluaran_rutin', $id);
@@ -1994,6 +2247,626 @@ Terimakasih';
 		} else {
 			$this->session->set_flashdata('error', 'Hapus data gagal');
 			redirect('account/outRutin');
+		}
+	}
+
+	/* =========================================================================
+	 *  PROGRAM DAN PENGEMBANGAN (outProg)
+	 * ========================================================================= */
+
+	public function outProg()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$this->_checkTableProg();
+
+		$data['data'] = $this->db->where('tahun', $this->tahun)->order_by('tanggal', 'DESC')->get('pengeluaran_prog')->result();
+		$data['sumData'] = $this->model->getBySum('pengeluaran_prog', 'tahun', $this->tahun, 'nominal')->row();
+
+		$data['tracking_prog'] = $this->_getTrackingProg($this->tahun);
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/outProg', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function saveAnggaranProg()
+	{
+		$limits = $this->input->post('limit', true);
+		$new_pos = trim($this->input->post('new_pos', true));
+		$new_limit = (float)rmRp($this->input->post('new_limit', true));
+		$tahun = $this->tahun;
+
+		if (is_array($limits)) {
+			foreach ($limits as $nama_pos => $nominal_raw) {
+				$nom = (int)rmRp($nominal_raw);
+				$cek = $this->db->get_where('anggaran_prog', [
+					'tahun' => $tahun,
+					'nama_pos' => $nama_pos
+				])->row();
+
+				if ($cek) {
+					$this->db->where('id', $cek->id)->update('anggaran_prog', [
+						'nominal_limit' => $nom,
+						'updated_at' => date('Y-m-d H:i:s')
+					]);
+				} else {
+					$this->db->insert('anggaran_prog', [
+						'tahun' => $tahun,
+						'nama_pos' => $nama_pos,
+						'nominal_limit' => $nom,
+						'updated_at' => date('Y-m-d H:i:s')
+					]);
+				}
+			}
+		}
+
+		if (!empty($new_pos)) {
+			$new_pos = strtoupper($new_pos);
+			$cek = $this->db->get_where('anggaran_prog', [
+				'tahun' => $tahun,
+				'nama_pos' => $new_pos
+			])->row();
+
+			if (!$cek) {
+				$this->db->insert('anggaran_prog', [
+					'tahun' => $tahun,
+					'nama_pos' => $new_pos,
+					'nominal_limit' => $new_limit,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		$this->session->set_flashdata('ok', 'Limit Anggaran Program & Pengembangan berhasil disimpan');
+		redirect('account/outProg');
+	}
+
+	public function delPosProg($id)
+	{
+		$ang = $this->db->get_where('anggaran_prog', ['id' => $id])->row();
+		if ($ang) {
+			$cek_pakai = $this->db->where('tahun', $ang->tahun)->where('nama_pos', $ang->nama_pos)->count_all_results('pengeluaran_prog');
+			if ($cek_pakai > 0) {
+				$this->session->set_flashdata('error', 'Kategori program tidak dapat dihapus karena sudah ada data transaksi terkait');
+			} else {
+				$this->db->where('id', $id)->delete('anggaran_prog');
+				$this->session->set_flashdata('ok', 'Kategori program berhasil dihapus');
+			}
+		}
+		redirect('account/outProg');
+	}
+
+	private function _checkTableProg()
+	{
+		$this->db->query("CREATE TABLE IF NOT EXISTS `anggaran_prog` (
+			`id` INT AUTO_INCREMENT PRIMARY KEY,
+			`tahun` VARCHAR(20) NOT NULL,
+			`nama_pos` VARCHAR(100) NOT NULL,
+			`nominal_limit` BIGINT NOT NULL DEFAULT 0,
+			`ket` TEXT NULL,
+			`updated_at` DATETIME NULL,
+			`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE KEY `uniq_tahun_pos` (`tahun`, `nama_pos`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+		$this->db->query("CREATE TABLE IF NOT EXISTS `pengeluaran_prog` (
+			`id_pengeluaran_prog` VARCHAR(50) PRIMARY KEY,
+			`nama_pos` VARCHAR(100) NOT NULL,
+			`tanggal` VARCHAR(20) NOT NULL,
+			`nominal` BIGINT NOT NULL,
+			`ket` TEXT NOT NULL,
+			`kasir` VARCHAR(100) NOT NULL,
+			`tahun` VARCHAR(20) NOT NULL,
+			`at` DATETIME NOT NULL
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+	}
+
+	private function _getTrackingProg($tahun)
+	{
+		$this->_checkTableProg();
+
+		$count = $this->db->where('tahun', $tahun)->count_all_results('anggaran_prog');
+		if ($count == 0) {
+			$default_pos = [
+				'PENGEMBANGAN SDM',
+				'PENGEMBANGAN SARANA & PRASARANA',
+				'PROGRAM KERJA PESANTREN',
+				'INOVASI & TEKNOLOGI',
+				'PENGEMBANGAN EKONOMI'
+			];
+			foreach ($default_pos as $dp) {
+				$this->db->insert('anggaran_prog', [
+					'tahun' => $tahun,
+					'nama_pos' => $dp,
+					'nominal_limit' => 0,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		$anggaran_list = $this->db->where('tahun', $tahun)->order_by('id', 'ASC')->get('anggaran_prog')->result();
+
+		$tracking = [];
+		$total_limit_semua = 0;
+		$total_pakai_semua = 0;
+
+		foreach ($anggaran_list as $ang) {
+			$kode = $ang->nama_pos;
+			$nama = $ang->nama_pos;
+			$limit = (float)$ang->nominal_limit;
+
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_prog')
+				->where('tahun', $tahun)
+				->where('nama_pos', $kode)
+				->get()
+				->row();
+
+			$pakai = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa = $limit - $pakai;
+			$persen = $limit > 0 ? round(($pakai / $limit) * 100, 1) : 0;
+
+			if ($limit <= 0) {
+				$status = 'Belum Diatur';
+				$badge_class = 'bg-secondary';
+				$bar_class = 'bg-secondary';
+			} elseif ($pakai > $limit) {
+				$status = 'Overbudget';
+				$badge_class = 'bg-danger';
+				$bar_class = 'bg-danger';
+			} elseif ($persen >= 85) {
+				$status = 'Waspada (' . $persen . '%)';
+				$badge_class = 'bg-warning text-dark';
+				$bar_class = 'bg-warning';
+			} else {
+				$status = 'Normal (' . $persen . '%)';
+				$badge_class = 'bg-success';
+				$bar_class = 'bg-success';
+			}
+
+			$tracking[$kode] = [
+				'id' => $ang->id,
+				'kode' => $kode,
+				'nama' => $nama,
+				'limit' => $limit,
+				'pakai' => $pakai,
+				'sisa' => $sisa,
+				'persen' => $persen,
+				'status' => $status,
+				'badge_class' => $badge_class,
+				'bar_class' => $bar_class
+			];
+
+			$total_limit_semua += $limit;
+			$total_pakai_semua += $pakai;
+		}
+
+		return [
+			'items' => $tracking,
+			'total_limit' => $total_limit_semua,
+			'total_pakai' => $total_pakai_semua,
+			'total_sisa' => $total_limit_semua - $total_pakai_semua,
+			'total_persen' => $total_limit_semua > 0 ? round(($total_pakai_semua / $total_limit_semua) * 100, 1) : 0
+		];
+	}
+
+	public function saveOutProg()
+	{
+		$nama_pos = $this->input->post('nama_pos', true);
+		$nominal = (float)rmRp($this->input->post('nominal', true));
+		$tahun = $this->tahun;
+
+		$anggaran = $this->db->get_where('anggaran_prog', [
+			'tahun' => $tahun,
+			'nama_pos' => $nama_pos
+		])->row();
+
+		if ($anggaran && $anggaran->nominal_limit > 0) {
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_prog')
+				->where('tahun', $tahun)
+				->where('nama_pos', $nama_pos)
+				->get()
+				->row();
+			$pakai_saat_ini = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_limit = (float)$anggaran->nominal_limit - $pakai_saat_ini;
+
+			if ($nominal > $sisa_limit) {
+				$this->session->set_flashdata('error', 'Pengeluaran Ditolak! Nominal (' . rupiah($nominal) . ') melebihi sisa limit ' . $nama_pos . ' (Sisa: ' . rupiah($sisa_limit) . ', Limit: ' . rupiah($anggaran->nominal_limit) . ')');
+				redirect('account/outProg');
+				return;
+			}
+		}
+
+		$data = [
+			"id_pengeluaran_prog" => $this->uuid->v4(),
+			"nama_pos" => $nama_pos,
+			"ket" => $this->input->post('ket', true),
+			"nominal" => $nominal,
+			"tanggal" => $this->input->post('tanggal', true),
+			"kasir" => $this->user,
+			"tahun" => $this->tahun,
+			"at" => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('pengeluaran_prog', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Input data sukses');
+			redirect('account/outProg');
+		} else {
+			$this->session->set_flashdata('error', 'Input data gagal');
+			redirect('account/outProg');
+		}
+	}
+
+	public function editOutProg()
+	{
+		$id = $this->input->post('id_out', 'true');
+		$nama_pos = $this->input->post('nama_pos', true);
+		$nominal = (float)rmRp($this->input->post('nominal', true));
+		$tahun = $this->tahun;
+
+		$anggaran = $this->db->get_where('anggaran_prog', [
+			'tahun' => $tahun,
+			'nama_pos' => $nama_pos
+		])->row();
+
+		if ($anggaran && $anggaran->nominal_limit > 0) {
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_prog')
+				->where('tahun', $tahun)
+				->where('nama_pos', $nama_pos)
+				->where('id_pengeluaran_prog !=', $id)
+				->get()
+				->row();
+			$pakai_saat_ini = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_limit = (float)$anggaran->nominal_limit - $pakai_saat_ini;
+
+			if ($nominal > $sisa_limit) {
+				$this->session->set_flashdata('error', 'Edit Ditolak! Nominal (' . rupiah($nominal) . ') melebihi sisa limit ' . $nama_pos . ' (Sisa: ' . rupiah($sisa_limit) . ', Limit: ' . rupiah($anggaran->nominal_limit) . ')');
+				redirect('account/outProg');
+				return;
+			}
+		}
+
+		$data = [
+			"nama_pos" => $nama_pos,
+			"ket" => $this->input->post('ket', true),
+			"nominal" => $nominal,
+			"tanggal" => $this->input->post('tanggal', true),
+		];
+
+		$this->model->update('pengeluaran_prog', $data, 'id_pengeluaran_prog', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Update data sukses');
+			redirect('account/outProg');
+		} else {
+			$this->session->set_flashdata('error', 'Update data gagal');
+			redirect('account/outProg');
+		}
+	}
+
+	public function delOutProg($id)
+	{
+		$this->model->delete('pengeluaran_prog', 'id_pengeluaran_prog', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus data sukses');
+			redirect('account/outProg');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus data gagal');
+			redirect('account/outProg');
+		}
+	}
+
+	/* =========================================================================
+	 *  DANA TERIKAT (outTerikat)
+	 * ========================================================================= */
+
+	public function outTerikat()
+	{
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $this->tahun;
+
+		$this->_checkTableTerikat();
+
+		$data['data'] = $this->db->where('tahun', $this->tahun)->order_by('tanggal', 'DESC')->get('pengeluaran_terikat')->result();
+		$data['sumData'] = $this->model->getBySum('pengeluaran_terikat', 'tahun', $this->tahun, 'nominal')->row();
+
+		$data['tracking_terikat'] = $this->_getTrackingTerikat($this->tahun);
+
+		$this->load->view('account/head', $data);
+		$this->load->view('account/outTerikat', $data);
+		$this->load->view('account/foot');
+	}
+
+	public function saveAnggaranTerikat()
+	{
+		$limits = $this->input->post('limit', true);
+		$new_pos = trim($this->input->post('new_pos', true));
+		$new_limit = (float)rmRp($this->input->post('new_limit', true));
+		$tahun = $this->tahun;
+
+		if (is_array($limits)) {
+			foreach ($limits as $nama_pos => $nominal_raw) {
+				$nom = (int)rmRp($nominal_raw);
+				$cek = $this->db->get_where('anggaran_terikat', [
+					'tahun' => $tahun,
+					'nama_pos' => $nama_pos
+				])->row();
+
+				if ($cek) {
+					$this->db->where('id', $cek->id)->update('anggaran_terikat', [
+						'nominal_limit' => $nom,
+						'updated_at' => date('Y-m-d H:i:s')
+					]);
+				} else {
+					$this->db->insert('anggaran_terikat', [
+						'tahun' => $tahun,
+						'nama_pos' => $nama_pos,
+						'nominal_limit' => $nom,
+						'updated_at' => date('Y-m-d H:i:s')
+					]);
+				}
+			}
+		}
+
+		if (!empty($new_pos)) {
+			$new_pos = strtoupper($new_pos);
+			$cek = $this->db->get_where('anggaran_terikat', [
+				'tahun' => $tahun,
+				'nama_pos' => $new_pos
+			])->row();
+
+			if (!$cek) {
+				$this->db->insert('anggaran_terikat', [
+					'tahun' => $tahun,
+					'nama_pos' => $new_pos,
+					'nominal_limit' => $new_limit,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		$this->session->set_flashdata('ok', 'Limit Anggaran Dana Terikat berhasil disimpan');
+		redirect('account/outTerikat');
+	}
+
+	public function delPosTerikat($id)
+	{
+		$ang = $this->db->get_where('anggaran_terikat', ['id' => $id])->row();
+		if ($ang) {
+			$cek_pakai = $this->db->where('tahun', $ang->tahun)->where('nama_pos', $ang->nama_pos)->count_all_results('pengeluaran_terikat');
+			if ($cek_pakai > 0) {
+				$this->session->set_flashdata('error', 'Kategori dana terikat tidak dapat dihapus karena sudah ada data transaksi terkait');
+			} else {
+				$this->db->where('id', $id)->delete('anggaran_terikat');
+				$this->session->set_flashdata('ok', 'Kategori dana terikat berhasil dihapus');
+			}
+		}
+		redirect('account/outTerikat');
+	}
+
+	private function _checkTableTerikat()
+	{
+		$this->db->query("CREATE TABLE IF NOT EXISTS `anggaran_terikat` (
+			`id` INT AUTO_INCREMENT PRIMARY KEY,
+			`tahun` VARCHAR(20) NOT NULL,
+			`nama_pos` VARCHAR(100) NOT NULL,
+			`nominal_limit` BIGINT NOT NULL DEFAULT 0,
+			`ket` TEXT NULL,
+			`updated_at` DATETIME NULL,
+			`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+			UNIQUE KEY `uniq_tahun_pos` (`tahun`, `nama_pos`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
+		$this->db->query("CREATE TABLE IF NOT EXISTS `pengeluaran_terikat` (
+			`id_pengeluaran_terikat` VARCHAR(50) PRIMARY KEY,
+			`nama_pos` VARCHAR(100) NOT NULL,
+			`tanggal` VARCHAR(20) NOT NULL,
+			`nominal` BIGINT NOT NULL,
+			`ket` TEXT NOT NULL,
+			`kasir` VARCHAR(100) NOT NULL,
+			`tahun` VARCHAR(20) NOT NULL,
+			`at` DATETIME NOT NULL
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+	}
+
+	private function _getTrackingTerikat($tahun)
+	{
+		$this->_checkTableTerikat();
+
+		$count = $this->db->where('tahun', $tahun)->count_all_results('anggaran_terikat');
+		if ($count == 0) {
+			$default_pos = [
+				'DANA WAKAF / HIBAH TERIKAT',
+				'BANTUAN OPERASIONAL TERIKAT',
+				'BEASISWA SANTRI TERIKAT',
+				'PROYEK KHUSUS DONATUR',
+				'DANA AMANAH LAINNYA'
+			];
+			foreach ($default_pos as $dp) {
+				$this->db->insert('anggaran_terikat', [
+					'tahun' => $tahun,
+					'nama_pos' => $dp,
+					'nominal_limit' => 0,
+					'created_at' => date('Y-m-d H:i:s')
+				]);
+			}
+		}
+
+		$anggaran_list = $this->db->where('tahun', $tahun)->order_by('id', 'ASC')->get('anggaran_terikat')->result();
+
+		$tracking = [];
+		$total_limit_semua = 0;
+		$total_pakai_semua = 0;
+
+		foreach ($anggaran_list as $ang) {
+			$kode = $ang->nama_pos;
+			$nama = $ang->nama_pos;
+			$limit = (float)$ang->nominal_limit;
+
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_terikat')
+				->where('tahun', $tahun)
+				->where('nama_pos', $kode)
+				->get()
+				->row();
+
+			$pakai = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa = $limit - $pakai;
+			$persen = $limit > 0 ? round(($pakai / $limit) * 100, 1) : 0;
+
+			if ($limit <= 0) {
+				$status = 'Belum Diatur';
+				$badge_class = 'bg-secondary';
+				$bar_class = 'bg-secondary';
+			} elseif ($pakai > $limit) {
+				$status = 'Overbudget';
+				$badge_class = 'bg-danger';
+				$bar_class = 'bg-danger';
+			} elseif ($persen >= 85) {
+				$status = 'Waspada (' . $persen . '%)';
+				$badge_class = 'bg-warning text-dark';
+				$bar_class = 'bg-warning';
+			} else {
+				$status = 'Normal (' . $persen . '%)';
+				$badge_class = 'bg-success';
+				$bar_class = 'bg-success';
+			}
+
+			$tracking[$kode] = [
+				'id' => $ang->id,
+				'kode' => $kode,
+				'nama' => $nama,
+				'limit' => $limit,
+				'pakai' => $pakai,
+				'sisa' => $sisa,
+				'persen' => $persen,
+				'status' => $status,
+				'badge_class' => $badge_class,
+				'bar_class' => $bar_class
+			];
+
+			$total_limit_semua += $limit;
+			$total_pakai_semua += $pakai;
+		}
+
+		return [
+			'items' => $tracking,
+			'total_limit' => $total_limit_semua,
+			'total_pakai' => $total_pakai_semua,
+			'total_sisa' => $total_limit_semua - $total_pakai_semua,
+			'total_persen' => $total_limit_semua > 0 ? round(($total_pakai_semua / $total_limit_semua) * 100, 1) : 0
+		];
+	}
+
+	public function saveOutTerikat()
+	{
+		$nama_pos = $this->input->post('nama_pos', true);
+		$nominal = (float)rmRp($this->input->post('nominal', true));
+		$tahun = $this->tahun;
+
+		$anggaran = $this->db->get_where('anggaran_terikat', [
+			'tahun' => $tahun,
+			'nama_pos' => $nama_pos
+		])->row();
+
+		if ($anggaran && $anggaran->nominal_limit > 0) {
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_terikat')
+				->where('tahun', $tahun)
+				->where('nama_pos', $nama_pos)
+				->get()
+				->row();
+			$pakai_saat_ini = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_limit = (float)$anggaran->nominal_limit - $pakai_saat_ini;
+
+			if ($nominal > $sisa_limit) {
+				$this->session->set_flashdata('error', 'Pengeluaran Ditolak! Nominal (' . rupiah($nominal) . ') melebihi sisa limit ' . $nama_pos . ' (Sisa: ' . rupiah($sisa_limit) . ', Limit: ' . rupiah($anggaran->nominal_limit) . ')');
+				redirect('account/outTerikat');
+				return;
+			}
+		}
+
+		$data = [
+			"id_pengeluaran_terikat" => $this->uuid->v4(),
+			"nama_pos" => $nama_pos,
+			"ket" => $this->input->post('ket', true),
+			"nominal" => $nominal,
+			"tanggal" => $this->input->post('tanggal', true),
+			"kasir" => $this->user,
+			"tahun" => $this->tahun,
+			"at" => date('Y-m-d H:i:s')
+		];
+
+		$this->model->input('pengeluaran_terikat', $data);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Input data sukses');
+			redirect('account/outTerikat');
+		} else {
+			$this->session->set_flashdata('error', 'Input data gagal');
+			redirect('account/outTerikat');
+		}
+	}
+
+	public function editOutTerikat()
+	{
+		$id = $this->input->post('id_out', 'true');
+		$nama_pos = $this->input->post('nama_pos', true);
+		$nominal = (float)rmRp($this->input->post('nominal', true));
+		$tahun = $this->tahun;
+
+		$anggaran = $this->db->get_where('anggaran_terikat', [
+			'tahun' => $tahun,
+			'nama_pos' => $nama_pos
+		])->row();
+
+		if ($anggaran && $anggaran->nominal_limit > 0) {
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('pengeluaran_terikat')
+				->where('tahun', $tahun)
+				->where('nama_pos', $nama_pos)
+				->where('id_pengeluaran_terikat !=', $id)
+				->get()
+				->row();
+			$pakai_saat_ini = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_limit = (float)$anggaran->nominal_limit - $pakai_saat_ini;
+
+			if ($nominal > $sisa_limit) {
+				$this->session->set_flashdata('error', 'Edit Ditolak! Nominal (' . rupiah($nominal) . ') melebihi sisa limit ' . $nama_pos . ' (Sisa: ' . rupiah($sisa_limit) . ', Limit: ' . rupiah($anggaran->nominal_limit) . ')');
+				redirect('account/outTerikat');
+				return;
+			}
+		}
+
+		$data = [
+			"nama_pos" => $nama_pos,
+			"ket" => $this->input->post('ket', true),
+			"nominal" => $nominal,
+			"tanggal" => $this->input->post('tanggal', true),
+		];
+
+		$this->model->update('pengeluaran_terikat', $data, 'id_pengeluaran_terikat', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Update data sukses');
+			redirect('account/outTerikat');
+		} else {
+			$this->session->set_flashdata('error', 'Update data gagal');
+			redirect('account/outTerikat');
+		}
+	}
+
+	public function delOutTerikat($id)
+	{
+		$this->model->delete('pengeluaran_terikat', 'id_pengeluaran_terikat', $id);
+		if ($this->db->affected_rows() > 0) {
+			$this->session->set_flashdata('ok', 'Hapus data sukses');
+			redirect('account/outTerikat');
+		} else {
+			$this->session->set_flashdata('error', 'Hapus data gagal');
+			redirect('account/outTerikat');
 		}
 	}
 
@@ -2616,15 +3489,25 @@ SELECT 'Peminjaman' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM peminjama
 UNION 
 SELECT 'Panjar' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM panjar WHERE tahun = '$this->tahun'
 UNION 
-SELECT 'HONOR (PR)' AS ket, 2736846000 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'HONOR'
+SELECT 'HONOR (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'HONOR' LIMIT 1), 2736846000) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'HONOR'
 UNION 
-SELECT 'LISTRIK (PR)' AS ket, 179628000 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'LISTRIK'
+SELECT 'LISTRIK (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'LISTRIK' LIMIT 1), 179628000) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'LISTRIK'
 UNION 
-SELECT 'INTERNET (PR)' AS ket, 62229000 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'INTERNET'
+SELECT 'INTERNET (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'INTERNET' LIMIT 1), 62229000) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'INTERNET'
 UNION 
-SELECT 'SAMPAH (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'SAMPAH'
+SELECT 'BPJS (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'BPJS' LIMIT 1), 0) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'BPJS'
 UNION 
-SELECT 'KORAN (PR)' AS ket, 0 AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'KORAN'
+SELECT 'SAMPAH (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'SAMPAH' LIMIT 1), 0) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'SAMPAH'
+UNION 
+SELECT 'KORAN (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'KORAN' LIMIT 1), 0) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'KORAN'
+UNION 
+SELECT 'PAJAK TANAH (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'PAJAK TANAH' LIMIT 1), 0) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'PAJAK TANAH'
+UNION 
+SELECT 'PAJAK KENDARAAN (PR)' AS ket, IFNULL((SELECT nominal_limit FROM anggaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'PAJAK KENDARAAN' LIMIT 1), 0) AS total_rab, SUM(nominal) as pakai FROM pengeluaran_rutin WHERE tahun = '$this->tahun' AND langganan = 'PAJAK KENDARAAN'
+UNION 
+SELECT CONCAT(nama_pos, ' (Prog)') AS ket, nominal_limit AS total_rab, IFNULL((SELECT SUM(nominal) FROM pengeluaran_prog WHERE tahun = '$this->tahun' AND nama_pos = anggaran_prog.nama_pos), 0) AS pakai FROM anggaran_prog WHERE tahun = '$this->tahun'
+UNION 
+SELECT CONCAT(nama_pos, ' (Terikat)') AS ket, nominal_limit AS total_rab, IFNULL((SELECT SUM(nominal) FROM pengeluaran_terikat WHERE tahun = '$this->tahun' AND nama_pos = anggaran_terikat.nama_pos), 0) AS pakai FROM anggaran_terikat WHERE tahun = '$this->tahun'
 UNION 
 SELECT 'Sarpras' AS ket,150000000 AS total_rab, SUM(qty*harga_satuan) as pakai FROM sarpras_detail JOIN sarpras ON sarpras_detail.kode_pengajuan=sarpras.kode_pengajuan WHERE sarpras_detail.tahun = '$this->tahun' AND sarpras.status = 'dicairkan'
 UNION 
