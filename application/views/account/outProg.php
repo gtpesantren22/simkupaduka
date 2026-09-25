@@ -186,7 +186,7 @@
                                         <td>
                                             <div class="input-group input-group-sm">
                                                 <span class="input-group-text">Rp</span>
-                                                <input type="text" name="limit[<?= $code ?>]" value="<?= $tr['limit'] > 0 ? rupiah($tr['limit']) : '' ?>" class="form-control uang" placeholder="0">
+                                                <input type="text" name="limit[<?= $tr['id'] ?>]" value="<?= $tr['limit'] > 0 ? rupiah($tr['limit']) : '' ?>" class="form-control uang" placeholder="0">
                                             </div>
                                         </td>
                                         <td class="text-center">

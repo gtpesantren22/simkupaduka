@@ -4863,25 +4863,33 @@ Update data pertanggal
 		$tahun = $this->tahun;
 
 		if (is_array($limits)) {
-			foreach ($limits as $langganan => $nominal_raw) {
+			foreach ($limits as $key => $nominal_raw) {
 				$nom = (int)rmRp($nominal_raw);
-				$cek = $this->db->get_where('anggaran_rutin', [
-					'tahun' => $tahun,
-					'langganan' => $langganan
-				])->row();
-
-				if ($cek) {
-					$this->db->where('id', $cek->id)->update('anggaran_rutin', [
-						'nominal_limit' => $nom,
-						'updated_at' => date('Y-m-d H:i:s')
-					]);
+				if (is_numeric($key) && (int)$key > 0) {
+					// Update presisi menggunakan Primary Key ID
+					$this->db->where('id', (int)$key)
+						->where('tahun', $tahun)
+						->update('anggaran_rutin', [
+							'nominal_limit' => $nom,
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
 				} else {
-					$this->db->insert('anggaran_rutin', [
-						'tahun' => $tahun,
-						'langganan' => $langganan,
-						'nominal_limit' => $nom,
-						'updated_at' => date('Y-m-d H:i:s')
-					]);
+					// Fallback jika dikirim berupa nama pos (membersihkan underscore kembali ke spasi)
+					$pos_clean = str_replace('_', ' ', $key);
+					$cek = $this->db->where('tahun', $tahun)
+						->group_start()
+							->where('langganan', $key)
+							->or_where('langganan', $pos_clean)
+						->group_end()
+						->get('anggaran_rutin')
+						->row();
+
+					if ($cek) {
+						$this->db->where('id', $cek->id)->update('anggaran_rutin', [
+							'nominal_limit' => $nom,
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
+					}
 				}
 			}
 		}
@@ -4899,6 +4907,11 @@ Update data pertanggal
 					'langganan' => $new_pos,
 					'nominal_limit' => $new_limit,
 					'created_at' => date('Y-m-d H:i:s')
+				]);
+			} else {
+				$this->db->where('id', $cek->id)->update('anggaran_rutin', [
+					'nominal_limit' => $new_limit,
+					'updated_at' => date('Y-m-d H:i:s')
 				]);
 			}
 		}
@@ -5164,25 +5177,33 @@ Update data pertanggal
 		$tahun = $this->tahun;
 
 		if (is_array($limits)) {
-			foreach ($limits as $nama_pos => $nominal_raw) {
+			foreach ($limits as $key => $nominal_raw) {
 				$nom = (int)rmRp($nominal_raw);
-				$cek = $this->db->get_where('anggaran_prog', [
-					'tahun' => $tahun,
-					'nama_pos' => $nama_pos
-				])->row();
-
-				if ($cek) {
-					$this->db->where('id', $cek->id)->update('anggaran_prog', [
-						'nominal_limit' => $nom,
-						'updated_at' => date('Y-m-d H:i:s')
-					]);
+				if (is_numeric($key) && (int)$key > 0) {
+					// Update presisi menggunakan Primary Key ID
+					$this->db->where('id', (int)$key)
+						->where('tahun', $tahun)
+						->update('anggaran_prog', [
+							'nominal_limit' => $nom,
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
 				} else {
-					$this->db->insert('anggaran_prog', [
-						'tahun' => $tahun,
-						'nama_pos' => $nama_pos,
-						'nominal_limit' => $nom,
-						'updated_at' => date('Y-m-d H:i:s')
-					]);
+					// Fallback jika dikirim berupa nama pos
+					$pos_clean = str_replace('_', ' ', $key);
+					$cek = $this->db->where('tahun', $tahun)
+						->group_start()
+							->where('nama_pos', $key)
+							->or_where('nama_pos', $pos_clean)
+						->group_end()
+						->get('anggaran_prog')
+						->row();
+
+					if ($cek) {
+						$this->db->where('id', $cek->id)->update('anggaran_prog', [
+							'nominal_limit' => $nom,
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
+					}
 				}
 			}
 		}
@@ -5200,6 +5221,11 @@ Update data pertanggal
 					'nama_pos' => $new_pos,
 					'nominal_limit' => $new_limit,
 					'created_at' => date('Y-m-d H:i:s')
+				]);
+			} else {
+				$this->db->where('id', $cek->id)->update('anggaran_prog', [
+					'nominal_limit' => $new_limit,
+					'updated_at' => date('Y-m-d H:i:s')
 				]);
 			}
 		}
@@ -5470,25 +5496,33 @@ Update data pertanggal
 		$tahun = $this->tahun;
 
 		if (is_array($limits)) {
-			foreach ($limits as $nama_pos => $nominal_raw) {
+			foreach ($limits as $key => $nominal_raw) {
 				$nom = (int)rmRp($nominal_raw);
-				$cek = $this->db->get_where('anggaran_terikat', [
-					'tahun' => $tahun,
-					'nama_pos' => $nama_pos
-				])->row();
-
-				if ($cek) {
-					$this->db->where('id', $cek->id)->update('anggaran_terikat', [
-						'nominal_limit' => $nom,
-						'updated_at' => date('Y-m-d H:i:s')
-					]);
+				if (is_numeric($key) && (int)$key > 0) {
+					// Update presisi menggunakan Primary Key ID
+					$this->db->where('id', (int)$key)
+						->where('tahun', $tahun)
+						->update('anggaran_terikat', [
+							'nominal_limit' => $nom,
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
 				} else {
-					$this->db->insert('anggaran_terikat', [
-						'tahun' => $tahun,
-						'nama_pos' => $nama_pos,
-						'nominal_limit' => $nom,
-						'updated_at' => date('Y-m-d H:i:s')
-					]);
+					// Fallback jika dikirim berupa nama pos
+					$pos_clean = str_replace('_', ' ', $key);
+					$cek = $this->db->where('tahun', $tahun)
+						->group_start()
+							->where('nama_pos', $key)
+							->or_where('nama_pos', $pos_clean)
+						->group_end()
+						->get('anggaran_terikat')
+						->row();
+
+					if ($cek) {
+						$this->db->where('id', $cek->id)->update('anggaran_terikat', [
+							'nominal_limit' => $nom,
+							'updated_at' => date('Y-m-d H:i:s')
+						]);
+					}
 				}
 			}
 		}
@@ -5506,6 +5540,11 @@ Update data pertanggal
 					'nama_pos' => $new_pos,
 					'nominal_limit' => $new_limit,
 					'created_at' => date('Y-m-d H:i:s')
+				]);
+			} else {
+				$this->db->where('id', $cek->id)->update('anggaran_terikat', [
+					'nominal_limit' => $new_limit,
+					'updated_at' => date('Y-m-d H:i:s')
 				]);
 			}
 		}
