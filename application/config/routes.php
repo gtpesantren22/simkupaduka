@@ -57,3 +57,13 @@ $route['save_image'] = 'Save_image/index';
 $route['api/check-rekom'] = 'Kasir/checkRekomApi';
 $route['api/tanggungan-santri'] = 'Kasir/tanggunganSantriApi';
 $route['api/tanggungan'] = 'Kasir/tanggunganSantriApi';
+
+// Monitoring App API Endpoints - Pengajuan
+$route['api/pengajuan/summary'] = 'Api/pengajuanSummary';
+$route['api/pengajuan/list'] = 'Api/pengajuanList';
+$route['api/pengajuan/detail/(:any)'] = 'Api/pengajuanDetail/$1';
+$route['api/pengajuan/detail'] = 'Api/pengajuanDetail';
+$route['api/pengajuan/by-lembaga'] = 'Api/pengajuanByLembaga';
+$route['api/pengajuan/monitoring-spj'] = 'Api/pengajuanMonitoringSpj';
+$route['api/pengajuan/chart-trend'] = 'Api/pengajuanChartTrend';
+
