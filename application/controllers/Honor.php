@@ -168,11 +168,41 @@ class Honor extends CI_Controller
         }
 
         if ($sql > 0) {
+            // Hitung akumulasi jam dari seluruh lembaga pada honor_id ini
+            $sum_row = $this->flat->select('SUM(kehadiran) as total_jam')
+                ->where('honor_id', $honor_id)
+                ->where('guru_id', $guru_id)
+                ->get('honor')
+                ->row();
+
+            $all_rows = $this->flat->select('h.kehadiran, s.nama as nama_lembaga')
+                ->from('honor h')
+                ->join('satminkal s', 's.id = h.lembaga', 'left')
+                ->where('h.honor_id', $honor_id)
+                ->where('h.guru_id', $guru_id)
+                ->get()
+                ->result();
+
+            $rincian_arr = [];
+            foreach ($all_rows as $ar) {
+                if ((float)$ar->kehadiran > 0) {
+                    $rincian_arr[] = ($ar->nama_lembaga ?: 'Lembaga') . ': ' . $ar->kehadiran . ' jam';
+                }
+            }
+
+            $total_jam_semua = (float)($sum_row ? $sum_row->total_jam : $jam);
+            $is_over_limit = ($total_jam_semua > 80);
+            $kelebihan_jam = max(0, $total_jam_semua - 80);
+
             echo json_encode([
                 'status' => 'ok',
                 'besaran' => $jam,
                 'ket_bulan' => bulan($honor->bulan) . ' ' . $honor->tahun,
-                'newId' => $newId
+                'newId' => $newId,
+                'total_jam_semua' => $total_jam_semua,
+                'is_over_limit' => $is_over_limit,
+                'kelebihan_jam' => $kelebihan_jam,
+                'rincian_lembaga' => implode(', ', $rincian_arr)
             ]);
         } else {
             echo json_encode(['status' => 'gagal']);
@@ -614,8 +644,11 @@ class Honor extends CI_Controller
 
         $guruIds = array_column($pagedData, 'ptk_id');
         $honorIndexed = [];
+        $totalJamAllLembaga = [];
+        $rincianLembagaList = [];
 
         if (!empty($guruIds)) {
+            // 1. Honor di lembaga saat ini
             $honorRows = $this->flat
                 ->where('honor_id', $honorID)
                 ->where('lembaga', $satminkal_terpilih)
@@ -625,6 +658,27 @@ class Honor extends CI_Controller
 
             foreach ($honorRows as $h) {
                 $honorIndexed[$h->guru_id] = $h;
+            }
+
+            // 2. Akumulasi jam dari seluruh lembaga pada honor_id ini
+            $allHonorRows = $this->flat
+                ->select('h.guru_id, h.kehadiran, s.nama as nama_lembaga')
+                ->from('honor h')
+                ->join('satminkal s', 's.id = h.lembaga', 'left')
+                ->where('h.honor_id', $honorID)
+                ->where_in('h.guru_id', $guruIds)
+                ->get()
+                ->result();
+
+            foreach ($allHonorRows as $ah) {
+                if (!isset($totalJamAllLembaga[$ah->guru_id])) {
+                    $totalJamAllLembaga[$ah->guru_id] = 0;
+                    $rincianLembagaList[$ah->guru_id] = [];
+                }
+                $totalJamAllLembaga[$ah->guru_id] += (float)$ah->kehadiran;
+                if ((float)$ah->kehadiran > 0) {
+                    $rincianLembagaList[$ah->guru_id][] = ($ah->nama_lembaga ?: 'Lembaga') . ': ' . $ah->kehadiran . ' jam';
+                }
             }
         }
 
@@ -638,6 +692,10 @@ class Honor extends CI_Controller
 
             $guru_id = $row['ptk_id'] ?? '';
             $hadir = $honorIndexed[$guru_id] ?? null;
+            $total_akumulasi = isset($totalJamAllLembaga[$guru_id]) ? (float)$totalJamAllLembaga[$guru_id] : (float)($hadir->kehadiran ?? 0);
+            $is_over_limit = ($total_akumulasi > 80);
+            $kelebihan_jam = max(0, $total_akumulasi - 80);
+            $rincian_ket = isset($rincianLembagaList[$guru_id]) ? implode(', ', $rincianLembagaList[$guru_id]) : '';
 
             $data[] = [
                 'id' => $hadir->id ?? 0,
@@ -651,6 +709,10 @@ class Honor extends CI_Controller
                 'hadir' => $hadir->kehadiran ?? 0,
                 'nominal' => $hadir->nominal ?? 0,
                 'ket' => $row['jenis_kesantrian'] ?? '-',
+                'total_akumulasi' => $total_akumulasi,
+                'is_over_limit' => $is_over_limit,
+                'kelebihan_jam' => $kelebihan_jam,
+                'rincian_lembaga' => $rincian_ket,
             ];
         }
 

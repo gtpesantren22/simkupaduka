@@ -76,16 +76,16 @@
                             </div>
                         </div>
                         <div class="table-responsive">
-                            <table id="table-honor" class="table table-striped table-bordered" style="width:100%">
+                            <table id="table-honor" class="table table-striped table-bordered align-middle" style="width:100%">
                                 <thead>
                                     <tr style="color: white; background-color: #008CFF; font-weight: bold;">
-                                        <th>No</th>
-                                        <th>Bulan</th>
-                                        <th>Nama</th>
-                                        <th>Ket</th>
-                                        <th>Jml Jam</th>
-                                        <th>Hasil</th>
-                                        <th></th>
+                                        <th style="width: 5%;">No</th>
+                                        <th style="width: 15%;">Bulan</th>
+                                        <th style="width: 25%;">Nama Guru</th>
+                                        <th style="width: 10%;">Ket</th>
+                                        <th style="width: 12%;">Jml Jam</th>
+                                        <th style="width: 10%;">Hasil</th>
+                                        <th style="width: 23%;">Status / Akumulasi Jam</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -108,6 +108,32 @@
                             <!-- PAGINATION -->
                             <div id="pagination"></div>
 
+                        </div>
+
+                        <!-- Card Peringatan Batas Maksimal Jam PTTY -->
+                        <div class="card border-0 border-start border-4 border-warning shadow-sm mt-4 bg-light-warning">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-start gap-3">
+                                    <div class="fs-2 text-warning lh-1">
+                                        <i class="bx bx-error-circle"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="fw-bold text-dark mb-2">Batas Maksimal Jam PTTY</h5>
+                                        <p class="mb-2 text-dark">
+                                            Jumlah jam kehadiran PTTY yang diperhitungkan untuk honor insentif maksimal <strong>20 jam per minggu</strong> dan <strong>80 jam per bulan</strong>.
+                                        </p>
+                                        <p class="mb-2 text-dark">
+                                            Jam kehadiran yang melebihi batas tersebut <strong>tidak diperhitungkan</strong> dalam pembayaran honor insentif.
+                                        </p>
+                                        <p class="mb-2 text-dark">
+                                            Apabila terdapat kelebihan jam, silakan dikoordinasikan terlebih dahulu dengan <strong>Biro Pendidikan</strong>.
+                                        </p>
+                                        <p class="mb-0 text-muted fst-italic">
+                                            Silakan periksa kembali data sebelum disimpan.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,19 +183,64 @@
 
         if (!Array.isArray(data)) return;
         let start = (meta.page - 1) * meta.perPage;
-        // console.log(data);
+
         data.forEach((row, index) => {
-            // console.log(row.lembaga_id + ' <> ' + row.lembaga_terpilih + ' || ' + row.lembaga_user);
-            let wrn = 'black'
+            let isOver = row.is_over_limit === true;
+            let rowClass = isOver ? 'table-warning' : '';
+            
+            let statusHtml = '';
+            if (isOver) {
+                statusHtml = `
+                    <div class="d-flex flex-column gap-1">
+                        <div>
+                            <span class="badge bg-danger text-white fs-12 px-2 py-1 shadow-sm">
+                                <i class="bx bx-error-circle me-1"></i> Total: ${row.total_akumulasi} Jam (> 80 JP)
+                            </span>
+                        </div>
+                        <div class="text-danger small fw-bold">
+                            <i class="bx bx-error align-middle"></i> Melebihi batas maksimal (${row.kelebihan_jam} jam lebih)
+                        </div>
+                        ${row.rincian_lembaga ? `<div class="text-muted fs-11"><i class="bx bx-buildings align-middle"></i> ${row.rincian_lembaga}</div>` : ''}
+                    </div>
+                `;
+            } else if (row.total_akumulasi > 0) {
+                statusHtml = `
+                    <div class="d-flex flex-column gap-1">
+                        <div>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 fs-12">
+                                <i class="bx bx-check-circle me-1"></i> Total: ${row.total_akumulasi} Jam
+                            </span>
+                        </div>
+                        ${row.rincian_lembaga ? `<div class="text-muted fs-11"><i class="bx bx-buildings align-middle"></i> ${row.rincian_lembaga}</div>` : ''}
+                    </div>
+                `;
+            } else {
+                statusHtml = `<span class="text-muted fs-12">-</span>`;
+            }
+
             const $row = $(`
-                    <tr style="color: ${wrn}">
-                        <td>${start + index + 1}</td>
-                        <td id="ket-bulan-${row.guru_id}">${row.bulan+' '+row.tahun}</td>
-                        <td>${row.nama}</td>
+                    <tr class="${rowClass}" id="row-guru-${row.guru_id}">
+                        <td class="text-center">${start + index + 1}</td>
+                        <td id="ket-bulan-${row.guru_id}">${row.bulan ? (row.bulan + ' ' + row.tahun) : '-'}</td>
+                        <td>
+                            <span class="fw-bold">${row.nama}</span>
+                            <div class="text-muted fs-11">${row.satminkal || ''}</div>
+                        </td>
                         <td>${row.ket}</td>
-                        <td><input type="text" class="form-control form-input" <?= $gaji->status == 'kunci' ? 'disabled' : '' ?> data-id="${row.id}" data-honor_id="${row.honor_id}" data-guru_id="${row.guru_id}" data-satminkal="${row.satminkal}" data-ket="${row.ket}" data-satminkal_id="${row.satminkal_id}" value="${row.hadir}"></td>
-                        <td id="hasil-honor-${row.guru_id}">${row.hadir} jam</td>
-                        <td></td>
+                        <td>
+                            <input type="number" step="any" class="form-control form-control-sm form-input ${isOver ? 'is-invalid' : ''}" 
+                                id="input-jam-${row.guru_id}"
+                                <?= $gaji->status == 'kunci' ? 'disabled' : '' ?> 
+                                data-id="${row.id}" 
+                                data-honor_id="${row.honor_id}" 
+                                data-guru_id="${row.guru_id}" 
+                                data-satminkal="${row.satminkal}" 
+                                data-ket="${row.ket}" 
+                                data-satminkal_id="${row.satminkal_id}" 
+                                value="${row.hadir}">
+                        </td>
+                        <td id="hasil-honor-${row.guru_id}" class="fw-bold">${row.hadir} jam</td>
+                        <td id="status-akumulasi-${row.guru_id}">${statusHtml}</td>
                     </tr>
                 `);
 
@@ -322,6 +393,46 @@
 
                         $(`#hasil-honor-${guru_id}`).text(response.besaran + ` jam`);
                         $(`#ket-bulan-${guru_id}`).text(response.ket_bulan);
+
+                        // 🔥 Update status akumulasi & alert row secara real-time
+                        const $tr = $(`#row-guru-${guru_id}`);
+                        const $statusCell = $(`#status-akumulasi-${guru_id}`);
+                        const $inputEl = $(`#input-jam-${guru_id}`);
+
+                        if (response.is_over_limit) {
+                            $tr.addClass('table-warning');
+                            $inputEl.addClass('is-invalid');
+                            $statusCell.html(`
+                                <div class="d-flex flex-column gap-1">
+                                    <div>
+                                        <span class="badge bg-danger text-white fs-12 px-2 py-1 shadow-sm">
+                                            <i class="bx bx-error-circle me-1"></i> Total: ${response.total_jam_semua} Jam (> 80 JP)
+                                        </span>
+                                    </div>
+                                    <div class="text-danger small fw-bold">
+                                        <i class="bx bx-error align-middle"></i> Melebihi batas maksimal (${response.kelebihan_jam} jam lebih)
+                                    </div>
+                                    ${response.rincian_lembaga ? `<div class="text-muted fs-11"><i class="bx bx-buildings align-middle"></i> ${response.rincian_lembaga}</div>` : ''}
+                                </div>
+                            `);
+                        } else if (response.total_jam_semua > 0) {
+                            $tr.removeClass('table-warning');
+                            $inputEl.removeClass('is-invalid');
+                            $statusCell.html(`
+                                <div class="d-flex flex-column gap-1">
+                                    <div>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 fs-12">
+                                            <i class="bx bx-check-circle me-1"></i> Total: ${response.total_jam_semua} Jam
+                                        </span>
+                                    </div>
+                                    ${response.rincian_lembaga ? `<div class="text-muted fs-11"><i class="bx bx-buildings align-middle"></i> ${response.rincian_lembaga}</div>` : ''}
+                                </div>
+                            `);
+                        } else {
+                            $tr.removeClass('table-warning');
+                            $inputEl.removeClass('is-invalid');
+                            $statusCell.html(`<span class="text-muted fs-12">-</span>`);
+                        }
 
                     } else {
                         alert('Gagal mengupdate data');
