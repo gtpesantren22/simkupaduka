@@ -44,6 +44,7 @@
                                         <th>Nama</th>
                                         <th>Tanggal Bayar</th>
                                         <th>Nominal</th>
+                                        <th>Bulan</th>
                                         <th>Tahun Ajaran</th>
                                         <th>Penerima</th>
                                     </tr>
@@ -57,6 +58,7 @@
                                         <td><?= $ls_jns->nama; ?></td>
                                         <td><?= $ls_jns->tgl; ?></td>
                                         <td><?= rupiah($ls_jns->nominal); ?></td>
+                                        <td><?= $this->bulan[$ls_jns->bulan]; ?></td>
                                         <td><?= $ls_jns->tahun; ?></td>
                                         <td><?= $ls_jns->kasir; ?></td>
                                     </tr>
