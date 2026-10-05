@@ -2359,7 +2359,7 @@ Terimakasih';
         ];
 
         $kode = $sisa->kode_pengajuan;
-        $lmb = $this->db->query("SELECT pengajuan.*, lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' ")->row();
+        $lmb = $this->db->query("SELECT pengajuan.*, lembaga.nama FROM pengajuan JOIN lembaga ON pengajuan.lembaga=lembaga.kode WHERE kode_pengajuan = '$kode' AND lembaga.tahun = '$this->tahun' AND pengajuan.tahun = '$this->tahun' ")->row();
 
         if (preg_match("/DISP./i", $kode)) {
             $rt = "*(DISPOSISI)*";
@@ -2377,7 +2377,7 @@ Informasi pelaporan SPJ dari lembaga sebagai berikut:
 📅 *Waktu*       : ' . date('d-m-Y H:i:s') . '
 ━━━━━━━━━━━━━━━━━━━━
 
-_*Hard copy SPJ dan sisa belanja anggaran telah disetor kepada KASIR. Untuk pengajuan berikutnya sudah bisa dilakukan._*
+*_Hard copy SPJ dan sisa belanja anggaran telah disetor kepada KASIR. Untuk pengajuan berikutnya sudah bisa dilakukan._*
 
 🔗 https://simkupaduka.ppdwk.com
 
