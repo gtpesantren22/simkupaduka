@@ -45,81 +45,83 @@
                                         <tr>
                                             <td><?= $no++ ?></td>
                                             <td><?= $a->nama ?></td>
-                                            <td><?= $a->login ?></td>
-                                            <td><?= $a->disposisi ?></td>
-                                            <td><?= $a->pengajuan ?></td>
+                                            <td>
+                                                <span class="badge bg-<?= $a->login == 'Y' ? 'success' : 'danger' ?>">
+                                                    <?= $a->login == 'Y' ? 'Ya' : 'Tidak' ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-<?= $a->disposisi == 'Y' ? 'success' : 'danger' ?>">
+                                                    <?= $a->disposisi == 'Y' ? 'Ya' : 'Tidak' ?>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-<?= $a->pengajuan == 'Y' ? 'success' : 'danger' ?>">
+                                                    <?= $a->pengajuan == 'Y' ? 'Ya' : 'Tidak' ?>
+                                                </span>
+                                            </td>
                                             <td><?= $a->tahun ?></td>
                                             <td>
-                                                <a href="<?= base_url('admin/delAkses/' . $a->id_akses); ?>" class="tombol-hapus"><i class="bx bx-trash"></i></a> |
-                                                <a data-bs-toggle="modal" data-bs-target="#medit<?= $a->id_akses; ?>" href="#"><i class="bx bx-edit"></i></a>
+                                                <a href="<?= base_url('admin/delAkses/' . $a->id_akses); ?>" class="tombol-hapus text-danger me-1"><i class="bx bx-trash font-18"></i></a>
+                                                <a data-bs-toggle="modal" data-bs-target="#medit<?= $a->id_akses; ?>" href="javascript:;" class="text-primary"><i class="bx bx-edit font-18"></i></a>
 
                                                 <!-- Modal Edit Data-->
-                                                <div class="modal fade" id="medit<?= $a->id_akses; ?>" tabindex="-1" role="dialog" aria-hidden="true">
-                                                    <div class="modal-dialog modal-lg">
+                                                <div class="modal fade" id="medit<?= $a->id_akses; ?>" tabindex="-1" aria-labelledby="editLabel<?= $a->id_akses; ?>" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
                                                         <div class="modal-content">
 
                                                             <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel">Edit Akses
-                                                                    Lembaha</h5>
+                                                                <h5 class="modal-title" id="editLabel<?= $a->id_akses; ?>">Edit Akses Lembaga</h5>
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <form action="<?= base_url('admin/saveEditAkses'); ?>" method="post">
                                                                 <input type="hidden" name="id_akses" value="<?= $a->id_akses; ?>">
-                                                                <div class="modal-body">
-                                                                    <div class="item form-group">
-                                                                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                                                                            <span class="required">*</span></label>
-                                                                        <div class="col-md-6 col-sm-6 ">
-                                                                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $a->nama; ?>">
+                                                                <div class="modal-body text-start">
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Lembaga</label>
+                                                                        <input class="form-control" type="text" readonly value="<?= $a->nama; ?>">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold d-block">Akses Login <span class="text-danger">*</span></label>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" name="login" id="loginY_<?= $a->id_akses ?>" value="Y" <?= $a->login == 'Y' ? 'checked' : '' ?> required>
+                                                                            <label class="form-check-label" for="loginY_<?= $a->id_akses ?>">Ya</label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" name="login" id="loginT_<?= $a->id_akses ?>" value="T" <?= $a->login == 'T' ? 'checked' : '' ?>>
+                                                                            <label class="form-check-label" for="loginT_<?= $a->id_akses ?>">Tidak</label>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="item form-group">
-                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
-                                                                        </label>
-                                                                        <div class="col-md-6 col-sm-6 ">
-                                                                            <p>
-                                                                                <input type="radio" class="flat" name="login" id="genderM" value="Y" <?= $a->login == 'Y' ? 'checked' : '' ?> />
-                                                                                Ya
-                                                                                <input type="radio" class="flat" name="login" id="genderF" value="T" <?= $a->login == 'T' ? 'checked' : '' ?> />
-                                                                                Tidak
-                                                                            </p>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold d-block">Disposisi <span class="text-danger">*</span></label>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" name="disp" id="dispY_<?= $a->id_akses ?>" value="Y" <?= $a->disposisi == 'Y' ? 'checked' : '' ?> required>
+                                                                            <label class="form-check-label" for="dispY_<?= $a->id_akses ?>">Ya</label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" name="disp" id="dispT_<?= $a->id_akses ?>" value="T" <?= $a->disposisi == 'T' ? 'checked' : '' ?>>
+                                                                            <label class="form-check-label" for="dispT_<?= $a->id_akses ?>">Tidak</label>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="item form-group">
-                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
-                                                                        </label>
-                                                                        <div class="col-md-6 col-sm-6 ">
-                                                                            <p>
-                                                                                <input type="radio" class="flat" name="disp" id="genderM" value="Y" <?= $a->disposisi == 'Y' ? 'checked' : '' ?> />
-                                                                                Ya
-                                                                                <input type="radio" class="flat" name="disp" id="genderF" value="T" <?= $a->disposisi == 'T' ? 'checked' : '' ?> />
-                                                                                Tidak
-                                                                            </p>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold d-block">Pengajuan <span class="text-danger">*</span></label>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" name="pengajuan" id="pengajuanY_<?= $a->id_akses ?>" value="Y" <?= $a->pengajuan == 'Y' ? 'checked' : '' ?> required>
+                                                                            <label class="form-check-label" for="pengajuanY_<?= $a->id_akses ?>">Ya</label>
+                                                                        </div>
+                                                                        <div class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" name="pengajuan" id="pengajuanT_<?= $a->id_akses ?>" value="T" <?= $a->pengajuan == 'T' ? 'checked' : '' ?>>
+                                                                            <label class="form-check-label" for="pengajuanT_<?= $a->id_akses ?>">Tidak</label>
                                                                         </div>
                                                                     </div>
-                                                                    <div class="item form-group">
-                                                                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
-                                                                        </label>
-                                                                        <div class="col-md-6 col-sm-6 ">
-                                                                            <p>
-                                                                                <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" <?= $a->disposisi == 'Y' ? 'checked' : '' ?> />
-                                                                                Ya
-                                                                                <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" <?= $a->disposisi == 'T' ? 'checked' : '' ?> />
-                                                                                Tidak
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="item form-group">
-                                                                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                                                                            <span class="required">*</span></label>
-                                                                        <div class="col-md-6 col-sm-6 ">
-                                                                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun; ?>">
-                                                                        </div>
+                                                                    <div class="mb-3">
+                                                                        <label class="form-label fw-bold">Tahun</label>
+                                                                        <input class="form-control" type="text" readonly value="<?= $tahun; ?>">
                                                                     </div>
                                                                 </div>
                                                                 <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                    <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
+                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                                    <button type="submit" name="edit" class="btn btn-primary">Simpan Perubahan</button>
                                                                 </div>
                                                             </form>
 
@@ -143,68 +145,60 @@
                             <h6 class="mb-3 text-center">Tambah Akses Baru</h6>
                         </div>
                         <?= form_open('admin/saveAkses'); ?>
-                        <div class="item form-group">
-                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pilih
-                                Lembaga <span class="required">*</span>
-                            </label>
-                            <div class="col-md-12 col-sm-6">
-                                <select name="lembaga" id="" class="form-control" required>
-                                    <option value=""> -pilih lembaga- </option>
-                                    <?php
-                                    $sal = $this->db->query("SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun') AND tahun = '$tahun' ")->result();
-                                    foreach ($sal as $r) {
-                                    ?>
-                                        <option value="<?= $r->kode; ?>"><?= $r->nama; ?></option>
-                                    <?php } ?>
-                                </select>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Pilih Lembaga <span class="text-danger">*</span></label>
+                            <select name="lembaga" class="form-select" required>
+                                <option value=""> - Pilih Lembaga - </option>
+                                <?php
+                                $sal = $this->db->query("SELECT * FROM lembaga WHERE NOT EXISTS (SELECT lembaga FROM akses WHERE lembaga.kode=akses.lembaga AND tahun = '$tahun') AND tahun = '$tahun' ")->result();
+                                foreach ($sal as $r) {
+                                ?>
+                                    <option value="<?= $r->kode; ?>"><?= $r->nama; ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Akses Login <span class="text-danger">*</span></label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="login" id="addLoginY" value="Y" checked required>
+                                <label class="form-check-label" for="addLoginY">Ya</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="login" id="addLoginT" value="T">
+                                <label class="form-check-label" for="addLoginT">Tidak</label>
                             </div>
                         </div>
-                        <div class="item form-group">
-                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses
-                                Login <span class="required">*</span>
-                            </label>
-                            <div class="col-md-12 col-sm-6 ">
-                                <p>
-                                    <input type="radio" class="flat" name="login" id="genderM" value="Y" /> Ya
-                                    <input type="radio" class="flat" name="login" id="genderF" value="T" />
-                                    Tidak
-                                </p>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Disposisi <span class="text-danger">*</span></label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="disp" id="addDispY" value="Y" checked required>
+                                <label class="form-check-label" for="addDispY">Ya</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="disp" id="addDispT" value="T">
+                                <label class="form-check-label" for="addDispT">Tidak</label>
                             </div>
                         </div>
-                        <div class="item form-group">
-                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
-                            </label>
-                            <div class="col-md-12 col-sm-6 ">
-                                <p>
-                                    <input type="radio" class="flat" name="disp" id="genderM" value="Y" /> Ya
-                                    <input type="radio" class="flat" name="disp" id="genderF" value="T" /> Tidak
-                                </p>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Pengajuan <span class="text-danger">*</span></label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pengajuan" id="addPengajuanY" value="Y" checked required>
+                                <label class="form-check-label" for="addPengajuanY">Ya</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pengajuan" id="addPengajuanT" value="T">
+                                <label class="form-check-label" for="addPengajuanT">Tidak</label>
                             </div>
                         </div>
-                        <div class="item form-group">
-                            <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
-                            </label>
-                            <div class="col-md-12 col-sm-6 ">
-                                <p>
-                                    <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" /> Ya
-                                    <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" /> Tidak
-                                </p>
-                            </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tahun <span class="text-danger">*</span></label>
+                            <input class="form-control" type="text" name="tahun" readonly value="<?= $tahun; ?>">
                         </div>
-                        <div class="item form-group">
-                            <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                                <span class="required">*</span></label>
-                            <div class="col-md-12 col-sm-6 ">
-                                <input id="middle-name" class="form-control" type="text" name="tahun" readonly value="<?= $tahun; ?>">
-                            </div>
-                        </div>
-                        <div class="item form-group mt-2">
-                            <div class="col-md-12 col-sm-6 ">
-                                <button type="submit" class="btn btn-sm btn-success">Simpan</button><br><br>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#buatAksesAll" class="btn btn-sm btn-primary">Generate Akses All</button>
-                                <button type="button" data-bs-toggle="modal" data-bs-target="#editAksesAll" class="btn btn-sm btn-primary">Edit Akses All</button>
-                                <a href="<?= base_url('admin/truncAkses') ?>" class="btn btn-sm btn-danger tbl-confirm" value="Data akses akan dikosongi keseluruhan">Del Akses All</a>
-                            </div>
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="submit" class="btn btn-success"><i class="bx bx-save"></i> Simpan Akses</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#buatAksesAll" class="btn btn-outline-primary"><i class="bx bx-cog"></i> Generate Akses All</button>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#editAksesAll" class="btn btn-outline-info"><i class="bx bx-edit"></i> Edit Akses All</button>
+                            <a href="<?= base_url('admin/truncAkses') ?>" class="btn btn-outline-danger tbl-confirm" value="Data akses akan dikosongi keseluruhan"><i class="bx bx-trash"></i> Del Akses All</a>
                         </div>
                         <?= form_close(); ?>
                     </div>
@@ -272,128 +266,121 @@
 </div>
 <!--end page wrapper -->
 
-<div class="modal fade" id="buatAksesAll" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="buatAksesAll" tabindex="-1" aria-labelledby="buatAksesAllLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Generate Akses untuk semua lembaga</h5>
+                <h5 class="modal-title" id="buatAksesAllLabel">Generate Akses Semua Lembaga</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="<?= base_url('admin/buatAksesAll'); ?>" method="post">
-                <div class="modal-body">
-                    <small class="text-danger">* Untuk KPA yang sudah memimiliki akses tidak akan digenerate ulang</small>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <p>
-                                <input type="radio" class="flat" name="login" id="genderM" value="Y" />
-                                Ya
-                                <input type="radio" class="flat" name="login" id="genderF" value="T" />
-                                Tidak
-                            </p>
+                <div class="modal-body text-start">
+                    <div class="alert alert-info py-2 mb-3">
+                        <small><i class="bx bx-info-circle"></i> Lembaga yang sudah memiliki akses tidak akan ditimpa/digenerate ulang.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold d-block">Akses Login <span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="login" id="genLoginY" value="Y" checked required>
+                            <label class="form-check-label" for="genLoginY">Ya</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="login" id="genLoginT" value="T">
+                            <label class="form-check-label" for="genLoginT">Tidak</label>
                         </div>
                     </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <p>
-                                <input type="radio" class="flat" name="disp" id="genderM" value="Y" />
-                                Ya
-                                <input type="radio" class="flat" name="disp" id="genderF" value="T" />
-                                Tidak
-                            </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold d-block">Disposisi <span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="disp" id="genDispY" value="Y" checked required>
+                            <label class="form-check-label" for="genDispY">Ya</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="disp" id="genDispT" value="T">
+                            <label class="form-check-label" for="genDispT">Tidak</label>
                         </div>
                     </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <p>
-                                <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" />
-                                Ya
-                                <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" />
-                                Tidak
-                            </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold d-block">Pengajuan <span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pengajuan" id="genPengajuanY" value="Y" checked required>
+                            <label class="form-check-label" for="genPengajuanY">Ya</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pengajuan" id="genPengajuanT" value="T">
+                            <label class="form-check-label" for="genPengajuanT">Tidak</label>
                         </div>
                     </div>
-                    <div class="item form-group">
-                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                            <span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun; ?>">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tahun</label>
+                        <input class="form-control" type="text" readonly value="<?= $tahun; ?>">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" name="edit" class="btn btn-primary">Generate Sekarang</button>
                 </div>
             </form>
 
         </div>
     </div>
 </div>
-<div class="modal fade" id="editAksesAll" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
+
+<div class="modal fade" id="editAksesAll" tabindex="-1" aria-labelledby="editAksesAllLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Edit Akses untuk semua lembaga</h5>
+                <h5 class="modal-title" id="editAksesAllLabel">Edit Akses Semua Lembaga</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="<?= base_url('admin/editAksesAll'); ?>" method="post">
-                <div class="modal-body">
-                    <small class="text-danger">* Fitur ini akan merubah akses untuk semua lembaga</small>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Akses Login <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <p>
-                                <input type="radio" class="flat" name="login" id="genderM" value="Y" />
-                                Ya
-                                <input type="radio" class="flat" name="login" id="genderF" value="T" />
-                                Tidak
-                            </p>
+                <div class="modal-body text-start">
+                    <div class="alert alert-warning py-2 mb-3">
+                        <small><i class="bx bx-warning"></i> Perhatian: Fitur ini akan mengubah hak akses untuk <strong>seluruh lembaga</strong> pada tahun <?= $tahun; ?>.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold d-block">Akses Login <span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="login" id="allLoginY" value="Y" checked required>
+                            <label class="form-check-label" for="allLoginY">Ya</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="login" id="allLoginT" value="T">
+                            <label class="form-check-label" for="allLoginT">Tidak</label>
                         </div>
                     </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Disposisi <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <p>
-                                <input type="radio" class="flat" name="disp" id="genderM" value="Y" />
-                                Ya
-                                <input type="radio" class="flat" name="disp" id="genderF" value="T" />
-                                Tidak
-                            </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold d-block">Disposisi <span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="disp" id="allDispY" value="Y" checked required>
+                            <label class="form-check-label" for="allDispY">Ya</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="disp" id="allDispT" value="T">
+                            <label class="form-check-label" for="allDispT">Tidak</label>
                         </div>
                     </div>
-                    <div class="item form-group">
-                        <label class="col-form-label col-md-3 col-sm-3 label-align" for="first-name">Pengajuan <span class="required">*</span>
-                        </label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <p>
-                                <input type="radio" class="flat" name="pengajuan" id="genderM" value="Y" />
-                                Ya
-                                <input type="radio" class="flat" name="pengajuan" id="genderF" value="T" />
-                                Tidak
-                            </p>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold d-block">Pengajuan <span class="text-danger">*</span></label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pengajuan" id="allPengajuanY" value="Y" checked required>
+                            <label class="form-check-label" for="allPengajuanY">Ya</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="pengajuan" id="allPengajuanT" value="T">
+                            <label class="form-check-label" for="allPengajuanT">Tidak</label>
                         </div>
                     </div>
-                    <div class="item form-group">
-                        <label for="middle-name" class="col-form-label col-md-3 col-sm-3 label-align">Tahun
-                            <span class="required">*</span></label>
-                        <div class="col-md-6 col-sm-6 ">
-                            <input id="middle-name" class="form-control" type="text" name="pj" readonly value="<?= $tahun; ?>">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Tahun</label>
+                        <input class="form-control" type="text" readonly value="<?= $tahun; ?>">
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="edit" class="btn btn-success">Simpan data</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" name="edit" class="btn btn-primary">Simpan Semua Perubahan</button>
                 </div>
             </form>
 

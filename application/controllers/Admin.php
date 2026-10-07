@@ -3013,43 +3013,48 @@ https://simkupaduka.ppdwk.com/';
 
 	public function saveEditAkses()
 	{
-		$id =  $this->input->post('id_akses', true);
+		$id = $this->input->post('id_akses', true);
 		$data = [
-			'login' =>  $this->input->post('login'),
-			'disposisi' =>  $this->input->post('disp'),
-			'pengajuan' =>  $this->input->post('pengajuan')
+			'login' => $this->input->post('login', true) ?: 'T',
+			'disposisi' => $this->input->post('disp', true) ?: 'T',
+			'pengajuan' => $this->input->post('pengajuan', true) ?: 'T'
 		];
 
-		$this->model->update('akses',  $data, 'id_akses', $id);
+		$this->db->where('id_akses', $id)->update('akses', $data);
 
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Hak Akses Lembaga berhasil diupdate');
-			redirect('admin/setting');
-		} else {
-			$this->session->set_flashdata('error', 'Hak Akses Lembaga tidak bisa diupdate');
-			redirect('admin/setting');
-		}
+		$this->session->set_flashdata('ok', 'Hak Akses Lembaga berhasil diupdate');
+		redirect('admin/setting');
 	}
 
 	public function saveAkses()
 	{
+		$lembaga = $this->input->post('lembaga', true);
+		$tahun = $this->input->post('tahun', true) ?: $this->tahun;
+
+		if (empty($lembaga)) {
+			$this->session->set_flashdata('error', 'Silakan pilih lembaga terlebih dahulu');
+			redirect('admin/setting');
+			return;
+		}
+
 		$data = [
-			'login' =>  $this->input->post('login'),
-			'disposisi' =>  $this->input->post('disp'),
-			'pengajuan' =>  $this->input->post('pengajuan'),
-			'lembaga' =>  $this->input->post('lembaga'),
-			'tahun' =>  $this->input->post('tahun')
+			'login' => $this->input->post('login', true) ?: 'T',
+			'disposisi' => $this->input->post('disp', true) ?: 'T',
+			'pengajuan' => $this->input->post('pengajuan', true) ?: 'T',
+			'lembaga' => $lembaga,
+			'tahun' => $tahun
 		];
 
-		$this->model->input('akses',  $data);
-
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Hak Akses Lembaga berhasil ditambahkan');
-			redirect('admin/setting');
+		$cek = $this->model->getBy2('akses', 'lembaga', $lembaga, 'tahun', $tahun)->row();
+		if ($cek) {
+			$this->db->where('id_akses', $cek->id_akses)->update('akses', $data);
+			$this->session->set_flashdata('ok', 'Hak Akses Lembaga berhasil diupdate');
 		} else {
-			$this->session->set_flashdata('error', 'Hak Akses Lembaga tidak bisa ditambahkan');
-			redirect('admin/setting');
+			$this->model->input('akses', $data);
+			$this->session->set_flashdata('ok', 'Hak Akses Lembaga berhasil ditambahkan');
 		}
+
+		redirect('admin/setting');
 	}
 
 	public function savePAK()
@@ -4491,56 +4496,53 @@ Update data pertanggal
 
 	public function buatAksesAll()
 	{
-		$login = $this->input->post('login', true);
-		$disp = $this->input->post('disp', true);
-		$pengajuan = $this->input->post('pengajuan', true);
+		$login = $this->input->post('login', true) ?: 'T';
+		$disp = $this->input->post('disp', true) ?: 'T';
+		$pengajuan = $this->input->post('pengajuan', true) ?: 'T';
 		$kpa = $this->model->getBy('lembaga', 'tahun', $this->tahun);
 
-		foreach ($kpa->result() as $kpa) {
-			$cek = $this->model->getBy2('akses', 'lembaga', $kpa->kode, 'tahun', $this->tahun)->num_rows();
+		$count = 0;
+		foreach ($kpa->result() as $k) {
+			$cek = $this->model->getBy2('akses', 'lembaga', $k->kode, 'tahun', $this->tahun)->num_rows();
 			if ($cek < 1) {
 				$data = [
-					'lembaga' => $kpa->kode,
+					'lembaga' => $k->kode,
 					'login' => $login,
 					'disposisi' => $disp,
 					'pengajuan' => $pengajuan,
 					'tahun' => $this->tahun,
 				];
 				$this->model->input('akses', $data);
+				$count++;
 			}
 		}
 
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Generate akses berhasil');
-			redirect('admin/setting');
-		}
+		$this->session->set_flashdata('ok', 'Generate akses berhasil (' . $count . ' lembaga baru ditambahkan)');
+		redirect('admin/setting');
 	}
+
 	public function editAksesAll()
 	{
-		$login = $this->input->post('login', true);
-		$disp = $this->input->post('disp', true);
-		$pengajuan = $this->input->post('pengajuan', true);
+		$login = $this->input->post('login', true) ?: 'T';
+		$disp = $this->input->post('disp', true) ?: 'T';
+		$pengajuan = $this->input->post('pengajuan', true) ?: 'T';
 
 		$data = [
 			'login' => $login,
 			'disposisi' => $disp,
 			'pengajuan' => $pengajuan,
 		];
-		$this->model->update('akses', $data, 'tahun', $this->tahun);
+		$this->db->where('tahun', $this->tahun)->update('akses', $data);
 
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Update akses berhasil');
-			redirect('admin/setting');
-		}
+		$this->session->set_flashdata('ok', 'Update akses semua lembaga berhasil');
+		redirect('admin/setting');
 	}
 
 	public function truncAkses()
 	{
-		$this->model->delete('akses', 'tahun', $this->tahun);
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'Delete akses berhasil');
-			redirect('admin/setting');
-		}
+		$this->db->where('tahun', $this->tahun)->delete('akses');
+		$this->session->set_flashdata('ok', 'Data akses berhasil dikosongkan');
+		redirect('admin/setting');
 	}
 	public function coa()
 	{
