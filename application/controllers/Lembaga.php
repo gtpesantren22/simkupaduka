@@ -1032,6 +1032,14 @@ Terima kasih.';
 	}
 	public function setting()
 	{
+		// Pastikan direktori uploads profile tersedia
+		$profileDir = FCPATH . 'vertical/assets/uploads/profile/';
+		if (!is_dir($profileDir)) {
+			@mkdir($profileDir, 0777, true);
+		}
+		if (!file_exists($profileDir . 'user-avatar.png') && file_exists(FCPATH . 'vertical/assets/images/avatars/avatar-1.png')) {
+			@copy(FCPATH . 'vertical/assets/images/avatars/avatar-1.png', $profileDir . 'user-avatar.png');
+		}
 
 		$data['lembaga'] = $this->model->getBy2('lembaga', 'kode', $this->lembaga, 'tahun', $this->tahun)->row();
 		$data['user'] = $this->Auth_model->current_user();
@@ -1044,51 +1052,55 @@ Terima kasih.';
 
 	public function updateAkun()
 	{
-		$id = $this->Auth_model->current_user('id_user');
-		$id_user = $id->id_user;
+		$user = $this->Auth_model->current_user();
+		if (!$user) {
+			redirect('login/logout');
+			return;
+		}
+		$id_user = $user->id_user;
 
-		$nama = $this->input->post('nama', true);
-		$username = $this->input->post('username', true);
+		$nama = trim($this->input->post('nama', true));
+		$username = trim($this->input->post('username', true));
 		$password = $this->input->post('newpass', true);
 		$password2 = $this->input->post('confir_newpass', true);
-		$pass_lama = $this->input->post('pass_lama', true);
-		$pass_baru = password_hash($password, PASSWORD_DEFAULT);
 
-		if ($password == '' && $password2 = '') {
-
-			$data = [
-				'nama' => strtoupper($nama),
-				'username' => $username
-			];
-			$this->model->update('user', $data, 'id_user', $id_user);
-			if ($this->db->affected_rows() > 0) {
-				$this->session->set_flashdata('ok', 'User akun berhasil diperbarui');
-				redirect('lembaga/setting/');
-			} else {
-				$this->session->set_flashdata('error', 'User akun tidak berhasil diperbarui');
-				redirect('lembaga/setting/');
-			}
-		} else {
-			if ($password != $password2) {
-				$this->session->set_flashdata('error', 'Konfimasi password tidak sama');
-				redirect('lembaga/setting/');
-			} else {
-
-				$data = [
-					'nama' => $nama,
-					'username' => $username,
-					'password' => $pass_baru
-				];
-				$this->model->update('user', $data, 'id_user', $id_user);
-				if ($this->db->affected_rows() > 0) {
-					$this->session->set_flashdata('ok', 'User akun berhasil diperbarui');
-					redirect('lembaga/setting/');
-				} else {
-					$this->session->set_flashdata('error', 'User akun tidak berhasil diperbarui');
-					redirect('lembaga/setting/');
-				}
-			}
+		if (empty($nama) || empty($username)) {
+			$this->session->set_flashdata('error', 'Nama lengkap dan Username tidak boleh kosong');
+			redirect('lembaga/setting');
+			return;
 		}
+
+		// Cek keunikan username (tidak boleh tabrakan dengan user lain)
+		$cekUsername = $this->db->query("SELECT id_user FROM user WHERE username = ? AND id_user != ?", [$username, $id_user])->row();
+		if ($cekUsername) {
+			$this->session->set_flashdata('error', 'Username "' . htmlspecialchars($username) . '" sudah digunakan. Silakan pilih username lain');
+			redirect('lembaga/setting');
+			return;
+		}
+
+		$data = [
+			'nama' => strtoupper($nama),
+			'username' => $username
+		];
+
+		// Jika user ingin mengganti password
+		if (!empty($password) || !empty($password2)) {
+			if ($password !== $password2) {
+				$this->session->set_flashdata('error', 'Konfirmasi password baru tidak cocok');
+				redirect('lembaga/setting');
+				return;
+			}
+			if (strlen($password) < 5) {
+				$this->session->set_flashdata('error', 'Password baru minimal 5 karakter');
+				redirect('lembaga/setting');
+				return;
+			}
+			$data['password'] = password_hash($password, PASSWORD_DEFAULT);
+		}
+
+		$this->model->update('user', $data, 'id_user', $id_user);
+		$this->session->set_flashdata('ok', 'Data akun & login berhasil diperbarui');
+		redirect('lembaga/setting');
 	}
 
 	public function updateLembaga()
@@ -1097,54 +1109,60 @@ Terima kasih.';
 		$tahun = $this->tahun;
 
 		$data = [
-			'pj' => $this->input->post('pj', true),
-			'hp' => $this->input->post('hp', true),
-			'hp_kep' => $this->input->post('hp_kep', true),
-			'waktu' => $this->input->post('waktu', true)
+			'pj' => trim($this->input->post('pj', true)),
+			'hp' => trim($this->input->post('hp', true)),
+			'hp_kep' => trim($this->input->post('hp_kep', true)),
+			'waktu' => trim($this->input->post('waktu', true))
 		];
 
 		$this->model->update2('lembaga', $data, 'kode', $id_lm, 'tahun', $tahun);
 
-		if ($this->db->affected_rows() > 0) {
-			$this->session->set_flashdata('ok', 'User akun berhasil diperbarui');
-			redirect('lembaga/setting/');
-		} else {
-			$this->session->set_flashdata('error', 'User akun tidak berhasil diperbarui');
-			redirect('lembaga/setting/');
-		}
+		$this->session->set_flashdata('ok', 'Data informasi lembaga berhasil diperbarui');
+		redirect('lembaga/setting');
 	}
 
 	public function uploadFoto()
 	{
-
 		$user = $this->Auth_model->current_user();
+		if (!$user) {
+			redirect('login/logout');
+			return;
+		}
 
-		$file_name = 'PROFILE-' . rand(0, 99999999);
-		$config['upload_path']          = FCPATH . '/vertical/assets/uploads/profile/';
+		$upload_path = FCPATH . 'vertical/assets/uploads/profile/';
+		if (!is_dir($upload_path)) {
+			@mkdir($upload_path, 0777, true);
+		}
+
+		$file_name = 'PROFILE-' . time() . '-' . rand(1000, 9999);
+		$config['upload_path']          = $upload_path;
 		$config['allowed_types']        = 'jpg|jpeg|png';
 		$config['file_name']            = $file_name;
 		$config['overwrite']            = true;
+		$config['max_size']             = 3072; // 3MB
 
 		$this->load->library('upload', $config);
 
 		if (!$this->upload->do_upload('file')) {
-			$data['error'] = $this->upload->display_errors();
+			$error = strip_tags($this->upload->display_errors());
+			$this->session->set_flashdata('error', 'Gagal upload foto: ' . $error);
+			redirect('lembaga/setting');
+			return;
 		} else {
 			$uploaded_data = $this->upload->data();
 
+			// Hapus foto lama jika ada dan bukan default
+			if (!empty($user->foto) && $user->foto !== 'user-avatar.png' && file_exists($upload_path . $user->foto)) {
+				@unlink($upload_path . $user->foto);
+			}
+
 			$new_data = [
-				'foto' =>  $uploaded_data['file_name']
+				'foto' => $uploaded_data['file_name']
 			];
 			$this->model->update('user', $new_data, 'id_user', $user->id_user);
-			// unlink('./vertical/assets/uploads/honor/' . $file->files);
 
-			if ($this->db->affected_rows() > 0) {
-				$this->session->set_flashdata('ok', 'Upload foto sukses');
-				redirect('lembaga/setting');
-			} else {
-				$this->session->set_flashdata('error', 'Upload foto sukses');
-				redirect('lembaga/setting');
-			}
+			$this->session->set_flashdata('ok', 'Foto profil berhasil diperbarui');
+			redirect('lembaga/setting');
 		}
 	}
 

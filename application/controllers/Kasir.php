@@ -969,7 +969,7 @@ Terima kasih.';
         $pass_lama = $this->input->post('pass_lama', true);
         $pass_baru = password_hash($password, PASSWORD_DEFAULT);
 
-        if ($password == '' && $password2 = '') {
+        if ($password == '' && $password2 == '') {
 
             $data = [
                 'nama' => strtoupper($nama),

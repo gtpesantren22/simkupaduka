@@ -42,6 +42,15 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
     <link rel="stylesheet" href="<?= base_url('vertical/'); ?>assets/css/header-colors.css" />
     <title>SIMKU-PADUKA</title>
     <style>
+        /* Ensure topbar and its dropdowns stay above the horizontal navigation bar */
+        .topbar {
+            z-index: 1025 !important;
+        }
+
+        .topbar .navbar .dropdown-menu {
+            z-index: 1030 !important;
+        }
+
         /* CSS overrides for Horizontal Layout only on Screen >= 992px */
         @media (min-width: 992px) {
 
@@ -56,6 +65,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                 width: 100% !important;
                 border-bottom: 1px solid #ededed !important;
                 box-shadow: 0 2px 6px 0 rgb(218 218 253 / 15%), 0 0px 6px 0 rgb(206 206 238 / 10%) !important;
+                z-index: 1025 !important;
             }
 
             /* Adjust page content area to begin below double header */
@@ -592,7 +602,7 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                             </div>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="javascript:;"><i class="bx bx-user"></i><span>Profile</span></a>
+                            <li><a class="dropdown-item" href="<?= base_url('lembaga/setting'); ?>"><i class="bx bx-user"></i><span>Profile</span></a>
                             </li>
                             <li><a class="dropdown-item" href="<?= base_url(); ?>"><i class='bx bx-home-circle'></i><span>Dashboard</span></a>
                             </li>
