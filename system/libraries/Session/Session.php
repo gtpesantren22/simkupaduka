@@ -45,8 +45,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @subpackage	Libraries
  * @category	Sessions
  * @author		Andrey Andreev
- * @link		https://codeigniter.com/userguide3/libraries/sessions.html
  */
+#[\AllowDynamicProperties]
 class CI_Session {
 
 	/**
