@@ -30,23 +30,9 @@
                                 <small class="text-muted">Total Realisasi Terpakai: <strong class="text-danger"><?= rupiah($sumData->jml ?? 0); ?></strong></small>
                             </div>
                             <div class="d-flex gap-2 flex-wrap">
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bx bx-slider-alt me-1"></i> Limit & Anggaran
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:;" data-bs-toggle="collapse" data-bs-target="#collapseTrackingProg" aria-expanded="false" aria-controls="collapseTrackingProg">
-                                                <i class="bx bx-chart me-2 text-primary"></i> Tracking Limit Anggaran
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item" href="javascript:;" data-bs-toggle="modal" data-bs-target="#modalSettingAnggaranProg">
-                                                <i class="bx bx-cog me-2 text-primary"></i> Atur Limit & Kategori
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTrackingProg" aria-expanded="false" aria-controls="collapseTrackingProg">
+                                    <i class="bx bx-chart me-1"></i> Tracking Limit Anggaran
+                                </button>
                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addProgModal">
                                     <i class="bx bx-plus-circle me-1"></i> Tambah Pengeluaran
                                 </button>
@@ -154,84 +140,6 @@
 </div>
 <!--end page wrapper -->
 
-<!-- Modal Setting Limit & Kategori Anggaran Program -->
-<div class="modal fade" id="modalSettingAnggaranProg" tabindex="-1" aria-labelledby="modalSettingAnggaranProgLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title text-white" id="modalSettingAnggaranProgLabel"><i class="bx bx-slider-alt me-1"></i> Atur Limit & Pos Program (Tahun <?= $tahun ?>)</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <?= form_open('account/saveAnggaranProg'); ?>
-            <div class="modal-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-sm align-middle mb-3">
-                        <thead class="table-light">
-                            <tr class="text-center">
-                                <th style="width: 5%;">No</th>
-                                <th>Nama Pos / Program</th>
-                                <th style="width: 45%;">Batas Limit Nominal</th>
-                                <th style="width: 10%;">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($tracking_prog['items'])) : ?>
-                                <?php $no = 1; foreach ($tracking_prog['items'] as $code => $tr) : ?>
-                                    <tr>
-                                        <td class="text-center"><?= $no++ ?></td>
-                                        <td>
-                                            <span class="fw-bold"><?= $tr['nama'] ?></span>
-                                            <div class="text-muted fs-11">Terpakai: <?= rupiah($tr['pakai']) ?></div>
-                                        </td>
-                                        <td>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-text">Rp</span>
-                                                <input type="text" name="limit[<?= $tr['id'] ?>]" value="<?= $tr['limit'] > 0 ? rupiah($tr['limit']) : '' ?>" class="form-control uang" placeholder="0">
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <?php if (!empty($tr['id'])) : ?>
-                                                <a href="<?= base_url('account/delPosProg/' . $tr['id']) ?>" class="btn btn-outline-danger btn-sm p-1 tombol-hapus" title="Hapus Pos"><i class="bx bx-trash"></i></a>
-                                            <?php else : ?>
-                                                <span class="text-muted">-</span>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="card border border-dashed radius-10 mb-0 bg-light">
-                    <div class="card-body p-2">
-                        <div class="d-flex align-items-center mb-2">
-                            <i class="bx bx-plus-circle text-primary me-1"></i>
-                            <span class="fw-bold fs-12 text-primary">Tambah Pos Program Baru</span>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md-7">
-                                <input type="text" name="new_pos" class="form-control form-control-sm text-uppercase" placeholder="Nama Pos Program Baru">
-                            </div>
-                            <div class="col-md-5">
-                                <div class="input-group input-group-sm">
-                                    <span class="input-group-text">Rp</span>
-                                    <input type="text" name="new_limit" class="form-control uang" placeholder="Limit Nominal">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Perubahan</button>
-            </div>
-            <?= form_close(); ?>
-        </div>
-    </div>
-</div>
-
 <!-- Modal Tambah Pengeluaran Program -->
 <div class="modal fade" id="addProgModal" tabindex="-1" aria-labelledby="addProgModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -240,35 +148,44 @@
                 <h5 class="modal-title" id="addProgModalLabel">Tambah Program & Pengembangan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/saveOutProg'); ?>
+            <?= form_open('account/saveOutProg', ['id' => 'formAddProg']); ?>
             <div class="modal-body">
                 <div class="form-group mb-2">
-                    <label for="">Kategori / Pos Program</label>
-                    <select name="nama_pos" class="form-select" required>
+                    <label for="pos_prog_select">Kategori / Pos Program</label>
+                    <select name="nama_pos" id="pos_prog_select" class="form-select" required>
                         <option value="">-- Pilih Pos Program --</option>
                         <?php if (!empty($tracking_prog['items'])) : ?>
                             <?php foreach ($tracking_prog['items'] as $code => $tr) : ?>
-                                <option value="<?= $code ?>"><?= $tr['nama'] ?></option>
+                                <?php $is_habis = ($tr['limit'] > 0 && $tr['sisa'] <= 0); ?>
+                                <option value="<?= $code ?>" 
+                                        data-limit="<?= $tr['limit'] ?>" 
+                                        data-pakai="<?= $tr['pakai'] ?>" 
+                                        data-sisa="<?= $tr['sisa'] ?>"
+                                        <?= $is_habis ? 'disabled' : '' ?>>
+                                    <?= $tr['nama'] ?> <?= $tr['limit'] > 0 ? '(Sisa: ' . rupiah($tr['sisa']) . ($is_habis ? ' - HABIS' : '') . ')' : '(Belum Ada Limit)' ?>
+                                </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
+                    <div id="prog_limit_info" class="mt-1 fs-12"></div>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="">Tanggal</label>
-                    <input type="text" name="tanggal" id="date" class="form-control" required>
+                    <label for="date_prog">Tanggal</label>
+                    <input type="text" name="tanggal" id="date_prog" class="form-control date" value="<?= date('Y-m-d') ?>" required>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="">Nominal</label>
-                    <input type="text" name="nominal" class="form-control uang" required>
+                    <label for="nominal_prog_add">Nominal</label>
+                    <input type="text" name="nominal" id="nominal_prog_add" class="form-control uang" required autocomplete="off" placeholder="Masukkan nominal rupiah">
+                    <div id="prog_nominal_error" class="text-danger mt-1 fs-12 d-none fw-bold"><i class="bx bx-error-circle me-1"></i>Nominal melebihi sisa limit anggaran!</div>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="">Ket</label>
-                    <input type="text" name="ket" class="form-control" required>
+                    <label for="">Keterangan</label>
+                    <input type="text" name="ket" class="form-control" required placeholder="Uraian pengeluaran program">
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Data</button>
+                <button type="submit" id="btnSubmitAddProg" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Data</button>
             </div>
             <?= form_close(); ?>
         </div>
@@ -283,36 +200,44 @@
                 <h5 class="modal-title" id="modalEditProgLabel">Edit Program & Pengembangan</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <?= form_open('account/editOutProg'); ?>
+            <?= form_open('account/editOutProg', ['id' => 'formEditProg']); ?>
             <input type="hidden" id="id_prog_edit" name="id_pengeluaran_prog">
+            <input type="hidden" id="id_out_prog_edit" name="id_out">
             <div class="modal-body">
                 <div class="form-group mb-2">
-                    <label for="">Kategori / Pos Program</label>
+                    <label for="pos_prog_edit">Kategori / Pos Program</label>
                     <select name="nama_pos" id="pos_prog_edit" class="form-select" required>
                         <option value="">-- Pilih Pos Program --</option>
                         <?php if (!empty($tracking_prog['items'])) : ?>
                             <?php foreach ($tracking_prog['items'] as $code => $tr) : ?>
-                                <option value="<?= $code ?>"><?= $tr['nama'] ?></option>
+                                <option value="<?= $code ?>" 
+                                        data-limit="<?= $tr['limit'] ?>" 
+                                        data-pakai="<?= $tr['pakai'] ?>" 
+                                        data-sisa="<?= $tr['sisa'] ?>">
+                                    <?= $tr['nama'] ?> <?= $tr['limit'] > 0 ? '(Sisa: ' . rupiah($tr['sisa']) . ')' : '(Belum Ada Limit)' ?>
+                                </option>
                             <?php endforeach; ?>
                         <?php endif; ?>
                     </select>
+                    <div id="prog_edit_limit_info" class="mt-1 fs-12"></div>
                 </div>
                 <div class="form-group mb-2">
                     <label for="">Tanggal</label>
-                    <input type="text" name="tanggal" class="form-control tanggal-edit-prog" required>
+                    <input type="text" name="tanggal" class="form-control date tanggal-edit-prog" required>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="">Nominal</label>
-                    <input type="text" name="nominal" id="nominal_prog_edit" class="form-control uang" required>
+                    <label for="nominal_prog_edit">Nominal</label>
+                    <input type="text" name="nominal" id="nominal_prog_edit" class="form-control uang" required autocomplete="off">
+                    <div id="prog_edit_nominal_error" class="text-danger mt-1 fs-12 d-none fw-bold"><i class="bx bx-error-circle me-1"></i>Nominal melebihi sisa limit anggaran!</div>
                 </div>
                 <div class="form-group mb-2">
-                    <label for="">Ket</label>
+                    <label for="ket_prog_edit">Keterangan</label>
                     <input type="text" name="ket" id="ket_prog_edit" class="form-control" required>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Data</button>
+                <button type="submit" id="btnSubmitEditProg" class="btn btn-primary"><i class="bx bx-save"></i> Simpan Perubahan</button>
             </div>
             <?= form_close(); ?>
         </div>
@@ -322,6 +247,91 @@
 <script src="<?= base_url('vertical/'); ?>assets/js/jquery.min.js"></script>
 
 <script>
+    // Realtime limit checker for Add Modal
+    function checkProgLimitAdd() {
+        var selected = $('#pos_prog_select').find(':selected');
+        var limit = parseFloat(selected.data('limit')) || 0;
+        var sisa = parseFloat(selected.data('sisa')) || 0;
+        var rawNom = $('#nominal_prog_add').val().replace(/[^0-9]/g, '');
+        var nominal = parseFloat(rawNom) || 0;
+
+        if (selected.val() && limit > 0) {
+            $('#prog_limit_info').html('<span class="text-muted">Limit: <strong>Rp ' + limit.toLocaleString('id-ID') + '</strong> | Sisa Limit: <strong class="' + (sisa <= 0 ? 'text-danger' : 'text-success') + '">Rp ' + sisa.toLocaleString('id-ID') + '</strong></span>');
+        } else if (selected.val()) {
+            $('#prog_limit_info').html('<span class="text-secondary"><i class="bx bx-info-circle me-1"></i>Pos ini belum dibatasi limit nominal oleh Admin.</span>');
+        } else {
+            $('#prog_limit_info').html('');
+        }
+
+        if (limit > 0 && nominal > sisa) {
+            $('#prog_nominal_error').removeClass('d-none');
+            $('#btnSubmitAddProg').prop('disabled', true);
+            return false;
+        } else {
+            $('#prog_nominal_error').addClass('d-none');
+            $('#btnSubmitAddProg').prop('disabled', false);
+            return true;
+        }
+    }
+
+    $('#pos_prog_select').on('change', checkProgLimitAdd);
+    $('#nominal_prog_add').on('input keyup change', checkProgLimitAdd);
+
+    $('#formAddProg').on('submit', function(e) {
+        if (!checkProgLimitAdd()) {
+            e.preventDefault();
+            alert('Input ditolak! Nominal melebihi sisa limit anggaran yang tersedia.');
+            return false;
+        }
+    });
+
+    // Realtime limit checker for Edit Modal
+    var currentProgItemNominal = 0;
+    var currentProgOriginalPos = '';
+
+    function checkProgLimitEdit() {
+        var selected = $('#pos_prog_edit').find(':selected');
+        var limit = parseFloat(selected.data('limit')) || 0;
+        var sisa = parseFloat(selected.data('sisa')) || 0;
+        var rawNom = $('#nominal_prog_edit').val().replace(/[^0-9]/g, '');
+        var nominal = parseFloat(rawNom) || 0;
+
+        // If editing the same category, available budget includes current item's nominal
+        var availableSisa = sisa;
+        if (selected.val() === currentProgOriginalPos) {
+            availableSisa = sisa + currentProgItemNominal;
+        }
+
+        if (selected.val() && limit > 0) {
+            $('#prog_edit_limit_info').html('<span class="text-muted">Limit: <strong>Rp ' + limit.toLocaleString('id-ID') + '</strong> | Sisa Tersedia: <strong class="' + (availableSisa <= 0 ? 'text-danger' : 'text-success') + '">Rp ' + availableSisa.toLocaleString('id-ID') + '</strong></span>');
+        } else if (selected.val()) {
+            $('#prog_edit_limit_info').html('<span class="text-secondary"><i class="bx bx-info-circle me-1"></i>Pos ini belum dibatasi limit nominal oleh Admin.</span>');
+        } else {
+            $('#prog_edit_limit_info').html('');
+        }
+
+        if (limit > 0 && nominal > availableSisa) {
+            $('#prog_edit_nominal_error').removeClass('d-none');
+            $('#btnSubmitEditProg').prop('disabled', true);
+            return false;
+        } else {
+            $('#prog_edit_nominal_error').addClass('d-none');
+            $('#btnSubmitEditProg').prop('disabled', false);
+            return true;
+        }
+    }
+
+    $('#pos_prog_edit').on('change', checkProgLimitEdit);
+    $('#nominal_prog_edit').on('input keyup change', checkProgLimitEdit);
+
+    $('#formEditProg').on('submit', function(e) {
+        if (!checkProgLimitEdit()) {
+            e.preventDefault();
+            alert('Edit ditolak! Nominal melebihi sisa limit anggaran yang tersedia.');
+            return false;
+        }
+    });
+
     $('.btn-edit-prog').on('click', function(e) {
         var id = $(this).data('id');
         var pos = $(this).data('pos');
@@ -329,11 +339,17 @@
         var nominal = $(this).data('nominal');
         var ket = $(this).data('ket');
 
+        currentProgItemNominal = parseFloat(nominal) || 0;
+        currentProgOriginalPos = pos;
+
         $('#id_prog_edit').val(id);
+        $('#id_out_prog_edit').val(id);
         $('#pos_prog_edit').val(pos).change();
         $('.tanggal-edit-prog').val(tanggal);
         $('#nominal_prog_edit').val(nominal);
         $('#ket_prog_edit').val(ket);
+
+        checkProgLimitEdit();
 
         $('#modal-edit-prog').modal('show');
     });

@@ -153,6 +153,9 @@ use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Base;
                     </a>
                     <ul>
                         <li>
+                            <a href="<?= base_url('admin/rekapPengeluaran'); ?>"><i class="bx bx-right-arrow-alt"></i>Rekap Semua Pengeluaran</a>
+                        </li>
+                        <li>
                             <a href="<?= base_url('admin/outRutin'); ?>"><i class="bx bx-right-arrow-alt"></i>Pengeluaran Rutin</a>
                         </li>
                         <li>

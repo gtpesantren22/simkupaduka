@@ -4055,13 +4055,7 @@ Terimakasih';
 
 	public function analistOut()
 	{
-		$data['user'] = $this->Auth_model->current_user();
-		$data['tahun'] = $this->tahun;
-		$data['bulan'] = $this->bulan;
-
-		$this->load->view('admin/head', $data);
-		$this->load->view('admin/analistOut', $data);
-		$this->load->view('admin/foot');
+		$this->rekapPengeluaran();
 	}
 
 	public function pagu()
@@ -5412,7 +5406,7 @@ Update data pertanggal
 
 	public function editOutProg()
 	{
-		$id = $this->input->post('id_out', 'true');
+		$id = $this->input->post('id_pengeluaran_prog', true) ?: $this->input->post('id_out', true);
 		$nama_pos = $this->input->post('nama_pos', true);
 		$nominal = (float)rmRp($this->input->post('nominal', true));
 		$tahun = $this->tahun;
@@ -5731,7 +5725,7 @@ Update data pertanggal
 
 	public function editOutTerikat()
 	{
-		$id = $this->input->post('id_out', 'true');
+		$id = $this->input->post('id_pengeluaran_terikat', true) ?: $this->input->post('id_out', true);
 		$nama_pos = $this->input->post('nama_pos', true);
 		$nominal = (float)rmRp($this->input->post('nominal', true));
 		$tahun = $this->tahun;
@@ -5786,5 +5780,176 @@ Update data pertanggal
 			$this->session->set_flashdata('error', 'Hapus data gagal');
 			redirect('admin/outTerikat');
 		}
+	}
+
+	public function rekapPengeluaran()
+	{
+		$tahun_req = $this->input->get('tahun', true);
+		$tahun = !empty($tahun_req) ? $tahun_req : $this->tahun;
+
+		$data['user'] = $this->Auth_model->current_user();
+		$data['tahun'] = $tahun;
+		$data['daftar_tahun'] = $this->db->order_by('nama_tahun', 'DESC')->get('tahun')->result();
+
+		// 1. KELOMPOK RUTIN
+		$rutin = $this->_getTrackingRutin($tahun);
+
+		// 2. KELOMPOK PROGRAM & PENGEMBANGAN
+		$prog = $this->_getTrackingProg($tahun);
+
+		// 3. KELOMPOK DANA TERIKAT
+		$terikat = $this->_getTrackingTerikat($tahun);
+
+		// 4. KELOMPOK REALISASI BELANJA LEMBAGA (RAB PENGAJUAN)
+		$lembaga_list = $this->db->where('tahun', $tahun)->order_by('kode', 'ASC')->get('lembaga')->result();
+		$lm_items = [];
+		$total_pagu_lm = 0;
+		$total_pakai_lm = 0;
+
+		foreach ($lembaga_list as $lm) {
+			$pagu_lm = (float)$lm->pagu;
+			$pakai_row = $this->db->select('SUM(nominal) as total')
+				->from('realis')
+				->where('lembaga', $lm->kode)
+				->where('tahun', $tahun)
+				->not_like('kode_pengajuan', 'DISP.')
+				->get()
+				->row();
+			$pakai_lm = $pakai_row ? (float)$pakai_row->total : 0;
+			$sisa_lm = $pagu_lm - $pakai_lm;
+			$persen_lm = $pagu_lm > 0 ? round(($pakai_lm / $pagu_lm) * 100, 1) : 0;
+
+			$lm_items[] = [
+				'kode' => $lm->kode,
+				'nama' => $lm->nama,
+				'pagu' => $pagu_lm,
+				'pakai' => $pakai_lm,
+				'sisa' => $sisa_lm,
+				'persen' => $persen_lm
+			];
+
+			$total_pagu_lm += $pagu_lm;
+			$total_pakai_lm += $pakai_lm;
+		}
+
+		$lembaga_summary = [
+			'items' => $lm_items,
+			'total_pagu' => $total_pagu_lm,
+			'total_pakai' => $total_pakai_lm,
+			'total_sisa' => $total_pagu_lm - $total_pakai_lm,
+			'total_persen' => $total_pagu_lm > 0 ? round(($total_pakai_lm / $total_pagu_lm) * 100, 1) : 0
+		];
+
+		// 5. KELOMPOK PAGU KHUSUS TERPUSAT
+		$pagu_khusus_list = $this->db->where('tahun', $tahun)->get('pagu')->result();
+		$pk_items = [];
+		$total_pagu_pk = 0;
+		$total_pakai_pk = 0;
+
+		foreach ($pagu_khusus_list as $pk) {
+			$nama_pagu = strtoupper(trim($pk->nama));
+			$pagu_val = (float)$pk->nominal;
+			$pakai_val = 0;
+
+			if ($nama_pagu === 'NIKMUS') {
+				try {
+					$nikmus = $this->model->getNikmusSum($tahun)->row();
+					if ($nikmus) {
+						$pakai_val = (float)(($nikmus->nom_kriteria ?? 0) + ($nikmus->transport ?? 0) + ($nikmus->sopir ?? 0));
+					}
+				} catch (\Throwable $e) {
+					$pakai_val = 0;
+				}
+			} elseif ($nama_pagu === 'DISPOSISI') {
+				$disp = $this->model->dispPakai($tahun)->row();
+				$pakai_val = $disp ? (float)$disp->total : 0;
+			} elseif ($nama_pagu === 'KEBIJAKAN') {
+				$kbj = $this->model->getBySum('kebijakan', 'tahun', $tahun, 'nominal')->row();
+				$pakai_val = $kbj ? (float)$kbj->jml : 0;
+			} elseif ($nama_pagu === 'SARPRAS') {
+				$sarpras = $this->db->query("SELECT SUM(nominal) as total FROM realis WHERE tahun = ? AND (kode_pengajuan LIKE '%SRPS%' OR kode_pengajuan LIKE '%SARPRAS%')", [$tahun])->row();
+				$pakai_val = $sarpras ? (float)$sarpras->total : 0;
+			} elseif ($nama_pagu === 'HONOR') {
+				$hnr = $this->db->query("SELECT SUM(nominal) as total FROM pengeluaran_rutin WHERE tahun = ? AND langganan = 'HONOR'", [$tahun])->row();
+				$pakai_val = $hnr ? (float)$hnr->total : 0;
+			} else {
+				$def_pakai = $this->db->query("SELECT SUM(nominal) as total FROM realis WHERE tahun = ? AND kode_pengajuan LIKE ?", [$tahun, '%' . $nama_pagu . '%'])->row();
+				$pakai_val = $def_pakai ? (float)$def_pakai->total : 0;
+			}
+
+			$sisa_pk = $pagu_val - $pakai_val;
+			$persen_pk = $pagu_val > 0 ? round(($pakai_val / $pagu_val) * 100, 1) : 0;
+
+			$pk_items[] = [
+				'kode' => $pk->kode_pagu,
+				'nama' => 'PAGU ' . $pk->nama,
+				'pagu' => $pagu_val,
+				'pakai' => $pakai_val,
+				'sisa' => $sisa_pk,
+				'persen' => $persen_pk
+			];
+
+			$total_pagu_pk += $pagu_val;
+			$total_pakai_pk += $pakai_val;
+		}
+
+		$khusus_summary = [
+			'items' => $pk_items,
+			'total_pagu' => $total_pagu_pk,
+			'total_pakai' => $total_pakai_pk,
+			'total_sisa' => $total_pagu_pk - $total_pakai_pk,
+			'total_persen' => $total_pagu_pk > 0 ? round(($total_pakai_pk / $total_pagu_pk) * 100, 1) : 0
+		];
+
+		// 6. KELOMPOK PENGELUARAN LAINNYA
+		$sum_keluar = $this->model->getBySum('keluar', 'tahun', $tahun, 'nominal')->row();
+		$keluar_lain = $sum_keluar ? (float)$sum_keluar->jml : 0;
+
+		// Panjar
+		$panjar_val = 0;
+		if ($this->db->table_exists('panjar')) {
+			$sum_panjar = $this->model->getBySum('panjar', 'tahun', $tahun, 'nominal')->row();
+			$panjar_val = $sum_panjar ? (float)$sum_panjar->jml : 0;
+		}
+
+		// Peminjaman & Cicilan
+		$sum_pinjam = $this->model->getBySum('peminjaman', 'tahun', $tahun, 'nominal')->row();
+		$pinjam_val = $sum_pinjam ? (float)$sum_pinjam->jml : 0;
+
+		$sum_cicil = $this->model->getBySum('cicilan', 'tahun', $tahun, 'nominal')->row();
+		$cicil_val = $sum_cicil ? (float)$sum_cicil->jml : 0;
+
+		$lain_summary = [
+			'keluar_lain' => $keluar_lain,
+			'panjar' => $panjar_val,
+			'pinjam' => $pinjam_val,
+			'cicilan' => $cicil_val,
+			'sisa_pinjam' => max(0, $pinjam_val - $cicil_val)
+		];
+
+		// GRAND TOTAL AKUMULASI (Rutin + Prog + Terikat + Lembaga + Khusus)
+		$grand_pagu = $rutin['total_limit'] + $prog['total_limit'] + $terikat['total_limit'] + $lembaga_summary['total_pagu'] + $khusus_summary['total_pagu'];
+		$grand_pakai = $rutin['total_pakai'] + $prog['total_pakai'] + $terikat['total_pakai'] + $lembaga_summary['total_pakai'] + $khusus_summary['total_pakai'] + $keluar_lain;
+		$grand_sisa = $grand_pagu - $grand_pakai;
+		$grand_persen = $grand_pagu > 0 ? round(($grand_pakai / $grand_pagu) * 100, 1) : 0;
+
+		$grand_total = [
+			'pagu' => $grand_pagu,
+			'pakai' => $grand_pakai,
+			'sisa' => $grand_sisa,
+			'persen' => $grand_persen
+		];
+
+		$data['rutin'] = $rutin;
+		$data['prog'] = $prog;
+		$data['terikat'] = $terikat;
+		$data['lembaga_summary'] = $lembaga_summary;
+		$data['khusus_summary'] = $khusus_summary;
+		$data['lain_summary'] = $lain_summary;
+		$data['grand_total'] = $grand_total;
+
+		$this->load->view('admin/head', $data);
+		$this->load->view('admin/rekapPengeluaran', $data);
+		$this->load->view('admin/foot');
 	}
 }
